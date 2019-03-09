@@ -1,7 +1,11 @@
 import axios from 'axios';
 
+export interface ISoundCloudResult {
+
+}
+
 class SoundCloud {
-    public clientId = 'LvWovRaJZlWCHql0bISuum8Bd2KX79mb';
+    public clientId = 'NmW1FlPaiL94ueEu7oziOWjYEzZzQDcK';
     public searchTracks(query: string) {
         const path = 'http://api.soundcloud.com/tracks';
         const url = `${path}?client_id=${this.clientId}&q=${encodeURIComponent(query)}`;

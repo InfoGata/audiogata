@@ -4,6 +4,9 @@ import './App.css';
 interface IAppState {
   src: string;
   playlist: SongInfo[];
+  search: string;
+  playListIndex: number;
+  doLoop: boolean;
 }
 
 interface SongInfo {
@@ -18,25 +21,78 @@ class App extends Component<{}, IAppState> {
     super(props);
     this.state = {
       src: '',
-      playlist: []
+      playlist: [],
+      search: '',
+      playListIndex: 0,
+      doLoop: true
     };
   }
 
   render() {
-    let songList = this.state.playlist.map((songInfo) =>
-      <li><a href="#" onClick={() => this.onPlaylistClick(songInfo.source)}>{songInfo.name}</a></li>
+    //let soundCloud = new SoundCloud();
+    //soundCloud.searchTracks('katamari');
+    let songList = this.state.playlist.map((songInfo, index) =>
+      <li>
+        <a href="#" className={index == this.state.playListIndex ? 'Selected-Song' : ''} onClick={() => this.onPlaylistClick(index)}>
+          {songInfo.name}
+        </a>
+      </li>
     );
     return (
       <div className="App">
-        <input type="file" onChange={this.onFileChange} multiple/>
-        <audio controls={true} ref={this.myRef}>
-          <source src={this.state.src} type="audio/mpeg"/>
-        </audio>
+        <div>
+          <input type="text" value={this.state.search} onChange={this.onSearchChange} />
+          <button onClick={this.search}>
+            Search
+          </button>
+        </div>
+        <div>
+          <input type="file" onChange={this.onFileChange} multiple/>
+        </div>
+        <div>
+          <button onClick={this.onPreviousClick}>Previous</button>
+          <audio controls={true} ref={this.myRef} onEnded={this.onSongEnd}>
+            <source src={this.state.src} type="audio/mpeg" />
+          </audio>
+          <button onClick={this.onNextClick}>Next</button>
+        </div>
         <ul>
           {songList}
         </ul>
       </div>
     );
+  }
+
+  private onPreviousClick = () => {
+    let newIndex = this.state.playListIndex - 1;
+    if (newIndex >= 0) {
+      this.onPlaylistClick(newIndex);
+    } else if (this.state.doLoop) {
+      newIndex = this.state.playlist.length - 1;
+      this.onPlaylistClick(newIndex);
+    }
+  }
+
+  private onNextClick = () => {
+    let newIndex = this.state.playListIndex + 1;
+    if (this.state.playlist.length > newIndex) {
+      this.onPlaylistClick(newIndex);
+    } else if (this.state.doLoop) {
+      newIndex = 0;
+      this.onPlaylistClick(newIndex);
+    }
+  }
+
+  private onSongEnd = () => {
+    this.onNextClick();
+  }
+
+  private search = (e: React.FormEvent<HTMLButtonElement>) => {
+    alert(this.state.search);
+  }
+
+  private onSearchChange = (e: React.FormEvent<HTMLInputElement>) => {
+    this.setState({search: e.currentTarget.value})
   }
 
   private onFileChange = (e: React.FormEvent<HTMLInputElement>) => {
@@ -55,16 +111,19 @@ class App extends Component<{}, IAppState> {
       const fileUrl = URL.createObjectURL(file);
       this.setState(() => ({
         src: fileUrl,
-        playlist: fileNames
+        playlist: fileNames,
+        playListIndex: 0
       }), () => {
         this.reloadPlayer();
       });
     }
   }
 
-  private onPlaylistClick(source: string) {
+  private onPlaylistClick(index: number) {
+    let song = this.state.playlist[index];
     this.setState({
-      src: source
+      src: song.source,
+      playListIndex: index
     }, () => {
       this.reloadPlayer();
     });
