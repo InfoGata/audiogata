@@ -8,6 +8,7 @@
     "@types/react": "16.8.3",
     "@types/react-dom": "16.8.1",
     "axios": "^0.18.0",
+    "dexie": "^2.0.4",
     "react": "^16.8.2",
     "react-dom": "^16.8.2",
     "react-scripts": "2.1.5",
