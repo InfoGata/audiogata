@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import './App.css';
-import { Database, ISong } from './data/database';
-import SoundCloud from './apis/SoundCloud'
+import { ISong } from './services/data/database';
+import SoundCloud from './services/apis/SoundCloud'
+import { SongService } from './services/data/song.service';
 
 interface IAppState {
   src: string;
@@ -17,8 +18,8 @@ interface IAppState {
 
 class App extends Component<{}, IAppState> {
   private myRef = React.createRef<HTMLAudioElement>()
-  private db = new Database();
   private soundCloud = new SoundCloud();
+  private songService = new SongService();
 
   constructor(props: any) {
     super(props);
@@ -34,7 +35,7 @@ class App extends Component<{}, IAppState> {
   }
 
   async componentDidMount() {
-    let songs = await this.db.songs.orderBy('sortOrder').toArray();
+    let songs = await this.songService.getSongs();
     let storage = await this.getStorage();
     this.setState({
       playlist: songs,
@@ -90,7 +91,7 @@ class App extends Component<{}, IAppState> {
 
   private onAddSong = async (song: ISong, e: React.MouseEvent) => {
     e.preventDefault();
-    let id = await this.db.songs.put(song);
+    let id = await this.songService.addSong(song);
     song.id = id;
 
     let playlist = this.state.playlist;
@@ -101,18 +102,18 @@ class App extends Component<{}, IAppState> {
   }
 
   private onDeleteClick = async (song: ISong) => {
-    if (song.id) {
-      await this.db.songs.delete(song.id);
-      if (this.state.currentSong && this.state.currentSong.id === song.id) {
-        this.stopPlayer();
-      }
-      let playlist = this.state.playlist.filter(s => s.id !== song.id);
-      let currentIndex = playlist.findIndex(s => s.id === (this.state.currentSong ? this.state.currentSong.id : -1));
-      this.setState({
-        playListIndex: currentIndex,
-        playlist: playlist
-      })
+    await this.songService.deleteSong(song);
+    if (this.state.currentSong && this.state.currentSong.id === song.id) {
+      this.stopPlayer();
     }
+    let playlist = this.state.playlist.filter(s => s.id !== song.id);
+    let currentIndex = playlist.findIndex(s => s.id === (this.state.currentSong ? this.state.currentSong.id : -1));
+    let storage = await this.getStorage();
+    this.setState({
+      playListIndex: currentIndex,
+      playlist: playlist,
+      storageUsed: storage
+    })
   }
 
 
@@ -158,14 +159,11 @@ class App extends Component<{}, IAppState> {
 
   private onFileChange = async (e: React.FormEvent<HTMLInputElement>) => {
     const files = e.currentTarget.files;
-    let lastItem = await this.db.songs.orderBy('sortOrder').last()
-    let beginSort = lastItem ? lastItem.sortOrder : 0;
     if (files && files.length > 0) {
       let songs: ISong[] = [];
       for (let i = 0; i < files.length; i++) {
         let file = files[i];
         const fileUrl = URL.createObjectURL(file);
-        beginSort++;
         songs.push({
           name: file.name,
           source: fileUrl,
@@ -173,11 +171,11 @@ class App extends Component<{}, IAppState> {
           useBlob: true,
           from: 'local',
           dateAdded: new Date(),
-          sortOrder: beginSort
+          sortOrder: 0
         });
       }
-      await this.db.songs.bulkPut(songs);
-      let allSongs = await this.db.songs.orderBy('sortOrder').toArray();
+      await this.songService.addSongs(songs);
+      let allSongs = await this.songService.getSongs();
       let storage = await this.getStorage();
       this.setState({
         playlist: allSongs,

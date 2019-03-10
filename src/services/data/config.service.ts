@@ -1,6 +1,6 @@
 import { Database } from './database';
 
-export class Config {
+export class ConfigService {
   private db = new Database();
   async getConfigId() {
     let configs = await this.db.config.toArray();

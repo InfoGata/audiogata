@@ -21,12 +21,12 @@ class SoundCloud {
   }
 
   private SoundCloudResultToSongInfo(results: ISoundCloudResult[]) : ISong[] {
-    return results.map(r => ({
-      name: r.title,
-      source: r.stream_url,
-      useBlob: false,
-      from: 'soundcloud'
-    } as ISong));
+    return results.map(r => <ISong> {
+        name: r.title,
+        source: r.stream_url,
+        useBlob: false,
+        from: 'soundcloud'
+      });
   }
 
 }
