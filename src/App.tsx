@@ -1,21 +1,20 @@
 import React, { Component } from 'react';
 import './App.css';
+import { Database, ISong } from './data/database';
 
 interface IAppState {
   src: string;
-  playlist: SongInfo[];
+  playlist: ISong[];
   search: string;
   playListIndex: number;
   doLoop: boolean;
-}
-
-interface SongInfo {
-  name: string;
-  source: string;
+  playOnStartup: boolean;
+  storageUsed?: string;
 }
 
 class App extends Component<{}, IAppState> {
   private myRef = React.createRef<HTMLAudioElement>()
+  private db = new Database();
 
   constructor(props: any) {
     super(props);
@@ -23,16 +22,28 @@ class App extends Component<{}, IAppState> {
       src: '',
       playlist: [],
       search: '',
-      playListIndex: 0,
-      doLoop: true
+      playListIndex: -1,
+      doLoop: true,
+      playOnStartup: true
     };
   }
 
+  async componentDidMount() {
+    let songs = await this.db.songs.toArray();
+    let storage = await this.getStorage();
+    this.setState({
+      playlist: songs,
+      storageUsed: storage
+    }, () => {
+        if (this.state.playOnStartup) {
+          this.onPlaylistClick(0);
+        }
+    });
+  }
+
   render() {
-    //let soundCloud = new SoundCloud();
-    //soundCloud.searchTracks('katamari');
     let songList = this.state.playlist.map((songInfo, index) =>
-      <li>
+      <li key={index}>
         <a href="#" className={index == this.state.playListIndex ? 'Selected-Song' : ''} onClick={() => this.onPlaylistClick(index)}>
           {songInfo.name}
         </a>
@@ -41,10 +52,7 @@ class App extends Component<{}, IAppState> {
     return (
       <div className="App">
         <div>
-          <input type="text" value={this.state.search} onChange={this.onSearchChange} />
-          <button onClick={this.search}>
-            Search
-          </button>
+          <span>%{this.state.storageUsed} of Storage is being Used</span>
         </div>
         <div>
           <input type="file" onChange={this.onFileChange} multiple/>
@@ -61,6 +69,13 @@ class App extends Component<{}, IAppState> {
         </ul>
       </div>
     );
+  }
+
+  private async getStorage() {
+    var estimate = await navigator.storage.estimate();
+    if (estimate.usage && estimate.quota) {
+      return (estimate.usage / estimate.quota).toFixed(2);
+    }
   }
 
   private onPreviousClick = () => {
@@ -87,42 +102,44 @@ class App extends Component<{}, IAppState> {
     this.onNextClick();
   }
 
-  private search = (e: React.FormEvent<HTMLButtonElement>) => {
-    alert(this.state.search);
-  }
-
-  private onSearchChange = (e: React.FormEvent<HTMLInputElement>) => {
-    this.setState({search: e.currentTarget.value})
-  }
-
-  private onFileChange = (e: React.FormEvent<HTMLInputElement>) => {
+  private onFileChange = async (e: React.FormEvent<HTMLInputElement>) => {
     const files = e.currentTarget.files;
     if (files && files.length > 0) {
-      let fileNames: SongInfo[] = [];
+      let songs: ISong[] = [];
       for (let i = 0; i < files.length; i++) {
         let file = files[i];
         const fileUrl = URL.createObjectURL(file);
-        fileNames.push({
+        songs.push({
           name: file.name,
-          source: fileUrl
+          source: fileUrl,
+          blob: file,
+          useBlob: true
         });
       }
-      const file = files[0];
-      const fileUrl = URL.createObjectURL(file);
-      this.setState(() => ({
-        src: fileUrl,
-        playlist: fileNames,
-        playListIndex: 0
-      }), () => {
-        this.reloadPlayer();
+      await this.db.songs.bulkPut(songs);
+      let allSongs = await this.db.songs.toArray();
+      this.setState({
+        playlist: allSongs,
       });
     }
   }
 
+  private isNotValidIndex(index: number) {
+    return this.state.playlist[index] === undefined;
+  }
+
   private onPlaylistClick(index: number) {
+    if (this.isNotValidIndex(index)) {
+      return;
+    }
+
     let song = this.state.playlist[index];
+    let source = song.source;
+    if (song.useBlob) {
+        source = URL.createObjectURL(song.blob);
+    }
     this.setState({
-      src: song.source,
+      src: source,
       playListIndex: index
     }, () => {
       this.reloadPlayer();
