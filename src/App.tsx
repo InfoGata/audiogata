@@ -52,7 +52,7 @@ class App extends Component<{}, IAppState> {
     return (
       <div className="App">
         <div>
-          <span>%{this.state.storageUsed} of Storage is being Used</span>
+          <span>{this.state.storageUsed}% of Storage is being Used</span>
         </div>
         <div>
           <input type="file" onChange={this.onFileChange} multiple/>
@@ -74,7 +74,7 @@ class App extends Component<{}, IAppState> {
   private async getStorage() {
     var estimate = await navigator.storage.estimate();
     if (estimate.usage && estimate.quota) {
-      return (estimate.usage / estimate.quota).toFixed(2);
+      return (100 * estimate.usage / estimate.quota).toFixed(2);
     }
   }
 
@@ -118,8 +118,10 @@ class App extends Component<{}, IAppState> {
       }
       await this.db.songs.bulkPut(songs);
       let allSongs = await this.db.songs.toArray();
+      let storage = await this.getStorage();
       this.setState({
         playlist: allSongs,
+        storageUsed: storage
       });
     }
   }
