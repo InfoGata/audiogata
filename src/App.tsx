@@ -36,7 +36,7 @@ class App extends Component<{}, IAppState> {
       storageUsed: storage
     }, () => {
         if (this.state.playOnStartup) {
-          this.onPlaylistClick(0);
+          this.playSong(0);
         }
     });
   }
@@ -44,7 +44,7 @@ class App extends Component<{}, IAppState> {
   render() {
     let songList = this.state.playlist.map((songInfo, index) =>
       <li key={index}>
-        <a href="#" className={index == this.state.playListIndex ? 'Selected-Song' : ''} onClick={() => this.onPlaylistClick(index)}>
+        <a href="#" className={index == this.state.playListIndex ? 'Selected-Song' : ''} onClick={this.onPlaylistClick.bind(this, index)}>
           {songInfo.name}
         </a>
       </li>
@@ -81,20 +81,20 @@ class App extends Component<{}, IAppState> {
   private onPreviousClick = () => {
     let newIndex = this.state.playListIndex - 1;
     if (newIndex >= 0) {
-      this.onPlaylistClick(newIndex);
+      this.playSong(newIndex);
     } else if (this.state.doLoop) {
       newIndex = this.state.playlist.length - 1;
-      this.onPlaylistClick(newIndex);
+      this.playSong(newIndex);
     }
   }
 
   private onNextClick = () => {
     let newIndex = this.state.playListIndex + 1;
     if (this.state.playlist.length > newIndex) {
-      this.onPlaylistClick(newIndex);
+      this.playSong(newIndex);
     } else if (this.state.doLoop) {
       newIndex = 0;
-      this.onPlaylistClick(newIndex);
+      this.playSong(newIndex);
     }
   }
 
@@ -128,7 +128,7 @@ class App extends Component<{}, IAppState> {
     return this.state.playlist[index] === undefined;
   }
 
-  private onPlaylistClick(index: number) {
+  private playSong(index: number) {
     if (this.isNotValidIndex(index)) {
       return;
     }
@@ -144,6 +144,11 @@ class App extends Component<{}, IAppState> {
     }, () => {
       this.reloadPlayer();
     });
+  }
+
+  private onPlaylistClick = (index: number, e: React.MouseEvent) => {
+    e.preventDefault();
+    this.playSong(index)
   }
 
   private reloadPlayer() {
