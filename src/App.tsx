@@ -34,7 +34,7 @@ class App extends Component<{}, IAppState> {
   }
 
   async componentDidMount() {
-    let songs = await this.db.songs.toArray();
+    let songs = await this.db.songs.orderBy('sortOrder').toArray();
     let storage = await this.getStorage();
     this.setState({
       playlist: songs,
@@ -65,6 +65,7 @@ class App extends Component<{}, IAppState> {
         <div>
           <input type="text" onChange={this.onSearchChange}/>
           <button onClick={this.onSearchClick}>Search</button>
+          <button onClick={this.clearSearch}>Clear Search Results</button>
           {searchList}
         </div>
         <div>
@@ -157,27 +158,38 @@ class App extends Component<{}, IAppState> {
 
   private onFileChange = async (e: React.FormEvent<HTMLInputElement>) => {
     const files = e.currentTarget.files;
+    let lastItem = await this.db.songs.orderBy('sortOrder').last()
+    let beginSort = lastItem ? lastItem.sortOrder : 0;
     if (files && files.length > 0) {
       let songs: ISong[] = [];
       for (let i = 0; i < files.length; i++) {
         let file = files[i];
         const fileUrl = URL.createObjectURL(file);
+        beginSort++;
         songs.push({
           name: file.name,
           source: fileUrl,
           blob: file,
           useBlob: true,
-          from: 'local'
+          from: 'local',
+          dateAdded: new Date(),
+          sortOrder: beginSort
         });
       }
       await this.db.songs.bulkPut(songs);
-      let allSongs = await this.db.songs.toArray();
+      let allSongs = await this.db.songs.orderBy('sortOrder').toArray();
       let storage = await this.getStorage();
       this.setState({
         playlist: allSongs,
         storageUsed: storage
       });
     }
+  }
+
+  private clearSearch = () => {
+    this.setState({
+      searchResults: []
+    })
   }
 
   private isNotValidIndex(index: number) {

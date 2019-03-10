@@ -1,4 +1,4 @@
-import { Database, IConfig } from './database';
+import { Database } from './database';
 
 export class Config {
   private db = new Database();
