@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import './App.css';
 import { Database, ISong } from './data/database';
+import SoundCloud from './apis/SoundCloud'
 
 interface IAppState {
   src: string;
@@ -10,11 +11,14 @@ interface IAppState {
   doLoop: boolean;
   playOnStartup: boolean;
   storageUsed?: string;
+  searchResults: ISong[];
+  currentSong?: ISong;
 }
 
 class App extends Component<{}, IAppState> {
   private myRef = React.createRef<HTMLAudioElement>()
   private db = new Database();
+  private soundCloud = new SoundCloud();
 
   constructor(props: any) {
     super(props);
@@ -24,7 +28,8 @@ class App extends Component<{}, IAppState> {
       search: '',
       playListIndex: -1,
       doLoop: true,
-      playOnStartup: true
+      playOnStartup: true,
+      searchResults: []
     };
   }
 
@@ -47,10 +52,21 @@ class App extends Component<{}, IAppState> {
         <a href="#" className={index == this.state.playListIndex ? 'Selected-Song' : ''} onClick={this.onPlaylistClick.bind(this, index)}>
           {songInfo.name}
         </a>
+        <button onClick={this.onDeleteClick.bind(this, songInfo)}>Delete</button>
+      </li>
+    );
+    let searchList = this.state.searchResults.map((songInfo, index) => 
+      <li key={index}>
+        <a href="#" onClick={this.onAddSong.bind(this, songInfo)}>{songInfo.name}</a>
       </li>
     );
     return (
       <div className="App">
+        <div>
+          <input type="text" onChange={this.onSearchChange}/>
+          <button onClick={this.onSearchClick}>Search</button>
+          {searchList}
+        </div>
         <div>
           <span>{this.state.storageUsed}% of Storage is being Used</span>
         </div>
@@ -69,6 +85,43 @@ class App extends Component<{}, IAppState> {
         </ul>
       </div>
     );
+  }
+
+  private onAddSong = async (song: ISong, e: React.MouseEvent) => {
+    e.preventDefault();
+    let id = await this.db.songs.put(song);
+    song.id = id;
+
+    let playlist = this.state.playlist;
+    playlist.push(song);
+    this.setState({
+      playlist: playlist
+    });
+  }
+
+  private onDeleteClick = async (song: ISong) => {
+    if (song.id) {
+      await this.db.songs.delete(song.id);
+      if (this.state.currentSong && this.state.currentSong.id === song.id) {
+        this.stopPlayer();
+      }
+      let playlist = this.state.playlist.filter(s => s.id !== song.id);
+      let currentIndex = playlist.findIndex(s => s.id === (this.state.currentSong ? this.state.currentSong.id : -1));
+      this.setState({
+        playListIndex: currentIndex,
+        playlist: playlist
+      })
+    }
+  }
+
+
+  private onSearchChange = (e: React.FormEvent<HTMLInputElement>) => {
+    this.setState({search: e.currentTarget.value});
+  }
+
+  private onSearchClick = async () => {
+    let songs = await this.soundCloud.searchTracks(this.state.search);
+    this.setState({ searchResults: songs });
   }
 
   private async getStorage() {
@@ -113,7 +166,8 @@ class App extends Component<{}, IAppState> {
           name: file.name,
           source: fileUrl,
           blob: file,
-          useBlob: true
+          useBlob: true,
+          from: 'local'
         });
       }
       await this.db.songs.bulkPut(songs);
@@ -138,10 +192,14 @@ class App extends Component<{}, IAppState> {
     let song = this.state.playlist[index];
     let source = song.source;
     if (song.useBlob) {
-        source = URL.createObjectURL(song.blob);
+      source = URL.createObjectURL(song.blob);
+    }
+    if (song.from === 'soundcloud') {
+      source = this.soundCloud.getTrackUrl(song);
     }
     this.setState({
       src: source,
+      currentSong: song,
       playListIndex: index
     }, () => {
       this.reloadPlayer();
@@ -151,6 +209,12 @@ class App extends Component<{}, IAppState> {
   private onPlaylistClick = (index: number, e: React.MouseEvent) => {
     e.preventDefault();
     this.playSong(index)
+  }
+
+  private stopPlayer() {
+    if (this.myRef.current) {
+      this.myRef.current.pause();
+    }
   }
 
   private reloadPlayer() {
