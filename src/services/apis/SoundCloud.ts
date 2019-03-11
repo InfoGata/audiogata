@@ -1,9 +1,13 @@
 import axios from 'axios';
 import { ISong } from '../data/database';
 
-export interface ISoundCloudResult {
+interface ISoundCloudTrackResult {
   title: string;
   stream_url: string;
+}
+
+interface ISoundCloudArtistResult {
+
 }
 
 class SoundCloud {
@@ -12,7 +16,7 @@ class SoundCloud {
   async searchTracks(query: string) {
     const path = 'http://api.soundcloud.com/tracks';
     const url = `${path}?client_id=${this.clientId}&q=${encodeURIComponent(query)}`;
-    let results = await axios.get<ISoundCloudResult[]>(url);
+    let results = await axios.get<ISoundCloudTrackResult[]>(url);
     return this.SoundCloudResultToSongInfo(results.data);
   }
 
@@ -20,7 +24,15 @@ class SoundCloud {
     return `${song.source}?client_id=${this.clientId}`;
   }
 
-  private SoundCloudResultToSongInfo(results: ISoundCloudResult[]) : ISong[] {
+  async searchArtist() {
+
+  }
+
+  async SearchPlaylist() {
+
+  }
+
+  private SoundCloudResultToSongInfo(results: ISoundCloudTrackResult[]) : ISong[] {
     return results.map(r => <ISong> {
         name: r.title,
         source: r.stream_url,

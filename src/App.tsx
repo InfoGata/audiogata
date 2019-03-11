@@ -3,6 +3,7 @@ import './App.css';
 import { ISong } from './services/data/database';
 import SoundCloud from './services/apis/SoundCloud'
 import { SongService } from './services/data/song.service';
+import { ConfigService } from './services/data/config.service';
 
 interface IAppState {
   src: string;
@@ -20,6 +21,7 @@ class App extends Component<{}, IAppState> {
   private myRef = React.createRef<HTMLAudioElement>()
   private soundCloud = new SoundCloud();
   private songService = new SongService();
+  private configService = new ConfigService();
 
   constructor(props: any) {
     super(props);
@@ -37,12 +39,14 @@ class App extends Component<{}, IAppState> {
   async componentDidMount() {
     let songs = await this.songService.getSongs();
     let storage = await this.getStorage();
+    let currentSongId = await this.configService.getCurrentSongId()
     this.setState({
       playlist: songs,
       storageUsed: storage
     }, () => {
-        if (this.state.playOnStartup) {
-          this.playSong(0);
+        if (this.state.playOnStartup && currentSongId) {
+          let index = songs.findIndex(s => s.id === currentSongId)
+          this.playSong(index);
         }
     });
   }
@@ -112,7 +116,8 @@ class App extends Component<{}, IAppState> {
     this.setState({
       playListIndex: currentIndex,
       playlist: playlist,
-      storageUsed: storage
+      storageUsed: storage,
+      currentSong: undefined
     })
   }
 
@@ -194,12 +199,13 @@ class App extends Component<{}, IAppState> {
     return this.state.playlist[index] === undefined;
   }
 
-  private playSong(index: number) {
+  private async playSong(index: number) {
     if (this.isNotValidIndex(index)) {
       return;
     }
 
     let song = this.state.playlist[index];
+    await this.configService.setCurrentSong(song);
     let source = song.source;
     if (song.useBlob) {
       source = URL.createObjectURL(song.blob);

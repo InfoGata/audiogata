@@ -30,6 +30,6 @@ export interface ISong {
 
 export interface IConfig {
   id?: number;
-  currentSongId?: number;
+  currentSongId?: string;
   currentTime?: number;
 }
