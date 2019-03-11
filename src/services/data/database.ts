@@ -33,3 +33,15 @@ export interface IConfig {
   currentSongId?: string;
   currentTime?: number;
 }
+
+export interface IAlbum {
+  name: string
+  apiId: string;
+  from: string;
+}
+
+export interface IArtist {
+  name: string;
+  apiId: string;
+  from: string;
+}

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import './App.css';
-import { ISong } from './services/data/database';
+import { ISong, IAlbum, IArtist } from './services/data/database';
 import SoundCloud from './services/apis/SoundCloud'
 import { SongService } from './services/data/song.service';
 import { ConfigService } from './services/data/config.service';
@@ -13,7 +13,9 @@ interface IAppState {
   doLoop: boolean;
   playOnStartup: boolean;
   storageUsed?: string;
-  searchResults: ISong[];
+  songResults: ISong[];
+  albumResults: IAlbum[];
+  artistResults: IArtist[];
   currentSong?: ISong;
 }
 
@@ -32,7 +34,9 @@ class App extends Component<{}, IAppState> {
       playListIndex: -1,
       doLoop: true,
       playOnStartup: true,
-      searchResults: []
+      songResults: [],
+      albumResults: [],
+      artistResults: []
     };
   }
 
@@ -60,9 +64,19 @@ class App extends Component<{}, IAppState> {
         <button onClick={this.onDeleteClick.bind(this, songInfo)}>Delete</button>
       </li>
     );
-    let searchList = this.state.searchResults.map((songInfo, index) => 
+    let songSearchList = this.state.songResults.map((song, index) => 
       <li key={index}>
-        <a href="#" onClick={this.onAddSong.bind(this, songInfo)}>{songInfo.name}</a>
+        <a href="#" onClick={this.onClickSong.bind(this, song)}>{song.name}</a>
+      </li>
+    );
+    let albumSearchList = this.state.albumResults.map((album) =>
+      <li key={album.apiId}>
+        <a href="#" onClick={this.onClickAlbum.bind(this, album)}>{album.name}</a>
+      </li>
+    );
+    let artistSearchList = this.state.artistResults.map((artist) =>
+      <li key={artist.apiId}>
+        <a href="#" onClick={this.onClickArtist.bind(this, artist)}>{artist.name}</a>
       </li>
     );
     return (
@@ -71,7 +85,18 @@ class App extends Component<{}, IAppState> {
           <input type="text" onChange={this.onSearchChange}/>
           <button onClick={this.onSearchClick}>Search</button>
           <button onClick={this.clearSearch}>Clear Search Results</button>
-          {searchList}
+          {songSearchList.length > 0 ? <div>Songs:</div> : null}
+          <ul>
+            {songSearchList}
+          </ul>
+          {albumSearchList.length > 0 ? <div>Albums:</div> : null}
+          <ul>
+            {albumSearchList}
+          </ul>
+          {artistSearchList.length > 0 ? <div>Artists:</div> : null}
+          <ul>
+            {artistSearchList}
+          </ul>
         </div>
         <div>
           <span>{this.state.storageUsed}% of Storage is being Used</span>
@@ -93,7 +118,7 @@ class App extends Component<{}, IAppState> {
     );
   }
 
-  private onAddSong = async (song: ISong, e: React.MouseEvent) => {
+  private onClickSong = async (song: ISong, e: React.MouseEvent) => {
     e.preventDefault();
     let id = await this.songService.addSong(song);
     song.id = id;
@@ -103,6 +128,28 @@ class App extends Component<{}, IAppState> {
     this.setState({
       playlist: playlist
     });
+  }
+
+  private onClickAlbum = async (album: IAlbum, e: React.MouseEvent) => {
+    e.preventDefault();
+    this.clearSearch();
+    if (album.from === 'soundcloud') {
+      let songs = await this.soundCloud.getAlbumTracks(album);
+      this.setState({
+        songResults: songs
+      });
+    }
+  }
+
+  private onClickArtist  = async (artist: IArtist, e: React.MouseEvent) => {
+    e.preventDefault();
+    this.clearSearch();
+    if (artist.from === 'soundcloud') {
+      let albums = await this.soundCloud.getArtistAlbums(artist);
+      this.setState({
+        albumResults: albums
+      });
+    }
   }
 
   private onDeleteClick = async (song: ISong) => {
@@ -116,8 +163,7 @@ class App extends Component<{}, IAppState> {
     this.setState({
       playListIndex: currentIndex,
       playlist: playlist,
-      storageUsed: storage,
-      currentSong: undefined
+      storageUsed: storage
     })
   }
 
@@ -128,7 +174,13 @@ class App extends Component<{}, IAppState> {
 
   private onSearchClick = async () => {
     let songs = await this.soundCloud.searchTracks(this.state.search);
-    this.setState({ searchResults: songs });
+    let albums = await this.soundCloud.searchAlbums(this.state.search);
+    let artists = await this.soundCloud.searchArtists(this.state.search);
+    this.setState({
+      songResults: songs,
+      albumResults: albums,
+      artistResults: artists
+    });
   }
 
   private async getStorage() {
@@ -191,7 +243,9 @@ class App extends Component<{}, IAppState> {
 
   private clearSearch = () => {
     this.setState({
-      searchResults: []
+      songResults: [],
+      albumResults: [],
+      artistResults: []
     })
   }
 
