@@ -2,14 +2,14 @@ import Dexie from 'dexie';
 import 'dexie-observable';
 
 export class Database extends Dexie {
-  songs: Dexie.Table<ISong, string>;
-  config: Dexie.Table<IConfig, number>;
+  public songs: Dexie.Table<ISong, string>;
+  public config: Dexie.Table<IConfig, number>;
   constructor() {
     super('database');
 
     this.version(1).stores({
+      config: '++id, currentSongId, currentTime',
       songs: '$$id, name, source, blob, useBlob, from, dateAdded, sortOrder',
-      config: '++id, currentSongId, currentTime'
     });
 
     this.songs = this.table('songs');
@@ -35,7 +35,7 @@ export interface IConfig {
 }
 
 export interface IAlbum {
-  name: string
+  name: string;
   apiId: string;
   from: string;
 }
