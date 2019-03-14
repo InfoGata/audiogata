@@ -1,19 +1,20 @@
-import Dexie from 'dexie';
-import 'dexie-observable';
+import Dexie from "dexie";
+import "dexie-observable";
 
 export class Database extends Dexie {
   public songs: Dexie.Table<ISong, string>;
   public config: Dexie.Table<IConfig, number>;
   constructor() {
-    super('database');
+    super("database");
 
     this.version(1).stores({
-      config: '++id, currentSongId, currentTime',
-      songs: '$$id, name, source, blob, useBlob, from, dateAdded, sortOrder',
+      config: "++id, currentSongId, currentTime",
+      songs:
+        "$$id, name, source, blob, useBlob, from, dateAdded, sortOrder, apiId",
     });
 
-    this.songs = this.table('songs');
-    this.config = this.table('config');
+    this.songs = this.table("songs");
+    this.config = this.table("config");
   }
 }
 
@@ -26,6 +27,7 @@ export interface ISong {
   from?: string;
   dateAdded: Date;
   sortOrder: number;
+  apiId?: string;
 }
 
 export interface IConfig {

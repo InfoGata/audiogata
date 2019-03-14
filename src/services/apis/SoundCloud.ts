@@ -4,6 +4,7 @@ import { IAlbum, IArtist, ISong } from "../data/database";
 interface ISoundCloudTrackResult {
   title: string;
   stream_url: string;
+  id: number;
 }
 
 interface ISoundCloudArtistResult {
@@ -70,6 +71,7 @@ class SoundCloud {
     return results.map(
       r =>
         ({
+          apiId: r.id.toString(),
           from: "soundcloud",
           name: r.title,
           source: r.stream_url,

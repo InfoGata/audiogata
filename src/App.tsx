@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import "./App.css";
 import SoundCloud from "./services/apis/SoundCloud";
+import Youtube from "./services/apis/Youtube";
 import { ConfigService } from "./services/data/config.service";
 import { IAlbum, IArtist, ISong } from "./services/data/database";
 import { SongService } from "./services/data/song.service";
@@ -24,6 +25,7 @@ class App extends Component<{}, IAppState> {
   private soundCloud = new SoundCloud();
   private songService = new SongService();
   private configService = new ConfigService();
+  private youtube = new Youtube();
 
   constructor(props: any) {
     super(props);
@@ -44,6 +46,7 @@ class App extends Component<{}, IAppState> {
     const songs = await this.songService.getSongs();
     const storage = await this.getStorage();
     const currentSongId = await this.configService.getCurrentSongId();
+    const time = await this.configService.getCurrentSongTime();
     this.setState(
       {
         playlist: songs,
@@ -52,7 +55,7 @@ class App extends Component<{}, IAppState> {
       () => {
         if (this.state.playOnStartup && currentSongId) {
           const index = songs.findIndex(s => s.id === currentSongId);
-          this.playSong(index);
+          this.playSong(index, time);
         }
       },
     );
@@ -115,9 +118,13 @@ class App extends Component<{}, IAppState> {
         </div>
         <div>
           <button onClick={this.onPreviousClick}>Previous</button>
-          <audio controls={true} ref={this.myRef} onEnded={this.onSongEnd}>
-            <source src={this.state.src} type="audio/mpeg" />
-          </audio>
+          <audio
+            src={this.state.src}
+            controls={true}
+            ref={this.myRef}
+            onEnded={this.onSongEnd}
+            onTimeUpdate={this.onTimeUpdate}
+          />
           <button onClick={this.onNextClick}>Next</button>
         </div>
         <ul>{songList}</ul>
@@ -163,6 +170,7 @@ class App extends Component<{}, IAppState> {
     await this.songService.deleteSong(song);
     if (this.state.currentSong && this.state.currentSong.id === song.id) {
       this.stopPlayer();
+      await this.configService.setCurrentSongTime(0);
     }
     const newPlaylist = this.state.playlist.filter(s => s.id !== song.id);
     const currentIndex = newPlaylist.findIndex(
@@ -181,12 +189,13 @@ class App extends Component<{}, IAppState> {
   };
 
   private onSearchClick = async () => {
-    const songs = await this.soundCloud.searchTracks(this.state.search);
-    const albums = await this.soundCloud.searchAlbums(this.state.search);
-    const artists = await this.soundCloud.searchArtists(this.state.search);
+    // const songs = await this.soundCloud.searchTracks(this.state.search);
+    // const albums = await this.soundCloud.searchAlbums(this.state.search);
+    // const artists = await this.soundCloud.searchArtists(this.state.search);
+    const songs = await this.youtube.searchTracks(this.state.search);
     this.setState({
-      albumResults: albums,
-      artistResults: artists,
+      // albumResults: albums,
+      // artistResults: artists,
       songResults: songs,
     });
   };
@@ -220,6 +229,12 @@ class App extends Component<{}, IAppState> {
 
   private onSongEnd = () => {
     this.onNextClick();
+  };
+
+  private onTimeUpdate = async () => {
+    if (this.myRef.current) {
+      this.configService.setCurrentSongTime(this.myRef.current.currentTime);
+    }
   };
 
   private onFileChange = async (e: React.FormEvent<HTMLInputElement>) => {
@@ -263,7 +278,7 @@ class App extends Component<{}, IAppState> {
     return this.state.playlist[index] === undefined;
   }
 
-  private async playSong(index: number) {
+  private async playSong(index: number, time?: number) {
     if (this.isNotValidIndex(index)) {
       return;
     }
@@ -277,6 +292,9 @@ class App extends Component<{}, IAppState> {
     if (song.from === "soundcloud") {
       source = this.soundCloud.getTrackUrl(song);
     }
+    if (song.from === "youtube") {
+      source = await this.youtube.getTrackUrl(song);
+    }
     this.setState(
       {
         currentSong: song,
@@ -285,6 +303,9 @@ class App extends Component<{}, IAppState> {
       },
       () => {
         this.reloadPlayer();
+        if (time && this.myRef.current) {
+          this.myRef.current.currentTime = time;
+        }
       },
     );
   }
