@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, ComponentState } from "react";
 import "./App.css";
 import SoundCloud from "./services/apis/SoundCloud";
 import Youtube from "./services/apis/Youtube";
@@ -18,6 +18,7 @@ interface IAppState {
   albumResults: IAlbum[];
   artistResults: IArtist[];
   currentSong?: ISong;
+  searchType: string;
 }
 
 class App extends Component<{}, IAppState> {
@@ -37,6 +38,7 @@ class App extends Component<{}, IAppState> {
       playlist: [],
       playlistIndex: -1,
       search: "",
+      searchType: "soundcloud",
       songResults: [],
       src: "",
     };
@@ -100,6 +102,13 @@ class App extends Component<{}, IAppState> {
     return (
       <div className="App">
         <div>
+          <select
+            value={this.state.searchType}
+            onChange={this.onSearchTypeChange}
+          >
+            <option value="soundcloud">SoundCloud</option>
+            <option value="youtube">Youtube</option>
+          </select>
           <input type="text" onChange={this.onSearchChange} />
           <button onClick={this.onSearchClick}>Search</button>
           <button onClick={this.clearSearch}>Clear Search Results</button>
@@ -188,14 +197,25 @@ class App extends Component<{}, IAppState> {
     this.setState({ search: e.currentTarget.value });
   };
 
+  private onSearchTypeChange = (e: React.FormEvent<HTMLSelectElement>) => {
+    this.setState({ searchType: e.currentTarget.value });
+  };
+
   private onSearchClick = async () => {
-    // const songs = await this.soundCloud.searchTracks(this.state.search);
-    // const albums = await this.soundCloud.searchAlbums(this.state.search);
-    // const artists = await this.soundCloud.searchArtists(this.state.search);
-    const songs = await this.youtube.searchTracks(this.state.search);
+    let songs: ISong[] = [];
+    let albums: IAlbum[] = [];
+    let artists: IArtist[] = [];
+    if (this.state.searchType === "soundcloud") {
+      songs = await this.soundCloud.searchTracks(this.state.search);
+      albums = await this.soundCloud.searchAlbums(this.state.search);
+      artists = await this.soundCloud.searchArtists(this.state.search);
+    }
+    if (this.state.searchType === "youtube") {
+      songs = await this.youtube.searchTracks(this.state.search);
+    }
     this.setState({
-      // albumResults: albums,
-      // artistResults: artists,
+      albumResults: albums,
+      artistResults: artists,
       songResults: songs,
     });
   };

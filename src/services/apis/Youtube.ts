@@ -34,7 +34,6 @@ class Youtube {
     const info = await ytdl.getInfo(youtubeUrl, {
       requestOptions: {
         transform: (parsed: any) => {
-          console.log(parsed);
           parsed.protocol = "http:";
           return {
             headers: { Host: parsed.host },
@@ -46,7 +45,6 @@ class Youtube {
         },
       },
     });
-    console.log(info);
     const formatInfo = info.formats.filter(f => f.itag === "140")[0];
     return formatInfo.url;
   }
