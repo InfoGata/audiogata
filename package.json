@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@ryb73/napster": "0.0.1",
     "@types/jest": "24.0.5",
     "@types/node": "11.9.4",
     "@types/react": "16.8.3",
