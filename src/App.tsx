@@ -1,5 +1,7 @@
 import React, { Component } from "react";
 import "./App.css";
+import NapsterComponent from "./components/Napster";
+import Napster from "./services/apis/Napster";
 import SoundCloud from "./services/apis/SoundCloud";
 import Youtube from "./services/apis/Youtube";
 import { ConfigService } from "./services/data/config.service";
@@ -22,8 +24,10 @@ interface IAppState {
 }
 
 class App extends Component<{}, IAppState> {
-  private myRef = React.createRef<HTMLAudioElement>();
+  private audioRef = React.createRef<HTMLAudioElement>();
+  private napsterRef = React.createRef<NapsterComponent>();
   private soundCloud = new SoundCloud();
+  private napster = new Napster();
   private songService = new SongService();
   private configService = new ConfigService();
   private youtube = new Youtube();
@@ -65,14 +69,13 @@ class App extends Component<{}, IAppState> {
 
   public render() {
     const songList = this.state.playlist.map((songInfo, index) => (
-      <li key={index}>
+      <li key={songInfo.id}>
         <a
           href="#"
           className={index === this.state.playlistIndex ? "Selected-Song" : ""}
           onClick={this.onPlaylistClick.bind(this, index)}
-        >
-          {songInfo.name}
-        </a>
+          dangerouslySetInnerHTML={{ __html: songInfo.name }}
+        />
         <button onClick={this.onDeleteClick.bind(this, songInfo)}>
           Delete
         </button>
@@ -80,9 +83,11 @@ class App extends Component<{}, IAppState> {
     ));
     const songSearchList = this.state.songResults.map((song, index) => (
       <li key={index}>
-        <a href="#" onClick={this.onClickSong.bind(this, song)}>
-          {song.name}
-        </a>
+        <a
+          href="#"
+          onClick={this.onClickSong.bind(this, song)}
+          dangerouslySetInnerHTML={{ __html: song.name }}
+        />
       </li>
     ));
     const albumSearchList = this.state.albumResults.map(album => (
@@ -102,12 +107,14 @@ class App extends Component<{}, IAppState> {
     return (
       <div className="App">
         <div>
+          <NapsterComponent ref={this.napsterRef} />
           <select
             value={this.state.searchType}
             onChange={this.onSearchTypeChange}
           >
             <option value="soundcloud">SoundCloud</option>
             <option value="youtube">Youtube</option>
+            <option value="napster">Napster</option>
           </select>
           <input type="text" onChange={this.onSearchChange} />
           <button onClick={this.onSearchClick}>Search</button>
@@ -130,7 +137,7 @@ class App extends Component<{}, IAppState> {
           <audio
             src={this.state.src}
             controls={true}
-            ref={this.myRef}
+            ref={this.audioRef}
             onEnded={this.onSongEnd}
             onTimeUpdate={this.onTimeUpdate}
           />
@@ -162,6 +169,12 @@ class App extends Component<{}, IAppState> {
         songResults: songs,
       });
     }
+    if (album.from === "napster") {
+      const songs = await this.napster.getAlbumTracks(album);
+      this.setState({
+        songResults: songs,
+      });
+    }
   };
 
   private onClickArtist = async (artist: IArtist, e: React.MouseEvent) => {
@@ -169,6 +182,12 @@ class App extends Component<{}, IAppState> {
     this.clearSearch();
     if (artist.from === "soundcloud") {
       const albums = await this.soundCloud.getArtistAlbums(artist);
+      this.setState({
+        albumResults: albums,
+      });
+    }
+    if (artist.from === "napster") {
+      const albums = await this.napster.getArtistAlbums(artist);
       this.setState({
         albumResults: albums,
       });
@@ -206,12 +225,21 @@ class App extends Component<{}, IAppState> {
     let albums: IAlbum[] = [];
     let artists: IArtist[] = [];
     if (this.state.searchType === "soundcloud") {
-      songs = await this.soundCloud.searchTracks(this.state.search);
-      albums = await this.soundCloud.searchAlbums(this.state.search);
-      artists = await this.soundCloud.searchArtists(this.state.search);
+      [songs, albums, artists] = await Promise.all([
+        this.soundCloud.searchTracks(this.state.search),
+        this.soundCloud.searchAlbums(this.state.search),
+        this.soundCloud.searchArtists(this.state.search),
+      ]);
     }
     if (this.state.searchType === "youtube") {
       songs = await this.youtube.searchTracks(this.state.search);
+    }
+    if (this.state.searchType === "napster") {
+      [songs, albums, artists] = await Promise.all([
+        this.napster.searchTracks(this.state.search),
+        this.napster.searchAlbums(this.state.search),
+        this.napster.searchArtists(this.state.search),
+      ]);
     }
     this.setState({
       albumResults: albums,
@@ -252,8 +280,8 @@ class App extends Component<{}, IAppState> {
   };
 
   private onTimeUpdate = async () => {
-    if (this.myRef.current) {
-      this.configService.setCurrentSongTime(this.myRef.current.currentTime);
+    if (this.audioRef.current) {
+      this.configService.setCurrentSongTime(this.audioRef.current.currentTime);
     }
   };
 
@@ -315,6 +343,12 @@ class App extends Component<{}, IAppState> {
     if (song.from === "youtube") {
       source = await this.youtube.getTrackUrl(song);
     }
+    if (song.from === "napster") {
+      if (this.napsterRef.current) {
+        this.napsterRef.current.play(song.apiId || "");
+      }
+      return;
+    }
     this.setState(
       {
         currentSong: song,
@@ -323,8 +357,8 @@ class App extends Component<{}, IAppState> {
       },
       () => {
         this.reloadPlayer();
-        if (time && this.myRef.current) {
-          this.myRef.current.currentTime = time;
+        if (time && this.audioRef.current) {
+          this.audioRef.current.currentTime = time;
         }
       },
     );
@@ -336,15 +370,15 @@ class App extends Component<{}, IAppState> {
   };
 
   private stopPlayer() {
-    if (this.myRef.current) {
-      this.myRef.current.pause();
+    if (this.audioRef.current) {
+      this.audioRef.current.pause();
     }
   }
 
   private reloadPlayer() {
-    if (this.myRef.current) {
-      this.myRef.current.load();
-      this.myRef.current.play();
+    if (this.audioRef.current) {
+      this.audioRef.current.load();
+      this.audioRef.current.play();
     }
   }
 }
