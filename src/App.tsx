@@ -19,7 +19,6 @@ interface IAppState {
   playlistIndex: number;
   doLoop: boolean;
   playOnStartup: boolean;
-  storageUsed?: string;
   songResults: ISong[];
   albumResults: IAlbum[];
   artistResults: IArtist[];
@@ -63,13 +62,11 @@ class App extends Component<{}, IAppState> {
 
   public async componentDidMount() {
     const songs = await this.songService.getSongs();
-    const storage = await this.getStorage();
     const currentSongId = await this.configService.getCurrentSongId();
     const time = await this.configService.getCurrentSongTime();
     this.setState(
       {
         playlist: songs,
-        storageUsed: storage,
       },
       () => {
         if (this.state.playOnStartup && currentSongId) {
@@ -140,9 +137,6 @@ class App extends Component<{}, IAppState> {
           <ul>{albumSearchList}</ul>
           {artistSearchList.length > 0 ? <div>Artists:</div> : null}
           <ul>{artistSearchList}</ul>
-        </div>
-        <div>
-          <span>{this.state.storageUsed}% of Storage is being Used</span>
         </div>
         <div>
           <input type="file" onChange={this.onFileChange} multiple={true} />
@@ -297,11 +291,9 @@ class App extends Component<{}, IAppState> {
     const currentIndex = newPlaylist.findIndex(
       s => s.id === (this.state.currentSong ? this.state.currentSong.id : -1),
     );
-    const storage = await this.getStorage();
     this.setState({
       playlist: newPlaylist,
       playlistIndex: currentIndex,
-      storageUsed: storage,
     });
   };
 
@@ -348,13 +340,6 @@ class App extends Component<{}, IAppState> {
       songResults: songs,
     });
   };
-
-  private async getStorage() {
-    const estimate = await navigator.storage.estimate();
-    if (estimate.usage && estimate.quota) {
-      return ((100 * estimate.usage) / estimate.quota).toFixed(2);
-    }
-  }
 
   private onPreviousClick = () => {
     let newIndex = this.state.playlistIndex - 1;
@@ -411,10 +396,8 @@ class App extends Component<{}, IAppState> {
       }
       await this.songService.addSongs(songs);
       const allSongs = await this.songService.getSongs();
-      const storage = await this.getStorage();
       this.setState({
         playlist: allSongs,
-        storageUsed: storage,
       });
     }
   };
