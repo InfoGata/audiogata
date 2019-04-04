@@ -1,5 +1,4 @@
 import axios from "axios";
-import ytdl from "ytdl-core";
 import { ISong } from "../data/database";
 
 interface IYoutubeSearchResult {
@@ -14,6 +13,13 @@ interface IYoutubeItemId {
 }
 interface IYoutubeItemSnippet {
   title: string;
+}
+interface IInvidiousVideoResponse {
+  adaptiveFormats: IInvidiousFormat[];
+}
+interface IInvidiousFormat {
+  itag: string;
+  url: string;
 }
 
 class Youtube {
@@ -30,23 +36,11 @@ class Youtube {
   }
 
   public async getTrackUrl(song: ISong): Promise<string> {
-    const youtubeUrl = `http://www.youtube.com/watch?v=${song.apiId}`;
-    const info = await ytdl.getInfo(youtubeUrl, {
-      requestOptions: {
-        transform: (parsed: any) => {
-          parsed.protocol = "http:";
-          return {
-            headers: { Host: parsed.host },
-            host: this.corsProxyUrl,
-            path: "/" + parsed.href,
-            port: 8080,
-            protocol: "http:",
-          };
-        },
-      },
-    });
-    const formatInfo = info.formats.filter(f => f.itag === "140")[0];
-    return formatInfo.url;
+    const url = `https://invidio.us/api/v1/videos/${song.apiId}`;
+    const results = await axios.get<IInvidiousVideoResponse>(url);
+    const formats = results.data.adaptiveFormats;
+    const audioFormat = formats.filter(f => f.itag === "140")[0];
+    return audioFormat.url;
   }
 
   public resultToSong(result: IYoutubeSearchResult): ISong[] {
