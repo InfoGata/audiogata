@@ -1,6 +1,10 @@
 import React, { Component } from "react";
 import "./App.css";
 import NapsterComponent from "./components/Napster";
+import Player from "./components/Player";
+import Progress from "./components/Progress";
+import SpotifyComponent from "./components/Spotify";
+import Volume from "./components/Volume";
 import Napster from "./services/apis/Napster";
 import SoundCloud from "./services/apis/SoundCloud";
 import Youtube from "./services/apis/Youtube";
@@ -21,11 +25,16 @@ interface IAppState {
   artistResults: IArtist[];
   currentSong?: ISong;
   searchType: string;
+  isPlaying: boolean;
+  elapsed: number;
+  total: number;
+  volume: number;
 }
 
 class App extends Component<{}, IAppState> {
   private audioRef = React.createRef<HTMLAudioElement>();
   private napsterRef = React.createRef<NapsterComponent>();
+  private spotifyRef = React.createRef<SpotifyComponent>();
   private soundCloud = new SoundCloud();
   private napster = new Napster();
   private songService = new SongService();
@@ -38,6 +47,8 @@ class App extends Component<{}, IAppState> {
       albumResults: [],
       artistResults: [],
       doLoop: true,
+      elapsed: 0,
+      isPlaying: false,
       playOnStartup: true,
       playlist: [],
       playlistIndex: -1,
@@ -45,6 +56,8 @@ class App extends Component<{}, IAppState> {
       searchType: "soundcloud",
       songResults: [],
       src: "",
+      total: 0,
+      volume: 1.0,
     };
   }
 
@@ -107,6 +120,7 @@ class App extends Component<{}, IAppState> {
     return (
       <div className="App">
         <div>
+          <SpotifyComponent ref={this.spotifyRef} />
           <NapsterComponent ref={this.napsterRef} />
           <select
             value={this.state.searchType}
@@ -115,6 +129,7 @@ class App extends Component<{}, IAppState> {
             <option value="soundcloud">SoundCloud</option>
             <option value="youtube">Youtube</option>
             <option value="napster">Napster</option>
+            <option value="spotify">Spotify</option>
           </select>
           <input type="text" onChange={this.onSearchChange} />
           <button onClick={this.onSearchClick}>Search</button>
@@ -133,20 +148,98 @@ class App extends Component<{}, IAppState> {
           <input type="file" onChange={this.onFileChange} multiple={true} />
         </div>
         <div>
-          <button onClick={this.onPreviousClick}>Previous</button>
           <audio
             src={this.state.src}
-            controls={true}
             ref={this.audioRef}
             onEnded={this.onSongEnd}
             onTimeUpdate={this.onTimeUpdate}
           />
-          <button onClick={this.onNextClick}>Next</button>
         </div>
+        <Player
+          isPlaying={this.state.isPlaying}
+          backward={this.onPreviousClick}
+          foward={this.onNextClick}
+          togglePlay={this.togglePlay}
+        />
+        <Progress
+          elapsed={this.state.elapsed}
+          total={this.state.total}
+          onSeek={this.onSeek}
+        />
+        <Volume
+          volume={this.state.volume}
+          onVolumeChange={this.onVolumeChange}
+          onToggleMute={this.onToggleMute}
+        />
         <ul>{songList}</ul>
       </div>
     );
   }
+
+  private onSeek = (newTime: number) => {
+    if (this.audioRef.current) {
+      this.audioRef.current.currentTime = newTime;
+    }
+  };
+
+  private onVolumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (this.audioRef.current) {
+      const volume = parseFloat(e.currentTarget.value);
+      this.audioRef.current.volume = volume;
+      this.setState({
+        volume,
+      });
+    }
+  };
+
+  private onToggleMute = () => {
+    if (this.audioRef.current) {
+      let volume = 0;
+      if (this.audioRef.current.muted) {
+        this.audioRef.current.muted = false;
+        volume = this.audioRef.current.volume;
+      } else {
+        this.audioRef.current.muted = true;
+      }
+      this.setState({
+        volume,
+      });
+    }
+  };
+
+  private formatSeconds(seconds: number) {
+    // hours
+    seconds = seconds % 3600;
+
+    const minutes = Math.floor(seconds / 60);
+    seconds = seconds % 60;
+
+    seconds = Math.round(seconds);
+    // Return as string
+    return (
+      (minutes < 10 ? "0" : "") +
+      minutes +
+      ":" +
+      (seconds < 10 ? "0" : "") +
+      seconds
+    );
+  }
+
+  private togglePlay = () => {
+    if (this.audioRef.current) {
+      if (this.state.isPlaying) {
+        this.audioRef.current.pause();
+        this.setState({
+          isPlaying: false,
+        });
+      } else {
+        this.audioRef.current.play();
+        this.setState({
+          isPlaying: true,
+        });
+      }
+    }
+  };
 
   private onClickSong = async (song: ISong, e: React.MouseEvent) => {
     e.preventDefault();
@@ -241,6 +334,14 @@ class App extends Component<{}, IAppState> {
         this.napster.searchArtists(this.state.search),
       ]);
     }
+    if (this.state.searchType === "spotify") {
+      if (this.spotifyRef.current) {
+        const data = await this.spotifyRef.current.searchAll(this.state.search);
+        songs = data.tracks;
+        albums = data.albums;
+        artists = data.artists;
+      }
+    }
     this.setState({
       albumResults: albums,
       artistResults: artists,
@@ -282,6 +383,10 @@ class App extends Component<{}, IAppState> {
   private onTimeUpdate = async () => {
     if (this.audioRef.current) {
       this.configService.setCurrentSongTime(this.audioRef.current.currentTime);
+      this.setState({
+        elapsed: this.audioRef.current.currentTime,
+        total: this.audioRef.current.duration,
+      });
     }
   };
 
@@ -349,9 +454,16 @@ class App extends Component<{}, IAppState> {
       }
       return;
     }
+    if (song.from === "spotify") {
+      if (this.spotifyRef.current) {
+        this.spotifyRef.current.play(song.apiId || "");
+      }
+      return;
+    }
     this.setState(
       {
         currentSong: song,
+        isPlaying: true,
         playlistIndex: index,
         src: source,
       },

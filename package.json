@@ -3,30 +3,29 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@ryb73/napster": "0.0.1",
     "@types/jest": "24.0.5",
-    "@types/jquery": "^3.3.29",
     "@types/node": "11.9.4",
     "@types/react": "16.8.3",
     "@types/react-dom": "16.8.1",
     "axios": "^0.18.0",
     "dexie": "^2.0.4",
     "dexie-observable": "^1.0.0-beta.5",
-    "jquery": "^3.3.1",
     "react": "^16.8.2",
     "react-dom": "^16.8.2",
     "react-scripts": "2.1.5",
-    "rhapsody.js": "github:Napster/napster.js",
+    "source-map-explorer": "^1.8.0",
     "typescript": "3.3.3",
     "ytdl-core": "^0.29.1"
   },
   "scripts": {
+    "analyze": "source-map-explorer",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "cors-server": "node servers/cors/server.js",
-    "napster-server": "node servers/napster/server.js"
+    "napster-server": "node servers/napster/server.js",
+    "spotify-server": "node servers/spotify/server.js"
   },
   "eslintConfig": {
     "extends": "react-app"

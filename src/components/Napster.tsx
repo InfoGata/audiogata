@@ -33,7 +33,7 @@ class NapsterComponent extends Component<{}, {}> {
     return (
       <div>
         <a href="#" onClick={this.onLoginClick}>
-          Log In
+          Login to Napster
         </a>
       </div>
     );
