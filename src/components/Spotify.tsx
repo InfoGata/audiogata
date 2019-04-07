@@ -6,6 +6,7 @@ interface ISpotifyState {
   accessToken: string;
   refreshToken: string;
   deviceId: string;
+  player: any;
 }
 
 interface ISpotifyResult {
@@ -57,6 +58,7 @@ class SpotifyComponent extends Component<{}, ISpotifyState> {
     this.state = {
       accessToken,
       deviceId: "",
+      player: null,
       refreshToken,
     };
   }
@@ -117,6 +119,9 @@ class SpotifyComponent extends Component<{}, ISpotifyState> {
 
         // Connect to the player!
         player.connect();
+        this.setState({
+          player,
+        });
       }
     };
   }
@@ -156,6 +161,26 @@ class SpotifyComponent extends Component<{}, ISpotifyState> {
         },
       },
     );
+  }
+
+  public pause() {
+    this.state.player.pause();
+  }
+
+  public resume() {
+    this.state.player.resume();
+  }
+
+  public togglePlayer() {
+    this.state.player.togglePlay();
+  }
+
+  public seek(timeInMilliseconds: number) {
+    this.state.player.seek(timeInMilliseconds);
+  }
+
+  public setVolume(volume: number) {
+    this.state.player.setVolume(volume);
   }
 
   public render() {

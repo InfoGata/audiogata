@@ -83,7 +83,11 @@ class App extends Component<{}, IAppState> {
     return (
       <div className="App">
         <SpotifyComponent ref={this.spotifyRef} />
-        <NapsterComponent ref={this.napsterRef} />
+        <NapsterComponent
+          setTime={this.setTrackTimes}
+          onSongEnd={this.onSongEnd}
+          ref={this.napsterRef}
+        />
         <Search onSelectSong={this.onClickSong} />
         <div>
           <audio
@@ -115,6 +119,14 @@ class App extends Component<{}, IAppState> {
   }
 
   private onSeek = (newTime: number) => {
+    if (
+      this.state.currentSong &&
+      this.state.currentSong.from === "napster" &&
+      this.napsterRef.current
+    ) {
+      this.napsterRef.current.seek(newTime);
+      return;
+    }
     if (this.audioRef.current) {
       this.audioRef.current.currentTime = newTime;
     }
@@ -146,18 +158,16 @@ class App extends Component<{}, IAppState> {
   };
 
   private togglePlay = () => {
-    if (this.audioRef.current) {
-      if (this.state.isPlaying) {
-        this.audioRef.current.pause();
-        this.setState({
-          isPlaying: false,
-        });
-      } else {
-        this.audioRef.current.play();
-        this.setState({
-          isPlaying: true,
-        });
-      }
+    if (this.state.isPlaying) {
+      this.pausePlayer();
+      this.setState({
+        isPlaying: false,
+      });
+    } else {
+      this.resumePlayer();
+      this.setState({
+        isPlaying: true,
+      });
     }
   };
 
@@ -176,7 +186,7 @@ class App extends Component<{}, IAppState> {
   private onDeleteClick = async (song: ISong) => {
     await this.songService.deleteSong(song);
     if (this.state.currentSong && this.state.currentSong.id === song.id) {
-      this.stopPlayer();
+      this.pausePlayer();
       await this.configService.setCurrentSongTime(0);
     }
     const newPlaylist = this.state.playlist.filter(s => s.id !== song.id);
@@ -215,12 +225,25 @@ class App extends Component<{}, IAppState> {
 
   private onTimeUpdate = async () => {
     if (this.audioRef.current) {
-      this.configService.setCurrentSongTime(this.audioRef.current.currentTime);
+      await this.configService.setCurrentSongTime(
+        this.audioRef.current.currentTime,
+      );
       this.setState({
         elapsed: this.audioRef.current.currentTime,
         total: this.audioRef.current.duration,
       });
+      this.setTrackTimes(
+        this.audioRef.current.currentTime,
+        this.audioRef.current.duration,
+      );
     }
+  };
+
+  private setTrackTimes = (elapsed: number, total: number) => {
+    this.setState({
+      elapsed,
+      total,
+    });
   };
 
   private isNotValidIndex(index: number) {
@@ -231,24 +254,32 @@ class App extends Component<{}, IAppState> {
     if (this.isNotValidIndex(index)) {
       return;
     }
+    this.pausePlayer();
 
     const song = this.state.playlist[index];
     await this.configService.setCurrentSong(song);
+    let localTrack = false;
     let source = song.source;
     if (song.useBlob) {
       source = URL.createObjectURL(song.blob);
     }
     if (song.from === "soundcloud") {
       source = this.soundCloud.getTrackUrl(song);
+      localTrack = true;
     }
     if (song.from === "youtube") {
       source = await this.youtube.getTrackUrl(song);
+      localTrack = true;
     }
     if (song.from === "napster") {
       if (this.napsterRef.current) {
         this.napsterRef.current.play(song.apiId || "");
       }
-      return;
+    }
+    if (song.from === "spotify") {
+      if (this.spotifyRef.current) {
+        this.spotifyRef.current.play(song.apiId || "");
+      }
     }
     this.setState(
       {
@@ -258,9 +289,11 @@ class App extends Component<{}, IAppState> {
         src: source,
       },
       () => {
-        this.reloadPlayer();
-        if (time && this.audioRef.current) {
-          this.audioRef.current.currentTime = time;
+        if (localTrack) {
+          this.reloadPlayer();
+          if (time && this.audioRef.current) {
+            this.audioRef.current.currentTime = time;
+          }
         }
       },
     );
@@ -271,7 +304,45 @@ class App extends Component<{}, IAppState> {
     this.playSong(index);
   };
 
-  private stopPlayer() {
+  private resumePlayer() {
+    if (
+      this.state.currentSong &&
+      this.state.currentSong.from === "napster" &&
+      this.napsterRef.current
+    ) {
+      this.napsterRef.current.resume();
+      return;
+    }
+    if (
+      this.state.currentSong &&
+      this.state.currentSong.from === "spotify" &&
+      this.spotifyRef.current
+    ) {
+      this.spotifyRef.current.resume();
+      return;
+    }
+    if (this.audioRef.current) {
+      this.audioRef.current.play();
+    }
+  }
+
+  private pausePlayer() {
+    if (
+      this.state.currentSong &&
+      this.state.currentSong.from === "napster" &&
+      this.napsterRef.current
+    ) {
+      this.napsterRef.current.pause();
+      return;
+    }
+    if (
+      this.state.currentSong &&
+      this.state.currentSong.from === "spotify" &&
+      this.spotifyRef.current
+    ) {
+      this.spotifyRef.current.pause();
+      return;
+    }
     if (this.audioRef.current) {
       this.audioRef.current.pause();
     }
