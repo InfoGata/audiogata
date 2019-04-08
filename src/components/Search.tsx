@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import Napster from "../services/apis/Napster";
 import SoundCloud from "../services/apis/SoundCloud";
+import Spotify from "../services/apis/Spotify";
 import Youtube from "../services/apis/Youtube";
 import { IAlbum, IArtist, ISong } from "../services/data/database";
 
@@ -20,6 +21,7 @@ class Search extends Component<ISearchProps, ISearchState> {
   private youtube = new Youtube();
   private soundCloud = new SoundCloud();
   private napster = new Napster();
+  private spotify = new Spotify();
   constructor(props: any) {
     super(props);
     this.state = {
@@ -64,6 +66,7 @@ class Search extends Component<ISearchProps, ISearchState> {
           <option value="soundcloud">SoundCloud</option>
           <option value="youtube">Youtube</option>
           <option value="napster">Napster</option>
+          <option value="spotify">Spotify</option>
         </select>
         <input type="text" onChange={this.onSearchChange} />
         <button onClick={this.onSearchClick}>Search</button>
@@ -79,30 +82,35 @@ class Search extends Component<ISearchProps, ISearchState> {
   }
 
   private onSearchClick = async () => {
-    let songs: ISong[] = [];
+    let tracks: ISong[] = [];
     let albums: IAlbum[] = [];
     let artists: IArtist[] = [];
     if (this.state.searchType === "soundcloud") {
-      [songs, albums, artists] = await Promise.all([
+      [tracks, albums, artists] = await Promise.all([
         this.soundCloud.searchTracks(this.state.search),
         this.soundCloud.searchAlbums(this.state.search),
         this.soundCloud.searchArtists(this.state.search),
       ]);
     }
     if (this.state.searchType === "youtube") {
-      songs = await this.youtube.searchTracks(this.state.search);
+      tracks = await this.youtube.searchTracks(this.state.search);
     }
     if (this.state.searchType === "napster") {
-      [songs, albums, artists] = await Promise.all([
+      [tracks, albums, artists] = await Promise.all([
         this.napster.searchTracks(this.state.search),
         this.napster.searchAlbums(this.state.search),
         this.napster.searchArtists(this.state.search),
       ]);
     }
+    if (this.state.searchType === "spotify") {
+      ({ tracks, albums, artists } = await this.spotify.searchAll(
+        this.state.search,
+      ));
+    }
     this.setState({
       albumResults: albums,
       artistResults: artists,
-      songResults: songs,
+      songResults: tracks,
     });
   };
 

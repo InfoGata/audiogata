@@ -82,7 +82,11 @@ class App extends Component<{}, IAppState> {
     ));
     return (
       <div className="App">
-        <SpotifyComponent ref={this.spotifyRef} />
+        <SpotifyComponent
+          setTime={this.setTrackTimes}
+          onSongEnd={this.onSongEnd}
+          ref={this.spotifyRef}
+        />
         <NapsterComponent
           onReady={this.readyCallback}
           setTime={this.setTrackTimes}
@@ -150,13 +154,25 @@ class App extends Component<{}, IAppState> {
   };
 
   private onVolumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (this.audioRef.current) {
-      const volume = parseFloat(e.currentTarget.value);
+    const volume = parseFloat(e.currentTarget.value);
+    if (
+      this.state.currentSong &&
+      this.state.currentSong.from === "napster" &&
+      this.napsterRef.current
+    ) {
+      this.napsterRef.current.setVolume(volume);
+    } else if (
+      this.state.currentSong &&
+      this.state.currentSong.from === "spotify" &&
+      this.spotifyRef.current
+    ) {
+      this.spotifyRef.current.setVolume(volume);
+    } else if (this.audioRef.current) {
       this.audioRef.current.volume = volume;
-      this.setState({
-        volume,
-      });
     }
+    this.setState({
+      volume,
+    });
   };
 
   private onToggleMute = () => {

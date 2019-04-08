@@ -1,6 +1,6 @@
 import axios from "axios";
 import React, { Component } from "react";
-import { IAlbum, IArtist, ISong } from "../services/data/database";
+import { AuthService } from "../services/data/auth.service";
 
 interface ISpotifyState {
   accessToken: string;
@@ -9,61 +9,49 @@ interface ISpotifyState {
   player: any;
 }
 
-interface ISpotifyResult {
-  albums: ISpotifyAlbumResult;
-  artists: ISpotifyArtistResult;
-  tracks: ISpotifyTrackResult;
-}
-
-interface ISpotifyAlbumResult {
-  items: ISpotifyAlbum[];
-}
-
-interface ISpotifyAlbum {
-  name: string;
-  uri: string;
-}
-
-interface ISpotifyArtistResult {
-  items: ISpotifyArtist[];
-}
-
-interface ISpotifyArtist {
-  name: string;
-  uri: string;
-}
-
-interface ISpotifyTrackResult {
-  items: ISpotifyTrack[];
-}
-
-interface ISpotifyTrack {
-  name: string;
-  uri: string;
+interface IProps {
+  onSongEnd: () => void;
+  setTime: (elapsed: number, total: number) => void;
 }
 
 declare var Spotify: any;
-class SpotifyComponent extends Component<{}, ISpotifyState> {
+class SpotifyComponent extends Component<IProps, ISpotifyState> {
   private readonly apiUrl = "https://api.spotify.com/v1";
   private readonly serverUrl = "http://localhost:8888";
+  private readonly authService = new AuthService();
   constructor(props: any) {
     super(props);
-    let accessToken = "";
-    let refreshToken = "";
-    const query = new URLSearchParams(window.location.search);
-    if (query.has("access_token") && query.has("refresh_token")) {
-      accessToken = query.get("access_token") || "";
-      refreshToken = query.get("refresh_token") || "";
-    }
     this.state = {
-      accessToken,
+      accessToken: "",
       deviceId: "",
       player: null,
-      refreshToken,
+      refreshToken: "",
     };
   }
 
   public async componentDidMount() {
+    const query = new URLSearchParams(window.location.search);
+    if (query.has("access_token") && query.has("refresh_token")) {
+      const accessToken = query.get("access_token") || "";
+      const refreshToken = query.get("refresh_token") || "";
+      this.authService.addAuth({
+        accessToken,
+        name: "spotify",
+        refreshToken,
+      });
+      this.setState({
+        accessToken,
+        refreshToken,
+      });
+    } else {
+      const auth = await this.authService.getAuthByName("spotify");
+      if (auth) {
+        this.setState({
+          accessToken: auth.accessToken,
+          refreshToken: auth.refreshToken,
+        });
+      }
+    }
     (window as any).onSpotifyWebPlaybackSDKReady = () => {
       if (this.state.accessToken.length > 0) {
         const player = new Spotify.Player({
@@ -99,6 +87,16 @@ class SpotifyComponent extends Component<{}, ISpotifyState> {
         // Playback status updates
         player.addListener("player_state_changed", (state: any) => {
           console.log(state);
+          this.props.setTime(state.position / 1000, state.duration / 1000);
+          // Attempt to detect if the song has ended
+          if (
+            state.paused &&
+            state.position === 0 &&
+            state.restrictions.disallow_resuming_reasons &&
+            state.restrictions.disallow_resuming_reasons[0] === "not_paused"
+          ) {
+            this.props.onSongEnd();
+          }
         });
 
         // Ready
@@ -124,22 +122,6 @@ class SpotifyComponent extends Component<{}, ISpotifyState> {
         });
       }
     };
-  }
-
-  public async searchAll(query: string) {
-    const url = `${this.apiUrl}/search?q=${encodeURIComponent(
-      query,
-    )}&type=album,artist,track`;
-    const results = await axios.get<ISpotifyResult>(url, {
-      headers: {
-        Authorization: `Bearer ${this.state.accessToken}`,
-      },
-    });
-    const data = results.data;
-    const tracks = this.trackResultToSong(data.tracks.items);
-    const albums = this.albumResultToAlbum(data.albums.items);
-    const artists = this.artistResultToArtist(data.artists.items);
-    return { tracks, albums, artists };
   }
 
   public async play(trackId: string) {
@@ -194,40 +176,6 @@ class SpotifyComponent extends Component<{}, ISpotifyState> {
     const loginUrl = `${this.serverUrl}/login`;
     window.location.href = `${loginUrl}`;
   };
-
-  private trackResultToSong(results: ISpotifyTrack[]): ISong[] {
-    return results.map(
-      r =>
-        ({
-          apiId: r.uri,
-          from: "spotify",
-          name: r.name,
-          useBlob: false,
-        } as ISong),
-    );
-  }
-
-  private artistResultToArtist(results: ISpotifyArtist[]): IArtist[] {
-    return results.map(
-      r =>
-        ({
-          apiId: r.uri,
-          from: "napster",
-          name: r.name,
-        } as IArtist),
-    );
-  }
-
-  private albumResultToAlbum(results: ISpotifyAlbum[]): IAlbum[] {
-    return results.map(
-      r =>
-        ({
-          apiId: r.uri,
-          from: "napster",
-          name: r.name,
-        } as IAlbum),
-    );
-  }
 }
 
 export default SpotifyComponent;
