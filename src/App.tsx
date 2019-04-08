@@ -84,6 +84,7 @@ class App extends Component<{}, IAppState> {
       <div className="App">
         <SpotifyComponent ref={this.spotifyRef} />
         <NapsterComponent
+          onReady={this.readyCallback}
           setTime={this.setTrackTimes}
           onSongEnd={this.onSongEnd}
           ref={this.napsterRef}
@@ -118,6 +119,17 @@ class App extends Component<{}, IAppState> {
     );
   }
 
+  private readyCallback = async () => {
+    const currentSongId = await this.configService.getCurrentSongId();
+    if (currentSongId) {
+      const index = this.state.playlist.findIndex(s => s.id === currentSongId);
+      const song = this.state.playlist[index];
+      if (song.from === "napster") {
+        this.playSong(index);
+      }
+    }
+  };
+
   private onSeek = (newTime: number) => {
     if (
       this.state.currentSong &&
@@ -125,9 +137,14 @@ class App extends Component<{}, IAppState> {
       this.napsterRef.current
     ) {
       this.napsterRef.current.seek(newTime);
+    } else if (
+      this.state.currentSong &&
+      this.state.currentSong.from === "spotify" &&
+      this.spotifyRef.current
+    ) {
+      this.spotifyRef.current.seek(newTime);
       return;
-    }
-    if (this.audioRef.current) {
+    } else if (this.audioRef.current) {
       this.audioRef.current.currentTime = newTime;
     }
   };
@@ -311,17 +328,13 @@ class App extends Component<{}, IAppState> {
       this.napsterRef.current
     ) {
       this.napsterRef.current.resume();
-      return;
-    }
-    if (
+    } else if (
       this.state.currentSong &&
       this.state.currentSong.from === "spotify" &&
       this.spotifyRef.current
     ) {
       this.spotifyRef.current.resume();
-      return;
-    }
-    if (this.audioRef.current) {
+    } else if (this.audioRef.current) {
       this.audioRef.current.play();
     }
   }
@@ -333,17 +346,13 @@ class App extends Component<{}, IAppState> {
       this.napsterRef.current
     ) {
       this.napsterRef.current.pause();
-      return;
-    }
-    if (
+    } else if (
       this.state.currentSong &&
       this.state.currentSong.from === "spotify" &&
       this.spotifyRef.current
     ) {
       this.spotifyRef.current.pause();
-      return;
-    }
-    if (this.audioRef.current) {
+    } else if (this.audioRef.current) {
       this.audioRef.current.pause();
     }
   }

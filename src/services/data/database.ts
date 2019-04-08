@@ -9,10 +9,13 @@ export class Database extends Dexie {
     super("database");
 
     this.version(1).stores({
-      auth: "$$id, name, accessToken, refreshToken",
       config: "++id, currentSongId, currentTime",
       songs:
         "$$id, name, source, blob, useBlob, from, dateAdded, sortOrder, apiId",
+    });
+
+    this.version(2).stores({
+      auth: "$$id, name, accessToken, refreshToken",
     });
 
     this.songs = this.table("songs");

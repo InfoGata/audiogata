@@ -171,12 +171,8 @@ class SpotifyComponent extends Component<{}, ISpotifyState> {
     this.state.player.resume();
   }
 
-  public togglePlayer() {
-    this.state.player.togglePlay();
-  }
-
-  public seek(timeInMilliseconds: number) {
-    this.state.player.seek(timeInMilliseconds);
+  public seek(timeInSeconds: number) {
+    this.state.player.seek(timeInSeconds * 1000);
   }
 
   public setVolume(volume: number) {
