@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import "./App.css";
+import AudioComponent from "./components/Audio";
 import NapsterComponent from "./components/Napster";
 import Player from "./components/Player";
 import Progress from "./components/Progress";
@@ -13,7 +14,6 @@ import { ISong } from "./services/data/database";
 import { SongService } from "./services/data/song.service";
 
 interface IAppState {
-  src: string;
   playlist: ISong[];
   playlistIndex: number;
   doLoop: boolean;
@@ -26,7 +26,7 @@ interface IAppState {
 }
 
 class App extends Component<{}, IAppState> {
-  private audioRef = React.createRef<HTMLAudioElement>();
+  private audioRef = React.createRef<AudioComponent>();
   private napsterRef = React.createRef<NapsterComponent>();
   private spotifyRef = React.createRef<SpotifyComponent>();
   private soundCloud = new SoundCloud();
@@ -43,7 +43,6 @@ class App extends Component<{}, IAppState> {
       playOnStartup: true,
       playlist: [],
       playlistIndex: -1,
-      src: "",
       total: 0,
       volume: 1.0,
     };
@@ -51,19 +50,9 @@ class App extends Component<{}, IAppState> {
 
   public async componentDidMount() {
     const songs = await this.songService.getSongs();
-    const currentSongId = await this.configService.getCurrentSongId();
-    const time = await this.configService.getCurrentSongTime();
-    this.setState(
-      {
-        playlist: songs,
-      },
-      () => {
-        if (this.state.playOnStartup && currentSongId) {
-          const index = songs.findIndex(s => s.id === currentSongId);
-          this.playSong(index, time);
-        }
-      },
-    );
+    this.setState({
+      playlist: songs,
+    });
   }
 
   public render() {
@@ -93,15 +82,13 @@ class App extends Component<{}, IAppState> {
           onSongEnd={this.onSongEnd}
           ref={this.napsterRef}
         />
+        <AudioComponent
+          setTime={this.setTrackTimes}
+          onSongEnd={this.onSongEnd}
+          onReady={this.readyCallback}
+          ref={this.audioRef}
+        />
         <Search onSelectSong={this.onClickSong} />
-        <div>
-          <audio
-            src={this.state.src}
-            ref={this.audioRef}
-            onEnded={this.onSongEnd}
-            onTimeUpdate={this.onTimeUpdate}
-          />
-        </div>
         <Player
           isPlaying={this.state.isPlaying}
           backward={this.onPreviousClick}
@@ -125,11 +112,14 @@ class App extends Component<{}, IAppState> {
 
   private readyCallback = async () => {
     const currentSongId = await this.configService.getCurrentSongId();
+    const time = await this.configService.getCurrentSongTime();
     if (currentSongId) {
       const index = this.state.playlist.findIndex(s => s.id === currentSongId);
       const song = this.state.playlist[index];
       if (song.from === "napster") {
         this.playSong(index);
+      } else {
+        this.playSong(index, time);
       }
     }
   };
@@ -149,7 +139,7 @@ class App extends Component<{}, IAppState> {
       this.spotifyRef.current.seek(newTime);
       return;
     } else if (this.audioRef.current) {
-      this.audioRef.current.currentTime = newTime;
+      this.audioRef.current.seek(newTime);
     }
   };
 
@@ -168,7 +158,7 @@ class App extends Component<{}, IAppState> {
     ) {
       this.spotifyRef.current.setVolume(volume);
     } else if (this.audioRef.current) {
-      this.audioRef.current.volume = volume;
+      this.audioRef.current.setVolume(volume);
     }
     this.setState({
       volume,
@@ -176,18 +166,7 @@ class App extends Component<{}, IAppState> {
   };
 
   private onToggleMute = () => {
-    if (this.audioRef.current) {
-      let volume = 0;
-      if (this.audioRef.current.muted) {
-        this.audioRef.current.muted = false;
-        volume = this.audioRef.current.volume;
-      } else {
-        this.audioRef.current.muted = true;
-      }
-      this.setState({
-        volume,
-      });
-    }
+    // TODO: implement mute
   };
 
   private togglePlay = () => {
@@ -256,23 +235,8 @@ class App extends Component<{}, IAppState> {
     this.onNextClick();
   };
 
-  private onTimeUpdate = async () => {
-    if (this.audioRef.current) {
-      await this.configService.setCurrentSongTime(
-        this.audioRef.current.currentTime,
-      );
-      this.setState({
-        elapsed: this.audioRef.current.currentTime,
-        total: this.audioRef.current.duration,
-      });
-      this.setTrackTimes(
-        this.audioRef.current.currentTime,
-        this.audioRef.current.duration,
-      );
-    }
-  };
-
-  private setTrackTimes = (elapsed: number, total: number) => {
+  private setTrackTimes = async (elapsed: number, total: number) => {
+    await this.configService.setCurrentSongTime(elapsed);
     this.setState({
       elapsed,
       total,
@@ -291,18 +255,17 @@ class App extends Component<{}, IAppState> {
 
     const song = this.state.playlist[index];
     await this.configService.setCurrentSong(song);
-    let localTrack = false;
-    let source = song.source;
     if (song.useBlob) {
-      source = URL.createObjectURL(song.blob);
+      const source = URL.createObjectURL(song.blob);
+      this.playLocalTrack(source);
     }
     if (song.from === "soundcloud") {
-      source = this.soundCloud.getTrackUrl(song);
-      localTrack = true;
+      const source = this.soundCloud.getTrackUrl(song);
+      this.playLocalTrack(source);
     }
     if (song.from === "youtube") {
-      source = await this.youtube.getTrackUrl(song);
-      localTrack = true;
+      const source = await this.youtube.getTrackUrl(song);
+      this.playLocalTrack(source);
     }
     if (song.from === "napster") {
       if (this.napsterRef.current) {
@@ -319,17 +282,19 @@ class App extends Component<{}, IAppState> {
         currentSong: song,
         isPlaying: true,
         playlistIndex: index,
-        src: source,
       },
       () => {
-        if (localTrack) {
-          this.reloadPlayer();
-          if (time && this.audioRef.current) {
-            this.audioRef.current.currentTime = time;
-          }
+        if (time) {
+          this.onSeek(time);
         }
       },
     );
+  }
+
+  private playLocalTrack(src: string) {
+    if (this.audioRef.current) {
+      this.audioRef.current.play(src);
+    }
   }
 
   private onPlaylistClick = (index: number, e: React.MouseEvent) => {
@@ -351,7 +316,7 @@ class App extends Component<{}, IAppState> {
     ) {
       this.spotifyRef.current.resume();
     } else if (this.audioRef.current) {
-      this.audioRef.current.play();
+      this.audioRef.current.resume();
     }
   }
 
@@ -370,13 +335,6 @@ class App extends Component<{}, IAppState> {
       this.spotifyRef.current.pause();
     } else if (this.audioRef.current) {
       this.audioRef.current.pause();
-    }
-  }
-
-  private reloadPlayer() {
-    if (this.audioRef.current) {
-      this.audioRef.current.load();
-      this.audioRef.current.play();
     }
   }
 }
