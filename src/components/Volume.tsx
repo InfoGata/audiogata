@@ -4,12 +4,15 @@ interface IProps {
   onVolumeChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   onToggleMute: () => void;
   volume: number;
+  muted: boolean;
 }
 
 class Volume extends Component<IProps, {}> {
   public render() {
     const volumeIcon =
-      this.props.volume === 0 ? "fa fa-volume-off" : "fa fa-volume-up";
+      this.props.volume === 0 || this.props.muted
+        ? "fa fa-volume-off"
+        : "fa fa-volume-up";
     return (
       <div>
         <div>

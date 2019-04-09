@@ -23,6 +23,7 @@ interface IAppState {
   elapsed: number;
   total: number;
   volume: number;
+  muted: boolean;
 }
 
 class App extends Component<{}, IAppState> {
@@ -40,6 +41,7 @@ class App extends Component<{}, IAppState> {
       doLoop: true,
       elapsed: 0,
       isPlaying: false,
+      muted: false,
       playOnStartup: true,
       playlist: [],
       playlistIndex: -1,
@@ -102,6 +104,7 @@ class App extends Component<{}, IAppState> {
         />
         <Volume
           volume={this.state.volume}
+          muted={this.state.muted}
           onVolumeChange={this.onVolumeChange}
           onToggleMute={this.onToggleMute}
         />
@@ -113,7 +116,7 @@ class App extends Component<{}, IAppState> {
   private readyCallback = async () => {
     const currentSongId = await this.configService.getCurrentSongId();
     const time = await this.configService.getCurrentSongTime();
-    if (currentSongId) {
+    if (currentSongId && this.state.playOnStartup) {
       const index = this.state.playlist.findIndex(s => s.id === currentSongId);
       const song = this.state.playlist[index];
       if (song.from === "napster") {
@@ -145,6 +148,13 @@ class App extends Component<{}, IAppState> {
 
   private onVolumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const volume = parseFloat(e.currentTarget.value);
+    this.setVolume(volume);
+    this.setState({
+      volume,
+    });
+  };
+
+  private setVolume(volume: number) {
     if (
       this.state.currentSong &&
       this.state.currentSong.from === "napster" &&
@@ -160,13 +170,20 @@ class App extends Component<{}, IAppState> {
     } else if (this.audioRef.current) {
       this.audioRef.current.setVolume(volume);
     }
-    this.setState({
-      volume,
-    });
-  };
+  }
 
   private onToggleMute = () => {
-    // TODO: implement mute
+    if (this.state.muted) {
+      this.setVolume(this.state.volume);
+      this.setState({
+        muted: false,
+      });
+    } else {
+      this.setVolume(0);
+      this.setState({
+        muted: true,
+      });
+    }
   };
 
   private togglePlay = () => {
