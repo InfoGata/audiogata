@@ -24,6 +24,7 @@ interface IAppState {
   total: number;
   volume: number;
   muted: boolean;
+  random: boolean;
 }
 
 class App extends Component<{}, IAppState> {
@@ -45,6 +46,7 @@ class App extends Component<{}, IAppState> {
       playOnStartup: true,
       playlist: [],
       playlistIndex: -1,
+      random: true,
       total: 0,
       volume: 1.0,
     };
@@ -240,6 +242,9 @@ class App extends Component<{}, IAppState> {
 
   private onNextClick = () => {
     let newIndex = this.state.playlistIndex + 1;
+    if (this.state.random) {
+      newIndex = Math.floor(Math.random() * (this.state.playlist.length + 1));
+    }
     if (this.state.playlist.length > newIndex) {
       this.playSong(newIndex);
     } else if (this.state.doLoop) {
