@@ -12,6 +12,11 @@ interface ISpotifyState {
 interface IProps {
   onSongEnd: () => void;
   setTime: (elapsed: number, total: number) => void;
+  onReady: () => void;
+}
+
+interface IRefreshTokenResponse {
+  access_token: string;
 }
 
 declare var Spotify: any;
@@ -55,8 +60,9 @@ class SpotifyComponent extends Component<IProps, ISpotifyState> {
     (window as any).onSpotifyWebPlaybackSDKReady = () => {
       if (this.state.accessToken.length > 0) {
         const player = new Spotify.Player({
-          getOAuthToken: (cb: (arg0: string) => void) => {
-            cb(this.state.accessToken);
+          getOAuthToken: async (cb: (arg0: string) => void) => {
+            const accessToken = await this.refreshLogin();
+            cb(accessToken);
           },
           name: "Web Playback SDK Quick Start Player",
         });
@@ -105,6 +111,7 @@ class SpotifyComponent extends Component<IProps, ISpotifyState> {
           this.setState({
             deviceId: device_id,
           });
+          this.props.onReady();
         });
 
         // Not Ready
@@ -124,25 +131,30 @@ class SpotifyComponent extends Component<IProps, ISpotifyState> {
     };
   }
 
-  public async play(trackId: string) {
+  public play(trackId: string) {
     if (!this.state.deviceId) {
       return;
     }
     const url = `${this.apiUrl}/me/player/play?device_id=${
       this.state.deviceId
     }`;
-    await axios.put(
-      url,
-      {
-        uris: [trackId],
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${this.state.accessToken}`,
-          "Content-Type": "application/json",
+
+    axios
+      .put(
+        url,
+        {
+          uris: [trackId],
         },
-      },
-    );
+        {
+          headers: {
+            Authorization: `Bearer ${this.state.accessToken}`,
+            "Content-Type": "application/json",
+          },
+        },
+      )
+      .catch(e => {
+        console.log(e);
+      });
   }
 
   public pause() {
@@ -176,6 +188,27 @@ class SpotifyComponent extends Component<IProps, ISpotifyState> {
     const loginUrl = `${this.serverUrl}/login`;
     window.location.href = `${loginUrl}`;
   };
+
+  private async refreshLogin() {
+    if (this.state.refreshToken.length > 0) {
+      const refreshUrl = `${this.serverUrl}/refresh_token?refresh_token=${
+        this.state.refreshToken
+      }`;
+      const response = await axios.get<IRefreshTokenResponse>(refreshUrl);
+      const accessToken = response.data.access_token;
+      this.setState({
+        accessToken,
+      });
+      const refreshToken = this.state.refreshToken;
+      await this.authService.addAuth({
+        accessToken,
+        name: "spotify",
+        refreshToken,
+      });
+      return accessToken;
+    }
+    return "";
+  }
 }
 
 export default SpotifyComponent;

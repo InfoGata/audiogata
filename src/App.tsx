@@ -35,6 +35,7 @@ class App extends Component<{}, IAppState> {
   private songService = new SongService();
   private configService = new ConfigService();
   private youtube = new Youtube();
+  private shuffleList: number[] = [];
 
   constructor(props: any) {
     super(props);
@@ -64,7 +65,11 @@ class App extends Component<{}, IAppState> {
       <li key={songInfo.id}>
         <a
           href="#"
-          className={index === this.state.playlistIndex ? "Selected-Song" : ""}
+          className={
+            this.state.currentSong && this.state.currentSong.id === songInfo.id
+              ? "Selected-Song"
+              : ""
+          }
           onClick={this.onPlaylistClick.bind(this, index)}
           dangerouslySetInnerHTML={{ __html: songInfo.name }}
         />
@@ -79,6 +84,7 @@ class App extends Component<{}, IAppState> {
           setTime={this.setTrackTimes}
           onSongEnd={this.onSongEnd}
           ref={this.spotifyRef}
+          onReady={this.readyCallback}
         />
         <NapsterComponent
           onReady={this.readyCallback}
@@ -122,9 +128,11 @@ class App extends Component<{}, IAppState> {
       const index = this.state.playlist.findIndex(s => s.id === currentSongId);
       const song = this.state.playlist[index];
       if (song.from === "napster") {
-        this.playSong(index);
+        this.playSongByIndex(index);
+      } else if (song.from === "spotify") {
+        this.playSongByIndex(index);
       } else {
-        this.playSong(index, time);
+        this.playSongByIndex(index, time);
       }
     }
   };
@@ -152,6 +160,7 @@ class App extends Component<{}, IAppState> {
     const volume = parseFloat(e.currentTarget.value);
     this.setVolume(volume);
     this.setState({
+      muted: false,
       volume,
     });
   };
@@ -220,6 +229,7 @@ class App extends Component<{}, IAppState> {
       this.pausePlayer();
       await this.configService.setCurrentSongTime(0);
     }
+    this.shuffleList = [];
     const newPlaylist = this.state.playlist.filter(s => s.id !== song.id);
     const currentIndex = newPlaylist.findIndex(
       s => s.id === (this.state.currentSong ? this.state.currentSong.id : -1),
@@ -231,27 +241,41 @@ class App extends Component<{}, IAppState> {
   };
 
   private onPreviousClick = () => {
+    if (this.state.elapsed > 2) {
+      this.onSeek(0);
+      return;
+    }
     let newIndex = this.state.playlistIndex - 1;
     if (newIndex >= 0) {
-      this.playSong(newIndex);
+      this.playSongByIndex(newIndex);
     } else if (this.state.doLoop) {
       newIndex = this.state.playlist.length - 1;
-      this.playSong(newIndex);
+      this.playSongByIndex(newIndex);
     }
   };
 
   private onNextClick = () => {
     let newIndex = this.state.playlistIndex + 1;
     if (this.state.random) {
-      newIndex = Math.floor(Math.random() * (this.state.playlist.length + 1));
+      if (this.shuffleList.length === 0) {
+        this.shuffleList = Object.keys(this.state.playlist).map(Number);
+      }
+      newIndex = this.shuffleList.pop() || 0;
     }
     if (this.state.playlist.length > newIndex) {
-      this.playSong(newIndex);
+      this.playSongByIndex(newIndex);
     } else if (this.state.doLoop) {
       newIndex = 0;
-      this.playSong(newIndex);
+      this.playSongByIndex(newIndex);
     }
   };
+
+  private shuffleArray(array: any[]) {
+    for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [array[i], array[j]] = [array[j], array[i]];
+    }
+  }
 
   private onSongEnd = () => {
     this.onNextClick();
@@ -269,13 +293,8 @@ class App extends Component<{}, IAppState> {
     return this.state.playlist[index] === undefined;
   }
 
-  private async playSong(index: number, time?: number) {
-    if (this.isNotValidIndex(index)) {
-      return;
-    }
+  private async playSong(song: ISong, time?: number) {
     this.pausePlayer();
-
-    const song = this.state.playlist[index];
     await this.configService.setCurrentSong(song);
     if (song.useBlob) {
       const source = URL.createObjectURL(song.blob);
@@ -303,7 +322,6 @@ class App extends Component<{}, IAppState> {
       {
         currentSong: song,
         isPlaying: true,
-        playlistIndex: index,
       },
       () => {
         if (time) {
@@ -311,6 +329,18 @@ class App extends Component<{}, IAppState> {
         }
       },
     );
+  }
+
+  private async playSongByIndex(index: number, time?: number) {
+    if (this.isNotValidIndex(index)) {
+      return;
+    }
+
+    const song = this.state.playlist[index];
+    this.playSong(song, time);
+    this.setState({
+      playlistIndex: index,
+    });
   }
 
   private playLocalTrack(src: string) {
@@ -321,7 +351,7 @@ class App extends Component<{}, IAppState> {
 
   private onPlaylistClick = (index: number, e: React.MouseEvent) => {
     e.preventDefault();
-    this.playSong(index);
+    this.playSongByIndex(index);
   };
 
   private resumePlayer() {

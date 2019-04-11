@@ -1,6 +1,6 @@
 import axios from "axios";
-import { IAlbum, IArtist, ISong } from "../data/database";
 import { AuthService } from "../data/auth.service";
+import { IAlbum, IArtist, ISong } from "../data/database";
 
 interface ISpotifyResult {
   albums: ISpotifyAlbumResult;
@@ -37,6 +37,7 @@ interface ISpotifyTrack {
 class Spotify {
   private readonly authService = new AuthService();
   private readonly apiUrl = "https://api.spotify.com/v1";
+
   public async searchAll(query: string) {
     const auth = await this.authService.getAuthByName("spotify");
     if (!auth) {
@@ -56,6 +57,22 @@ class Spotify {
     const artists = this.artistResultToArtist(data.artists.items);
     return { tracks, albums, artists };
   }
+
+  public async getAlbumTracks(apiId: string) {
+    const auth = await this.authService.getAuthByName("spotify");
+    if (!auth) {
+      return [];
+    }
+
+    const url = `${this.apiUrl}/search`;
+    const results = await axios.get<ISpotifyResult>(url, {
+      headers: {
+        Authorization: `Bearer ${auth.accessToken}`,
+      },
+    });
+  }
+
+  public async getArtistAlbums() {}
 
   private trackResultToSong(results: ISpotifyTrack[]): ISong[] {
     return results.map(
