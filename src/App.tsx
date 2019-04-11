@@ -258,9 +258,7 @@ class App extends Component<{}, IAppState> {
     let newIndex = this.state.playlistIndex + 1;
     if (this.state.random) {
       if (this.shuffleList.length === 0) {
-        const indexArray = Object.keys(this.state.playlist).map(Number);
-        this.shuffleArray(indexArray);
-        this.shuffleList = indexArray;
+        this.createShuffleList();
       }
       newIndex = this.shuffleList.pop() || 0;
     }
@@ -271,6 +269,16 @@ class App extends Component<{}, IAppState> {
       this.playSongByIndex(newIndex);
     }
   };
+
+  private createShuffleList() {
+    const indexArray = Object.keys(this.state.playlist).map(Number);
+    this.shuffleArray(indexArray);
+    this.shuffleList = indexArray;
+    // Whatever song is currently playing, don't put in list
+    this.shuffleList = this.shuffleList.filter(
+      s => s !== this.state.playlistIndex,
+    );
+  }
 
   private shuffleArray(array: any[]) {
     for (let i = array.length - 1; i > 0; i--) {
@@ -354,6 +362,7 @@ class App extends Component<{}, IAppState> {
   private onPlaylistClick = (index: number, e: React.MouseEvent) => {
     e.preventDefault();
     this.playSongByIndex(index);
+    this.createShuffleList();
   };
 
   private resumePlayer() {
