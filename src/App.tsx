@@ -258,7 +258,9 @@ class App extends Component<{}, IAppState> {
     let newIndex = this.state.playlistIndex + 1;
     if (this.state.random) {
       if (this.shuffleList.length === 0) {
-        this.shuffleList = Object.keys(this.state.playlist).map(Number);
+        const indexArray = Object.keys(this.state.playlist).map(Number);
+        this.shuffleArray(indexArray);
+        this.shuffleList = indexArray;
       }
       newIndex = this.shuffleList.pop() || 0;
     }
