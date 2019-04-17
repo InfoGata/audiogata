@@ -137,6 +137,12 @@ class Search extends Component<ISearchProps, ISearchState> {
         songResults: songs,
       });
     }
+    if (album.from === "spotify") {
+      const songs = await this.spotify.getAlbumTracks(album);
+      this.setState({
+        songResults: songs,
+      });
+    }
   };
 
   private onClickArtist = async (artist: IArtist, e: React.MouseEvent) => {
@@ -150,6 +156,12 @@ class Search extends Component<ISearchProps, ISearchState> {
     }
     if (artist.from === "napster") {
       const albums = await this.napster.getArtistAlbums(artist);
+      this.setState({
+        albumResults: albums,
+      });
+    }
+    if (artist.from === "spotify") {
+      const albums = await this.spotify.getArtistAlbums(artist);
       this.setState({
         albumResults: albums,
       });

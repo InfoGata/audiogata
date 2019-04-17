@@ -58,21 +58,35 @@ class Spotify {
     return { tracks, albums, artists };
   }
 
-  public async getAlbumTracks(apiId: string) {
+  public async getAlbumTracks(album: IAlbum) {
     const auth = await this.authService.getAuthByName("spotify");
     if (!auth) {
       return [];
     }
-
-    const url = `${this.apiUrl}/search`;
-    const results = await axios.get<ISpotifyResult>(url, {
+    const id = album.apiId.split(":").pop();
+    const url = `${this.apiUrl}/albums/${id}/tracks?limit=50`;
+    const results = await axios.get<ISpotifyTrackResult>(url, {
       headers: {
         Authorization: `Bearer ${auth.accessToken}`,
       },
     });
+    return this.trackResultToSong(results.data.items);
   }
 
-  public async getArtistAlbums() {}
+  public async getArtistAlbums(artist: IArtist) {
+    const auth = await this.authService.getAuthByName("spotify");
+    if (!auth) {
+      return [];
+    }
+    const id = artist.apiId.split(":").pop();
+    const url = `${this.apiUrl}/artists/${id}/albums`;
+    const results = await axios.get<ISpotifyAlbumResult>(url, {
+      headers: {
+        Authorization: `Bearer ${auth.accessToken}`,
+      },
+    });
+    return this.albumResultToAlbum(results.data.items);
+  }
 
   private trackResultToSong(results: ISpotifyTrack[]): ISong[] {
     return results.map(
@@ -91,7 +105,7 @@ class Spotify {
       r =>
         ({
           apiId: r.uri,
-          from: "napster",
+          from: "spotify",
           name: r.name,
         } as IArtist),
     );
@@ -102,7 +116,7 @@ class Spotify {
       r =>
         ({
           apiId: r.uri,
-          from: "napster",
+          from: "spotify",
           name: r.name,
         } as IAlbum),
     );
