@@ -6,6 +6,8 @@ interface ISpotifyState {
   accessToken: string;
   refreshToken: string;
   deviceId: string;
+  internalTime: number;
+  totalTime: number;
   player: any;
 }
 
@@ -24,13 +26,16 @@ class SpotifyComponent extends Component<IProps, ISpotifyState> {
   private readonly apiUrl = "https://api.spotify.com/v1";
   private readonly serverUrl = "http://localhost:8888";
   private readonly authService = new AuthService();
+  private interval: NodeJS.Timeout | undefined;
   constructor(props: any) {
     super(props);
     this.state = {
       accessToken: "",
       deviceId: "",
+      internalTime: 0,
       player: null,
       refreshToken: "",
+      totalTime: 0,
     };
   }
 
@@ -94,6 +99,10 @@ class SpotifyComponent extends Component<IProps, ISpotifyState> {
         player.addListener("player_state_changed", (state: any) => {
           console.log(state);
           this.props.setTime(state.position / 1000, state.duration / 1000);
+          this.setState({
+            internalTime: state.position,
+            totalTime: state.duration,
+          });
           // Attempt to detect if the song has ended
           if (
             state.paused &&
@@ -101,6 +110,9 @@ class SpotifyComponent extends Component<IProps, ISpotifyState> {
             state.restrictions.disallow_resuming_reasons &&
             state.restrictions.disallow_resuming_reasons[0] === "not_paused"
           ) {
+            if (this.interval) {
+              clearInterval(this.interval);
+            }
             this.props.onSongEnd();
           }
         });
@@ -152,6 +164,9 @@ class SpotifyComponent extends Component<IProps, ISpotifyState> {
           },
         },
       )
+      .then(() => {
+        this.interval = setInterval(this.updateTime, 1000);
+      })
       .catch(e => {
         console.log(e);
       });
@@ -159,10 +174,14 @@ class SpotifyComponent extends Component<IProps, ISpotifyState> {
 
   public pause() {
     this.state.player.pause();
+    if (this.interval) {
+      clearInterval(this.interval);
+    }
   }
 
   public resume() {
     this.state.player.resume();
+    this.interval = setInterval(this.updateTime, 1000);
   }
 
   public seek(timeInSeconds: number) {
@@ -187,6 +206,14 @@ class SpotifyComponent extends Component<IProps, ISpotifyState> {
     e.preventDefault();
     const loginUrl = `${this.serverUrl}/login`;
     window.location.href = `${loginUrl}`;
+  };
+
+  private updateTime = () => {
+    const newTime = this.state.internalTime + 1000;
+    this.setState({
+      internalTime: newTime,
+    });
+    this.props.setTime(newTime / 1000, this.state.totalTime / 1000);
   };
 
   private async refreshLogin() {
