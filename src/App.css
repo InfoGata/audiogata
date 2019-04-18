@@ -5,3 +5,8 @@
 .Selected-Song {
   font-weight: bold;
 }
+
+.Controls {
+  position: fixed;
+  bottom: 0;
+}

@@ -99,23 +99,25 @@ class App extends Component<{}, IAppState> {
           ref={this.audioRef}
         />
         <Search onSelectSong={this.onClickSong} />
-        <Player
-          isPlaying={this.state.isPlaying}
-          backward={this.onPreviousClick}
-          foward={this.onNextClick}
-          togglePlay={this.togglePlay}
-        />
-        <Progress
-          elapsed={this.state.elapsed}
-          total={this.state.total}
-          onSeek={this.onSeek}
-        />
-        <Volume
-          volume={this.state.volume}
-          muted={this.state.muted}
-          onVolumeChange={this.onVolumeChange}
-          onToggleMute={this.onToggleMute}
-        />
+        <div className="Controls">
+          <Player
+            isPlaying={this.state.isPlaying}
+            backward={this.onPreviousClick}
+            foward={this.onNextClick}
+            togglePlay={this.togglePlay}
+          />
+          <Progress
+            elapsed={this.state.elapsed}
+            total={this.state.total}
+            onSeek={this.onSeek}
+          />
+          <Volume
+            volume={this.state.volume}
+            muted={this.state.muted}
+            onVolumeChange={this.onVolumeChange}
+            onToggleMute={this.onToggleMute}
+          />
+        </div>
         <ul>{songList}</ul>
       </div>
     );
