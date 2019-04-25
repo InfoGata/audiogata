@@ -11,7 +11,7 @@ class Player extends Component<IProps, {}> {
   public render() {
     const playClass = this.props.isPlaying ? "fa fa-pause" : "fa fa-play";
     return (
-      <div className="Player">
+      <div className="player">
         <div className="player__backward">
           <button onClick={this.props.backward}>
             <i className="fa fa-backward" />
@@ -22,7 +22,7 @@ class Player extends Component<IProps, {}> {
             <i className={playClass} />
           </button>
         </div>
-        <div className="player__foward">
+        <div className="player__forward">
           <button onClick={this.props.foward}>
             <i className="fa fa-forward" />
           </button>
