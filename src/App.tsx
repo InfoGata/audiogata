@@ -105,6 +105,8 @@ class App extends Component<{}, IAppState> {
             backward={this.onPreviousClick}
             foward={this.onNextClick}
             togglePlay={this.togglePlay}
+            random={this.state.random}
+            toggleShuffle={this.onToggleShuffle}
           />
           <Progress
             elapsed={this.state.elapsed}
@@ -184,6 +186,13 @@ class App extends Component<{}, IAppState> {
       this.audioRef.current.setVolume(volume);
     }
   }
+
+  private onToggleShuffle = () => {
+    this.shuffleList = [];
+    this.setState(state => ({
+      random: !state.random,
+    }));
+  };
 
   private onToggleMute = () => {
     if (this.state.muted) {
