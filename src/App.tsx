@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { hot } from "react-hot-loader/root";
 import "./App.css";
 import AudioComponent from "./components/Audio";
 import NapsterComponent from "./components/Napster";
@@ -431,4 +432,4 @@ class App extends Component<{}, IAppState> {
   }
 }
 
-export default App;
+export default (process.env.NODE_ENV === "development" ? hot(App) : App);
