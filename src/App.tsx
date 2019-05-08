@@ -74,7 +74,7 @@ class App extends Component<{}, IAppState> {
           dangerouslySetInnerHTML={{ __html: songInfo.name }}
         />
         <button onClick={this.onDeleteClick.bind(this, songInfo)}>
-          Delete
+          <i className="fa fa-trash" />
         </button>
       </li>
     ));
@@ -107,6 +107,8 @@ class App extends Component<{}, IAppState> {
             togglePlay={this.togglePlay}
             random={this.state.random}
             toggleShuffle={this.onToggleShuffle}
+            toggleRepeat={this.onToggleRepeat}
+            repeat={this.state.doLoop}
           />
           <Progress
             elapsed={this.state.elapsed}
@@ -140,6 +142,8 @@ class App extends Component<{}, IAppState> {
       }
     }
   };
+
+  private onDownload = (song: ISong) => {};
 
   private onSeek = (newTime: number) => {
     if (
@@ -191,6 +195,12 @@ class App extends Component<{}, IAppState> {
     this.shuffleList = [];
     this.setState(state => ({
       random: !state.random,
+    }));
+  };
+
+  private onToggleRepeat = () => {
+    this.setState(state => ({
+      doLoop: !state.doLoop,
     }));
   };
 
@@ -314,6 +324,10 @@ class App extends Component<{}, IAppState> {
     return this.state.playlist[index] === undefined;
   }
 
+  private onSongError() {
+    this.onNextClick();
+  }
+
   private async playSong(song: ISong, time?: number) {
     this.pausePlayer();
     await this.configService.setCurrentSong(song);
@@ -326,8 +340,12 @@ class App extends Component<{}, IAppState> {
       this.playLocalTrack(source);
     }
     if (song.from === "youtube") {
-      const source = await this.youtube.getTrackUrl(song);
-      this.playLocalTrack(source);
+      try {
+        const source = await this.youtube.getTrackUrl(song);
+        this.playLocalTrack(source);
+      } catch {
+        this.onSongError();
+      }
     }
     if (song.from === "napster") {
       if (this.napsterRef.current) {

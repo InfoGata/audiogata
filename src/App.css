@@ -32,6 +32,7 @@
   margin-right: 10px;
 }
 
+.player .player__repeat button,
 .player .player__backward button,
 .player .player__shuffle button,
 .player .player__forward button {
@@ -47,6 +48,7 @@
 
 .player .player__main button:hover,
 .player .player__shuffle button:hover,
+.player .player__repeat button:hover,
 .player .player__backward button:hover,
 .player .player__forward button:hover {
   color: rgba(var(--control-color), 0.7);
@@ -66,7 +68,7 @@
   font-size: 35px;
   outline: none;
 }
-
+.player .player__repeat__active button,
 .player .player__shuffle__active button {
   background: transparent;
   border: 1px solid rgb(var(--active-color));
@@ -77,6 +79,7 @@
   font-size: 35px;
   outline: none;
 }
+.player .player__repeat__active button:hover,
 .player .player__shuffle__active button:hover {
   color: rgba(var(--active-color), 0.7);
   border: 1px solid rgba(var(--active-color), 0.7);
