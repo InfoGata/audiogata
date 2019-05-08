@@ -1,6 +1,7 @@
 import axios from "axios";
 import { AuthService } from "../data/auth.service";
 import { IAlbum, IArtist, ISong } from "../data/database";
+import { ISearchApi } from "./ISearchApi";
 
 interface ISpotifyResult {
   albums: ISpotifyAlbumResult;
@@ -34,7 +35,7 @@ interface ISpotifyTrack {
   name: string;
   uri: string;
 }
-class Spotify {
+class Spotify implements ISearchApi {
   private readonly authService = new AuthService();
   private readonly apiUrl = "https://api.spotify.com/v1";
 

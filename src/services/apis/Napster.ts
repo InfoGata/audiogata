@@ -1,5 +1,6 @@
 import axios from "axios";
 import { IAlbum, IArtist, ISong } from "../data/database";
+import { ISearchApi } from "./ISearchApi";
 
 interface INapsterResult {
   search: INapsterSearch;
@@ -30,9 +31,18 @@ interface INapsterTrack {
   name: string;
 }
 
-class Napster {
+class Napster implements ISearchApi {
   private readonly apiKey = "N2Q4YzVkYzctNjBiMi00YjBhLTkxNTAtOWRiNGM5YWE3OWRj";
   private readonly path = "https://api.napster.com/v2.2";
+
+  public async searchAll(query: string) {
+    const [tracks, albums, artists] = await Promise.all([
+      this.searchTracks(query),
+      this.searchAlbums(query),
+      this.searchArtists(query),
+    ]);
+    return { tracks, albums, artists };
+  }
 
   public async searchTracks(query: string) {
     const url = `${this.path}/search?apikey=${

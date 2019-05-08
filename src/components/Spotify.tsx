@@ -21,7 +21,6 @@ interface IRefreshTokenResponse {
   access_token: string;
 }
 
-declare var Spotify: any;
 class SpotifyComponent extends Component<IProps, ISpotifyState> {
   private readonly apiUrl = "https://api.spotify.com/v1";
   private readonly serverUrl = "http://localhost:8888";
@@ -64,14 +63,13 @@ class SpotifyComponent extends Component<IProps, ISpotifyState> {
     }
     (window as any).onSpotifyWebPlaybackSDKReady = () => {
       if (this.state.accessToken.length > 0) {
-        const player = new Spotify.Player({
+        const player = new (window as any).Spotify.Player({
           getOAuthToken: async (cb: (arg0: string) => void) => {
             const accessToken = await this.refreshLogin();
             cb(accessToken);
           },
           name: "Web Playback SDK Quick Start Player",
         });
-
         // Error handling
         player.addListener(
           "initialization_error",
@@ -94,7 +92,6 @@ class SpotifyComponent extends Component<IProps, ISpotifyState> {
             console.error(message);
           },
         );
-
         // Playback status updates
         player.addListener("player_state_changed", (state: any) => {
           console.log(state);
@@ -116,7 +113,6 @@ class SpotifyComponent extends Component<IProps, ISpotifyState> {
             this.props.onSongEnd();
           }
         });
-
         // Ready
         player.addListener("ready", ({ device_id }: { device_id: string }) => {
           console.log("Ready with Device ID", device_id);
@@ -125,7 +121,6 @@ class SpotifyComponent extends Component<IProps, ISpotifyState> {
           });
           this.props.onReady();
         });
-
         // Not Ready
         player.addListener(
           "not_ready",
@@ -133,7 +128,6 @@ class SpotifyComponent extends Component<IProps, ISpotifyState> {
             console.log("Device ID has gone offline", device_id);
           },
         );
-
         // Connect to the player!
         player.connect();
         this.setState({

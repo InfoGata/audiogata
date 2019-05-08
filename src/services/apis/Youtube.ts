@@ -1,5 +1,6 @@
 import axios from "axios";
-import { ISong } from "../data/database";
+import { ISong, IAlbum, IArtist } from "../data/database";
+import { ISearchApi } from "./ISearchApi";
 
 interface IYoutubeSearchResult {
   items: IYoutubeSearchResultItem[];
@@ -22,7 +23,7 @@ interface IInvidiousFormat {
   url: string;
 }
 
-class Youtube {
+class Youtube implements ISearchApi {
   private readonly key = "AIzaSyBpa2xO2CivhWu0geWxm8PxVBMPxd2eZSY";
   private readonly corsProxyUrl = "localhost";
 
@@ -33,6 +34,22 @@ class Youtube {
     }&q=${encodeURIComponent(query)}`;
     const results = await axios.get<IYoutubeSearchResult>(urlWithQuery);
     return this.resultToSong(results.data);
+  }
+
+  public async searchAll(query: string) {
+    return {
+      albums: [],
+      artists: [],
+      tracks: await this.searchTracks(query),
+    };
+  }
+
+  public async getAlbumTracks(album: IAlbum) {
+    return [];
+  }
+
+  public async getArtistAlbums(artist: IArtist) {
+    return [];
   }
 
   public async getTrackUrl(song: ISong): Promise<string> {

@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { ISearchApi } from "../services/apis/ISearchApi";
 import Napster from "../services/apis/Napster";
 import SoundCloud from "../services/apis/SoundCloud";
 import Spotify from "../services/apis/Spotify";
@@ -85,27 +86,9 @@ class Search extends Component<ISearchProps, ISearchState> {
     let tracks: ISong[] = [];
     let albums: IAlbum[] = [];
     let artists: IArtist[] = [];
-    if (this.state.searchType === "soundcloud") {
-      [tracks, albums, artists] = await Promise.all([
-        this.soundCloud.searchTracks(this.state.search),
-        this.soundCloud.searchAlbums(this.state.search),
-        this.soundCloud.searchArtists(this.state.search),
-      ]);
-    }
-    if (this.state.searchType === "youtube") {
-      tracks = await this.youtube.searchTracks(this.state.search);
-    }
-    if (this.state.searchType === "napster") {
-      [tracks, albums, artists] = await Promise.all([
-        this.napster.searchTracks(this.state.search),
-        this.napster.searchAlbums(this.state.search),
-        this.napster.searchArtists(this.state.search),
-      ]);
-    }
-    if (this.state.searchType === "spotify") {
-      ({ tracks, albums, artists } = await this.spotify.searchAll(
-        this.state.search,
-      ));
+    const api = this.getApiByName(this.state.searchType);
+    if (api) {
+      ({ tracks, albums, artists } = await api.searchAll(this.state.search));
     }
     this.setState({
       albumResults: albums,
@@ -113,6 +96,19 @@ class Search extends Component<ISearchProps, ISearchState> {
       songResults: tracks,
     });
   };
+
+  private getApiByName(name: string): ISearchApi | undefined {
+    switch (name) {
+      case "youtube":
+        return this.youtube;
+      case "soundcloud":
+        return this.soundCloud;
+      case "napster":
+        return this.napster;
+      case "spotify":
+        return this.spotify;
+    }
+  }
 
   private onSearchChange = (e: React.FormEvent<HTMLInputElement>) => {
     this.setState({ search: e.currentTarget.value });
@@ -125,20 +121,9 @@ class Search extends Component<ISearchProps, ISearchState> {
   private onClickAlbum = async (album: IAlbum, e: React.MouseEvent) => {
     e.preventDefault();
     this.clearSearch();
-    if (album.from === "soundcloud") {
-      const songs = await this.soundCloud.getAlbumTracks(album);
-      this.setState({
-        songResults: songs,
-      });
-    }
-    if (album.from === "napster") {
-      const songs = await this.napster.getAlbumTracks(album);
-      this.setState({
-        songResults: songs,
-      });
-    }
-    if (album.from === "spotify") {
-      const songs = await this.spotify.getAlbumTracks(album);
+    const api = this.getApiByName(album.from);
+    if (api) {
+      const songs = await api.getAlbumTracks(album);
       this.setState({
         songResults: songs,
       });
@@ -148,20 +133,9 @@ class Search extends Component<ISearchProps, ISearchState> {
   private onClickArtist = async (artist: IArtist, e: React.MouseEvent) => {
     e.preventDefault();
     this.clearSearch();
-    if (artist.from === "soundcloud") {
-      const albums = await this.soundCloud.getArtistAlbums(artist);
-      this.setState({
-        albumResults: albums,
-      });
-    }
-    if (artist.from === "napster") {
-      const albums = await this.napster.getArtistAlbums(artist);
-      this.setState({
-        albumResults: albums,
-      });
-    }
-    if (artist.from === "spotify") {
-      const albums = await this.spotify.getArtistAlbums(artist);
+    const api = this.getApiByName(artist.from);
+    if (api) {
+      const albums = await api.getArtistAlbums(artist);
       this.setState({
         albumResults: albums,
       });
