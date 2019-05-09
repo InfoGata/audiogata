@@ -1,5 +1,6 @@
 import axios from "axios";
-import { ISong, IAlbum, IArtist } from "../data/database";
+import { IAlbum, IArtist, ISong } from "../data/database";
+import { IFormatTrackApi } from "./IFormatTrackApi";
 import { ISearchApi } from "./ISearchApi";
 
 interface IYoutubeSearchResult {
@@ -23,7 +24,7 @@ interface IInvidiousFormat {
   url: string;
 }
 
-class Youtube implements ISearchApi {
+class Youtube implements ISearchApi, IFormatTrackApi {
   private readonly key = "AIzaSyBpa2xO2CivhWu0geWxm8PxVBMPxd2eZSY";
   private readonly corsProxyUrl = "localhost";
 

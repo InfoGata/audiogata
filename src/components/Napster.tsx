@@ -1,13 +1,16 @@
 import React, { Component } from "react";
 import { AuthService } from "../services/data/auth.service";
+import { ISong } from "../services/data/database";
+import { IPlayerComponent } from "./IPlayerComponent";
 declare var Napster: any;
 
 interface IProps {
   setTime: (elapsed: number, total: number) => void;
   onSongEnd: () => void;
-  onReady: () => void;
+  onReady: (name: string) => void;
 }
-class NapsterComponent extends Component<IProps, {}> {
+class NapsterComponent extends Component<IProps, {}>
+  implements IPlayerComponent {
   private readonly authService = new AuthService();
   private readonly apiKey = "N2Q4YzVkYzctNjBiMi00YjBhLTkxNTAtOWRiNGM5YWE3OWRj";
   private readonly napsterApi = "https://api.napster.com";
@@ -15,6 +18,7 @@ class NapsterComponent extends Component<IProps, {}> {
   private readonly oauthUrl = `${this.napsterApi}/oauth/authorize?client_id=${
     this.apiKey
   }&response_type=code`;
+  private readonly name = "napster";
 
   public async componentDidMount() {
     Napster.init({
@@ -42,7 +46,7 @@ class NapsterComponent extends Component<IProps, {}> {
               accessToken: auth.accessToken,
               refreshToken: auth.refreshToken,
             });
-            this.props.onReady();
+            this.props.onReady(this.name);
           }
         });
       }
@@ -59,7 +63,8 @@ class NapsterComponent extends Component<IProps, {}> {
     });
   }
 
-  public play(id: string) {
+  public async play(song: ISong) {
+    const id = song.apiId || "";
     Napster.player.play(id);
   }
 

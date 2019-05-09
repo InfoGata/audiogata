@@ -1,5 +1,6 @@
 import axios from "axios";
 import { IAlbum, IArtist, ISong } from "../data/database";
+import { IFormatTrackApi } from "./IFormatTrackApi";
 import { ISearchApi } from "./ISearchApi";
 
 interface ISoundCloudTrackResult {
@@ -19,7 +20,7 @@ interface ISoundCloudPlaylistResult {
   title: string;
 }
 
-class SoundCloud implements ISearchApi {
+class SoundCloud implements ISearchApi, IFormatTrackApi {
   private readonly clientId = "NmW1FlPaiL94ueEu7oziOWjYEzZzQDcK";
   private readonly apiPath = "http://api.soundcloud.com";
 
@@ -41,8 +42,8 @@ class SoundCloud implements ISearchApi {
     return this.songResultToSong(results.data);
   }
 
-  public getTrackUrl(song: ISong): string {
-    return `${song.source}?client_id=${this.clientId}`;
+  public getTrackUrl(song: ISong) {
+    return Promise.resolve(`${song.source}?client_id=${this.clientId}`);
   }
 
   public async searchArtists(query: string): Promise<IArtist[]> {

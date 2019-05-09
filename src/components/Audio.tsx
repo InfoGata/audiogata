@@ -1,13 +1,26 @@
 import React, { Component } from "react";
+import { IFormatTrackApi } from "../services/apis/IFormatTrackApi";
+import SoundCloud from "../services/apis/SoundCloud";
+import Youtube from "../services/apis/Youtube";
+import { ISong } from "../services/data/database";
+import { IPlayerComponent } from "./IPlayerComponent";
 
 interface IProps {
   onSongEnd: () => void;
   setTime: (elapsed: number, duration: number) => void;
-  onReady: () => void;
+  onReady: (name: string) => void;
 }
 
-class AudioComponent extends Component<IProps, {}> {
+class AudioComponent extends Component<IProps, {}> implements IPlayerComponent {
   private audioRef = React.createRef<HTMLAudioElement>();
+  private readonly name = "local-audio";
+  private soundCloud = new SoundCloud();
+  private youtube = new Youtube();
+
+  public componentDidMount() {
+    this.props.onReady(this.name);
+  }
+
   public render() {
     return (
       <div>
@@ -38,9 +51,18 @@ class AudioComponent extends Component<IProps, {}> {
     }
   }
 
-  public play(src: string) {
-    if (this.audioRef.current) {
-      this.audioRef.current.src = src;
+  public async play(song: ISong) {
+    if (this.audioRef.current && song.from) {
+      const formatApi = this.getFormatTrackApiFromName(song.from);
+      let source = song.source;
+
+      if (song.useBlob) {
+        source = URL.createObjectURL(song.source);
+      } else if (formatApi) {
+        source = await formatApi.getTrackUrl(song);
+      }
+
+      this.audioRef.current.src = source;
       this.audioRef.current.load();
       this.audioRef.current.play();
     }
@@ -60,6 +82,15 @@ class AudioComponent extends Component<IProps, {}> {
       );
     }
   };
+
+  private getFormatTrackApiFromName(name: string): IFormatTrackApi | undefined {
+    switch (name) {
+      case "youtube":
+        return this.youtube;
+      case "soundcloud":
+        return this.soundCloud;
+    }
+  }
 }
 
 export default AudioComponent;

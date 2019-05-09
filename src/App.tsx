@@ -2,14 +2,13 @@ import React, { Component } from "react";
 import { hot } from "react-hot-loader/root";
 import "./App.css";
 import AudioComponent from "./components/Audio";
+import { IPlayerComponent } from "./components/IPlayerComponent";
 import NapsterComponent from "./components/Napster";
 import Player from "./components/Player";
 import Progress from "./components/Progress";
 import Search from "./components/Search";
 import SpotifyComponent from "./components/Spotify";
 import Volume from "./components/Volume";
-import SoundCloud from "./services/apis/SoundCloud";
-import Youtube from "./services/apis/Youtube";
 import { ConfigService } from "./services/data/config.service";
 import { ISong } from "./services/data/database";
 import { SongService } from "./services/data/song.service";
@@ -32,10 +31,8 @@ class App extends Component<{}, IAppState> {
   private audioRef = React.createRef<AudioComponent>();
   private napsterRef = React.createRef<NapsterComponent>();
   private spotifyRef = React.createRef<SpotifyComponent>();
-  private soundCloud = new SoundCloud();
   private songService = new SongService();
   private configService = new ConfigService();
-  private youtube = new Youtube();
   private shuffleList: number[] = [];
 
   constructor(props: any) {
@@ -128,40 +125,37 @@ class App extends Component<{}, IAppState> {
     );
   }
 
-  private readyCallback = async () => {
+  private getPlayerComponentByName(
+    name: string,
+  ): React.RefObject<IPlayerComponent> {
+    switch (name) {
+      case "napster":
+        return this.napsterRef;
+      case "spotify":
+        return this.spotifyRef;
+    }
+    return this.audioRef;
+  }
+
+  private readyCallback = async (name: string) => {
     const currentSongId = await this.configService.getCurrentSongId();
     const time = await this.configService.getCurrentSongTime();
     if (currentSongId && this.state.playOnStartup) {
       const index = this.state.playlist.findIndex(s => s.id === currentSongId);
       const song = this.state.playlist[index];
-      if (song.from === "napster") {
-        this.playSongByIndex(index);
-      } else if (song.from === "spotify") {
-        this.playSongByIndex(index);
-      } else {
+
+      if (song.from === name || name === "local-audio") {
         this.playSongByIndex(index, time);
       }
     }
   };
 
-  private onDownload = (song: ISong) => {};
-
   private onSeek = (newTime: number) => {
-    if (
-      this.state.currentSong &&
-      this.state.currentSong.from === "napster" &&
-      this.napsterRef.current
-    ) {
-      this.napsterRef.current.seek(newTime);
-    } else if (
-      this.state.currentSong &&
-      this.state.currentSong.from === "spotify" &&
-      this.spotifyRef.current
-    ) {
-      this.spotifyRef.current.seek(newTime);
-      return;
-    } else if (this.audioRef.current) {
-      this.audioRef.current.seek(newTime);
+    if (this.state.currentSong && this.state.currentSong.from) {
+      const player = this.getPlayerComponentByName(this.state.currentSong.from);
+      if (player.current) {
+        player.current.seek(newTime);
+      }
     }
   };
 
@@ -175,20 +169,11 @@ class App extends Component<{}, IAppState> {
   };
 
   private setVolume(volume: number) {
-    if (
-      this.state.currentSong &&
-      this.state.currentSong.from === "napster" &&
-      this.napsterRef.current
-    ) {
-      this.napsterRef.current.setVolume(volume);
-    } else if (
-      this.state.currentSong &&
-      this.state.currentSong.from === "spotify" &&
-      this.spotifyRef.current
-    ) {
-      this.spotifyRef.current.setVolume(volume);
-    } else if (this.audioRef.current) {
-      this.audioRef.current.setVolume(volume);
+    if (this.state.currentSong && this.state.currentSong.from) {
+      const player = this.getPlayerComponentByName(this.state.currentSong.from);
+      if (player.current) {
+        player.current.setVolume(volume);
+      }
     }
   }
 
@@ -332,30 +317,15 @@ class App extends Component<{}, IAppState> {
   private async playSong(song: ISong, time?: number) {
     this.pausePlayer();
     await this.configService.setCurrentSong(song);
-    if (song.useBlob) {
-      const source = URL.createObjectURL(song.blob);
-      this.playLocalTrack(source);
-    }
-    if (song.from === "soundcloud") {
-      const source = this.soundCloud.getTrackUrl(song);
-      this.playLocalTrack(source);
-    }
-    if (song.from === "youtube") {
-      try {
-        const source = await this.youtube.getTrackUrl(song);
-        this.playLocalTrack(source);
-      } catch {
-        this.onSongError();
-      }
-    }
-    if (song.from === "napster") {
-      if (this.napsterRef.current) {
-        this.napsterRef.current.play(song.apiId || "");
-      }
-    }
-    if (song.from === "spotify") {
-      if (this.spotifyRef.current) {
-        this.spotifyRef.current.play(song.apiId || "");
+    if (song.from) {
+      const player = this.getPlayerComponentByName(song.from);
+      if (player.current) {
+        try {
+          await player.current.play(song);
+        } catch {
+          this.onSongError();
+          return;
+        }
       }
     }
     this.setState(
@@ -383,12 +353,6 @@ class App extends Component<{}, IAppState> {
     });
   }
 
-  private playLocalTrack(src: string) {
-    if (this.audioRef.current) {
-      this.audioRef.current.play(src);
-    }
-  }
-
   private onPlaylistClick = (index: number, e: React.MouseEvent) => {
     e.preventDefault();
     this.playSongByIndex(index);
@@ -396,38 +360,20 @@ class App extends Component<{}, IAppState> {
   };
 
   private resumePlayer() {
-    if (
-      this.state.currentSong &&
-      this.state.currentSong.from === "napster" &&
-      this.napsterRef.current
-    ) {
-      this.napsterRef.current.resume();
-    } else if (
-      this.state.currentSong &&
-      this.state.currentSong.from === "spotify" &&
-      this.spotifyRef.current
-    ) {
-      this.spotifyRef.current.resume();
-    } else if (this.audioRef.current) {
-      this.audioRef.current.resume();
+    if (this.state.currentSong && this.state.currentSong.from) {
+      const player = this.getPlayerComponentByName(this.state.currentSong.from);
+      if (player.current) {
+        player.current.resume();
+      }
     }
   }
 
   private pausePlayer() {
-    if (
-      this.state.currentSong &&
-      this.state.currentSong.from === "napster" &&
-      this.napsterRef.current
-    ) {
-      this.napsterRef.current.pause();
-    } else if (
-      this.state.currentSong &&
-      this.state.currentSong.from === "spotify" &&
-      this.spotifyRef.current
-    ) {
-      this.spotifyRef.current.pause();
-    } else if (this.audioRef.current) {
-      this.audioRef.current.pause();
+    if (this.state.currentSong && this.state.currentSong.from) {
+      const player = this.getPlayerComponentByName(this.state.currentSong.from);
+      if (player.current) {
+        player.current.pause();
+      }
     }
   }
 }

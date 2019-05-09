@@ -1,6 +1,8 @@
 import axios from "axios";
 import React, { Component } from "react";
 import { AuthService } from "../services/data/auth.service";
+import { ISong } from "../services/data/database";
+import { IPlayerComponent } from "./IPlayerComponent";
 
 interface ISpotifyState {
   accessToken: string;
@@ -14,16 +16,18 @@ interface ISpotifyState {
 interface IProps {
   onSongEnd: () => void;
   setTime: (elapsed: number, total: number) => void;
-  onReady: () => void;
+  onReady: (name: string) => void;
 }
 
 interface IRefreshTokenResponse {
   access_token: string;
 }
 
-class SpotifyComponent extends Component<IProps, ISpotifyState> {
+class SpotifyComponent extends Component<IProps, ISpotifyState>
+  implements IPlayerComponent {
   private readonly apiUrl = "https://api.spotify.com/v1";
   private readonly serverUrl = "http://localhost:8888";
+  private readonly name = "spotify";
   private readonly authService = new AuthService();
   private interval: NodeJS.Timeout | undefined;
   constructor(props: any) {
@@ -119,7 +123,7 @@ class SpotifyComponent extends Component<IProps, ISpotifyState> {
           this.setState({
             deviceId: device_id,
           });
-          this.props.onReady();
+          this.props.onReady(this.name);
         });
         // Not Ready
         player.addListener(
@@ -137,7 +141,7 @@ class SpotifyComponent extends Component<IProps, ISpotifyState> {
     };
   }
 
-  public play(trackId: string) {
+  public async play(song: ISong) {
     if (!this.state.deviceId) {
       return;
     }
@@ -145,25 +149,20 @@ class SpotifyComponent extends Component<IProps, ISpotifyState> {
       this.state.deviceId
     }`;
 
-    axios
-      .put(
-        url,
-        {
-          uris: [trackId],
+    const trackId = song.apiId || "";
+    await axios.put(
+      url,
+      {
+        uris: [trackId],
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${this.state.accessToken}`,
+          "Content-Type": "application/json",
         },
-        {
-          headers: {
-            Authorization: `Bearer ${this.state.accessToken}`,
-            "Content-Type": "application/json",
-          },
-        },
-      )
-      .then(() => {
-        this.interval = setInterval(this.updateTime, 1000);
-      })
-      .catch(e => {
-        console.log(e);
-      });
+      },
+    );
+    this.interval = setInterval(this.updateTime, 1000);
   }
 
   public pause() {
