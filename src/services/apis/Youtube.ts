@@ -16,24 +16,26 @@ interface IYoutubeItemId {
 interface IYoutubeItemSnippet {
   title: string;
 }
+
+interface IInvidiousVideoResult {
+  title: string;
+  videoId: string;
+  lengthSeconds: number;
+}
+
 interface IInvidiousVideoResponse {
   adaptiveFormats: IInvidiousFormat[];
 }
+
 interface IInvidiousFormat {
   itag: string;
   url: string;
 }
 
 class Youtube implements ISearchApi, IFormatTrackApi {
-  private readonly key = "AIzaSyBpa2xO2CivhWu0geWxm8PxVBMPxd2eZSY";
-  private readonly corsProxyUrl = "localhost";
-
   public async searchTracks(query: string): Promise<ISong[]> {
-    const url = "https://www.googleapis.com/youtube/v3/search";
-    const urlWithQuery = `${url}?part=id,snippet&type=video&maxResults=50&key=${
-      this.key
-    }&q=${encodeURIComponent(query)}`;
-    const results = await axios.get<IYoutubeSearchResult>(urlWithQuery);
+    const url = `https://invidio.us/api/v1/search?q=${encodeURIComponent(query)}`;
+    const results = await axios.get<IInvidiousVideoResult[]>(url);
     return this.resultToSong(results.data);
   }
 
@@ -61,14 +63,14 @@ class Youtube implements ISearchApi, IFormatTrackApi {
     return audioFormat.url;
   }
 
-  public resultToSong(result: IYoutubeSearchResult): ISong[] {
-    const items = result.items;
-    return items.map(
-      i =>
+  public resultToSong(results: IInvidiousVideoResult[]): ISong[] {
+    return results.map(
+      r =>
         ({
-          apiId: i.id.videoId,
+          apiId: r.videoId,
+          duration: r.lengthSeconds,
           from: "youtube",
-          name: i.snippet.title,
+          name: r.title,
         } as ISong),
     );
   }
