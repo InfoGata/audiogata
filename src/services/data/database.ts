@@ -34,6 +34,10 @@ export interface ISong {
   dateAdded: Date;
   sortOrder: number;
   apiId?: string;
+  duration?: number;
+  albumId?: string;
+  artistId?: string;
+  artistName?: string;
 }
 
 export interface IConfig {
@@ -53,6 +57,8 @@ export interface IAlbum {
   name: string;
   apiId: string;
   from: string;
+  artistName?: string;
+  artistId?: string;
 }
 
 export interface IArtist {

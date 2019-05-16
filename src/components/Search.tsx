@@ -41,14 +41,17 @@ class Search extends Component<ISearchProps, ISearchState> {
           href="#"
           onClick={this.props.onSelectSong.bind(this, song)}
           dangerouslySetInnerHTML={{ __html: song.name }}
-        />
+        />{" "}
+        - {song.artistName} -{" "}
+        {song.duration && this.formatSeconds(song.duration)}
       </li>
     ));
     const albumSearchList = this.state.albumResults.map(album => (
       <li key={album.apiId}>
         <a href="#" onClick={this.onClickAlbum.bind(this, album)}>
           {album.name}
-        </a>
+        </a>{" "}
+        - {album.artistName}
       </li>
     ));
     const artistSearchList = this.state.artistResults.map(artist => (
@@ -149,6 +152,24 @@ class Search extends Component<ISearchProps, ISearchState> {
       songResults: [],
     });
   };
+
+  private formatSeconds(seconds: number) {
+    // hours
+    seconds = seconds % 3600;
+
+    const minutes = Math.floor(seconds / 60);
+    seconds = seconds % 60;
+
+    seconds = Math.round(seconds);
+    // Return as string
+    return (
+      (minutes < 10 ? "0" : "") +
+      minutes +
+      ":" +
+      (seconds < 10 ? "0" : "") +
+      seconds
+    );
+  }
 }
 
 export default Search;

@@ -24,11 +24,21 @@ interface INapsterArtist {
 interface INapsterAlbum {
   id: string;
   name: string;
+  artistName: string;
+  contributingArtists: IContributingArtists;
+}
+
+interface IContributingArtists {
+  primaryArtist: string;
 }
 
 interface INapsterTrack {
   id: string;
   name: string;
+  playbackSeconds: number;
+  albumId: string;
+  artistId: string;
+  artistName: string;
 }
 
 class Napster implements ISearchApi {
@@ -47,7 +57,7 @@ class Napster implements ISearchApi {
   public async searchTracks(query: string) {
     const url = `${this.path}/search?apikey=${
       this.apiKey
-    }&query=${encodeURIComponent(query)}&type=track`;
+      }&query=${encodeURIComponent(query)}&type=track`;
     try {
       const results = await axios.get<INapsterResult>(url);
       const tracks = results.data.search.data.tracks;
@@ -60,7 +70,7 @@ class Napster implements ISearchApi {
   public async searchArtists(query: string) {
     const url = `${this.path}/search?apikey=${
       this.apiKey
-    }&query=${encodeURIComponent(query)}&type=artist`;
+      }&query=${encodeURIComponent(query)}&type=artist`;
     try {
       const results = await axios.get<INapsterResult>(url);
       const artists = results.data.search.data.artists;
@@ -73,7 +83,7 @@ class Napster implements ISearchApi {
   public async searchAlbums(query: string) {
     const url = `${this.path}/search?apikey=${
       this.apiKey
-    }&query=${encodeURIComponent(query)}&type=album`;
+      }&query=${encodeURIComponent(query)}&type=album`;
     try {
       const results = await axios.get<INapsterResult>(url);
       const albums = results.data.search.data.albums;
@@ -86,7 +96,7 @@ class Napster implements ISearchApi {
   public async getAlbumTracks(album: IAlbum) {
     const url = `${this.path}/albums/${album.apiId}/tracks?apikey=${
       this.apiKey
-    }`;
+      }`;
     try {
       const results = await axios.get<INapsterData>(url);
       const tracks = results.data.tracks;
@@ -99,7 +109,7 @@ class Napster implements ISearchApi {
   public async getArtistAlbums(artist: IArtist) {
     const url = `${this.path}/artists/${artist.apiId}/albums/top?apikey=${
       this.apiKey
-    }`;
+      }`;
     try {
       const results = await axios.get<INapsterData>(url);
       const albums = results.data.albums;
@@ -113,7 +123,11 @@ class Napster implements ISearchApi {
     return results.map(
       r =>
         ({
+          albumId: r.albumId,
           apiId: r.id,
+          artistId: r.artistId,
+          artistName: r.artistName,
+          duration: r.playbackSeconds,
           from: "napster",
           name: r.name,
           useBlob: false,
@@ -137,6 +151,8 @@ class Napster implements ISearchApi {
       r =>
         ({
           apiId: r.id.toString(),
+          artistId: r.contributingArtists.primaryArtist,
+          artistName: r.artistName,
           from: "napster",
           name: r.name,
         } as IAlbum),

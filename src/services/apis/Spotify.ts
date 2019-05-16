@@ -16,6 +16,7 @@ interface ISpotifyAlbumResult {
 interface ISpotifyAlbum {
   name: string;
   uri: string;
+  artists: ISpotifyArtist[];
 }
 
 interface ISpotifyArtistResult {
@@ -34,7 +35,11 @@ interface ISpotifyTrackResult {
 interface ISpotifyTrack {
   name: string;
   uri: string;
+  duration_ms: number;
+  album: ISpotifyAlbum;
+  artists: ISpotifyArtist[];
 }
+
 class Spotify implements ISearchApi {
   private readonly authService = new AuthService();
   private readonly apiUrl = "https://api.spotify.com/v1";
@@ -93,7 +98,11 @@ class Spotify implements ISearchApi {
     return results.map(
       r =>
         ({
+          albumId: r.album.uri,
           apiId: r.uri,
+          artistId: r.artists[0].uri,
+          artistName: r.artists[0].name,
+          duration: r.duration_ms / 1000,
           from: "spotify",
           name: r.name,
           useBlob: false,
@@ -117,6 +126,8 @@ class Spotify implements ISearchApi {
       r =>
         ({
           apiId: r.uri,
+          artistId: r.artists[0].uri,
+          artistName: r.artists[0].name,
           from: "spotify",
           name: r.name,
         } as IAlbum),

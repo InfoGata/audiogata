@@ -7,6 +7,8 @@ interface ISoundCloudTrackResult {
   title: string;
   stream_url: string;
   id: number;
+  duration: number;
+  user: ISoundCloudArtistResult;
 }
 
 interface ISoundCloudArtistResult {
@@ -52,7 +54,7 @@ class SoundCloud implements ISearchApi, IFormatTrackApi {
       query,
     )}`;
     const results = await axios.get<ISoundCloudArtistResult[]>(url);
-    return this.aristResultToArtist(results.data);
+    return this.artistResultToArtist(results.data);
   }
 
   public async searchAlbums(query: string): Promise<IAlbum[]> {
@@ -83,6 +85,9 @@ class SoundCloud implements ISearchApi, IFormatTrackApi {
       r =>
         ({
           apiId: r.id.toString(),
+          artistId: r.user.id.toString(),
+          artistName: r.user.username,
+          duration: r.duration / 1000,
           from: "soundcloud",
           name: r.title,
           source: r.stream_url,
@@ -91,7 +96,7 @@ class SoundCloud implements ISearchApi, IFormatTrackApi {
     );
   }
 
-  private aristResultToArtist(results: ISoundCloudArtistResult[]): IArtist[] {
+  private artistResultToArtist(results: ISoundCloudArtistResult[]): IArtist[] {
     return results.map(
       r =>
         ({
@@ -109,6 +114,8 @@ class SoundCloud implements ISearchApi, IFormatTrackApi {
       r =>
         ({
           apiId: r.id.toString(),
+          artistId: r.user.id.toString(),
+          artistName: r.user.username,
           from: "soundcloud",
           name: r.title,
         } as IAlbum),
