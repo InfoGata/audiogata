@@ -3,20 +3,6 @@ import { IAlbum, IArtist, ISong } from "../data/database";
 import { IFormatTrackApi } from "./IFormatTrackApi";
 import { ISearchApi } from "./ISearchApi";
 
-interface IYoutubeSearchResult {
-  items: IYoutubeSearchResultItem[];
-}
-interface IYoutubeSearchResultItem {
-  id: IYoutubeItemId;
-  snippet: IYoutubeItemSnippet;
-}
-interface IYoutubeItemId {
-  videoId: string;
-}
-interface IYoutubeItemSnippet {
-  title: string;
-}
-
 interface IInvidiousVideoResult {
   title: string;
   videoId: string;
