@@ -128,13 +128,18 @@ class App extends Component<{}, IAppState> {
   private getPlayerComponentByName(
     name: string,
   ): React.RefObject<IPlayerComponent> {
+    return this.getSpecificComponentByName(name) || this.audioRef;
+  }
+
+  private getSpecificComponentByName(
+    name: string,
+  ): React.RefObject<IPlayerComponent> | undefined {
     switch (name) {
       case "napster":
         return this.napsterRef;
       case "spotify":
         return this.spotifyRef;
     }
-    return this.audioRef;
   }
 
   private readyCallback = async (name: string) => {
@@ -143,9 +148,13 @@ class App extends Component<{}, IAppState> {
     if (currentSongId && this.state.playOnStartup) {
       const index = this.state.playlist.findIndex(s => s.id === currentSongId);
       const song = this.state.playlist[index];
-
-      if (song.from === name || name === "local-audio") {
-        this.playSongByIndex(index, time);
+      if (song.from === name) {
+        await this.playSongByIndex(index, time);
+      } else if (
+        name === "local-audio" &&
+        !this.getSpecificComponentByName(song.from || "")
+      ) {
+        await this.playSongByIndex(index, time);
       }
     }
   };
@@ -247,21 +256,21 @@ class App extends Component<{}, IAppState> {
     });
   };
 
-  private onPreviousClick = () => {
+  private onPreviousClick = async () => {
     if (this.state.elapsed > 2) {
       this.onSeek(0);
       return;
     }
     let newIndex = this.state.playlistIndex - 1;
     if (newIndex >= 0) {
-      this.playSongByIndex(newIndex);
+      await this.playSongByIndex(newIndex);
     } else if (this.state.doLoop) {
       newIndex = this.state.playlist.length - 1;
-      this.playSongByIndex(newIndex);
+      await this.playSongByIndex(newIndex);
     }
   };
 
-  private onNextClick = () => {
+  private onNextClick = async () => {
     let newIndex = this.state.playlistIndex + 1;
     if (this.state.random) {
       if (this.shuffleList.length === 0) {
@@ -270,10 +279,10 @@ class App extends Component<{}, IAppState> {
       newIndex = this.shuffleList.pop() || 0;
     }
     if (this.state.playlist.length > newIndex) {
-      this.playSongByIndex(newIndex);
+      await this.playSongByIndex(newIndex);
     } else if (this.state.doLoop) {
       newIndex = 0;
-      this.playSongByIndex(newIndex);
+      await this.playSongByIndex(newIndex);
     }
   };
 
@@ -322,7 +331,8 @@ class App extends Component<{}, IAppState> {
       if (player.current) {
         try {
           await player.current.play(song);
-        } catch {
+        } catch (err) {
+          console.log(err);
           this.onSongError();
           return;
         }
@@ -353,9 +363,9 @@ class App extends Component<{}, IAppState> {
     });
   }
 
-  private onPlaylistClick = (index: number, e: React.MouseEvent) => {
+  private onPlaylistClick = async (index: number, e: React.MouseEvent) => {
     e.preventDefault();
-    this.playSongByIndex(index);
+    await this.playSongByIndex(index);
     this.createShuffleList();
   };
 
