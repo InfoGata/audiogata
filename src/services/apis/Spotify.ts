@@ -76,7 +76,11 @@ class Spotify implements ISearchApi {
         Authorization: `Bearer ${auth.accessToken}`,
       },
     });
-    return this.trackResultToSong(results.data.items);
+    const tracks = this.trackResultToSong(results.data.items);
+    tracks.forEach(t => {
+      t.albumId = album.apiId;
+    })
+    return tracks;
   }
 
   public async getArtistAlbums(artist: IArtist) {
@@ -98,7 +102,7 @@ class Spotify implements ISearchApi {
     return results.map(
       r =>
         ({
-          albumId: r.album.uri,
+          albumId: r.album && r.album.uri,
           apiId: r.uri,
           artistId: r.artists[0].uri,
           artistName: r.artists[0].name,
