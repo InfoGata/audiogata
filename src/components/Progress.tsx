@@ -1,6 +1,14 @@
+import { createStyles, WithStyles, withStyles } from "@material-ui/core";
+import Slider from "@material-ui/lab/Slider";
 import React, { Component } from "react";
 
-interface IProps {
+const styles = createStyles({
+  container: {
+    width: 500,
+  },
+});
+
+interface IProps extends WithStyles<typeof styles> {
   elapsed: number;
   total: number;
   onSeek: (newTime: number) => void;
@@ -29,30 +37,30 @@ class Progress extends Component<IProps, IState> {
     return (
       <div className="progress">
         <span className="player__time-elapsed">
-          {this.formatSeconds(elapsed)}
+          {this.formatSeconds(elapsed)} / {this.formatSeconds(this.props.total)}
         </span>
-        <input
-          type="range"
-          min="0"
-          max={this.props.total}
-          value={elapsed}
-          onChange={this.onChange}
-          onMouseDown={this.onMouseDown}
-          onTouchStart={this.onMouseDown}
-          onMouseUp={this.onMouseUp}
-          onTouchEnd={this.onMouseUp}
-        />
-        <span className="player__time-total">
-          {this.formatSeconds(this.props.total)}
-        </span>
+        <div className={this.props.classes.container}>
+          <Slider
+            min={0}
+            max={this.props.total}
+            value={elapsed}
+            onChange={this.onChange}
+            onDragStart={this.onMouseDown}
+            onDragEnd={this.onMouseUp}
+          />
+        </div>
       </div>
     );
   }
 
-  private onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    this.setState({
-      newElapsed: parseFloat(e.currentTarget.value),
-    });
+  private onChange = (e: React.ChangeEvent<{}>, value: number) => {
+    if (this.state.isDragging) {
+      this.setState({
+        newElapsed: value,
+      });
+    } else {
+      this.props.onSeek(value);
+    }
   };
 
   private onMouseDown = () => {
@@ -88,4 +96,4 @@ class Progress extends Component<IProps, IState> {
   }
 }
 
-export default Progress;
+export default withStyles(styles)(Progress);

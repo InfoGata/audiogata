@@ -1,10 +1,25 @@
+import {
+  createStyles,
+  Divider,
+  Theme,
+  Typography,
+  WithStyles,
+  withStyles,
+} from "@material-ui/core";
+import AppBar from "@material-ui/core/AppBar";
+import Drawer from "@material-ui/core/Drawer";
+import IconButton from "@material-ui/core/IconButton";
+import Toolbar from "@material-ui/core/Toolbar";
+import ChevronRightIcon from "@material-ui/icons/ChevronRight";
+import MenuIcon from "@material-ui/icons/Menu";
+import classNames from "classnames";
 import React, { Component } from "react";
 import { hot } from "react-hot-loader/root";
-import "./App.css";
 import AudioComponent from "./components/Audio";
 import { IPlayerComponent } from "./components/IPlayerComponent";
 import NapsterComponent from "./components/Napster";
 import Player from "./components/Player";
+import PlayQueue from "./components/PlayQueue";
 import Progress from "./components/Progress";
 import Search from "./components/Search";
 import SpotifyComponent from "./components/Spotify";
@@ -12,6 +27,72 @@ import Volume from "./components/Volume";
 import { ConfigService } from "./services/data/config.service";
 import { ISong } from "./services/data/database";
 import { SongService } from "./services/data/song.service";
+
+const drawerWidth = 240;
+
+const styles = (theme: Theme) =>
+  createStyles({
+    bottomAppBar: {
+      bottom: 0,
+      top: "auto",
+      transition: theme.transitions.create(["margin", "width"], {
+        duration: theme.transitions.duration.leavingScreen,
+        easing: theme.transitions.easing.sharp,
+      }),
+    },
+    toolbar: {
+      alignItems: "center",
+      justifyContent: "space-between",
+    },
+    root: {
+      display: "flex",
+    },
+    appBarShift: {
+      marginRight: drawerWidth,
+      transition: theme.transitions.create(["margin", "width"], {
+        duration: theme.transitions.duration.enteringScreen,
+        easing: theme.transitions.easing.easeOut,
+      }),
+      width: `calc(100% - ${drawerWidth}px)`,
+    },
+    menuButton: {
+      marginLeft: 12,
+      marginRight: 20,
+    },
+    hide: {
+      display: "none",
+    },
+    drawer: {
+      flexShrink: 0,
+      width: drawerWidth,
+    },
+    drawerPaper: {
+      width: drawerWidth,
+    },
+    drawerHeader: {
+      alignItems: "center",
+      display: "flex",
+      padding: "0 8px",
+      ...theme.mixins.toolbar,
+      justifyContent: "flex-start",
+    },
+    content: {
+      flexGrow: 1,
+      marginRight: -drawerWidth,
+      padding: theme.spacing.unit * 3,
+      transition: theme.transitions.create("margin", {
+        duration: theme.transitions.duration.leavingScreen,
+        easing: theme.transitions.easing.sharp,
+      }),
+    },
+    contentShift: {
+      marginRight: 0,
+      transition: theme.transitions.create("margin", {
+        duration: theme.transitions.duration.enteringScreen,
+        easing: theme.transitions.easing.easeOut,
+      }),
+    },
+  });
 
 interface IAppState {
   playlist: ISong[];
@@ -25,9 +106,12 @@ interface IAppState {
   volume: number;
   muted: boolean;
   random: boolean;
+  playQueueOpen: boolean;
 }
 
-class App extends Component<{}, IAppState> {
+interface IProps extends WithStyles<typeof styles> {}
+
+class App extends Component<IProps, IAppState> {
   private audioRef = React.createRef<AudioComponent>();
   private napsterRef = React.createRef<NapsterComponent>();
   private spotifyRef = React.createRef<SpotifyComponent>();
@@ -43,6 +127,7 @@ class App extends Component<{}, IAppState> {
       isPlaying: false,
       muted: false,
       playOnStartup: true,
+      playQueueOpen: true,
       playlist: [],
       playlistIndex: -1,
       random: true,
@@ -59,71 +144,113 @@ class App extends Component<{}, IAppState> {
   }
 
   public render() {
-    const songList = this.state.playlist.map((songInfo, index) => (
-      <li key={songInfo.id}>
-        <a
-          href="#"
-          className={
-            this.state.currentSong && this.state.currentSong.id === songInfo.id
-              ? "Selected-Song"
-              : ""
-          }
-          onClick={this.onPlaylistClick.bind(this, index)}
-          dangerouslySetInnerHTML={{ __html: songInfo.name }}
-        />
-        <button onClick={this.onDeleteClick.bind(this, songInfo)}>
-          <i className="fa fa-trash" />
-        </button>
-      </li>
-    ));
+    const { classes } = this.props;
+    const { playQueueOpen } = this.state;
     return (
-      <div className="App">
-        <SpotifyComponent
-          setTime={this.setTrackTimes}
-          onSongEnd={this.onSongEnd}
-          ref={this.spotifyRef}
-          onReady={this.readyCallback}
-        />
-        <NapsterComponent
-          onReady={this.readyCallback}
-          setTime={this.setTrackTimes}
-          onSongEnd={this.onSongEnd}
-          ref={this.napsterRef}
-        />
-        <AudioComponent
-          setTime={this.setTrackTimes}
-          onSongEnd={this.onSongEnd}
-          onReady={this.readyCallback}
-          ref={this.audioRef}
-        />
-        <Search onSelectSong={this.onClickSong} />
-        <div className="Controls">
-          <Player
-            isPlaying={this.state.isPlaying}
-            backward={this.onPreviousClick}
-            foward={this.onNextClick}
-            togglePlay={this.togglePlay}
-            random={this.state.random}
-            toggleShuffle={this.onToggleShuffle}
-            toggleRepeat={this.onToggleRepeat}
-            repeat={this.state.doLoop}
+      <div className={classes.root}>
+        <div>
+          <SpotifyComponent
+            setTime={this.setTrackTimes}
+            onSongEnd={this.onSongEnd}
+            ref={this.spotifyRef}
+            onReady={this.readyCallback}
           />
-          <Progress
-            elapsed={this.state.elapsed}
-            total={this.state.total}
-            onSeek={this.onSeek}
+          <NapsterComponent
+            onReady={this.readyCallback}
+            setTime={this.setTrackTimes}
+            onSongEnd={this.onSongEnd}
+            ref={this.napsterRef}
           />
-          <Volume
-            volume={this.state.volume}
-            muted={this.state.muted}
-            onVolumeChange={this.onVolumeChange}
-            onToggleMute={this.onToggleMute}
+          <AudioComponent
+            setTime={this.setTrackTimes}
+            onSongEnd={this.onSongEnd}
+            onReady={this.readyCallback}
+            ref={this.audioRef}
           />
+          <Search onSelectSong={this.onClickSong} />
         </div>
-        <ul>{songList}</ul>
+        <AppBar
+          position="fixed"
+          color="default"
+          className={classNames(classes.bottomAppBar, {
+            [classes.appBarShift]: playQueueOpen,
+          })}
+        >
+          <Toolbar className={this.props.classes.toolbar}>
+            <Typography
+              variant="body1"
+              dangerouslySetInnerHTML={{
+                __html:
+                  (this.state.currentSong && this.state.currentSong.name) || "",
+              }}
+            />
+            <Player
+              isPlaying={this.state.isPlaying}
+              backward={this.onPreviousClick}
+              foward={this.onNextClick}
+              togglePlay={this.togglePlay}
+              random={this.state.random}
+              toggleShuffle={this.onToggleShuffle}
+              toggleRepeat={this.onToggleRepeat}
+              repeat={this.state.doLoop}
+            />
+            <Progress
+              elapsed={this.state.elapsed}
+              total={this.state.total}
+              onSeek={this.onSeek}
+            />
+            <Volume
+              volume={this.state.volume}
+              muted={this.state.muted}
+              onVolumeChange={this.onVolumeChange}
+              onToggleMute={this.onToggleMute}
+            />
+            <IconButton
+              color="inherit"
+              aria-label="Open drawer"
+              onClick={this.handleDrawerOpen}
+              className={classNames(
+                classes.menuButton,
+                playQueueOpen && classes.hide,
+              )}
+            >
+              <MenuIcon />
+            </IconButton>
+          </Toolbar>
+        </AppBar>
+        <Drawer
+          className={this.props.classes.drawer}
+          variant="persistent"
+          anchor="right"
+          open={this.state.playQueueOpen}
+          classes={{
+            paper: classes.drawerPaper,
+          }}
+        >
+          <div className={classes.drawerHeader}>
+            <IconButton onClick={this.handleDrawerClose}>
+              <ChevronRightIcon />
+            </IconButton>
+          </div>
+          <Divider />
+          <PlayQueue
+            songList={this.state.playlist}
+            currentSong={this.state.currentSong}
+            onDeleteClick={this.onDeleteClick}
+            onPlaylistClick={this.onPlaylistClick}
+          />
+        </Drawer>
       </div>
     );
   }
+
+  private handleDrawerOpen = () => {
+    this.setState({ playQueueOpen: true });
+  };
+
+  private handleDrawerClose = () => {
+    this.setState({ playQueueOpen: false });
+  };
 
   private getPlayerComponentByName(
     name: string,
@@ -168,8 +295,7 @@ class App extends Component<{}, IAppState> {
     }
   };
 
-  private onVolumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const volume = parseFloat(e.currentTarget.value);
+  private onVolumeChange = (e: React.ChangeEvent<{}>, volume: number) => {
     this.setVolume(volume);
     this.setState({
       muted: false,
@@ -232,7 +358,7 @@ class App extends Component<{}, IAppState> {
     const id = await this.songService.addSong(song);
     song.id = id;
 
-    const currentPlaylist = this.state.playlist;
+    const currentPlaylist = [...this.state.playlist];
     currentPlaylist.push(song);
     this.setState({
       playlist: currentPlaylist,
@@ -308,7 +434,7 @@ class App extends Component<{}, IAppState> {
   };
 
   private setTrackTimes = async (elapsed: number, total: number) => {
-    await this.configService.setCurrentSongTime(elapsed);
+    // await this.configService.setCurrentSongTime(elapsed);
     this.setState({
       elapsed,
       total,
@@ -326,6 +452,7 @@ class App extends Component<{}, IAppState> {
   private async playSong(song: ISong, time?: number) {
     this.pausePlayer();
     await this.configService.setCurrentSong(song);
+    await this.configService.setCurrentSongTime(0);
     if (song.from) {
       const player = this.getPlayerComponentByName(song.from);
       if (player.current) {
@@ -363,8 +490,7 @@ class App extends Component<{}, IAppState> {
     });
   }
 
-  private onPlaylistClick = async (index: number, e: React.MouseEvent) => {
-    e.preventDefault();
+  private onPlaylistClick = async (index: number) => {
     await this.playSongByIndex(index);
     this.createShuffleList();
   };
@@ -388,4 +514,6 @@ class App extends Component<{}, IAppState> {
   }
 }
 
-export default (process.env.NODE_ENV === "development" ? hot(App) : App);
+export default (process.env.NODE_ENV === "development"
+  ? hot(withStyles(styles, { withTheme: true })(App))
+  : withStyles(styles, { withTheme: true })(App));

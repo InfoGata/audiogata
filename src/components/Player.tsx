@@ -1,3 +1,9 @@
+import Pause from "@material-ui/icons/Pause";
+import PlayArrow from "@material-ui/icons/PlayArrow";
+import Repeat from "@material-ui/icons/Repeat";
+import Shuffle from "@material-ui/icons/Shuffle";
+import SkipNext from "@material-ui/icons/SkipNext";
+import SkipPrevious from "@material-ui/icons/SkipPrevious";
 import React, { Component } from "react";
 
 interface IProps {
@@ -13,40 +19,24 @@ interface IProps {
 
 class Player extends Component<IProps, {}> {
   public render() {
-    const playClass = this.props.isPlaying ? "fa fa-pause" : "fa fa-play";
-    const shuffleClass = this.props.random
-      ? "player__shuffle__active"
-      : "player__shuffle";
-    const repeatClass = this.props.repeat
-      ? "player__repeat__active"
-      : "player__repeat";
+    const playIcon = this.props.isPlaying ? <Pause /> : <PlayArrow />;
+    const shuffleColor = this.props.random ? "primary" : "inherit";
+    const repeatColor = this.props.repeat ? "primary" : "inherit";
     return (
-      <div className="player">
-        <div className={shuffleClass}>
-          <button onClick={this.props.toggleShuffle}>
-            <i className="fa fa-random" />
-          </button>
-        </div>
-        <div className={repeatClass}>
-          <button onClick={this.props.toggleRepeat}>
-            <i className="fa fa-repeat" />
-          </button>
-        </div>
-        <div className="player__backward">
-          <button onClick={this.props.backward}>
-            <i className="fa fa-backward" />
-          </button>
-        </div>
-        <div className="player__main">
-          <button onClick={this.props.togglePlay}>
-            <i className={playClass} />
-          </button>
-        </div>
-        <div className="player__forward">
-          <button onClick={this.props.foward}>
-            <i className="fa fa-forward" />
-          </button>
-        </div>
+      <div>
+        <button onClick={this.props.toggleShuffle}>
+          <Shuffle color={shuffleColor} />
+        </button>
+        <button onClick={this.props.toggleRepeat}>
+          <Repeat color={repeatColor} />
+        </button>
+        <button onClick={this.props.backward}>
+          <SkipPrevious />
+        </button>
+        <button onClick={this.props.togglePlay}>{playIcon}</button>
+        <button onClick={this.props.foward}>
+          <SkipNext />
+        </button>
       </div>
     );
   }
