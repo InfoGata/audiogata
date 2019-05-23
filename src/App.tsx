@@ -1,5 +1,6 @@
 import {
   createStyles,
+  CssBaseline,
   Divider,
   Theme,
   Typography,
@@ -15,13 +16,16 @@ import MenuIcon from "@material-ui/icons/Menu";
 import classNames from "classnames";
 import React, { Component } from "react";
 import { hot } from "react-hot-loader/root";
+import { BrowserRouter as Router, Route } from "react-router-dom";
 import AudioComponent from "./components/Audio";
+import Home from "./components/Home";
 import { IPlayerComponent } from "./components/IPlayerComponent";
 import NapsterComponent from "./components/Napster";
+import Navigation from "./components/Navigation";
 import Player from "./components/Player";
 import PlayQueue from "./components/PlayQueue";
+import Plugins from "./components/Plugins";
 import Progress from "./components/Progress";
-import Search from "./components/Search";
 import SpotifyComponent from "./components/Spotify";
 import Volume from "./components/Volume";
 import { ConfigService } from "./services/data/config.service";
@@ -39,6 +43,7 @@ const styles = (theme: Theme) =>
         duration: theme.transitions.duration.leavingScreen,
         easing: theme.transitions.easing.sharp,
       }),
+      zIndex: theme.zIndex.drawer + 1,
     },
     toolbar: {
       alignItems: "center",
@@ -147,102 +152,121 @@ class App extends Component<IProps, IAppState> {
     const { classes } = this.props;
     const { playQueueOpen } = this.state;
     return (
-      <div className={classes.root}>
-        <div>
-          <SpotifyComponent
-            setTime={this.setTrackTimes}
-            onSongEnd={this.onSongEnd}
-            ref={this.spotifyRef}
-            onReady={this.readyCallback}
-          />
-          <NapsterComponent
-            onReady={this.readyCallback}
-            setTime={this.setTrackTimes}
-            onSongEnd={this.onSongEnd}
-            ref={this.napsterRef}
-          />
-          <AudioComponent
-            setTime={this.setTrackTimes}
-            onSongEnd={this.onSongEnd}
-            onReady={this.readyCallback}
-            ref={this.audioRef}
-          />
-          <Search onSelectSong={this.onClickSong} />
-        </div>
-        <AppBar
-          position="fixed"
-          color="default"
-          className={classNames(classes.bottomAppBar, {
-            [classes.appBarShift]: playQueueOpen,
-          })}
-        >
-          <Toolbar className={this.props.classes.toolbar}>
-            <Typography
-              variant="body1"
-              dangerouslySetInnerHTML={{
-                __html:
-                  (this.state.currentSong && this.state.currentSong.name) || "",
-              }}
+      <Router>
+        <div className={classes.root}>
+          <CssBaseline />
+          <Drawer
+            className={classes.drawer}
+            variant="permanent"
+            classes={{
+              paper: classes.drawerPaper,
+            }}
+            anchor="left"
+          >
+            <Navigation />
+          </Drawer>
+          <div>
+            <SpotifyComponent
+              setTime={this.setTrackTimes}
+              onSongEnd={this.onSongEnd}
+              ref={this.spotifyRef}
+              onReady={this.readyCallback}
             />
-            <Player
-              isPlaying={this.state.isPlaying}
-              backward={this.onPreviousClick}
-              foward={this.onNextClick}
-              togglePlay={this.togglePlay}
-              random={this.state.random}
-              toggleShuffle={this.onToggleShuffle}
-              toggleRepeat={this.onToggleRepeat}
-              repeat={this.state.doLoop}
+            <NapsterComponent
+              onReady={this.readyCallback}
+              setTime={this.setTrackTimes}
+              onSongEnd={this.onSongEnd}
+              ref={this.napsterRef}
             />
-            <Progress
-              elapsed={this.state.elapsed}
-              total={this.state.total}
-              onSeek={this.onSeek}
+            <AudioComponent
+              setTime={this.setTrackTimes}
+              onSongEnd={this.onSongEnd}
+              onReady={this.readyCallback}
+              ref={this.audioRef}
             />
-            <Volume
-              volume={this.state.volume}
-              muted={this.state.muted}
-              onVolumeChange={this.onVolumeChange}
-              onToggleMute={this.onToggleMute}
-            />
-            <IconButton
-              color="inherit"
-              aria-label="Open drawer"
-              onClick={this.handleDrawerOpen}
-              className={classNames(
-                classes.menuButton,
-                playQueueOpen && classes.hide,
-              )}
-            >
-              <MenuIcon />
-            </IconButton>
-          </Toolbar>
-        </AppBar>
-        <Drawer
-          className={this.props.classes.drawer}
-          variant="persistent"
-          anchor="right"
-          open={this.state.playQueueOpen}
-          classes={{
-            paper: classes.drawerPaper,
-          }}
-        >
-          <div className={classes.drawerHeader}>
-            <IconButton onClick={this.handleDrawerClose}>
-              <ChevronRightIcon />
-            </IconButton>
           </div>
-          <Divider />
-          <PlayQueue
-            songList={this.state.playlist}
-            currentSong={this.state.currentSong}
-            onDeleteClick={this.onDeleteClick}
-            onPlaylistClick={this.onPlaylistClick}
-          />
-        </Drawer>
-      </div>
+          <div>
+            <Route exact={true} path="/" component={this.homeRoute} />
+            <Route path="/plugins" component={Plugins} />
+          </div>
+          <AppBar
+            position="fixed"
+            color="default"
+            className={classNames(classes.bottomAppBar, {
+              [classes.appBarShift]: playQueueOpen,
+            })}
+          >
+            <Toolbar className={this.props.classes.toolbar}>
+              <Typography
+                variant="body1"
+                dangerouslySetInnerHTML={{
+                  __html:
+                    (this.state.currentSong && this.state.currentSong.name) ||
+                    "",
+                }}
+              />
+              <Player
+                isPlaying={this.state.isPlaying}
+                backward={this.onPreviousClick}
+                foward={this.onNextClick}
+                togglePlay={this.togglePlay}
+                random={this.state.random}
+                toggleShuffle={this.onToggleShuffle}
+                toggleRepeat={this.onToggleRepeat}
+                repeat={this.state.doLoop}
+              />
+              <Progress
+                elapsed={this.state.elapsed}
+                total={this.state.total}
+                onSeek={this.onSeek}
+              />
+              <Volume
+                volume={this.state.volume}
+                muted={this.state.muted}
+                onVolumeChange={this.onVolumeChange}
+                onToggleMute={this.onToggleMute}
+              />
+              <IconButton
+                color="inherit"
+                aria-label="Open drawer"
+                onClick={this.handleDrawerOpen}
+                className={classNames(
+                  classes.menuButton,
+                  playQueueOpen && classes.hide,
+                )}
+              >
+                <MenuIcon />
+              </IconButton>
+            </Toolbar>
+          </AppBar>
+          <Drawer
+            className={this.props.classes.drawer}
+            variant="persistent"
+            anchor="right"
+            open={this.state.playQueueOpen}
+            classes={{
+              paper: classes.drawerPaper,
+            }}
+          >
+            <div className={classes.drawerHeader}>
+              <IconButton onClick={this.handleDrawerClose}>
+                <ChevronRightIcon />
+              </IconButton>
+            </div>
+            <Divider />
+            <PlayQueue
+              songList={this.state.playlist}
+              currentSong={this.state.currentSong}
+              onDeleteClick={this.onDeleteClick}
+              onPlaylistClick={this.onPlaylistClick}
+            />
+          </Drawer>
+        </div>
+      </Router>
     );
   }
+
+  private homeRoute = () => <Home onSelectSong={this.onClickSong} />;
 
   private handleDrawerOpen = () => {
     this.setState({ playQueueOpen: true });
@@ -445,7 +469,8 @@ class App extends Component<IProps, IAppState> {
     return this.state.playlist[index] === undefined;
   }
 
-  private onSongError() {
+  private onSongError(err: any) {
+    console.log(err.message);
     this.onNextClick();
   }
 
@@ -459,8 +484,7 @@ class App extends Component<IProps, IAppState> {
         try {
           await player.current.play(song);
         } catch (err) {
-          console.log(err);
-          this.onSongError();
+          this.onSongError(err);
           return;
         }
       }

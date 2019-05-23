@@ -1,5 +1,5 @@
 import axios from "axios";
-import React, { Component } from "react";
+import React from "react";
 import { AuthService } from "../services/data/auth.service";
 import { ISong } from "../services/data/database";
 import { IPlayerComponent } from "./IPlayerComponent";
@@ -23,7 +23,7 @@ interface IRefreshTokenResponse {
   access_token: string;
 }
 
-class SpotifyComponent extends Component<IProps, ISpotifyState>
+class SpotifyComponent extends React.Component<IProps, ISpotifyState>
   implements IPlayerComponent {
   private readonly apiUrl = "https://api.spotify.com/v1";
   private readonly serverUrl = "http://localhost:8888";
@@ -186,20 +186,8 @@ class SpotifyComponent extends Component<IProps, ISpotifyState>
   }
 
   public render() {
-    return (
-      <div>
-        <a href="#" onClick={this.onLoginClick}>
-          Login to Spotify
-        </a>
-      </div>
-    );
+    return null;
   }
-
-  private onLoginClick = async (e: React.MouseEvent) => {
-    e.preventDefault();
-    const loginUrl = `${this.serverUrl}/login`;
-    window.location.href = `${loginUrl}`;
-  };
 
   private updateTime = () => {
     const newTime = this.state.internalTime + 1000;

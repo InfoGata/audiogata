@@ -13,11 +13,6 @@ class NapsterComponent extends Component<IProps, {}>
   implements IPlayerComponent {
   private readonly authService = new AuthService();
   private readonly apiKey = "N2Q4YzVkYzctNjBiMi00YjBhLTkxNTAtOWRiNGM5YWE3OWRj";
-  private readonly napsterApi = "https://api.napster.com";
-  private readonly serverUrl = "http://localhost:2000";
-  private readonly oauthUrl = `${this.napsterApi}/oauth/authorize?client_id=${
-    this.apiKey
-  }&response_type=code`;
   private readonly name = "napster";
 
   public async componentDidMount() {
@@ -85,20 +80,8 @@ class NapsterComponent extends Component<IProps, {}>
   }
 
   public render() {
-    return (
-      <div>
-        <a href="#" onClick={this.onLoginClick}>
-          Login to Napster
-        </a>
-      </div>
-    );
+    return null;
   }
-
-  private onLoginClick = async (e: React.MouseEvent) => {
-    e.preventDefault();
-    const redirectUrl = `${this.serverUrl}/authorize`;
-    window.location.href = `${this.oauthUrl}&redirect_uri=${redirectUrl}`;
-  };
 }
 
 export default NapsterComponent;
