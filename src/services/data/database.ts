@@ -1,7 +1,7 @@
 import Dexie from "dexie";
 import "dexie-observable";
 
-export class Database extends Dexie {
+class Database extends Dexie {
   public songs: Dexie.Table<ISong, string>;
   public config: Dexie.Table<IConfig, number>;
   public auth: Dexie.Table<IAuth, string>;
@@ -66,3 +66,5 @@ export interface IArtist {
   apiId: string;
   from: string;
 }
+
+export const db = new Database();

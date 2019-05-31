@@ -16,7 +16,9 @@ import MenuIcon from "@material-ui/icons/Menu";
 import classNames from "classnames";
 import React, { Component } from "react";
 import { hot } from "react-hot-loader/root";
+import { connect } from "react-redux";
 import { BrowserRouter as Router, Route } from "react-router-dom";
+import { bindActionCreators, Dispatch } from "redux";
 import AudioComponent from "./components/Audio";
 import Home from "./components/Home";
 import { IPlayerComponent } from "./components/IPlayerComponent";
@@ -28,9 +30,15 @@ import Plugins from "./components/Plugins";
 import Progress from "./components/Progress";
 import SpotifyComponent from "./components/Spotify";
 import Volume from "./components/Volume";
-import { ConfigService } from "./services/data/config.service";
 import { ISong } from "./services/data/database";
-import { SongService } from "./services/data/song.service";
+import {
+  addTrack,
+  deleteTrack,
+  loadTracks,
+  setTrack,
+} from "./store/actions/song";
+import { AppState } from "./store/store";
+import { toggleRepeat, toggleShuffle } from "./store/actions/player";
 
 const drawerWidth = 240;
 
@@ -100,52 +108,38 @@ const styles = (theme: Theme) =>
   });
 
 interface IAppState {
-  playlist: ISong[];
-  playlistIndex: number;
-  doLoop: boolean;
   playOnStartup: boolean;
-  currentSong?: ISong;
   isPlaying: boolean;
   elapsed: number;
   total: number;
   volume: number;
   muted: boolean;
-  random: boolean;
   playQueueOpen: boolean;
 }
 
-interface IProps extends WithStyles<typeof styles> {}
+interface IProps extends WithStyles<typeof styles>, StateProps, DispatchProps {}
 
 class App extends Component<IProps, IAppState> {
   private audioRef = React.createRef<AudioComponent>();
   private napsterRef = React.createRef<NapsterComponent>();
   private spotifyRef = React.createRef<SpotifyComponent>();
-  private songService = new SongService();
-  private configService = new ConfigService();
   private shuffleList: number[] = [];
 
   constructor(props: any) {
     super(props);
     this.state = {
-      doLoop: true,
       elapsed: 0,
       isPlaying: false,
       muted: false,
       playOnStartup: true,
       playQueueOpen: true,
-      playlist: [],
-      playlistIndex: -1,
-      random: true,
       total: 0,
       volume: 1.0,
     };
   }
 
   public async componentDidMount() {
-    const songs = await this.songService.getSongs();
-    this.setState({
-      playlist: songs,
-    });
+    await this.props.loadTracks();
   }
 
   public render() {
@@ -196,12 +190,12 @@ class App extends Component<IProps, IAppState> {
               [classes.appBarShift]: playQueueOpen,
             })}
           >
-            <Toolbar className={this.props.classes.toolbar}>
+            <Toolbar className={classes.toolbar}>
               <Typography
                 variant="body1"
                 dangerouslySetInnerHTML={{
                   __html:
-                    (this.state.currentSong && this.state.currentSong.name) ||
+                    (this.props.currentSong && this.props.currentSong.name) ||
                     "",
                 }}
               />
@@ -210,10 +204,10 @@ class App extends Component<IProps, IAppState> {
                 backward={this.onPreviousClick}
                 foward={this.onNextClick}
                 togglePlay={this.togglePlay}
-                random={this.state.random}
+                random={this.props.shuffle}
                 toggleShuffle={this.onToggleShuffle}
                 toggleRepeat={this.onToggleRepeat}
-                repeat={this.state.doLoop}
+                repeat={this.props.repeat}
               />
               <Progress
                 elapsed={this.state.elapsed}
@@ -240,7 +234,7 @@ class App extends Component<IProps, IAppState> {
             </Toolbar>
           </AppBar>
           <Drawer
-            className={this.props.classes.drawer}
+            className={classes.drawer}
             variant="persistent"
             anchor="right"
             open={this.state.playQueueOpen}
@@ -255,8 +249,8 @@ class App extends Component<IProps, IAppState> {
             </div>
             <Divider />
             <PlayQueue
-              songList={this.state.playlist}
-              currentSong={this.state.currentSong}
+              songList={this.props.songs}
+              currentSong={this.props.currentSong}
               onDeleteClick={this.onDeleteClick}
               onPlaylistClick={this.onPlaylistClick}
             />
@@ -294,25 +288,25 @@ class App extends Component<IProps, IAppState> {
   }
 
   private readyCallback = async (name: string) => {
-    const currentSongId = await this.configService.getCurrentSongId();
-    const time = await this.configService.getCurrentSongTime();
-    if (currentSongId && this.state.playOnStartup) {
-      const index = this.state.playlist.findIndex(s => s.id === currentSongId);
-      const song = this.state.playlist[index];
-      if (song.from === name) {
-        await this.playSongByIndex(index, time);
-      } else if (
-        name === "local-audio" &&
-        !this.getSpecificComponentByName(song.from || "")
-      ) {
-        await this.playSongByIndex(index, time);
-      }
-    }
+    //const currentSongId = await this.configService.getCurrentSongId();
+    //const time = await this.configService.getCurrentSongTime();
+    //if (currentSongId && this.state.playOnStartup) {
+    //  const index = this.state.playlist.findIndex(s => s.id === currentSongId);
+    //  const song = this.state.playlist[index];
+    //  if (song.from === name) {
+    //    await this.playSongByIndex(index, time);
+    //  } else if (
+    //    name === "local-audio" &&
+    //    !this.getSpecificComponentByName(song.from || "")
+    //  ) {
+    //    await this.playSongByIndex(index, time);
+    //  }
+    //}
   };
 
   private onSeek = (newTime: number) => {
-    if (this.state.currentSong && this.state.currentSong.from) {
-      const player = this.getPlayerComponentByName(this.state.currentSong.from);
+    if (this.props.currentSong && this.props.currentSong.from) {
+      const player = this.getPlayerComponentByName(this.props.currentSong.from);
       if (player.current) {
         player.current.seek(newTime);
       }
@@ -328,8 +322,8 @@ class App extends Component<IProps, IAppState> {
   };
 
   private setVolume(volume: number) {
-    if (this.state.currentSong && this.state.currentSong.from) {
-      const player = this.getPlayerComponentByName(this.state.currentSong.from);
+    if (this.props.currentSong && this.props.currentSong.from) {
+      const player = this.getPlayerComponentByName(this.props.currentSong.from);
       if (player.current) {
         player.current.setVolume(volume);
       }
@@ -338,15 +332,11 @@ class App extends Component<IProps, IAppState> {
 
   private onToggleShuffle = () => {
     this.shuffleList = [];
-    this.setState(state => ({
-      random: !state.random,
-    }));
+    this.props.toggleShuffle();
   };
 
   private onToggleRepeat = () => {
-    this.setState(state => ({
-      doLoop: !state.doLoop,
-    }));
+    this.props.toggleRepeat();
   };
 
   private onToggleMute = () => {
@@ -379,31 +369,15 @@ class App extends Component<IProps, IAppState> {
 
   private onClickSong = async (song: ISong, e: React.MouseEvent) => {
     e.preventDefault();
-    const id = await this.songService.addSong(song);
-    song.id = id;
-
-    const currentPlaylist = [...this.state.playlist];
-    currentPlaylist.push(song);
-    this.setState({
-      playlist: currentPlaylist,
-    });
+    this.props.addTrack(song);
   };
 
   private onDeleteClick = async (song: ISong) => {
-    await this.songService.deleteSong(song);
-    if (this.state.currentSong && this.state.currentSong.id === song.id) {
+    if (this.props.currentSong && this.props.currentSong.id === song.id) {
       this.pausePlayer();
-      await this.configService.setCurrentSongTime(0);
     }
     this.shuffleList = [];
-    const newPlaylist = this.state.playlist.filter(s => s.id !== song.id);
-    const currentIndex = newPlaylist.findIndex(
-      s => s.id === (this.state.currentSong ? this.state.currentSong.id : -1),
-    );
-    this.setState({
-      playlist: newPlaylist,
-      playlistIndex: currentIndex,
-    });
+    this.props.deleteTrack(song);
   };
 
   private onPreviousClick = async () => {
@@ -411,38 +385,38 @@ class App extends Component<IProps, IAppState> {
       this.onSeek(0);
       return;
     }
-    let newIndex = this.state.playlistIndex - 1;
+    let newIndex = this.props.currentIndex - 1;
     if (newIndex >= 0) {
       await this.playSongByIndex(newIndex);
-    } else if (this.state.doLoop) {
-      newIndex = this.state.playlist.length - 1;
+    } else if (this.props.repeat) {
+      newIndex = this.props.songs.length - 1;
       await this.playSongByIndex(newIndex);
     }
   };
 
   private onNextClick = async () => {
-    let newIndex = this.state.playlistIndex + 1;
-    if (this.state.random) {
+    let newIndex = this.props.currentIndex + 1;
+    if (this.props.shuffle) {
       if (this.shuffleList.length === 0) {
         this.createShuffleList();
       }
       newIndex = this.shuffleList.pop() || 0;
     }
-    if (this.state.playlist.length > newIndex) {
+    if (this.props.songs.length > newIndex) {
       await this.playSongByIndex(newIndex);
-    } else if (this.state.doLoop) {
+    } else if (this.props.repeat) {
       newIndex = 0;
       await this.playSongByIndex(newIndex);
     }
   };
 
   private createShuffleList() {
-    const indexArray = Object.keys(this.state.playlist).map(Number);
+    const indexArray = Object.keys(this.props.songs).map(Number);
     this.shuffleArray(indexArray);
     this.shuffleList = indexArray;
     // Whatever song is currently playing, don't put in list
     this.shuffleList = this.shuffleList.filter(
-      s => s !== this.state.playlistIndex,
+      s => s !== this.props.currentIndex,
     );
   }
 
@@ -466,7 +440,7 @@ class App extends Component<IProps, IAppState> {
   };
 
   private isNotValidIndex(index: number) {
-    return this.state.playlist[index] === undefined;
+    return this.props.songs[index] === undefined;
   }
 
   private onSongError(err: any) {
@@ -476,8 +450,7 @@ class App extends Component<IProps, IAppState> {
 
   private async playSong(song: ISong, time?: number) {
     this.pausePlayer();
-    await this.configService.setCurrentSong(song);
-    await this.configService.setCurrentSongTime(0);
+    //await this.configService.setCurrentSongTime(0);
     if (song.from) {
       const player = this.getPlayerComponentByName(song.from);
       if (player.current) {
@@ -489,9 +462,9 @@ class App extends Component<IProps, IAppState> {
         }
       }
     }
+    this.props.setTrack(song);
     this.setState(
       {
-        currentSong: song,
         isPlaying: true,
       },
       () => {
@@ -507,11 +480,8 @@ class App extends Component<IProps, IAppState> {
       return;
     }
 
-    const song = this.state.playlist[index];
+    const song = this.props.songs[index];
     this.playSong(song, time);
-    this.setState({
-      playlistIndex: index,
-    });
   }
 
   private onPlaylistClick = async (index: number) => {
@@ -520,8 +490,8 @@ class App extends Component<IProps, IAppState> {
   };
 
   private resumePlayer() {
-    if (this.state.currentSong && this.state.currentSong.from) {
-      const player = this.getPlayerComponentByName(this.state.currentSong.from);
+    if (this.props.currentSong && this.props.currentSong.from) {
+      const player = this.getPlayerComponentByName(this.props.currentSong.from);
       if (player.current) {
         player.current.resume();
       }
@@ -529,8 +499,8 @@ class App extends Component<IProps, IAppState> {
   }
 
   private pausePlayer() {
-    if (this.state.currentSong && this.state.currentSong.from) {
-      const player = this.getPlayerComponentByName(this.state.currentSong.from);
+    if (this.props.currentSong && this.props.currentSong.from) {
+      const player = this.getPlayerComponentByName(this.props.currentSong.from);
       if (player.current) {
         player.current.pause();
       }
@@ -538,6 +508,34 @@ class App extends Component<IProps, IAppState> {
   }
 }
 
+const mapStateToProps = (state: AppState) => ({
+  currentIndex: state.song.currentIndex,
+  currentSong: state.song.currentSong,
+  repeat: state.player.repeat,
+  shuffle: state.player.shuffle,
+  songs: state.song.songs,
+});
+type StateProps = ReturnType<typeof mapStateToProps>;
+
+const mapDispatchToProps = (dispatch: Dispatch) =>
+  bindActionCreators(
+    {
+      addTrack,
+      deleteTrack,
+      loadTracks,
+      setTrack,
+      toggleRepeat,
+      toggleShuffle,
+    },
+    dispatch,
+  );
+type DispatchProps = ReturnType<typeof mapDispatchToProps>;
+
+const styledComponent = withStyles(styles, { withTheme: true })(App);
+const connectedComponent = connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(styledComponent);
 export default (process.env.NODE_ENV === "development"
-  ? hot(withStyles(styles, { withTheme: true })(App))
-  : withStyles(styles, { withTheme: true })(App));
+  ? hot(connectedComponent)
+  : connectedComponent);
