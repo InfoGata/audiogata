@@ -16,7 +16,6 @@ interface ISpotifyState {
 interface IProps {
   onSongEnd: () => void;
   setTime: (elapsed: number, total: number) => void;
-  onReady: (name: string) => void;
 }
 
 interface IRefreshTokenResponse {
@@ -123,7 +122,6 @@ class SpotifyComponent extends React.Component<IProps, ISpotifyState>
           this.setState({
             deviceId: device_id,
           });
-          this.props.onReady(this.name);
         });
         // Not Ready
         player.addListener(

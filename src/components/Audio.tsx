@@ -8,7 +8,6 @@ import { IPlayerComponent } from "./IPlayerComponent";
 interface IProps {
   onSongEnd: () => void;
   setTime: (elapsed: number, duration: number) => void;
-  onReady: (name: string) => void;
 }
 
 class AudioComponent extends Component<IProps, {}> implements IPlayerComponent {
@@ -16,10 +15,6 @@ class AudioComponent extends Component<IProps, {}> implements IPlayerComponent {
   private readonly name = "local-audio";
   private soundCloud = new SoundCloud();
   private youtube = new Youtube();
-
-  public componentDidMount() {
-    this.props.onReady(this.name);
-  }
 
   public render() {
     return (

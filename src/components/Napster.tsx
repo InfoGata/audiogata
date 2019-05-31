@@ -7,7 +7,6 @@ declare var Napster: any;
 interface IProps {
   setTime: (elapsed: number, total: number) => void;
   onSongEnd: () => void;
-  onReady: (name: string) => void;
 }
 class NapsterComponent extends Component<IProps, {}>
   implements IPlayerComponent {
@@ -41,7 +40,6 @@ class NapsterComponent extends Component<IProps, {}>
               accessToken: auth.accessToken,
               refreshToken: auth.refreshToken,
             });
-            this.props.onReady(this.name);
           }
         });
       }

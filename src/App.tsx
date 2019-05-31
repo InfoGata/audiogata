@@ -31,14 +31,9 @@ import Progress from "./components/Progress";
 import SpotifyComponent from "./components/Spotify";
 import Volume from "./components/Volume";
 import { ISong } from "./services/data/database";
-import {
-  addTrack,
-  deleteTrack,
-  loadTracks,
-  setTrack,
-} from "./store/actions/song";
+import { setTrack, toggleRepeat, toggleShuffle } from "./store/actions/player";
+import { addTrack, deleteTrack, loadTracks } from "./store/actions/song";
 import { AppState } from "./store/store";
-import { toggleRepeat, toggleShuffle } from "./store/actions/player";
 
 const drawerWidth = 240;
 
@@ -115,6 +110,7 @@ interface IAppState {
   volume: number;
   muted: boolean;
   playQueueOpen: boolean;
+  currentIndex: number;
 }
 
 interface IProps extends WithStyles<typeof styles>, StateProps, DispatchProps {}
@@ -128,6 +124,7 @@ class App extends Component<IProps, IAppState> {
   constructor(props: any) {
     super(props);
     this.state = {
+      currentIndex: -1,
       elapsed: 0,
       isPlaying: false,
       muted: false,
@@ -140,6 +137,11 @@ class App extends Component<IProps, IAppState> {
 
   public async componentDidMount() {
     await this.props.loadTracks();
+    const currentSong = this.props.currentSong;
+    if (currentSong) {
+      const index = this.props.songs.findIndex(s => s.id === currentSong.id);
+      this.playSongByIndex(index);
+    }
   }
 
   public render() {
@@ -164,10 +166,8 @@ class App extends Component<IProps, IAppState> {
               setTime={this.setTrackTimes}
               onSongEnd={this.onSongEnd}
               ref={this.spotifyRef}
-              onReady={this.readyCallback}
             />
             <NapsterComponent
-              onReady={this.readyCallback}
               setTime={this.setTrackTimes}
               onSongEnd={this.onSongEnd}
               ref={this.napsterRef}
@@ -175,7 +175,6 @@ class App extends Component<IProps, IAppState> {
             <AudioComponent
               setTime={this.setTrackTimes}
               onSongEnd={this.onSongEnd}
-              onReady={this.readyCallback}
               ref={this.audioRef}
             />
           </div>
@@ -288,20 +287,23 @@ class App extends Component<IProps, IAppState> {
   }
 
   private readyCallback = async (name: string) => {
-    //const currentSongId = await this.configService.getCurrentSongId();
-    //const time = await this.configService.getCurrentSongTime();
-    //if (currentSongId && this.state.playOnStartup) {
-    //  const index = this.state.playlist.findIndex(s => s.id === currentSongId);
-    //  const song = this.state.playlist[index];
-    //  if (song.from === name) {
-    //    await this.playSongByIndex(index, time);
-    //  } else if (
-    //    name === "local-audio" &&
-    //    !this.getSpecificComponentByName(song.from || "")
-    //  ) {
-    //    await this.playSongByIndex(index, time);
-    //  }
-    //}
+    const currentSong = this.props.currentSong;
+    if (currentSong && this.state.playOnStartup) {
+      const index = this.props.songs.findIndex(s => s.id === currentSong.id);
+      if (index === -1) {
+        return;
+      }
+
+      const song = this.props.songs[index];
+      if (song.from === name) {
+        await this.playSongByIndex(index);
+      } else if (
+        name === "local-audio" &&
+        !this.getSpecificComponentByName(song.from || "")
+      ) {
+        await this.playSongByIndex(index);
+      }
+    }
   };
 
   private onSeek = (newTime: number) => {
@@ -375,9 +377,17 @@ class App extends Component<IProps, IAppState> {
   private onDeleteClick = async (song: ISong) => {
     if (this.props.currentSong && this.props.currentSong.id === song.id) {
       this.pausePlayer();
+      this.props.setTrack(undefined);
     }
     this.shuffleList = [];
-    this.props.deleteTrack(song);
+
+    await this.props.deleteTrack(song);
+    const currentIndex = this.props.songs.findIndex(
+      s => s.id === (this.props.currentSong ? this.props.currentSong.id : -1),
+    );
+    this.setState({
+      currentIndex,
+    });
   };
 
   private onPreviousClick = async () => {
@@ -385,7 +395,7 @@ class App extends Component<IProps, IAppState> {
       this.onSeek(0);
       return;
     }
-    let newIndex = this.props.currentIndex - 1;
+    let newIndex = this.state.currentIndex - 1;
     if (newIndex >= 0) {
       await this.playSongByIndex(newIndex);
     } else if (this.props.repeat) {
@@ -395,7 +405,7 @@ class App extends Component<IProps, IAppState> {
   };
 
   private onNextClick = async () => {
-    let newIndex = this.props.currentIndex + 1;
+    let newIndex = this.state.currentIndex + 1;
     if (this.props.shuffle) {
       if (this.shuffleList.length === 0) {
         this.createShuffleList();
@@ -416,7 +426,7 @@ class App extends Component<IProps, IAppState> {
     this.shuffleList = indexArray;
     // Whatever song is currently playing, don't put in list
     this.shuffleList = this.shuffleList.filter(
-      s => s !== this.props.currentIndex,
+      s => s !== this.state.currentIndex,
     );
   }
 
@@ -432,7 +442,6 @@ class App extends Component<IProps, IAppState> {
   };
 
   private setTrackTimes = async (elapsed: number, total: number) => {
-    // await this.configService.setCurrentSongTime(elapsed);
     this.setState({
       elapsed,
       total,
@@ -450,7 +459,6 @@ class App extends Component<IProps, IAppState> {
 
   private async playSong(song: ISong, time?: number) {
     this.pausePlayer();
-    //await this.configService.setCurrentSongTime(0);
     if (song.from) {
       const player = this.getPlayerComponentByName(song.from);
       if (player.current) {
@@ -481,7 +489,10 @@ class App extends Component<IProps, IAppState> {
     }
 
     const song = this.props.songs[index];
-    this.playSong(song, time);
+    this.setState({
+      currentIndex: index,
+    });
+    await this.playSong(song, time);
   }
 
   private onPlaylistClick = async (index: number) => {
@@ -509,8 +520,7 @@ class App extends Component<IProps, IAppState> {
 }
 
 const mapStateToProps = (state: AppState) => ({
-  currentIndex: state.song.currentIndex,
-  currentSong: state.song.currentSong,
+  currentSong: state.player.currentSong,
   repeat: state.player.repeat,
   shuffle: state.player.shuffle,
   songs: state.song.songs,
