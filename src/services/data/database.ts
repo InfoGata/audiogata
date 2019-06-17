@@ -3,7 +3,6 @@ import "dexie-observable";
 
 class Database extends Dexie {
   public songs: Dexie.Table<ISong, string>;
-  public config: Dexie.Table<IConfig, number>;
   public auth: Dexie.Table<IAuth, string>;
   constructor() {
     super("database");
@@ -19,7 +18,6 @@ class Database extends Dexie {
     });
 
     this.songs = this.table("songs");
-    this.config = this.table("config");
     this.auth = this.table("auth");
   }
 }
@@ -38,12 +36,6 @@ export interface ISong {
   albumId?: string;
   artistId?: string;
   artistName?: string;
-}
-
-export interface IConfig {
-  id?: number;
-  currentSongId?: string;
-  currentTime?: number;
 }
 
 export interface IAuth {
@@ -65,6 +57,12 @@ export interface IArtist {
   name: string;
   apiId: string;
   from: string;
+}
+
+export interface IPlaylist {
+  id?: string;
+  name: string;
+  songs: ISong[];
 }
 
 export const db = new Database();

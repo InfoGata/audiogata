@@ -1,6 +1,7 @@
 import { ISong } from '../../services/data/database';
 import {
   ADD_TRACK,
+  CLEAR_TRACKS,
   DELETE_TRACK,
   LOAD_TRACKS,
   TrackActions,
@@ -31,6 +32,11 @@ export function songReducer(state = initialState, action: TrackActions): ISongSt
       return {
         ...state,
         songs: action.tracks
+      }
+    case CLEAR_TRACKS:
+      return {
+        ...state,
+        songs: []
       }
     default:
       return state;

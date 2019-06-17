@@ -4,10 +4,12 @@ import { persistReducer, persistStore } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 import thunk from "redux-thunk";
 import { playerReducer } from "./reducers/playerReducer";
+import { playlistReducer } from "./reducers/playlistReducer";
 import { songReducer } from "./reducers/songReducer";
 
 const rootReducer = combineReducers({
   player: playerReducer,
+  playlist: playlistReducer,
   song: songReducer,
 });
 

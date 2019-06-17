@@ -5,6 +5,7 @@ import { db } from "../../services/data/database";
 export const ADD_TRACK = "ADD_TRACK";
 export const DELETE_TRACK = "DELETE_TRACK";
 export const LOAD_TRACKS = "LOAD_TRACKS";
+export const CLEAR_TRACKS = "CLEAR_TRACKS";
 
 interface IAddTrack {
   type: typeof ADD_TRACK;
@@ -63,4 +64,18 @@ export function loadTracks() {
   };
 }
 
-export type TrackActions = IAddTrack | IDeleteTrack | ILoadTracks;
+interface IClearTracks {
+  type: typeof CLEAR_TRACKS;
+  tracks: ISong[];
+}
+
+export function clearTracks() {
+  return async (dispatch: Dispatch): Promise<void> => {
+    await db.songs.clear();
+    dispatch({
+      type: CLEAR_TRACKS,
+    });
+  };
+}
+
+export type TrackActions = IAddTrack | IDeleteTrack | ILoadTracks | IClearTracks;
