@@ -1,40 +1,33 @@
 import React from "react";
 
-class Plugins extends React.PureComponent {
-  private readonly napsterApiKey =
-    "N2Q4YzVkYzctNjBiMi00YjBhLTkxNTAtOWRiNGM5YWE3OWRj";
-  private readonly napsterApi = "https://api.napster.com";
-  private readonly napsterServerUrl = "http://localhost:2000";
-  private readonly napsterOauthUrl = `${
-    this.napsterApi
-  }/oauth/authorize?client_id=${this.napsterApiKey}&response_type=code`;
-  private readonly spotifyServerUrl = "http://localhost:8888";
-  public render() {
-    return (
-      <div>
-        <a href="#" onClick={this.onSpotifyLoginClick}>
-          Login to Spotify
-        </a>
-        <a href="#" onClick={this.onNapsterLoginClick}>
-          Login to Napster
-        </a>
-      </div>
-    );
-  }
+const napsterApiKey = "N2Q4YzVkYzctNjBiMi00YjBhLTkxNTAtOWRiNGM5YWE3OWRj";
+const napsterApi = "https://api.napster.com";
+const napsterServerUrl = "http://localhost:2000";
+const napsterOauthUrl = `${napsterApi}/oauth/authorize?client_id=${napsterApiKey}&response_type=code`;
+const spotifyServerUrl = "http://localhost:8888";
 
-  private onNapsterLoginClick = async (e: React.MouseEvent) => {
-    e.preventDefault();
-    const redirectUrl = `${this.napsterServerUrl}/authorize`;
-    window.location.href = `${
-      this.napsterOauthUrl
-    }&redirect_uri=${redirectUrl}`;
-  };
+function onSpotifyLoginClick(e: React.MouseEvent) {
+  e.preventDefault();
+  const redirectUrl = `${napsterServerUrl}/authorize`;
+  window.location.href = `${napsterOauthUrl}&redirect_uri=${redirectUrl}`;
+}
+function onNapsterLoginClick(e: React.MouseEvent) {
+  e.preventDefault();
+  const loginUrl = `${spotifyServerUrl}/login`;
+  window.location.href = `${loginUrl}`;
+}
 
-  private onSpotifyLoginClick = async (e: React.MouseEvent) => {
-    e.preventDefault();
-    const loginUrl = `${this.spotifyServerUrl}/login`;
-    window.location.href = `${loginUrl}`;
-  };
+function Plugins() {
+  return (
+    <div>
+      <a href="#" onClick={onSpotifyLoginClick}>
+        Login to Spotify
+      </a>
+      <a href="#" onClick={onNapsterLoginClick}>
+        Login to Napster
+      </a>
+    </div>
+  );
 }
 
 export default Plugins;

@@ -5,6 +5,7 @@ import SoundCloud from "../services/apis/SoundCloud";
 import Spotify from "../services/apis/Spotify";
 import Youtube from "../services/apis/Youtube";
 import { IAlbum, IArtist, ISong } from "../services/data/database";
+import { formatSeconds } from "../utils";
 
 interface ISearchProps {
   onSelectSong: (song: ISong, e: React.MouseEvent) => void;
@@ -19,10 +20,6 @@ interface ISearchState {
 }
 
 class Search extends Component<ISearchProps, ISearchState> {
-  private youtube = new Youtube();
-  private soundCloud = new SoundCloud();
-  private napster = new Napster();
-  private spotify = new Spotify();
   constructor(props: any) {
     super(props);
     this.state = {
@@ -42,8 +39,7 @@ class Search extends Component<ISearchProps, ISearchState> {
           onClick={this.props.onSelectSong.bind(this, song)}
           dangerouslySetInnerHTML={{ __html: song.name }}
         />{" "}
-        - {song.artistName} -{" "}
-        {song.duration && this.formatSeconds(song.duration)}
+        - {song.artistName} - {song.duration && formatSeconds(song.duration)}
       </li>
     ));
     const albumSearchList = this.state.albumResults.map(album => (
@@ -103,13 +99,13 @@ class Search extends Component<ISearchProps, ISearchState> {
   private getApiByName(name: string): ISearchApi | undefined {
     switch (name) {
       case "youtube":
-        return this.youtube;
+        return Youtube;
       case "soundcloud":
-        return this.soundCloud;
+        return SoundCloud;
       case "napster":
-        return this.napster;
+        return Napster;
       case "spotify":
-        return this.spotify;
+        return Spotify;
     }
   }
 
@@ -152,24 +148,6 @@ class Search extends Component<ISearchProps, ISearchState> {
       songResults: [],
     });
   };
-
-  private formatSeconds(seconds: number) {
-    // hours
-    seconds = seconds % 3600;
-
-    const minutes = Math.floor(seconds / 60);
-    seconds = seconds % 60;
-
-    seconds = Math.round(seconds);
-    // Return as string
-    return (
-      (minutes < 10 ? "0" : "") +
-      minutes +
-      ":" +
-      (seconds < 10 ? "0" : "") +
-      seconds
-    );
-  }
 }
 
 export default Search;

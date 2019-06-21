@@ -13,6 +13,7 @@ import ExpandMore from "@material-ui/icons/ExpandMore";
 import ExtensionIcon from "@material-ui/icons/Extension";
 import HomeIcon from "@material-ui/icons/Home";
 import MenuIcon from "@material-ui/icons/Menu";
+import SyncIcon from "@material-ui/icons/Sync";
 import PlaylistAddIcon from "@material-ui/icons/PlaylistAdd";
 import React from "react";
 import { connect } from "react-redux";
@@ -66,6 +67,12 @@ class Navigation extends React.PureComponent<IProps, IState> {
           </ListItemIcon>
           <ListItemText>Plugins</ListItemText>
         </ListItem>
+        <ListItem button={true} component={this.linkToSync} key="Sync">
+          <ListItemIcon>
+            <SyncIcon />
+          </ListItemIcon>
+          <ListItemText>Sync</ListItemText>
+        </ListItem>
         <ListItem
           button={true}
           key="Playlists"
@@ -114,6 +121,10 @@ class Navigation extends React.PureComponent<IProps, IState> {
 
   private linkToPlugins = (props: any) => {
     return <Link to="/plugins" {...props} />;
+  };
+
+  private linkToSync = (props: any) => {
+    return <Link to="/sync" {...props} />;
   };
 
   private handleDialogOpen = () => {

@@ -27,6 +27,7 @@ import Navigation from "./components/Navigation";
 import Player from "./components/Player";
 import PlayQueue from "./components/PlayQueue";
 import Plugins from "./components/Plugins";
+import Sync from "./components/Sync";
 import Progress from "./components/Progress";
 import SpotifyComponent from "./components/Spotify";
 import Volume from "./components/Volume";
@@ -181,6 +182,7 @@ class App extends Component<IProps, IAppState> {
           <div>
             <Route exact={true} path="/" component={this.homeRoute} />
             <Route path="/plugins" component={Plugins} />
+            <Route path="/sync" component={Sync} />
           </div>
           <AppBar
             position="fixed"

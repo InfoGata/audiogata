@@ -3,8 +3,8 @@ var bodyParser = require("body-parser");
 var request = require("request");
 var querystring = require("querystring");
 
-var apiKey = "";
-var apiSecret = "";
+var apiKey = "N2Q4YzVkYzctNjBiMi00YjBhLTkxNTAtOWRiNGM5YWE3OWRj";
+var apiSecret = "MDE3YzIwNWItZGI5YS00YTJkLWEwZWYtYWVlMGE1MDY1NGMw";
 
 var serverPort = 2000;
 var clientPort = 3000;
@@ -58,7 +58,7 @@ app.get("/authorize", function(clientRequest, clientResponse) {
 });
 
 app.get("/reauthorize", function(clientRequest, clientResponse) {
-  var refreshToken = request.query.refreshToken;
+  var refreshToken = clientRequest.query.refreshToken;
 
   if (!refreshToken) {
     clientResponse.json(400, { error: "A refresh token is required." });

@@ -18,48 +18,43 @@ interface IInvidiousFormat {
   url: string;
 }
 
-class Youtube implements ISearchApi, IFormatTrackApi {
-  public async searchTracks(query: string): Promise<ISong[]> {
-    const url = `https://invidio.us/api/v1/search?q=${encodeURIComponent(query)}`;
-    const results = await axios.get<IInvidiousVideoResult[]>(url);
-    return this.resultToSong(results.data);
-  }
+function resultToSong(results: IInvidiousVideoResult[]): ISong[] {
+  return results.map(
+    r =>
+      ({
+        apiId: r.videoId,
+        duration: r.lengthSeconds,
+        from: "youtube",
+        name: r.title,
+      } as ISong),
+  );
+}
 
-  public async searchAll(query: string) {
+async function searchTracks(query: string): Promise<ISong[]> {
+  const url = `https://invidio.us/api/v1/search?q=${encodeURIComponent(query)}`;
+  const results = await axios.get<IInvidiousVideoResult[]>(url);
+  return resultToSong(results.data);
+}
+
+export default {
+  async getAlbumTracks(album: IAlbum) {
+    return [];
+  },
+  async getArtistAlbums(artist: IArtist) {
+    return [];
+  },
+  async searchAll(query: string) {
     return {
       albums: [],
       artists: [],
-      tracks: await this.searchTracks(query),
+      tracks: await searchTracks(query),
     };
-  }
-
-  public async getAlbumTracks(album: IAlbum) {
-    return [];
-  }
-
-  public async getArtistAlbums(artist: IArtist) {
-    return [];
-  }
-
-  public async getTrackUrl(song: ISong): Promise<string> {
+  },
+  async getTrackUrl(song: ISong): Promise<string> {
     const url = `https://invidio.us/api/v1/videos/${song.apiId}`;
     const results = await axios.get<IInvidiousVideoResponse>(url);
     const formats = results.data.adaptiveFormats;
     const audioFormat = formats.filter(f => f.itag === "140")[0];
     return audioFormat.url;
   }
-
-  public resultToSong(results: IInvidiousVideoResult[]): ISong[] {
-    return results.map(
-      r =>
-        ({
-          apiId: r.videoId,
-          duration: r.lengthSeconds,
-          from: "youtube",
-          name: r.title,
-        } as ISong),
-    );
-  }
-}
-
-export default Youtube;
+} as IFormatTrackApi & ISearchApi

@@ -12,9 +12,6 @@ interface IProps {
 
 class AudioComponent extends Component<IProps, {}> implements IPlayerComponent {
   private audioRef = React.createRef<HTMLAudioElement>();
-  private readonly name = "local-audio";
-  private soundCloud = new SoundCloud();
-  private youtube = new Youtube();
 
   public render() {
     return (
@@ -81,9 +78,9 @@ class AudioComponent extends Component<IProps, {}> implements IPlayerComponent {
   private getFormatTrackApiFromName(name: string): IFormatTrackApi | undefined {
     switch (name) {
       case "youtube":
-        return this.youtube;
+        return Youtube;
       case "soundcloud":
-        return this.soundCloud;
+        return SoundCloud;
     }
   }
 }
