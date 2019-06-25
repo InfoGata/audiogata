@@ -15,7 +15,7 @@ interface IProps extends WithStyles<typeof styles> {
   onSeek: (newTime: number) => void;
 }
 
-function Progress(props: IProps) {
+const Progress = (props: IProps) => {
   const [isDragging, setIsDragging] = React.useState(false);
   const [newElapsed, setNewElapsed] = React.useState(0);
 
@@ -56,6 +56,6 @@ function Progress(props: IProps) {
       </div>
     </div>
   );
-}
+};
 
 export default withStyles(styles)(Progress);

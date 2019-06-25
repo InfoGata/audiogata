@@ -27,9 +27,9 @@ import Navigation from "./components/Navigation";
 import Player from "./components/Player";
 import PlayQueue from "./components/PlayQueue";
 import Plugins from "./components/Plugins";
-import Sync from "./components/Sync";
 import Progress from "./components/Progress";
 import SpotifyComponent from "./components/Spotify";
+import Sync from "./components/Sync";
 import Volume from "./components/Volume";
 import { ISong } from "./services/data/database";
 import { setTrack, toggleRepeat, toggleShuffle } from "./store/actions/player";
@@ -40,22 +40,6 @@ const drawerWidth = 240;
 
 const styles = (theme: Theme) =>
   createStyles({
-    bottomAppBar: {
-      bottom: 0,
-      top: "auto",
-      transition: theme.transitions.create(["margin", "width"], {
-        duration: theme.transitions.duration.leavingScreen,
-        easing: theme.transitions.easing.sharp,
-      }),
-      zIndex: theme.zIndex.drawer + 1,
-    },
-    toolbar: {
-      alignItems: "center",
-      justifyContent: "space-between",
-    },
-    root: {
-      display: "flex",
-    },
     appBarShift: {
       marginRight: drawerWidth,
       transition: theme.transitions.create(["margin", "width"], {
@@ -64,26 +48,14 @@ const styles = (theme: Theme) =>
       }),
       width: `calc(100% - ${drawerWidth}px)`,
     },
-    menuButton: {
-      marginLeft: 12,
-      marginRight: 20,
-    },
-    hide: {
-      display: "none",
-    },
-    drawer: {
-      flexShrink: 0,
-      width: drawerWidth,
-    },
-    drawerPaper: {
-      width: drawerWidth,
-    },
-    drawerHeader: {
-      alignItems: "center",
-      display: "flex",
-      padding: "0 8px",
-      ...theme.mixins.toolbar,
-      justifyContent: "flex-start",
+    bottomAppBar: {
+      bottom: 0,
+      top: "auto",
+      transition: theme.transitions.create(["margin", "width"], {
+        duration: theme.transitions.duration.leavingScreen,
+        easing: theme.transitions.easing.sharp,
+      }),
+      zIndex: theme.zIndex.drawer + 1,
     },
     content: {
       flexGrow: 1,
@@ -100,6 +72,34 @@ const styles = (theme: Theme) =>
         duration: theme.transitions.duration.enteringScreen,
         easing: theme.transitions.easing.easeOut,
       }),
+    },
+    drawer: {
+      flexShrink: 0,
+      width: drawerWidth,
+    },
+    drawerHeader: {
+      alignItems: "center",
+      display: "flex",
+      padding: "0 8px",
+      ...theme.mixins.toolbar,
+      justifyContent: "flex-start",
+    },
+    drawerPaper: {
+      width: drawerWidth,
+    },
+    hide: {
+      display: "none",
+    },
+    menuButton: {
+      marginLeft: 12,
+      marginRight: 20,
+    },
+    root: {
+      display: "flex",
+    },
+    toolbar: {
+      alignItems: "center",
+      justifyContent: "space-between",
     },
   });
 
@@ -371,8 +371,7 @@ class App extends Component<IProps, IAppState> {
     }
   };
 
-  private onClickSong = async (song: ISong, e: React.MouseEvent) => {
-    e.preventDefault();
+  private onClickSong = async (song: ISong) => {
     this.props.addTrack(song);
   };
 
@@ -455,6 +454,7 @@ class App extends Component<IProps, IAppState> {
   }
 
   private onSongError(err: any) {
+    // tslint:disable-next-line: no-console
     console.log(err.message);
     this.onNextClick();
   }
@@ -548,6 +548,6 @@ const connectedComponent = connect(
   mapStateToProps,
   mapDispatchToProps,
 )(styledComponent);
-export default (process.env.NODE_ENV === "development"
+export default process.env.NODE_ENV === "development"
   ? hot(connectedComponent)
-  : connectedComponent);
+  : connectedComponent;

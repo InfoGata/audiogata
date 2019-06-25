@@ -1,11 +1,11 @@
 import React from "react";
 
-function Sync() {
+const Sync = () => {
   return (
     <div>
       <p>Create Account</p>
     </div>
   );
-}
+};
 
 export default Sync;

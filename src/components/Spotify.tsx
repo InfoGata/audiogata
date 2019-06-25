@@ -77,26 +77,31 @@ class SpotifyComponent extends React.Component<IProps, ISpotifyState>
         player.addListener(
           "initialization_error",
           ({ message }: { message: any }) => {
+            // tslint:disable-next-line: no-console
             console.error(message);
           },
         );
         player.addListener(
           "authentication_error",
           ({ message }: { message: any }) => {
+            // tslint:disable-next-line: no-console
             console.error(message);
           },
         );
         player.addListener("account_error", ({ message }: { message: any }) => {
+          // tslint:disable-next-line: no-console
           console.error(message);
         });
         player.addListener(
           "playback_error",
           ({ message }: { message: any }) => {
+            // tslint:disable-next-line: no-console
             console.error(message);
           },
         );
         // Playback status updates
         player.addListener("player_state_changed", (state: any) => {
+          // tslint:disable-next-line: no-console
           console.log(state);
           this.props.setTime(state.position / 1000, state.duration / 1000);
           this.setState({
@@ -118,6 +123,7 @@ class SpotifyComponent extends React.Component<IProps, ISpotifyState>
         });
         // Ready
         player.addListener("ready", ({ device_id }: { device_id: string }) => {
+          // tslint:disable-next-line: no-console
           console.log("Ready with Device ID", device_id);
           this.setState({
             deviceId: device_id,
@@ -127,6 +133,7 @@ class SpotifyComponent extends React.Component<IProps, ISpotifyState>
         player.addListener(
           "not_ready",
           ({ device_id }: { device_id: string }) => {
+            // tslint:disable-next-line: no-console
             console.log("Device ID has gone offline", device_id);
           },
         );
@@ -143,9 +150,7 @@ class SpotifyComponent extends React.Component<IProps, ISpotifyState>
     if (!this.state.deviceId) {
       return;
     }
-    const url = `${this.apiUrl}/me/player/play?device_id=${
-      this.state.deviceId
-    }`;
+    const url = `${this.apiUrl}/me/player/play?device_id=${this.state.deviceId}`;
 
     const trackId = song.apiId || "";
     await axios.put(
@@ -197,9 +202,7 @@ class SpotifyComponent extends React.Component<IProps, ISpotifyState>
 
   private async refreshLogin() {
     if (this.state.refreshToken.length > 0) {
-      const refreshUrl = `${this.serverUrl}/refresh_token?refresh_token=${
-        this.state.refreshToken
-      }`;
+      const refreshUrl = `${this.serverUrl}/refresh_token?refresh_token=${this.state.refreshToken}`;
       const response = await axios.get<IRefreshTokenResponse>(refreshUrl);
       const accessToken = response.data.access_token;
       this.setState({

@@ -17,7 +17,7 @@ interface IProps {
   repeat: boolean;
 }
 
-function Player(props: IProps) {
+const Player = (props: IProps) => {
   const playIcon = props.isPlaying ? <Pause /> : <PlayArrow />;
   const shuffleColor = props.random ? "primary" : "inherit";
   const repeatColor = props.repeat ? "primary" : "inherit";
@@ -38,6 +38,6 @@ function Player(props: IProps) {
       </button>
     </div>
   );
-}
+};
 
 export default Player;

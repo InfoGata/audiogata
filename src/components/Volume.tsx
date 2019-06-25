@@ -10,7 +10,7 @@ interface IProps {
   muted: boolean;
 }
 
-function Volume(props: IProps) {
+const Volume = (props: IProps) => {
   const volumeIcon =
     props.volume === 0 || props.muted ? <VolumeOff /> : <VolumeUp />;
   return (
@@ -26,6 +26,6 @@ function Volume(props: IProps) {
       </div>
     </div>
   );
-}
+};
 
 export default Volume;

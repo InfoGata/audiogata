@@ -18,7 +18,7 @@ interface IProps extends DispatchProps {
   handleClose: () => void;
 }
 
-function AddPlaylistDialog(props: IProps) {
+const AddPlaylistDialog = (props: IProps) => {
   const { open, handleClose } = props;
   const [name, setName] = React.useState("");
 
@@ -63,7 +63,7 @@ function AddPlaylistDialog(props: IProps) {
       </Dialog>
     </div>
   );
-}
+};
 
 const mapStateToProps = (state: AppState) => ({});
 

@@ -17,7 +17,7 @@ function onNapsterLoginClick(e: React.MouseEvent) {
   window.location.href = `${loginUrl}`;
 }
 
-function Plugins() {
+const Plugins = () => {
   return (
     <div>
       <a href="#" onClick={onSpotifyLoginClick}>
@@ -28,6 +28,6 @@ function Plugins() {
       </a>
     </div>
   );
-}
+};
 
 export default Plugins;

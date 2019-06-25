@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React from "react";
 import { ISearchApi } from "../services/apis/ISearchApi";
 import Napster from "../services/apis/Napster";
 import SoundCloud from "../services/apis/SoundCloud";
@@ -8,146 +8,167 @@ import { IAlbum, IArtist, ISong } from "../services/data/database";
 import { formatSeconds } from "../utils";
 
 interface ISearchProps {
-  onSelectSong: (song: ISong, e: React.MouseEvent) => void;
+  onSelectSong: (song: ISong) => void;
 }
 
-interface ISearchState {
-  searchType: string;
-  songResults: ISong[];
-  albumResults: IAlbum[];
-  artistResults: IArtist[];
-  search: string;
+const getApiByName = (name: string): ISearchApi | undefined => {
+  switch (name) {
+    case "youtube":
+      return Youtube;
+    case "soundcloud":
+      return SoundCloud;
+    case "napster":
+      return Napster;
+    case "spotify":
+      return Spotify;
+  }
+};
+
+interface IArtistResultProps {
+  artist: IArtist;
+  clearSearch: () => void;
+  setAlbumResults: (albums: IAlbum[]) => void;
 }
+const ArtistResult = (props: IArtistResultProps) => {
+  const onClickArtist = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    props.clearSearch();
+    const api = getApiByName(props.artist.from);
+    if (api) {
+      const albums = await api.getArtistAlbums(props.artist);
+      props.setAlbumResults(albums);
+    }
+  };
+  return (
+    <li key={props.artist.apiId}>
+      <a href="#" onClick={onClickArtist}>
+        {props.artist.name}
+      </a>
+    </li>
+  );
+};
 
-class Search extends Component<ISearchProps, ISearchState> {
-  constructor(props: any) {
-    super(props);
-    this.state = {
-      albumResults: [],
-      artistResults: [],
-      search: "",
-      searchType: "soundcloud",
-      songResults: [],
-    };
-  }
+interface IAlbumResultProps {
+  album: IAlbum;
+  clearSearch: () => void;
+  setTrackResults: (songs: ISong[]) => void;
+}
+const AlbumResult = (props: IAlbumResultProps) => {
+  const onClickAlbum = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    props.clearSearch();
+    const api = getApiByName(props.album.from);
+    if (api) {
+      const songs = await api.getAlbumTracks(props.album);
+      props.setTrackResults(songs);
+    }
+  };
+  return (
+    <li key={props.album.apiId}>
+      <a href="#" onClick={onClickAlbum}>
+        {props.album.name}
+      </a>{" "}
+      - {props.album.artistName}
+    </li>
+  );
+};
 
-  public render() {
-    const songSearchList = this.state.songResults.map((song, index) => (
-      <li key={index}>
-        <a
-          href="#"
-          onClick={this.props.onSelectSong.bind(this, song)}
-          dangerouslySetInnerHTML={{ __html: song.name }}
-        />{" "}
-        - {song.artistName} - {song.duration && formatSeconds(song.duration)}
-      </li>
-    ));
-    const albumSearchList = this.state.albumResults.map(album => (
-      <li key={album.apiId}>
-        <a href="#" onClick={this.onClickAlbum.bind(this, album)}>
-          {album.name}
-        </a>{" "}
-        - {album.artistName}
-      </li>
-    ));
-    const artistSearchList = this.state.artistResults.map(artist => (
-      <li key={artist.apiId}>
-        <a href="#" onClick={this.onClickArtist.bind(this, artist)}>
-          {artist.name}
-        </a>
-      </li>
-    ));
-    return (
-      <div>
-        <select
-          value={this.state.searchType}
-          onChange={this.onSearchTypeChange}
-        >
-          <option value="soundcloud">SoundCloud</option>
-          <option value="youtube">Youtube</option>
-          <option value="napster">Napster</option>
-          <option value="spotify">Spotify</option>
-        </select>
-        <input type="text" onChange={this.onSearchChange} />
-        <button onClick={this.onSearchClick}>Search</button>
-        <button onClick={this.clearSearch}>Clear Search Results</button>
-        {songSearchList.length > 0 ? <div>Songs:</div> : null}
-        <ul>{songSearchList}</ul>
-        {albumSearchList.length > 0 ? <div>Albums:</div> : null}
-        <ul>{albumSearchList}</ul>
-        {artistSearchList.length > 0 ? <div>Artists:</div> : null}
-        <ul>{artistSearchList}</ul>
-      </div>
-    );
-  }
+interface ITrackResultProps {
+  track: ISong;
+  onSelectSong: (song: ISong) => void;
+}
+const TrackResult = (props: ITrackResultProps) => {
+  const onClickSong = () => {
+    props.onSelectSong(props.track);
+  };
+  return (
+    <li key={props.track.apiId}>
+      <a
+        href="#"
+        onClick={onClickSong}
+        dangerouslySetInnerHTML={{ __html: props.track.name }}
+      />{" "}
+      - {props.track.artistName} -{" "}
+      {props.track.duration && formatSeconds(props.track.duration)}
+    </li>
+  );
+};
 
-  private onSearchClick = async () => {
+const Search = (props: ISearchProps) => {
+  const [searchType, setSearchType] = React.useState("soundcloud");
+  const [search, setSearch] = React.useState("");
+  const [trackResults, setTrackResults] = React.useState<ISong[]>([]);
+  const [albumResults, setAlbumResults] = React.useState<IAlbum[]>([]);
+  const [artistResults, setArtistResults] = React.useState<IArtist[]>([]);
+  const onSearchTypeChange = (e: React.FormEvent<HTMLSelectElement>) => {
+    setSearchType(e.currentTarget.value);
+  };
+
+  const onSearchChange = (e: React.FormEvent<HTMLInputElement>) => {
+    setSearch(e.currentTarget.value);
+  };
+
+  const onClearSearch = () => {
+    setTrackResults([]);
+    setAlbumResults([]);
+    setArtistResults([]);
+  };
+
+  const onSearchClick = async () => {
     let tracks: ISong[] = [];
     let albums: IAlbum[] = [];
     let artists: IArtist[] = [];
-    const api = this.getApiByName(this.state.searchType);
+    const api = getApiByName(searchType);
     if (api) {
-      ({ tracks, albums, artists } = await api.searchAll(this.state.search));
+      ({ tracks, albums, artists } = await api.searchAll(search));
     }
-    this.setState({
-      albumResults: albums,
-      artistResults: artists,
-      songResults: tracks,
-    });
+    setAlbumResults(albums);
+    setArtistResults(artists);
+    setTrackResults(tracks);
   };
 
-  private getApiByName(name: string): ISearchApi | undefined {
-    switch (name) {
-      case "youtube":
-        return Youtube;
-      case "soundcloud":
-        return SoundCloud;
-      case "napster":
-        return Napster;
-      case "spotify":
-        return Spotify;
-    }
-  }
-
-  private onSearchChange = (e: React.FormEvent<HTMLInputElement>) => {
-    this.setState({ search: e.currentTarget.value });
-  };
-
-  private onSearchTypeChange = (e: React.FormEvent<HTMLSelectElement>) => {
-    this.setState({ searchType: e.currentTarget.value });
-  };
-
-  private onClickAlbum = async (album: IAlbum, e: React.MouseEvent) => {
-    e.preventDefault();
-    this.clearSearch();
-    const api = this.getApiByName(album.from);
-    if (api) {
-      const songs = await api.getAlbumTracks(album);
-      this.setState({
-        songResults: songs,
-      });
-    }
-  };
-
-  private onClickArtist = async (artist: IArtist, e: React.MouseEvent) => {
-    e.preventDefault();
-    this.clearSearch();
-    const api = this.getApiByName(artist.from);
-    if (api) {
-      const albums = await api.getArtistAlbums(artist);
-      this.setState({
-        albumResults: albums,
-      });
-    }
-  };
-
-  private clearSearch = () => {
-    this.setState({
-      albumResults: [],
-      artistResults: [],
-      songResults: [],
-    });
-  };
-}
+  const trackList = trackResults.map(track => (
+    <TrackResult
+      key={track.apiId}
+      track={track}
+      onSelectSong={props.onSelectSong}
+    />
+  ));
+  const albumList = albumResults.map(album => (
+    <AlbumResult
+      key={album.apiId}
+      album={album}
+      clearSearch={onClearSearch}
+      setTrackResults={setTrackResults}
+    />
+  ));
+  const artistList = artistResults.map(artist => (
+    <ArtistResult
+      key={artist.apiId}
+      artist={artist}
+      clearSearch={onClearSearch}
+      setAlbumResults={setAlbumResults}
+    />
+  ));
+  return (
+    <div>
+      <select value={searchType} onChange={onSearchTypeChange}>
+        <option value="soundcloud">SoundCloud</option>
+        <option value="youtube">Youtube</option>
+        <option value="napster">Napster</option>
+        <option value="spotify">Spotify</option>
+      </select>
+      <input type="text" onChange={onSearchChange} />
+      <button onClick={onSearchClick}>Search</button>
+      <button onClick={onClearSearch}>Clear Search Results</button>
+      {trackList.length > 0 ? <div>Songs:</div> : null}
+      <ul>{trackList}</ul>
+      {albumList.length > 0 ? <div>Albums:</div> : null}
+      <ul>{albumList}</ul>
+      {artistList.length > 0 ? <div>Artists:</div> : null}
+      <ul>{artistList}</ul>
+    </div>
+  );
+};
 
 export default Search;

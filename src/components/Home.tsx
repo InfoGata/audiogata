@@ -3,7 +3,7 @@ import { ISong } from "../services/data/database";
 import Search from "./Search";
 
 interface IProps {
-  onSelectSong: (song: ISong, e: React.MouseEvent) => void;
+  onSelectSong: (song: ISong) => void;
 }
 
 const Home = (props: IProps) => (
