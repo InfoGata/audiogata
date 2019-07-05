@@ -1,47 +1,41 @@
 import axios from "axios";
-import React from "react";
+import * as IPlayerComponent_1 from "../components/IPlayerComponent";
 import { AuthService } from "../services/data/auth.service";
 import { ISong } from "../services/data/database";
-import { IPlayerComponent } from "./IPlayerComponent";
-
-interface ISpotifyState {
-  accessToken: string;
-  refreshToken: string;
-  deviceId: string;
-  internalTime: number;
-  totalTime: number;
-  player: any;
-}
-
-interface IProps {
-  onSongEnd: () => void;
-  setTime: (elapsed: number, total: number) => void;
-}
 
 interface IRefreshTokenResponse {
   access_token: string;
 }
 
-class SpotifyComponent extends React.Component<IProps, ISpotifyState>
-  implements IPlayerComponent {
+class SpotifyPlayer implements IPlayerComponent_1.IPlayerComponent {
   private readonly apiUrl = "https://api.spotify.com/v1";
   private readonly serverUrl = "http://localhost:8888";
   private readonly name = "spotify";
+  private readonly setTime: (elapsed: number, total: number) => void;
+  private readonly onSongEnd: () => void;
   private readonly authService = new AuthService();
+  private deviceId: string;
+  private accessToken: string;
+  private refreshToken: string;
+  private internalTime: number;
+  private totalTime: number;
+  private player: any;
   private interval: NodeJS.Timeout | undefined;
-  constructor(props: any) {
-    super(props);
-    this.state = {
-      accessToken: "",
-      deviceId: "",
-      internalTime: 0,
-      player: null,
-      refreshToken: "",
-      totalTime: 0,
-    };
+  constructor(
+    setTime: (elapsed: number, total: number) => void,
+    onSongEnd: () => void) {
+
+    this.setTime = setTime
+    this.onSongEnd = onSongEnd;
+    this.deviceId = "";
+    this.accessToken = "";
+    this.refreshToken = ""
+    this.internalTime = 0;
+    this.totalTime = 0;
+    this.init();
   }
 
-  public async componentDidMount() {
+  public init() {
     const query = new URLSearchParams(window.location.search);
     if (query.has("access_token") && query.has("refresh_token")) {
       const accessToken = query.get("access_token") || "";
@@ -51,21 +45,18 @@ class SpotifyComponent extends React.Component<IProps, ISpotifyState>
         name: "spotify",
         refreshToken,
       });
-      this.setState({
-        accessToken,
-        refreshToken,
-      });
+      this.accessToken = accessToken;
+      this.refreshToken = refreshToken;
     } else {
-      const auth = await this.authService.getAuthByName("spotify");
-      if (auth) {
-        this.setState({
-          accessToken: auth.accessToken,
-          refreshToken: auth.refreshToken,
-        });
-      }
+      this.authService.getAuthByName("spotify").then(auth => {
+        if (auth) {
+          this.accessToken = auth.accessToken;
+          this.refreshToken = auth.refreshToken;
+        }
+      });
     }
     (window as any).onSpotifyWebPlaybackSDKReady = () => {
-      if (this.state.accessToken.length > 0) {
+      if (this.accessToken.length > 0) {
         const player = new (window as any).Spotify.Player({
           getOAuthToken: async (cb: (arg0: string) => void) => {
             const accessToken = await this.refreshLogin();
@@ -103,11 +94,9 @@ class SpotifyComponent extends React.Component<IProps, ISpotifyState>
         player.addListener("player_state_changed", (state: any) => {
           // tslint:disable-next-line: no-console
           console.log(state);
-          this.props.setTime(state.position / 1000, state.duration / 1000);
-          this.setState({
-            internalTime: state.position,
-            totalTime: state.duration,
-          });
+          this.setTime(state.position / 1000, state.duration / 1000);
+          this.internalTime = state.position;
+          this.totalTime = state.duration;
           // Attempt to detect if the song has ended
           if (
             state.paused &&
@@ -118,16 +107,14 @@ class SpotifyComponent extends React.Component<IProps, ISpotifyState>
             if (this.interval) {
               clearInterval(this.interval);
             }
-            this.props.onSongEnd();
+            this.onSongEnd();
           }
         });
         // Ready
         player.addListener("ready", ({ device_id }: { device_id: string }) => {
           // tslint:disable-next-line: no-console
           console.log("Ready with Device ID", device_id);
-          this.setState({
-            deviceId: device_id,
-          });
+          this.deviceId = device_id;
         });
         // Not Ready
         player.addListener(
@@ -139,18 +126,16 @@ class SpotifyComponent extends React.Component<IProps, ISpotifyState>
         );
         // Connect to the player!
         player.connect();
-        this.setState({
-          player,
-        });
+        this.player = player;
       }
     };
   }
 
   public async play(song: ISong) {
-    if (!this.state.deviceId) {
+    if (!this.deviceId) {
       return;
     }
-    const url = `${this.apiUrl}/me/player/play?device_id=${this.state.deviceId}`;
+    const url = `${this.apiUrl}/me/player/play?device_id=${this.deviceId}`;
 
     const trackId = song.apiId || "";
     await axios.put(
@@ -160,7 +145,7 @@ class SpotifyComponent extends React.Component<IProps, ISpotifyState>
       },
       {
         headers: {
-          Authorization: `Bearer ${this.state.accessToken}`,
+          Authorization: `Bearer ${this.accessToken}`,
           "Content-Type": "application/json",
         },
       },
@@ -169,46 +154,37 @@ class SpotifyComponent extends React.Component<IProps, ISpotifyState>
   }
 
   public pause() {
-    this.state.player.pause();
+    this.player.pause();
     if (this.interval) {
       clearInterval(this.interval);
     }
   }
 
   public resume() {
-    this.state.player.resume();
+    this.player.resume();
     this.interval = setInterval(this.updateTime, 1000);
   }
 
   public seek(timeInSeconds: number) {
-    this.state.player.seek(timeInSeconds * 1000);
+    this.player.seek(timeInSeconds * 1000);
   }
 
   public setVolume(volume: number) {
-    this.state.player.setVolume(volume);
-  }
-
-  public render() {
-    return null;
+    this.player.setVolume(volume);
   }
 
   private updateTime = () => {
-    const newTime = this.state.internalTime + 1000;
-    this.setState({
-      internalTime: newTime,
-    });
-    this.props.setTime(newTime / 1000, this.state.totalTime / 1000);
+    this.internalTime += 1000;
+    this.setTime(this.internalTime / 1000, this.totalTime / 1000);
   };
 
   private async refreshLogin() {
-    if (this.state.refreshToken.length > 0) {
-      const refreshUrl = `${this.serverUrl}/refresh_token?refresh_token=${this.state.refreshToken}`;
+    if (this.refreshToken.length > 0) {
+      const refreshUrl = `${this.serverUrl}/refresh_token?refresh_token=${this.refreshToken}`;
       const response = await axios.get<IRefreshTokenResponse>(refreshUrl);
       const accessToken = response.data.access_token;
-      this.setState({
-        accessToken,
-      });
-      const refreshToken = this.state.refreshToken;
+      this.accessToken = accessToken;
+      const refreshToken = this.refreshToken;
       await this.authService.addAuth({
         accessToken,
         name: "spotify",
@@ -218,6 +194,7 @@ class SpotifyComponent extends React.Component<IProps, ISpotifyState>
     }
     return "";
   }
+
 }
 
-export default SpotifyComponent;
+export default SpotifyPlayer;

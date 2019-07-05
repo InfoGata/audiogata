@@ -1,20 +1,21 @@
-import React from "react";
+import { IPlayerComponent } from "../components/IPlayerComponent";
 import { AuthService } from "../services/data/auth.service";
 import { ISong } from "../services/data/database";
-import { IPlayerComponent } from "./IPlayerComponent";
+
 declare var Napster: any;
 
-interface IProps {
-  setTime: (elapsed: number, total: number) => void;
-  onSongEnd: () => void;
-}
-class NapsterComponent extends React.Component<IProps, {}>
-  implements IPlayerComponent {
-  private readonly authService = new AuthService();
+class NapsterPlayer implements IPlayerComponent {
   private readonly apiKey = "N2Q4YzVkYzctNjBiMi00YjBhLTkxNTAtOWRiNGM5YWE3OWRj";
-  private readonly name = "napster";
+  private readonly authService = new AuthService();
+  private readonly setTime: (elapsed: number, total: number) => void;
+  private readonly onSongEnd: () => void;
 
-  public async componentDidMount() {
+  constructor(
+    setTime: (elapsed: number, total: number) => void,
+    onSongEnd: () => void
+  ) {
+    this.setTime = setTime;
+    this.onSongEnd = onSongEnd;
     Napster.init({
       consumerKey: this.apiKey,
       isHTML5Compatible: true,
@@ -45,13 +46,13 @@ class NapsterComponent extends React.Component<IProps, {}>
       }
       Napster.player.on("playevent", (e: any) => {
         if (e.data.code === "PlayComplete") {
-          this.props.onSongEnd();
+          this.onSongEnd();
         }
       });
       Napster.player.on("playtimer", (e: any) => {
         const current = e.data.currentTime;
         const duration = e.data.totalTime;
-        this.props.setTime(current, duration);
+        this.setTime(current, duration);
       });
     });
   }
@@ -76,10 +77,6 @@ class NapsterComponent extends React.Component<IProps, {}>
   public setVolume(volume: number) {
     Napster.player.setVolume(volume);
   }
-
-  public render() {
-    return null;
-  }
 }
 
-export default NapsterComponent;
+export default NapsterPlayer;

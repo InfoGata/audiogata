@@ -19,18 +19,18 @@ import { hot } from "react-hot-loader/root";
 import { connect } from "react-redux";
 import { BrowserRouter as Router, Route } from "react-router-dom";
 import { bindActionCreators, Dispatch } from "redux";
-import AudioComponent from "./components/Audio";
 import Home from "./components/Home";
 import { IPlayerComponent } from "./components/IPlayerComponent";
-import NapsterComponent from "./components/Napster";
 import Navigation from "./components/Navigation";
 import Player from "./components/Player";
 import PlayQueue from "./components/PlayQueue";
 import Plugins from "./components/Plugins";
 import Progress from "./components/Progress";
-import SpotifyComponent from "./components/Spotify";
 import Sync from "./components/Sync";
 import Volume from "./components/Volume";
+import Local from "./players/local";
+import NapsterPlayer from "./players/napster";
+import SpotifyPlayer from "./players/spotify";
 import { ISong } from "./services/data/database";
 import { setTrack, toggleRepeat, toggleShuffle } from "./store/actions/player";
 import { addTrack, deleteTrack, loadTracks } from "./store/actions/song";
@@ -117,9 +117,9 @@ interface IAppState {
 interface IProps extends WithStyles<typeof styles>, StateProps, DispatchProps {}
 
 class App extends Component<IProps, IAppState> {
-  private audioRef = React.createRef<AudioComponent>();
-  private napsterRef = React.createRef<NapsterComponent>();
-  private spotifyRef = React.createRef<SpotifyComponent>();
+  private audioPlayer: Local;
+  private napsterPlayer: NapsterPlayer;
+  private spotifyPlayer: SpotifyPlayer;
   private shuffleList: number[] = [];
 
   constructor(props: any) {
@@ -134,6 +134,9 @@ class App extends Component<IProps, IAppState> {
       total: 0,
       volume: 1.0,
     };
+    this.audioPlayer = new Local(this.setTrackTimes, this.onSongEnd);
+    this.napsterPlayer = new NapsterPlayer(this.setTrackTimes, this.onSongEnd);
+    this.spotifyPlayer = new SpotifyPlayer(this.setTrackTimes, this.onSongEnd);
   }
 
   public async componentDidMount() {
@@ -162,23 +165,6 @@ class App extends Component<IProps, IAppState> {
           >
             <Navigation />
           </Drawer>
-          <div>
-            <SpotifyComponent
-              setTime={this.setTrackTimes}
-              onSongEnd={this.onSongEnd}
-              ref={this.spotifyRef}
-            />
-            <NapsterComponent
-              setTime={this.setTrackTimes}
-              onSongEnd={this.onSongEnd}
-              ref={this.napsterRef}
-            />
-            <AudioComponent
-              setTime={this.setTrackTimes}
-              onSongEnd={this.onSongEnd}
-              ref={this.audioRef}
-            />
-          </div>
           <div>
             <Route exact={true} path="/" component={this.homeRoute} />
             <Route path="/plugins" component={Plugins} />
@@ -271,49 +257,45 @@ class App extends Component<IProps, IAppState> {
     this.setState({ playQueueOpen: false });
   };
 
-  private getPlayerComponentByName(
-    name: string,
-  ): React.RefObject<IPlayerComponent> {
-    return this.getSpecificComponentByName(name) || this.audioRef;
+  private getPlayerComponentByName(name: string): IPlayerComponent {
+    return this.getSpecificComponentByName(name) || this.audioPlayer;
   }
 
   private getSpecificComponentByName(
     name: string,
-  ): React.RefObject<IPlayerComponent> | undefined {
+  ): IPlayerComponent | undefined {
     switch (name) {
       case "napster":
-        return this.napsterRef;
+        return this.napsterPlayer;
       case "spotify":
-        return this.spotifyRef;
+        return this.spotifyPlayer;
     }
   }
 
-  private readyCallback = async (name: string) => {
-    const currentSong = this.props.currentSong;
-    if (currentSong && this.state.playOnStartup) {
-      const index = this.props.songs.findIndex(s => s.id === currentSong.id);
-      if (index === -1) {
-        return;
-      }
+  // private readyCallback = async (name: string) => {
+  //   const currentSong = this.props.currentSong;
+  //   if (currentSong && this.state.playOnStartup) {
+  //     const index = this.props.songs.findIndex(s => s.id === currentSong.id);
+  //     if (index === -1) {
+  //       return;
+  //     }
 
-      const song = this.props.songs[index];
-      if (song.from === name) {
-        await this.playSongByIndex(index);
-      } else if (
-        name === "local-audio" &&
-        !this.getSpecificComponentByName(song.from || "")
-      ) {
-        await this.playSongByIndex(index);
-      }
-    }
-  };
+  //     const song = this.props.songs[index];
+  //     if (song.from === name) {
+  //       await this.playSongByIndex(index);
+  //     } else if (
+  //       name === "local-audio" &&
+  //       !this.getSpecificComponentByName(song.from || "")
+  //     ) {
+  //       await this.playSongByIndex(index);
+  //     }
+  //   }
+  // };
 
   private onSeek = (newTime: number) => {
     if (this.props.currentSong && this.props.currentSong.from) {
       const player = this.getPlayerComponentByName(this.props.currentSong.from);
-      if (player.current) {
-        player.current.seek(newTime);
-      }
+      player.seek(newTime);
     }
   };
 
@@ -328,9 +310,7 @@ class App extends Component<IProps, IAppState> {
   private setVolume(volume: number) {
     if (this.props.currentSong && this.props.currentSong.from) {
       const player = this.getPlayerComponentByName(this.props.currentSong.from);
-      if (player.current) {
-        player.current.setVolume(volume);
-      }
+      player.setVolume(volume);
     }
   }
 
@@ -463,13 +443,11 @@ class App extends Component<IProps, IAppState> {
     this.pausePlayer();
     if (song.from) {
       const player = this.getPlayerComponentByName(song.from);
-      if (player.current) {
-        try {
-          await player.current.play(song);
-        } catch (err) {
-          this.onSongError(err);
-          return;
-        }
+      try {
+        await player.play(song);
+      } catch (err) {
+        this.onSongError(err);
+        return;
       }
     }
     this.props.setTrack(song);
@@ -505,18 +483,14 @@ class App extends Component<IProps, IAppState> {
   private resumePlayer() {
     if (this.props.currentSong && this.props.currentSong.from) {
       const player = this.getPlayerComponentByName(this.props.currentSong.from);
-      if (player.current) {
-        player.current.resume();
-      }
+      player.resume();
     }
   }
 
   private pausePlayer() {
     if (this.props.currentSong && this.props.currentSong.from) {
       const player = this.getPlayerComponentByName(this.props.currentSong.from);
-      if (player.current) {
-        player.current.pause();
-      }
+      player.pause();
     }
   }
 }
