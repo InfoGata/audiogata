@@ -1,8 +1,8 @@
-import { IPlayerComponent } from "../components/IPlayerComponent";
 import { IFormatTrackApi } from "../services/apis/IFormatTrackApi";
 import SoundCloud from "../services/apis/SoundCloud";
 import Youtube from "../services/apis/Youtube";
 import { ISong } from "../services/data/database";
+import { IPlayerComponent } from "./IPlayerComponent";
 
 class Local implements IPlayerComponent {
   private audio: HTMLAudioElement;

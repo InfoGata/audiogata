@@ -1,13 +1,13 @@
 import axios from "axios";
-import * as IPlayerComponent_1 from "../components/IPlayerComponent";
 import { AuthService } from "../services/data/auth.service";
 import { ISong } from "../services/data/database";
+import { IPlayerComponent } from "./IPlayerComponent";
 
 interface IRefreshTokenResponse {
   access_token: string;
 }
 
-class SpotifyPlayer implements IPlayerComponent_1.IPlayerComponent {
+class SpotifyPlayer implements IPlayerComponent {
   private readonly apiUrl = "https://api.spotify.com/v1";
   private readonly serverUrl = "http://localhost:8888";
   private readonly name = "spotify";

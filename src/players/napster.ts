@@ -1,6 +1,6 @@
-import { IPlayerComponent } from "../components/IPlayerComponent";
 import { AuthService } from "../services/data/auth.service";
 import { ISong } from "../services/data/database";
+import { IPlayerComponent } from "./IPlayerComponent";
 
 declare var Napster: any;
 
