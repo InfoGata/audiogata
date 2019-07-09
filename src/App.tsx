@@ -18,6 +18,8 @@ import React, { Component } from "react";
 import { hot } from "react-hot-loader/root";
 import { connect } from "react-redux";
 import { BrowserRouter as Router, Route } from "react-router-dom";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { bindActionCreators, Dispatch } from "redux";
 import Home from "./components/Home";
 import Navigation from "./components/Navigation";
@@ -153,6 +155,7 @@ class App extends Component<IProps, IAppState> {
     const { playQueueOpen } = this.state;
     return (
       <Router>
+        <ToastContainer position={toast.POSITION.BOTTOM_LEFT} />
         <div className={classes.root}>
           <CssBaseline />
           <Drawer
