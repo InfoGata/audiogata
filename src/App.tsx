@@ -437,8 +437,12 @@ class App extends Component<IProps, IAppState> {
   }
 
   private onSongError(err: any) {
-    // tslint:disable-next-line: no-console
-    console.log(err.message);
+    if (this.props.currentSong) {
+      const message = `${this.props.currentSong.name}: ${err.message}`;
+      toast.error(message);
+      // tslint:disable-next-line: no-console
+      console.log(message);
+    }
     this.onNextClick();
   }
 
