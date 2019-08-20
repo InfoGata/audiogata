@@ -1,5 +1,4 @@
 import axios from "axios";
-import { AuthService } from "../data/auth.service";
 import { IAlbum, IArtist, ISong } from "../data/database";
 import { ISearchApi } from "./ISearchApi";
 
@@ -40,9 +39,8 @@ interface ISpotifyTrack {
   artists: ISpotifyArtist[];
 }
 
-const authService = new AuthService();
 const apiUrl = "https://api.spotify.com/v1";
-
+let accessToken: string = "";
 function trackResultToSong(results: ISpotifyTrack[]): ISong[] {
   return results.map(
     r =>
@@ -84,9 +82,11 @@ function albumResultToAlbum(results: ISpotifyAlbum[]): IAlbum[] {
 }
 
 export default {
+  setAuth(token: string) {
+    accessToken = token;
+  },
   async searchAll(query: string) {
-    const auth = await authService.getAuthByName("spotify");
-    if (!auth) {
+    if (!accessToken) {
       return { tracks: [], albums: [], artists: [] };
     }
     const url = `${apiUrl}/search?q=${encodeURIComponent(
@@ -94,7 +94,7 @@ export default {
     )}&type=album,artist,track`;
     const results = await axios.get<ISpotifyResult>(url, {
       headers: {
-        Authorization: `Bearer ${auth.accessToken}`,
+        Authorization: `Bearer ${accessToken}`,
       },
     });
     const data = results.data;
@@ -104,15 +104,14 @@ export default {
     return { tracks, albums, artists };
   },
   async getAlbumTracks(album: IAlbum) {
-    const auth = await authService.getAuthByName("spotify");
-    if (!auth) {
+    if (!accessToken) {
       return [];
     }
     const id = album.apiId.split(":").pop();
     const url = `${apiUrl}/albums/${id}/tracks?limit=50`;
     const results = await axios.get<ISpotifyTrackResult>(url, {
       headers: {
-        Authorization: `Bearer ${auth.accessToken}`,
+        Authorization: `Bearer ${accessToken}`,
       },
     });
     const tracks = trackResultToSong(results.data.items);
@@ -122,15 +121,14 @@ export default {
     return tracks;
   },
   async getArtistAlbums(artist: IArtist) {
-    const auth = await authService.getAuthByName("spotify");
-    if (!auth) {
+    if (!accessToken) {
       return [];
     }
     const id = artist.apiId.split(":").pop();
     const url = `${apiUrl}/artists/${id}/albums`;
     const results = await axios.get<ISpotifyAlbumResult>(url, {
       headers: {
-        Authorization: `Bearer ${auth.accessToken}`,
+        Authorization: `Bearer ${accessToken}`,
       },
     });
     return albumResultToAlbum(results.data.items);

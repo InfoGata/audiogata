@@ -35,6 +35,9 @@ const ArtistResult = (props: IArtistResultProps) => {
     props.clearSearch();
     const api = getApiByName(props.artist.from);
     if (api) {
+      if (api.setAuth) {
+        api.setAuth("");
+      }
       const albums = await api.getArtistAlbums(props.artist);
       props.setAlbumResults(albums);
     }

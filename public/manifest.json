@@ -1,6 +1,7 @@
 {
   "short_name": "React App",
   "name": "Create React App Sample",
+  "description": "Music App",
   "icons": [
     {
       "src": "favicon.ico",

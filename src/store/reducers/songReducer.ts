@@ -1,9 +1,10 @@
+import { v4 as uuid } from "uuid";
 import { ISong } from '../../services/data/database';
 import {
   ADD_TRACK,
   CLEAR_TRACKS,
   DELETE_TRACK,
-  LOAD_TRACKS,
+  SET_TRACKS,
   TrackActions,
 } from '../actions/song';
 
@@ -18,6 +19,8 @@ const initialState: ISongState = {
 export function songReducer(state = initialState, action: TrackActions): ISongState {
   switch (action.type) {
     case ADD_TRACK:
+      const id = uuid();
+      action.track.id = id;
       return {
         ...state,
         songs: [...state.songs, action.track]
@@ -28,15 +31,15 @@ export function songReducer(state = initialState, action: TrackActions): ISongSt
         ...state,
         songs: newPlaylist,
       }
-    case LOAD_TRACKS:
-      return {
-        ...state,
-        songs: action.tracks
-      }
     case CLEAR_TRACKS:
       return {
         ...state,
         songs: []
+      }
+    case SET_TRACKS:
+      return {
+        ...state,
+        songs: action.tracks
       }
     default:
       return state;

@@ -194,7 +194,6 @@ class SpotifyPlayer implements IPlayerComponent {
     }
     return "";
   }
-
 }
 
 export default SpotifyPlayer;

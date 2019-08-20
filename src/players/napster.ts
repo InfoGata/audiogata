@@ -16,6 +16,10 @@ class NapsterPlayer implements IPlayerComponent {
   ) {
     this.setTime = setTime;
     this.onSongEnd = onSongEnd;
+    this.init();
+  }
+
+  public init() {
     Napster.init({
       consumerKey: this.apiKey,
       isHTML5Compatible: true,

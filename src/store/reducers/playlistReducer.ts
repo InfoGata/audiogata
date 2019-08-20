@@ -1,6 +1,6 @@
 import { v4 as uuid } from "uuid";
 import { IPlaylist } from "../../services/data/database";
-import { ADD_PLAYLIST, DELETE_PLAYLIST, ADD_SONGS, PlaylistActionTypes } from "../actions/playlist";
+import { ADD_PLAYLIST, ADD_SONGS, DELETE_PLAYLIST, PlaylistActionTypes } from "../actions/playlist";
 
 interface IPlaylistState {
   playlists: IPlaylist[];

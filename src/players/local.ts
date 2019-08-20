@@ -16,6 +16,11 @@ class Local implements IPlayerComponent {
     this.audio.onended = onSongEnd;
   }
 
+  // tslint:disable-next-line: no-empty
+  public init() {
+
+  }
+
   public setVolume(volume: number) {
     this.audio.volume = volume;
   }

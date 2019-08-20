@@ -35,7 +35,7 @@ import NapsterPlayer from "./players/napster";
 import SpotifyPlayer from "./players/spotify";
 import { ISong } from "./services/data/database";
 import { setTrack, toggleRepeat, toggleShuffle } from "./store/actions/player";
-import { addTrack, deleteTrack, loadTracks } from "./store/actions/song";
+import { addTrack, deleteTrack } from "./store/actions/song";
 import { AppState } from "./store/store";
 
 const drawerWidth = 240;
@@ -142,7 +142,6 @@ class App extends Component<IProps, IAppState> {
   }
 
   public async componentDidMount() {
-    await this.props.loadTracks();
     const currentSong = this.props.currentSong;
     if (currentSong) {
       const index = this.props.songs.findIndex(s => s.id === currentSong.id);
@@ -274,26 +273,6 @@ class App extends Component<IProps, IAppState> {
         return this.spotifyPlayer;
     }
   }
-
-  // private readyCallback = async (name: string) => {
-  //   const currentSong = this.props.currentSong;
-  //   if (currentSong && this.state.playOnStartup) {
-  //     const index = this.props.songs.findIndex(s => s.id === currentSong.id);
-  //     if (index === -1) {
-  //       return;
-  //     }
-
-  //     const song = this.props.songs[index];
-  //     if (song.from === name) {
-  //       await this.playSongByIndex(index);
-  //     } else if (
-  //       name === "local-audio" &&
-  //       !this.getSpecificComponentByName(song.from || "")
-  //     ) {
-  //       await this.playSongByIndex(index);
-  //     }
-  //   }
-  // };
 
   private onSeek = (newTime: number) => {
     if (this.props.currentSong && this.props.currentSong.from) {
@@ -515,7 +494,6 @@ const mapDispatchToProps = (dispatch: Dispatch) =>
     {
       addTrack,
       deleteTrack,
-      loadTracks,
       setTrack,
       toggleRepeat,
       toggleShuffle,
@@ -529,6 +507,6 @@ const connectedComponent = connect(
   mapStateToProps,
   mapDispatchToProps,
 )(styledComponent);
-export default process.env.NODE_ENV === "development"
+export default (process.env.NODE_ENV === "development"
   ? hot(connectedComponent)
-  : connectedComponent;
+  : connectedComponent);
