@@ -142,6 +142,7 @@ class App extends Component<IProps, IAppState> {
   }
 
   public async componentDidMount() {
+    this.setMediaSessionActions();
     const currentSong = this.props.currentSong;
     if (currentSong) {
       const index = this.props.songs.findIndex(s => s.id === currentSong.id);
@@ -437,6 +438,7 @@ class App extends Component<IProps, IAppState> {
       }
     }
     this.props.setTrack(song);
+    this.setMediaSessionMetaData();
     this.setState(
       {
         isPlaying: true,
@@ -477,6 +479,27 @@ class App extends Component<IProps, IAppState> {
     if (this.props.currentSong && this.props.currentSong.from) {
       const player = this.getPlayerComponentByName(this.props.currentSong.from);
       player.pause();
+    }
+  }
+
+  private setMediaSessionMetaData() {
+    if (navigator && navigator.mediaSession) {
+      if (this.props.currentSong) {
+        navigator.mediaSession.metadata = new MediaMetadata({
+          title: this.props.currentSong.name,
+        });
+      }
+    }
+  }
+
+  private setMediaSessionActions() {
+    if (navigator && navigator.mediaSession) {
+      navigator.mediaSession.setActionHandler("previoustrack", () => {
+        this.onPreviousClick();
+      });
+      navigator.mediaSession.setActionHandler("nexttrack", () => {
+        this.onNextClick();
+      });
     }
   }
 }
