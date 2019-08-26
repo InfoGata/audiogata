@@ -24,6 +24,7 @@ import { bindActionCreators, Dispatch } from "redux";
 import Home from "./components/Home";
 import Navigation from "./components/Navigation";
 import Player from "./components/Player";
+import Playlist from "./components/Playlist";
 import PlayQueue from "./components/PlayQueue";
 import Plugins from "./components/Plugins";
 import Progress from "./components/Progress";
@@ -38,7 +39,7 @@ import { setTrack, toggleRepeat, toggleShuffle } from "./store/actions/player";
 import { addTrack, deleteTrack } from "./store/actions/song";
 import { AppState } from "./store/store";
 
-const drawerWidth = 240;
+const drawerWidth = 300;
 
 const styles = (theme: Theme) =>
   createStyles({
@@ -114,6 +115,7 @@ interface IAppState {
   muted: boolean;
   playQueueOpen: boolean;
   currentIndex: number;
+  isStopped: boolean;
 }
 
 interface IProps extends WithStyles<typeof styles>, StateProps, DispatchProps {}
@@ -130,6 +132,7 @@ class App extends Component<IProps, IAppState> {
       currentIndex: -1,
       elapsed: 0,
       isPlaying: false,
+      isStopped: true,
       muted: false,
       playOnStartup: true,
       playQueueOpen: true,
@@ -143,6 +146,12 @@ class App extends Component<IProps, IAppState> {
 
   public async componentDidMount() {
     this.setMediaSessionActions();
+    if (this.state.playOnStartup) {
+      this.playCurrentSong();
+    }
+  }
+
+  public async playCurrentSong() {
     const currentSong = this.props.currentSong;
     if (currentSong) {
       const index = this.props.songs.findIndex(s => s.id === currentSong.id);
@@ -172,6 +181,7 @@ class App extends Component<IProps, IAppState> {
             <Route exact={true} path="/" component={this.homeRoute} />
             <Route path="/plugins" component={Plugins} />
             <Route path="/sync" component={Sync} />
+            <Route exact={true} path="/playlist/:id" component={Playlist} />
           </div>
           <AppBar
             position="fixed"
@@ -322,10 +332,14 @@ class App extends Component<IProps, IAppState> {
 
   private togglePlay = () => {
     if (this.state.isPlaying) {
-      this.pausePlayer();
-      this.setState({
-        isPlaying: false,
-      });
+      if (this.state.isStopped) {
+        this.playCurrentSong();
+      } else {
+        this.pausePlayer();
+        this.setState({
+          isPlaying: false,
+        });
+      }
     } else {
       this.resumePlayer();
       this.setState({
@@ -428,6 +442,7 @@ class App extends Component<IProps, IAppState> {
 
   private async playSong(song: ISong, time?: number) {
     this.pausePlayer();
+    this.props.setTrack(song);
     if (song.from) {
       const player = this.getPlayerComponentByName(song.from);
       try {
@@ -437,11 +452,11 @@ class App extends Component<IProps, IAppState> {
         return;
       }
     }
-    this.props.setTrack(song);
     this.setMediaSessionMetaData();
     this.setState(
       {
         isPlaying: true,
+        isStopped: false,
       },
       () => {
         if (time) {

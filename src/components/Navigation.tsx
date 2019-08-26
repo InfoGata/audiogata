@@ -35,8 +35,11 @@ const PlaylistItem = (props: IPlaylistProps) => {
   function deletePlaylistItem() {
     props.deletePlaylist(props.playlist);
   }
+  function goToPlaylist(playlistProps: any) {
+    return linkToPlaylist(playlistProps, props.playlist.id);
+  }
   return (
-    <ListItem button={true} key={props.playlist.id}>
+    <ListItem button={true} component={goToPlaylist}>
       <ListItemText primary={props.playlist.name} />
       <ListItemSecondaryAction>
         <IconButton aria-label="Delete" onClick={deletePlaylistItem}>
@@ -59,6 +62,11 @@ const linkToSync = (props: any) => {
   return <Link to="/sync" {...props} />;
 };
 
+const linkToPlaylist = (props: any, id?: string) => {
+  const path = `/playlist/${id}`;
+  return <Link to={path} {...props} />;
+};
+
 const Navigation = (props: IProps) => {
   const [playlistOpen, setPlaylistOpen] = React.useState(false);
   const [dialogOpen, setDialogOpen] = React.useState(false);
@@ -73,7 +81,11 @@ const Navigation = (props: IProps) => {
   }
 
   const playlistItems = props.playlists.map(p => (
-    <PlaylistItem playlist={p} deletePlaylist={props.deletePlaylist} />
+    <PlaylistItem
+      playlist={p}
+      deletePlaylist={props.deletePlaylist}
+      key={p.id}
+    />
   ));
   return (
     <List>
