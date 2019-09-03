@@ -36,7 +36,7 @@ import NapsterPlayer from "./players/napster";
 import SpotifyPlayer from "./players/spotify";
 import { ISong } from "./services/data/database";
 import { setTrack, toggleRepeat, toggleShuffle } from "./store/actions/player";
-import { addTrack, deleteTrack } from "./store/actions/song";
+import { addTrack, deleteTrack, setTracks } from "./store/actions/song";
 import { AppState } from "./store/store";
 
 const drawerWidth = 300;
@@ -253,6 +253,7 @@ class App extends Component<IProps, IAppState> {
               currentSong={this.props.currentSong}
               onDeleteClick={this.onDeleteClick}
               onPlaylistClick={this.onPlaylistClick}
+              setTracks={this.setPlayQueue}
             />
           </Drawer>
         </div>
@@ -359,7 +360,17 @@ class App extends Component<IProps, IAppState> {
     }
     this.shuffleList = [];
 
-    await this.props.deleteTrack(song);
+    this.props.deleteTrack(song);
+    const currentIndex = this.props.songs.findIndex(
+      s => s.id === (this.props.currentSong ? this.props.currentSong.id : -1),
+    );
+    this.setState({
+      currentIndex,
+    });
+  };
+
+  private setPlayQueue = (tracks: ISong[]) => {
+    this.props.setTracks(tracks);
     const currentIndex = this.props.songs.findIndex(
       s => s.id === (this.props.currentSong ? this.props.currentSong.id : -1),
     );
@@ -533,6 +544,7 @@ const mapDispatchToProps = (dispatch: Dispatch) =>
       addTrack,
       deleteTrack,
       setTrack,
+      setTracks,
       toggleRepeat,
       toggleShuffle,
     },
