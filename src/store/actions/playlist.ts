@@ -6,11 +6,13 @@ export const ADD_SONGS = "ADD_SONGS";
 
 interface IAddPlaylist {
   type: typeof ADD_PLAYLIST;
-  name: string
+  name: string,
+  tracks: ISong[]
 }
-export function addPlaylist(name: string): IAddPlaylist {
+export function addPlaylist(name: string, tracks: ISong[] = []): IAddPlaylist {
   return {
     name,
+    tracks,
     type: ADD_PLAYLIST,
   };
 }

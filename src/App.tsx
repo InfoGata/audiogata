@@ -2,10 +2,14 @@ import {
   createStyles,
   CssBaseline,
   Divider,
+  ListItemIcon,
+  ListItemText,
+  Menu,
+  MenuItem,
   Theme,
   Typography,
-  WithStyles,
   withStyles,
+  WithStyles,
 } from "@material-ui/core";
 import AppBar from "@material-ui/core/AppBar";
 import Drawer from "@material-ui/core/Drawer";
@@ -13,6 +17,7 @@ import IconButton from "@material-ui/core/IconButton";
 import Toolbar from "@material-ui/core/Toolbar";
 import ChevronRightIcon from "@material-ui/icons/ChevronRight";
 import MenuIcon from "@material-ui/icons/Menu";
+import PlaylistAddIcon from "@material-ui/icons/PlaylistAdd";
 import classNames from "classnames";
 import React, { Component } from "react";
 import { hot } from "react-hot-loader/root";
@@ -21,6 +26,7 @@ import { BrowserRouter as Router, Route } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { bindActionCreators, Dispatch } from "redux";
+import AddPlaylistDialog from "./components/AddPlaylistDialog";
 import Home from "./components/Home";
 import Navigation from "./components/Navigation";
 import Player from "./components/Player";
@@ -34,9 +40,10 @@ import { IPlayerComponent } from "./players/IPlayerComponent";
 import Local from "./players/local";
 import NapsterPlayer from "./players/napster";
 import SpotifyPlayer from "./players/spotify";
-import { ISong } from "./services/data/database";
+import { IPlaylist, ISong } from "./services/data/database";
 import { setTrack, toggleRepeat, toggleShuffle } from "./store/actions/player";
-import { addTrack, deleteTrack, setTracks } from "./store/actions/song";
+import { addPlaylist, addSongs } from "./store/actions/playlist";
+import { addTrack, clearTracks, deleteTrack, setTracks } from "./store/actions/song";
 import { AppState } from "./store/store";
 
 const drawerWidth = 300;
@@ -116,6 +123,8 @@ interface IAppState {
   playQueueOpen: boolean;
   currentIndex: number;
   isStopped: boolean;
+  anchorEl: HTMLElement | null;
+  dialogOpen: boolean;
 }
 
 interface IProps extends WithStyles<typeof styles>, StateProps, DispatchProps {}
@@ -129,7 +138,9 @@ class App extends Component<IProps, IAppState> {
   constructor(props: any) {
     super(props);
     this.state = {
+      anchorEl: null,
       currentIndex: -1,
+      dialogOpen: false,
       elapsed: 0,
       isPlaying: false,
       isStopped: true,
@@ -246,7 +257,35 @@ class App extends Component<IProps, IAppState> {
               <IconButton onClick={this.handleDrawerClose}>
                 <ChevronRightIcon />
               </IconButton>
+              <button onClick={this.openMenu}>Save</button>
+              <button onClick={this.clearTracks}>Clear</button>
             </div>
+            <Menu
+              open={Boolean(this.state.anchorEl)}
+              onClose={this.closeMenu}
+              anchorEl={this.state.anchorEl}
+            >
+              <MenuItem onClick={this.addToNewPlaylist}>
+                <ListItemIcon>
+                  <PlaylistAddIcon />
+                </ListItemIcon>
+                <ListItemText primary="Add To New Playlist" />
+              </MenuItem>
+              {this.props.playlists.map(p => (
+                // tslint:disable-next-line: jsx-no-lambda
+                <MenuItem key={p.id} onClick={() => this.addToPlaylist(p)}>
+                  <ListItemIcon>
+                    <PlaylistAddIcon />
+                  </ListItemIcon>
+                  <ListItemText primary={p.name} />
+                </MenuItem>
+              ))}
+            </Menu>
+            <AddPlaylistDialog
+              songs={this.props.songs}
+              open={this.state.dialogOpen}
+              handleClose={this.closeDialog}
+            />
             <Divider />
             <PlayQueue
               songList={this.props.songs}
@@ -260,6 +299,50 @@ class App extends Component<IProps, IAppState> {
       </Router>
     );
   }
+
+  private openDialog = () => {
+    this.setState({
+      dialogOpen: true
+    });
+  };
+
+  private closeDialog = () => {
+    this.setState({
+      dialogOpen: false
+    });
+  };
+
+  private openMenu = (event: React.MouseEvent<HTMLButtonElement>) => {
+    this.setState({
+      anchorEl: event.currentTarget
+    });
+  };
+
+  private closeMenu = () => {
+    this.setState({
+      anchorEl: null
+    });
+  };
+
+  private addToNewPlaylist =  () => {
+    this.openDialog();
+    this.closeMenu();
+  }
+
+  private addToPlaylist = (playlist: IPlaylist) => {
+    if (playlist.id) {
+      this.props.addSongs(playlist.id, this.props.songs);
+    }
+    this.closeMenu();
+  }
+
+  private clearTracks = () => {
+    this.props.clearTracks();
+    this.setState({
+      currentIndex: -1
+    });
+  };
+
 
   private homeRoute = () => <Home onSelectSong={this.onClickSong} />;
 
@@ -532,6 +615,7 @@ class App extends Component<IProps, IAppState> {
 
 const mapStateToProps = (state: AppState) => ({
   currentSong: state.player.currentSong,
+  playlists: state.playlist.playlists,
   repeat: state.player.repeat,
   shuffle: state.player.shuffle,
   songs: state.song.songs,
@@ -541,7 +625,10 @@ type StateProps = ReturnType<typeof mapStateToProps>;
 const mapDispatchToProps = (dispatch: Dispatch) =>
   bindActionCreators(
     {
+      addPlaylist,
+      addSongs,
       addTrack,
+      clearTracks,
       deleteTrack,
       setTrack,
       setTracks,

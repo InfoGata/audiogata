@@ -13,7 +13,7 @@ export function playlistReducer(state = initialState, action: PlaylistActionType
   switch (action.type) {
     case ADD_PLAYLIST:
       const id = uuid();
-      const playlist: IPlaylist = { id, name: action.name, songs: [] };
+      const playlist: IPlaylist = { id, name: action.name, songs: action.tracks };
       return {
         ...state,
         playlists: [...state.playlists, playlist]

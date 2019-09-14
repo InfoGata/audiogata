@@ -10,11 +10,13 @@ import {
 import React from "react";
 import { connect } from "react-redux";
 import { bindActionCreators, Dispatch } from "redux";
-import { addPlaylist } from "../store/actions/playlist";
+import { ISong } from "../services/data/database";
+import { addPlaylist, addSongs } from "../store/actions/playlist";
 import { AppState } from "../store/store";
 
 interface IProps extends DispatchProps {
   open: boolean;
+  songs?: ISong[];
   handleClose: () => void;
 }
 
@@ -23,7 +25,8 @@ const AddPlaylistDialog = (props: IProps) => {
   const [name, setName] = React.useState("");
 
   function confirm() {
-    props.addPlaylist(name);
+    const tracks = props.songs || [];
+    props.addPlaylist(name, tracks);
     handleClose();
   }
 
@@ -71,6 +74,7 @@ const mapDispatchToProps = (dispatch: Dispatch) =>
   bindActionCreators(
     {
       addPlaylist,
+      addSongs,
     },
     dispatch,
   );

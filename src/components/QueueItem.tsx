@@ -122,7 +122,11 @@ const QueueItem = (props: IQueueProps & StateProps & DispatchProps) => {
               </MenuItem>
             ))}
           </Menu>
-          <AddPlaylistDialog open={dialogOpen} handleClose={closeDialog} />
+          <AddPlaylistDialog
+            songs={[props.song]}
+            open={dialogOpen}
+            handleClose={closeDialog}
+          />
         </div>
       )}
     </Draggable>
