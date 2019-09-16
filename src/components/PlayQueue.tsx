@@ -12,7 +12,7 @@ interface IProps {
   setTracks: (tracks: ISong[]) => void;
 }
 
-const PlayQueue = (props: IProps) => {
+const PlayQueue: React.FC<IProps> = props => {
   function onDragEnd(result: DropResult) {
     const { destination, source, draggableId } = result;
 

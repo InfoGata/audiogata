@@ -15,7 +15,7 @@ interface IProps extends WithStyles<typeof styles> {
   onSeek: (newTime: number) => void;
 }
 
-const Progress = (props: IProps) => {
+const Progress: React.FC<IProps> = props => {
   const [isDragging, setIsDragging] = React.useState(false);
   const [newElapsed, setNewElapsed] = React.useState(0);
 

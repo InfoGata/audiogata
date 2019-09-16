@@ -10,7 +10,7 @@ interface IProps {
   muted: boolean;
 }
 
-const Volume = (props: IProps) => {
+const Volume: React.FC<IProps> = props => {
   const volumeIcon =
     props.volume === 0 || props.muted ? <VolumeOff /> : <VolumeUp />;
   return (

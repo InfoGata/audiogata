@@ -17,7 +17,7 @@ function onNapsterLoginClick(e: React.MouseEvent) {
   window.location.href = `${loginUrl}`;
 }
 
-const Plugins = () => {
+const Plugins: React.FC = () => {
   return (
     <div>
       <a href="#" onClick={onSpotifyLoginClick}>

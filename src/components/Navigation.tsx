@@ -67,7 +67,7 @@ const linkToPlaylist = (props: any, id?: string) => {
   return <Link to={path} {...props} />;
 };
 
-const Navigation = (props: IProps) => {
+const Navigation: React.FC<IProps> = props => {
   const [playlistOpen, setPlaylistOpen] = React.useState(false);
   const [dialogOpen, setDialogOpen] = React.useState(false);
   function handlePlaylistClick() {

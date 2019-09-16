@@ -6,7 +6,7 @@ interface IProps {
   onSelectSong: (song: ISong) => void;
 }
 
-const Home = (props: IProps) => (
+const Home: React.FC<IProps> = props => (
   <div>
     <Search onSelectSong={props.onSelectSong} />
   </div>

@@ -1,13 +1,13 @@
 import React from "react";
 import { connect } from "react-redux";
 import { bindActionCreators, Dispatch } from "redux";
+import { setTracks } from "../store/actions/song";
 import { AppState } from "../store/store";
 import BlockstackSync from "../syncs/BlockstackSync";
-import { setTracks } from "../store/actions/song";
 
 interface IProps extends StateProps, DispatchProps {}
 const sync = new BlockstackSync();
-const Sync = (props: IProps) => {
+const Sync: React.FC<IProps> = props => {
   const [isLoggedIn, setIsLoggedIn] = React.useState(false);
   React.useEffect(() => {
     sync.init().then(() => {

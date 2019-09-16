@@ -1,25 +1,7 @@
-import {
-  Divider,
-  IconButton,
-  ListItem,
-  ListItemIcon,
-  ListItemSecondaryAction,
-  ListItemText,
-  Menu,
-  MenuItem,
-  Typography,
-} from "@material-ui/core";
-import DeleteIcon from "@material-ui/icons/Delete";
-import MoreHorizIcon from "@material-ui/icons/MoreHoriz";
-import PlaylistAddIcon from "@material-ui/icons/PlaylistAdd";
+import { ListItem, ListItemText, Typography } from "@material-ui/core";
 import React from "react";
 import { Draggable } from "react-beautiful-dnd";
-import { connect } from "react-redux";
-import { bindActionCreators, Dispatch } from "redux";
-import { IPlaylist, ISong } from "../services/data/database";
-import { addSongs } from "../store/actions/playlist";
-import { AppState } from "../store/store";
-import AddPlaylistDialog from "./AddPlaylistDialog";
+import { ISong } from "../services/data/database";
 
 interface IProps {
   index: number;
@@ -27,7 +9,7 @@ interface IProps {
   currentSong?: ISong;
 }
 
-const PlaylistItem = (props: IProps) => {
+const PlaylistItem: React.FC<IProps> = props => {
   return (
     <Draggable
       key={props.song.id}

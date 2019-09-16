@@ -29,7 +29,7 @@ interface IArtistResultProps {
   clearSearch: () => void;
   setAlbumResults: (albums: IAlbum[]) => void;
 }
-const ArtistResult = (props: IArtistResultProps) => {
+const ArtistResult: React.FC<IArtistResultProps> = props => {
   const onClickArtist = async (e: React.MouseEvent) => {
     e.preventDefault();
     props.clearSearch();
@@ -56,7 +56,7 @@ interface IAlbumResultProps {
   clearSearch: () => void;
   setTrackResults: (songs: ISong[]) => void;
 }
-const AlbumResult = (props: IAlbumResultProps) => {
+const AlbumResult: React.FC<IAlbumResultProps> = props => {
   const onClickAlbum = async (e: React.MouseEvent) => {
     e.preventDefault();
     props.clearSearch();
@@ -80,7 +80,7 @@ interface ITrackResultProps {
   track: ISong;
   onSelectSong: (song: ISong) => void;
 }
-const TrackResult = (props: ITrackResultProps) => {
+const TrackResult: React.FC<ITrackResultProps> = props => {
   const onClickSong = () => {
     props.onSelectSong(props.track);
   };
@@ -97,7 +97,7 @@ const TrackResult = (props: ITrackResultProps) => {
   );
 };
 
-const Search = (props: ISearchProps) => {
+const Search: React.FC<ISearchProps> = props => {
   const [searchType, setSearchType] = React.useState("soundcloud");
   const [search, setSearch] = React.useState("");
   const [trackResults, setTrackResults] = React.useState<ISong[]>([]);

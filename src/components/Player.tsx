@@ -17,7 +17,7 @@ interface IProps {
   repeat: boolean;
 }
 
-const Player = (props: IProps) => {
+const Player: React.FC<IProps> = props => {
   const playIcon = props.isPlaying ? <Pause /> : <PlayArrow />;
   const shuffleColor = props.random ? "primary" : "inherit";
   const repeatColor = props.repeat ? "primary" : "inherit";

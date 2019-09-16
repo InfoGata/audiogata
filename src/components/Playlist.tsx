@@ -14,7 +14,7 @@ interface IParams {
 
 interface IProps extends RouteComponentProps<IParams> {}
 
-const Playlist = (props: IProps & StateProps & DispatchProps) => {
+const Playlist: React.FC<IProps & StateProps & DispatchProps> = props => {
   function onDragEnd(result: DropResult) {
     const { destination, source, draggableId } = result;
     if (!destination) {

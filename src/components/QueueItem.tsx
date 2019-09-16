@@ -21,7 +21,7 @@ import { addSongs } from "../store/actions/playlist";
 import { AppState } from "../store/store";
 import AddPlaylistDialog from "./AddPlaylistDialog";
 
-interface IQueueProps {
+interface IProps {
   index: number;
   song: ISong;
   currentSong?: ISong;
@@ -29,7 +29,7 @@ interface IQueueProps {
   onPlaylistClick: (song: ISong) => void;
 }
 
-const QueueItem = (props: IQueueProps & StateProps & DispatchProps) => {
+const QueueItem: React.FC<IProps & StateProps & DispatchProps> = props => {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [dialogOpen, setDialogOpen] = React.useState(false);
   function playListClick() {
