@@ -3,6 +3,7 @@ import { IPlaylist, ISong } from "../../services/data/database";
 export const ADD_PLAYLIST = "ADD_PLAYLIST";
 export const DELETE_PLAYLIST = "DELETE_PLAYLIST";
 export const ADD_SONGS = "ADD_SONGS";
+export const SET_SONGS = "SET_SONGS";
 
 interface IAddPlaylist {
   type: typeof ADD_PLAYLIST;
@@ -41,4 +42,17 @@ export function addSongs(id: string, tracks: ISong[]): IAddSongs {
   };
 }
 
-export type PlaylistActionTypes = IAddPlaylist | IDeletePlaylist | IAddSongs;
+interface ISetSongs {
+  type: typeof SET_SONGS;
+  id: string,
+  tracks: ISong[]
+}
+export function setSongs(id: string, tracks: ISong[]): ISetSongs {
+  return {
+    id,
+    tracks,
+    type: SET_SONGS,
+  };
+}
+
+export type PlaylistActionTypes = IAddPlaylist | IDeletePlaylist | IAddSongs | ISetSongs;

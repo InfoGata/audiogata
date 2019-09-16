@@ -27,7 +27,6 @@ const PlayQueue = (props: IProps) => {
       return;
     }
 
-    // Copy trackList and
     const tracks = Array.from(props.songList);
     const track = tracks.find(s => s.id === draggableId);
     if (track) {

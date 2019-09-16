@@ -1,9 +1,12 @@
-import { List, ListItem, ListItemText } from "@material-ui/core";
+import { List, RootRef } from "@material-ui/core";
 import React from "react";
+import { DragDropContext, Droppable, DropResult } from "react-beautiful-dnd";
 import { connect } from "react-redux";
 import { RouteComponentProps } from "react-router";
 import { bindActionCreators, Dispatch } from "redux";
+import { setSongs } from "../store/actions/playlist";
 import { AppState } from "../store/store";
+import PlaylistItem from "./PlaylistItem";
 
 interface IParams {
   id: string;
@@ -11,18 +14,47 @@ interface IParams {
 
 interface IProps extends RouteComponentProps<IParams> {}
 
-const Playlist = (props: IProps & StateProps) => {
-  return (
+const Playlist = (props: IProps & StateProps & DispatchProps) => {
+  function onDragEnd(result: DropResult) {
+    const { destination, source, draggableId } = result;
+    if (!destination) {
+      return;
+    }
+
+    if (
+      destination.droppableId === source.droppableId &&
+      destination.index === source.index
+    ) {
+      return;
+    }
+
+    const tracks = Array.from(props.playlist.songs);
+    const track = tracks.find(s => s.id === draggableId);
+    if (track) {
+      tracks.splice(source.index, 1);
+      tracks.splice(destination.index, 0, track);
+      props.setSongs(props.match.params.id, tracks);
+    }
+  }
+  return props.playlist ? (
     <div>
       {props.playlist.name}
-      <List>
-        {props.playlist.songs.map(s => (
-          <ListItem key={s.id}>
-            <ListItemText primary={s.name} />
-          </ListItem>
-        ))}
-      </List>
+      <DragDropContext onDragEnd={onDragEnd}>
+        <Droppable droppableId="playlist">
+          {provided => (
+            <RootRef rootRef={provided.innerRef}>
+              <List>
+                {props.playlist.songs.map((song, index) => (
+                  <PlaylistItem key={song.id} index={index} song={song} />
+                ))}
+              </List>
+            </RootRef>
+          )}
+        </Droppable>
+      </DragDropContext>
     </div>
+  ) : (
+    <div>Not Found</div>
   );
 };
 
@@ -34,7 +66,13 @@ const mapStateToProps = (state: AppState, ownProps: IProps) => ({
 type StateProps = ReturnType<typeof mapStateToProps>;
 
 const mapDispatchToProps = (dispatch: Dispatch) =>
-  bindActionCreators({}, dispatch);
+  bindActionCreators(
+    {
+      setSongs,
+    },
+    dispatch,
+  );
+type DispatchProps = ReturnType<typeof mapDispatchToProps>;
 
 const connectedComponent = connect(
   mapStateToProps,

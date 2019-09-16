@@ -1,6 +1,6 @@
 import { v4 as uuid } from "uuid";
 import { IPlaylist } from "../../services/data/database";
-import { ADD_PLAYLIST, ADD_SONGS, DELETE_PLAYLIST, PlaylistActionTypes } from "../actions/playlist";
+import { ADD_PLAYLIST, ADD_SONGS, DELETE_PLAYLIST, PlaylistActionTypes, SET_SONGS } from "../actions/playlist";
 
 interface IPlaylistState {
   playlists: IPlaylist[];
@@ -24,6 +24,12 @@ export function playlistReducer(state = initialState, action: PlaylistActionType
         playlists: state.playlists.filter(p => p.id !== action.playlist.id)
       };
     case ADD_SONGS:
+      return {
+        ...state,
+        playlists: state.playlists.map(p =>
+          p.id === action.id ? { ...p, songs: p.songs.concat(action.tracks) } : p)
+      };
+    case SET_SONGS:
       return {
         ...state,
         playlists: state.playlists.map(p =>
