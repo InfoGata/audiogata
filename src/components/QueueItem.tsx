@@ -26,14 +26,14 @@ interface IQueueProps {
   song: ISong;
   currentSong?: ISong;
   onDeleteClick: (song: ISong) => void;
-  onPlaylistClick: (playlistIndex: number) => void;
+  onPlaylistClick: (song: ISong) => void;
 }
 
 const QueueItem = (props: IQueueProps & StateProps & DispatchProps) => {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [dialogOpen, setDialogOpen] = React.useState(false);
   function playListClick() {
-    props.onPlaylistClick(props.index);
+    props.onPlaylistClick(props.song);
   }
   function deleteClick() {
     props.onDeleteClick(props.song);

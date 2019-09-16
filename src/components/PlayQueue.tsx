@@ -8,7 +8,7 @@ interface IProps {
   songList: ISong[];
   currentSong?: ISong;
   onDeleteClick: (song: ISong) => void;
-  onPlaylistClick: (playlistIndex: number) => void;
+  onPlaylistClick: (song: ISong) => void;
   setTracks: (tracks: ISong[]) => void;
 }
 

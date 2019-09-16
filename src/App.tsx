@@ -43,7 +43,12 @@ import SpotifyPlayer from "./players/spotify";
 import { IPlaylist, ISong } from "./services/data/database";
 import { setTrack, toggleRepeat, toggleShuffle } from "./store/actions/player";
 import { addPlaylist, addSongs } from "./store/actions/playlist";
-import { addTrack, clearTracks, deleteTrack, setTracks } from "./store/actions/song";
+import {
+  addTrack,
+  clearTracks,
+  deleteTrack,
+  setTracks,
+} from "./store/actions/song";
 import { AppState } from "./store/store";
 
 const drawerWidth = 300;
@@ -121,7 +126,6 @@ interface IAppState {
   volume: number;
   muted: boolean;
   playQueueOpen: boolean;
-  currentIndex: number;
   isStopped: boolean;
   anchorEl: HTMLElement | null;
   dialogOpen: boolean;
@@ -139,7 +143,6 @@ class App extends Component<IProps, IAppState> {
     super(props);
     this.state = {
       anchorEl: null,
-      currentIndex: -1,
       dialogOpen: false,
       elapsed: 0,
       isPlaying: false,
@@ -165,8 +168,7 @@ class App extends Component<IProps, IAppState> {
   public async playCurrentSong() {
     const currentSong = this.props.currentSong;
     if (currentSong) {
-      const index = this.props.songs.findIndex(s => s.id === currentSong.id);
-      this.playSongByIndex(index);
+      this.playSong(currentSong);
     }
   }
 
@@ -302,47 +304,43 @@ class App extends Component<IProps, IAppState> {
 
   private openDialog = () => {
     this.setState({
-      dialogOpen: true
+      dialogOpen: true,
     });
   };
 
   private closeDialog = () => {
     this.setState({
-      dialogOpen: false
+      dialogOpen: false,
     });
   };
 
   private openMenu = (event: React.MouseEvent<HTMLButtonElement>) => {
     this.setState({
-      anchorEl: event.currentTarget
+      anchorEl: event.currentTarget,
     });
   };
 
   private closeMenu = () => {
     this.setState({
-      anchorEl: null
+      anchorEl: null,
     });
   };
 
-  private addToNewPlaylist =  () => {
+  private addToNewPlaylist = () => {
     this.openDialog();
     this.closeMenu();
-  }
+  };
 
   private addToPlaylist = (playlist: IPlaylist) => {
     if (playlist.id) {
       this.props.addSongs(playlist.id, this.props.songs);
     }
     this.closeMenu();
-  }
+  };
 
   private clearTracks = () => {
     this.props.clearTracks();
-    this.setState({
-      currentIndex: -1
-    });
   };
-
 
   private homeRoute = () => <Home onSelectSong={this.onClickSong} />;
 
@@ -444,30 +442,38 @@ class App extends Component<IProps, IAppState> {
     this.shuffleList = [];
 
     this.props.deleteTrack(song);
-    const currentIndex = this.props.songs.findIndex(
-      s => s.id === (this.props.currentSong ? this.props.currentSong.id : -1),
-    );
-    this.setState({
-      currentIndex,
-    });
   };
 
   private setPlayQueue = (tracks: ISong[]) => {
     this.props.setTracks(tracks);
-    const currentIndex = this.props.songs.findIndex(
-      s => s.id === (this.props.currentSong ? this.props.currentSong.id : -1),
-    );
-    this.setState({
-      currentIndex,
-    });
+    this.shuffleList = [];
   };
+
+  private getCurrentIndex() {
+    if (this.props.currentSong) {
+      return this.props.songs.indexOf(this.props.currentSong);
+    }
+    return -1;
+  }
+
+  private async playSongByIndex(index: number, time?: number) {
+    if (this.isNotValidIndex(index)) {
+      return;
+    }
+    const song = this.props.songs[index];
+    await this.playSong(song, time);
+  }
+
+  private isNotValidIndex(index: number) {
+    return this.props.songs[index] === undefined;
+  }
 
   private onPreviousClick = async () => {
     if (this.state.elapsed > 2) {
       this.onSeek(0);
       return;
     }
-    let newIndex = this.state.currentIndex - 1;
+    let newIndex = this.getCurrentIndex() - 1;
     if (newIndex >= 0) {
       await this.playSongByIndex(newIndex);
     } else if (this.props.repeat) {
@@ -477,7 +483,7 @@ class App extends Component<IProps, IAppState> {
   };
 
   private onNextClick = async () => {
-    let newIndex = this.state.currentIndex + 1;
+    let newIndex = this.getCurrentIndex() + 1;
     if (this.props.shuffle) {
       if (this.shuffleList.length === 0) {
         this.createShuffleList();
@@ -496,10 +502,6 @@ class App extends Component<IProps, IAppState> {
     const indexArray = Object.keys(this.props.songs).map(Number);
     this.shuffleArray(indexArray);
     this.shuffleList = indexArray;
-    // Whatever song is currently playing, don't put in list
-    this.shuffleList = this.shuffleList.filter(
-      s => s !== this.state.currentIndex,
-    );
   }
 
   private shuffleArray(array: any[]) {
@@ -519,10 +521,6 @@ class App extends Component<IProps, IAppState> {
       total,
     });
   };
-
-  private isNotValidIndex(index: number) {
-    return this.props.songs[index] === undefined;
-  }
 
   private onSongError(err: any) {
     if (this.props.currentSong) {
@@ -560,20 +558,8 @@ class App extends Component<IProps, IAppState> {
     );
   }
 
-  private async playSongByIndex(index: number, time?: number) {
-    if (this.isNotValidIndex(index)) {
-      return;
-    }
-
-    const song = this.props.songs[index];
-    this.setState({
-      currentIndex: index,
-    });
-    await this.playSong(song, time);
-  }
-
-  private onPlaylistClick = async (index: number) => {
-    await this.playSongByIndex(index);
+  private onPlaylistClick = async (song: ISong) => {
+    await this.playSong(song);
     this.createShuffleList();
   };
 
