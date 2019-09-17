@@ -50,6 +50,7 @@ import {
   setTracks,
 } from "./store/actions/song";
 import { AppState } from "./store/store";
+import PlaylistMenuItem from "./components/PlaylistMenuItem";
 
 const drawerWidth = 300;
 
@@ -274,13 +275,12 @@ class App extends Component<IProps, IAppState> {
                 <ListItemText primary="Add To New Playlist" />
               </MenuItem>
               {this.props.playlists.map(p => (
-                // tslint:disable-next-line: jsx-no-lambda
-                <MenuItem key={p.id} onClick={() => this.addToPlaylist(p)}>
-                  <ListItemIcon>
-                    <PlaylistAddIcon />
-                  </ListItemIcon>
-                  <ListItemText primary={p.name} />
-                </MenuItem>
+                <PlaylistMenuItem
+                  key={p.id}
+                  playlist={p}
+                  songs={this.props.songs}
+                  closeMenu={this.closeMenu}
+                />
               ))}
             </Menu>
             <AddPlaylistDialog
@@ -328,13 +328,6 @@ class App extends Component<IProps, IAppState> {
 
   private addToNewPlaylist = () => {
     this.openDialog();
-    this.closeMenu();
-  };
-
-  private addToPlaylist = (playlist: IPlaylist) => {
-    if (playlist.id) {
-      this.props.addSongs(playlist.id, this.props.songs);
-    }
     this.closeMenu();
   };
 
@@ -630,6 +623,6 @@ const connectedComponent = connect(
   mapStateToProps,
   mapDispatchToProps,
 )(styledComponent);
-export default (process.env.NODE_ENV === "development"
+export default process.env.NODE_ENV === "development"
   ? hot(connectedComponent)
-  : connectedComponent);
+  : connectedComponent;

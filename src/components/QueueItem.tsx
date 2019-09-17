@@ -19,6 +19,7 @@ import { IPlaylist, ISong } from "../services/data/database";
 import { addSongs } from "../store/actions/playlist";
 import { AppState } from "../store/store";
 import AddPlaylistDialog from "./AddPlaylistDialog";
+import PlaylistMenuItem from "./PlaylistMenuItem";
 
 interface IProps {
   index: number;
@@ -56,12 +57,6 @@ const QueueItem: React.FC<IProps> = props => {
   }
   function closeDialog() {
     setDialogOpen(false);
-  }
-  function addToPlaylist(playlist: IPlaylist) {
-    if (playlist.id) {
-      dispatch(addSongs(playlist.id, [props.song]));
-    }
-    closeMenu();
   }
   return (
     <Draggable
@@ -115,13 +110,12 @@ const QueueItem: React.FC<IProps> = props => {
               <ListItemText primary="Add To New Playlist" />
             </MenuItem>
             {playlists.map(p => (
-              // tslint:disable-next-line: jsx-no-lambda
-              <MenuItem key={p.id} onClick={() => addToPlaylist(p)}>
-                <ListItemIcon>
-                  <PlaylistAddIcon />
-                </ListItemIcon>
-                <ListItemText primary={p.name} />
-              </MenuItem>
+              <PlaylistMenuItem
+                key={p.id}
+                playlist={p}
+                songs={[props.song]}
+                closeMenu={closeMenu}
+              />
             ))}
           </Menu>
           <AddPlaylistDialog
