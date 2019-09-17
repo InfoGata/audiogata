@@ -1,7 +1,7 @@
 import { List, RootRef } from "@material-ui/core";
 import React from "react";
 import { DragDropContext, Droppable, DropResult } from "react-beautiful-dnd";
-import { connect } from "react-redux";
+import { connect, useDispatch, useSelector } from "react-redux";
 import { RouteComponentProps } from "react-router";
 import { bindActionCreators, Dispatch } from "redux";
 import { setSongs } from "../store/actions/playlist";
@@ -14,7 +14,12 @@ interface IParams {
 
 interface IProps extends RouteComponentProps<IParams> {}
 
-const Playlist: React.FC<IProps & StateProps & DispatchProps> = props => {
+const Playlist: React.FC<IProps> = props => {
+  const dispatch = useDispatch();
+  const playlist = useSelector((state: AppState) =>
+    state.playlist.playlists.find(p => p.id === props.match.params.id),
+  );
+
   function onDragEnd(result: DropResult) {
     const { destination, source, draggableId } = result;
     if (!destination) {
@@ -28,23 +33,25 @@ const Playlist: React.FC<IProps & StateProps & DispatchProps> = props => {
       return;
     }
 
-    const tracks = Array.from(props.playlist.songs);
-    const track = tracks.find(s => s.id === draggableId);
-    if (track) {
-      tracks.splice(source.index, 1);
-      tracks.splice(destination.index, 0, track);
-      props.setSongs(props.match.params.id, tracks);
+    if (playlist) {
+      const tracks = Array.from(playlist.songs);
+      const track = tracks.find(s => s.id === draggableId);
+      if (track) {
+        tracks.splice(source.index, 1);
+        tracks.splice(destination.index, 0, track);
+        dispatch(setSongs(props.match.params.id, tracks));
+      }
     }
   }
-  return props.playlist ? (
+  return playlist ? (
     <div>
-      {props.playlist.name}
+      {playlist.name}
       <DragDropContext onDragEnd={onDragEnd}>
         <Droppable droppableId="playlist">
           {provided => (
             <RootRef rootRef={provided.innerRef}>
               <List>
-                {props.playlist.songs.map((song, index) => (
+                {playlist.songs.map((song, index) => (
                   <PlaylistItem key={song.id} index={index} song={song} />
                 ))}
               </List>
@@ -58,25 +65,4 @@ const Playlist: React.FC<IProps & StateProps & DispatchProps> = props => {
   );
 };
 
-const mapStateToProps = (state: AppState, ownProps: IProps) => ({
-  playlist: state.playlist.playlists.filter(
-    p => p.id === ownProps.match.params.id,
-  )[0],
-});
-type StateProps = ReturnType<typeof mapStateToProps>;
-
-const mapDispatchToProps = (dispatch: Dispatch) =>
-  bindActionCreators(
-    {
-      setSongs,
-    },
-    dispatch,
-  );
-type DispatchProps = ReturnType<typeof mapDispatchToProps>;
-
-const connectedComponent = connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(Playlist);
-
-export default connectedComponent;
+export default Playlist;

@@ -1,14 +1,14 @@
 import React from "react";
-import { connect } from "react-redux";
-import { bindActionCreators, Dispatch } from "redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setTracks } from "../store/actions/song";
 import { AppState } from "../store/store";
 import BlockstackSync from "../syncs/BlockstackSync";
 
-interface IProps extends StateProps, DispatchProps {}
 const sync = new BlockstackSync();
-const Sync: React.FC<IProps> = props => {
+const Sync: React.FC = () => {
   const [isLoggedIn, setIsLoggedIn] = React.useState(false);
+  const dispatch = useDispatch();
+  const songs = useSelector((state: AppState) => state.song.songs);
   React.useEffect(() => {
     sync.init().then(() => {
       setIsLoggedIn(sync.isLoggedIn());
@@ -25,11 +25,11 @@ const Sync: React.FC<IProps> = props => {
 
   async function getData() {
     const data = await sync.getData();
-    props.setTracks(data);
+    dispatch(setTracks(data));
   }
 
   async function syncData() {
-    await sync.sync(props.songs);
+    await sync.sync(songs);
   }
 
   return isLoggedIn ? (
@@ -43,20 +43,4 @@ const Sync: React.FC<IProps> = props => {
   );
 };
 
-const mapStateToProps = (state: AppState) => ({
-  songs: state.song.songs,
-});
-type StateProps = ReturnType<typeof mapStateToProps>;
-const mapDispatchToProps = (dispatch: Dispatch) =>
-  bindActionCreators(
-    {
-      setTracks,
-    },
-    dispatch,
-  );
-type DispatchProps = ReturnType<typeof mapDispatchToProps>;
-const connectedComponent = connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(Sync);
-export default connectedComponent;
+export default Sync;

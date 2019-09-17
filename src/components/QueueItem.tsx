@@ -14,8 +14,7 @@ import MoreHorizIcon from "@material-ui/icons/MoreHoriz";
 import PlaylistAddIcon from "@material-ui/icons/PlaylistAdd";
 import React from "react";
 import { Draggable } from "react-beautiful-dnd";
-import { connect } from "react-redux";
-import { bindActionCreators, Dispatch } from "redux";
+import { useDispatch, useSelector } from "react-redux";
 import { IPlaylist, ISong } from "../services/data/database";
 import { addSongs } from "../store/actions/playlist";
 import { AppState } from "../store/store";
@@ -29,9 +28,12 @@ interface IProps {
   onPlaylistClick: (song: ISong) => void;
 }
 
-const QueueItem: React.FC<IProps & StateProps & DispatchProps> = props => {
+const QueueItem: React.FC<IProps> = props => {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [dialogOpen, setDialogOpen] = React.useState(false);
+  const dispatch = useDispatch();
+  const playlists = useSelector((state: AppState) => state.playlist.playlists);
+
   function playListClick() {
     props.onPlaylistClick(props.song);
   }
@@ -57,7 +59,7 @@ const QueueItem: React.FC<IProps & StateProps & DispatchProps> = props => {
   }
   function addToPlaylist(playlist: IPlaylist) {
     if (playlist.id) {
-      props.addSongs(playlist.id, [props.song]);
+      dispatch(addSongs(playlist.id, [props.song]));
     }
     closeMenu();
   }
@@ -112,7 +114,7 @@ const QueueItem: React.FC<IProps & StateProps & DispatchProps> = props => {
               </ListItemIcon>
               <ListItemText primary="Add To New Playlist" />
             </MenuItem>
-            {props.playlists.map(p => (
+            {playlists.map(p => (
               // tslint:disable-next-line: jsx-no-lambda
               <MenuItem key={p.id} onClick={() => addToPlaylist(p)}>
                 <ListItemIcon>
@@ -133,22 +135,4 @@ const QueueItem: React.FC<IProps & StateProps & DispatchProps> = props => {
   );
 };
 
-const mapStateToProps = (state: AppState) => ({
-  playlists: state.playlist.playlists,
-});
-type StateProps = ReturnType<typeof mapStateToProps>;
-
-const mapDispatchToProps = (dispatch: Dispatch) =>
-  bindActionCreators(
-    {
-      addSongs,
-    },
-    dispatch,
-  );
-type DispatchProps = ReturnType<typeof mapDispatchToProps>;
-const connectedComponent = connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(QueueItem);
-
-export default connectedComponent;
+export default QueueItem;

@@ -7,7 +7,6 @@ import {
   ListItemSecondaryAction,
   ListItemText,
 } from "@material-ui/core";
-import DeleteIcon from "@material-ui/icons/Delete";
 import ExpandLess from "@material-ui/icons/ExpandLess";
 import ExpandMore from "@material-ui/icons/ExpandMore";
 import ExtensionIcon from "@material-ui/icons/Extension";
@@ -16,39 +15,11 @@ import MenuIcon from "@material-ui/icons/Menu";
 import PlaylistAddIcon from "@material-ui/icons/PlaylistAdd";
 import SyncIcon from "@material-ui/icons/Sync";
 import React from "react";
-import { connect } from "react-redux";
+import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import { bindActionCreators, Dispatch } from "redux";
-import { IPlaylist } from "../services/data/database";
-import { deletePlaylist } from "../store/actions/playlist";
 import { AppState } from "../store/store";
 import AddPlaylistDialog from "./AddPlaylistDialog";
-
-interface IProps extends StateProps, DispatchProps {}
-
-interface IPlaylistProps {
-  playlist: IPlaylist;
-  deletePlaylist: (playlist: IPlaylist) => void;
-}
-
-const PlaylistItem = (props: IPlaylistProps) => {
-  function deletePlaylistItem() {
-    props.deletePlaylist(props.playlist);
-  }
-  function goToPlaylist(playlistProps: any) {
-    return linkToPlaylist(playlistProps, props.playlist.id);
-  }
-  return (
-    <ListItem button={true} component={goToPlaylist}>
-      <ListItemText primary={props.playlist.name} />
-      <ListItemSecondaryAction>
-        <IconButton aria-label="Delete" onClick={deletePlaylistItem}>
-          <DeleteIcon />
-        </IconButton>
-      </ListItemSecondaryAction>
-    </ListItem>
-  );
-};
+import NavigationPlaylistItem from "./NavigationPlaylistItem";
 
 const linkToHome = (props: any) => {
   return <Link to="/" {...props} />;
@@ -62,14 +33,10 @@ const linkToSync = (props: any) => {
   return <Link to="/sync" {...props} />;
 };
 
-const linkToPlaylist = (props: any, id?: string) => {
-  const path = `/playlist/${id}`;
-  return <Link to={path} {...props} />;
-};
-
-const Navigation: React.FC<IProps> = props => {
+const Navigation: React.FC = () => {
   const [playlistOpen, setPlaylistOpen] = React.useState(false);
   const [dialogOpen, setDialogOpen] = React.useState(false);
+  const playlists = useSelector((state: AppState) => state.playlist.playlists);
   function handlePlaylistClick() {
     setPlaylistOpen(!playlistOpen);
   }
@@ -80,12 +47,8 @@ const Navigation: React.FC<IProps> = props => {
     setDialogOpen(false);
   }
 
-  const playlistItems = props.playlists.map(p => (
-    <PlaylistItem
-      playlist={p}
-      deletePlaylist={props.deletePlaylist}
-      key={p.id}
-    />
+  const playlistItems = playlists.map(p => (
+    <NavigationPlaylistItem playlist={p} key={p.id} />
   ));
   return (
     <List>
@@ -132,22 +95,4 @@ const Navigation: React.FC<IProps> = props => {
   );
 };
 
-const mapStateToProps = (state: AppState) => ({
-  playlists: state.playlist.playlists,
-});
-type StateProps = ReturnType<typeof mapStateToProps>;
-
-const mapDispatchToProps = (dispatch: Dispatch) =>
-  bindActionCreators(
-    {
-      deletePlaylist,
-    },
-    dispatch,
-  );
-type DispatchProps = ReturnType<typeof mapDispatchToProps>;
-
-const connectedComponent = connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(Navigation);
-export default connectedComponent;
+export default React.memo(Navigation);

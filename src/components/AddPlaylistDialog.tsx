@@ -8,13 +8,11 @@ import {
   TextField,
 } from "@material-ui/core";
 import React from "react";
-import { connect } from "react-redux";
-import { bindActionCreators, Dispatch } from "redux";
+import { useDispatch } from "react-redux";
 import { ISong } from "../services/data/database";
-import { addPlaylist, addSongs } from "../store/actions/playlist";
-import { AppState } from "../store/store";
+import { addPlaylist } from "../store/actions/playlist";
 
-interface IProps extends DispatchProps {
+interface IProps {
   open: boolean;
   songs?: ISong[];
   handleClose: () => void;
@@ -23,10 +21,11 @@ interface IProps extends DispatchProps {
 const AddPlaylistDialog: React.FC<IProps> = props => {
   const { open, handleClose } = props;
   const [name, setName] = React.useState("");
+  const dispatch = useDispatch();
 
   function confirm() {
     const tracks = props.songs || [];
-    props.addPlaylist(name, tracks);
+    dispatch(addPlaylist(name, tracks));
     handleClose();
   }
 
@@ -68,19 +67,4 @@ const AddPlaylistDialog: React.FC<IProps> = props => {
   );
 };
 
-const mapStateToProps = (state: AppState) => ({});
-
-const mapDispatchToProps = (dispatch: Dispatch) =>
-  bindActionCreators(
-    {
-      addPlaylist,
-      addSongs,
-    },
-    dispatch,
-  );
-type DispatchProps = ReturnType<typeof mapDispatchToProps>;
-const connectedComponent = connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(AddPlaylistDialog);
-export default connectedComponent;
+export default AddPlaylistDialog;
