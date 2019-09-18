@@ -9,7 +9,7 @@ import React from "react";
 import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
 import { IPlaylist } from "../services/data/database";
-import { deletePlaylist } from "../store/actions/playlist";
+import { deletePlaylist } from "../store/reducers/playlistReducer";
 
 const linkToPlaylist = (props: any, id?: string) => {
   const path = `/playlist/${id}`;

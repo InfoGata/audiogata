@@ -1,6 +1,6 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { setTracks } from "../store/actions/song";
+import { setTracks } from "../store/reducers/songReducer";
 import { AppState } from "../store/store";
 import BlockstackSync from "../syncs/BlockstackSync";
 

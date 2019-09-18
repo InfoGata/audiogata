@@ -1,5 +1,5 @@
+import { createSlice, PayloadAction } from "redux-starter-kit";
 import { ISong } from "../../services/data/database";
-import { PlayerActionTypes, SET_TRACK, TOGGLE_REPEAT, TOGGLE_SHUFFLE } from "../actions/player";
 
 interface IPlayerState {
   shuffle: boolean;
@@ -11,24 +11,30 @@ const initialState: IPlayerState = {
   shuffle: false,
 }
 
-export function playerReducer(state = initialState, action: PlayerActionTypes): IPlayerState {
-  switch (action.type) {
-    case TOGGLE_SHUFFLE:
+const playerSlice = createSlice({
+  initialState,
+  reducers: {
+    setTrack: (state, action: PayloadAction<ISong | undefined>) => {
       return {
         ...state,
-        shuffle: !state.shuffle,
+        currentSong: action.payload,
       }
-    case TOGGLE_REPEAT:
+    },
+    toggleRepeat: (state) => {
       return {
         ...state,
         repeat: !state.repeat,
       }
-    case SET_TRACK:
+    },
+    toggleShuffle: (state) => {
       return {
         ...state,
-        currentSong: action.track,
+        shuffle: !state.shuffle,
       }
-    default:
-      return state;
-  }
-}
+    },
+  },
+  slice: 'player',
+});
+
+export const { setTrack, toggleRepeat, toggleShuffle } = playerSlice.actions;
+export default playerSlice.reducer;

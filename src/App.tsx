@@ -31,6 +31,7 @@ import Home from "./components/Home";
 import Navigation from "./components/Navigation";
 import Player from "./components/Player";
 import Playlist from "./components/Playlist";
+import PlaylistMenuItem from "./components/PlaylistMenuItem";
 import PlayQueue from "./components/PlayQueue";
 import Plugins from "./components/Plugins";
 import Progress from "./components/Progress";
@@ -40,17 +41,20 @@ import { IPlayerComponent } from "./players/IPlayerComponent";
 import Local from "./players/local";
 import NapsterPlayer from "./players/napster";
 import SpotifyPlayer from "./players/spotify";
-import { IPlaylist, ISong } from "./services/data/database";
-import { setTrack, toggleRepeat, toggleShuffle } from "./store/actions/player";
-import { addPlaylist, addSongs } from "./store/actions/playlist";
+import { ISong } from "./services/data/database";
+import {
+  setTrack,
+  toggleRepeat,
+  toggleShuffle,
+} from "./store/reducers/playerReducer";
+import { addPlaylist, addSongs } from "./store/reducers/playlistReducer";
 import {
   addTrack,
   clearTracks,
   deleteTrack,
   setTracks,
-} from "./store/actions/song";
+} from "./store/reducers/songReducer";
 import { AppState } from "./store/store";
-import PlaylistMenuItem from "./components/PlaylistMenuItem";
 
 const drawerWidth = 300;
 

@@ -1,11 +1,9 @@
-import { applyMiddleware, combineReducers, createStore } from "redux";
-import { composeWithDevTools } from 'redux-devtools-extension';
 import { persistReducer, persistStore } from "redux-persist";
 import storage from "redux-persist/lib/storage";
-import thunk from "redux-thunk";
-import { playerReducer } from "./reducers/playerReducer";
-import { playlistReducer } from "./reducers/playlistReducer";
-import { songReducer } from "./reducers/songReducer";
+import { combineReducers, configureStore } from "redux-starter-kit";
+import playerReducer from "./reducers/playerReducer";
+import playlistReducer from "./reducers/playlistReducer";
+import songReducer from "./reducers/songReducer";
 
 const rootReducer = combineReducers({
   player: playerReducer,
@@ -20,8 +18,10 @@ const persistConfig = {
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
-export type AppState = ReturnType<typeof persistedReducer>;
 
-const store = createStore(persistedReducer, composeWithDevTools(applyMiddleware(thunk)));
+
+const store = configureStore({ reducer: persistedReducer });
 export const persistor = persistStore(store);
+export type AppState = ReturnType<typeof persistedReducer>;
+export type AppDispatch = typeof store.dispatch;
 export default store;

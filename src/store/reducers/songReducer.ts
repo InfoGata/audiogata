@@ -1,12 +1,6 @@
+import { createSlice, PayloadAction } from "redux-starter-kit";
 import { v4 as uuid } from "uuid";
 import { ISong } from '../../services/data/database';
-import {
-  ADD_TRACK,
-  CLEAR_TRACKS,
-  DELETE_TRACK,
-  SET_TRACKS,
-  TrackActions,
-} from '../actions/song';
 
 interface ISongState {
   songs: ISong[];
@@ -16,32 +10,39 @@ const initialState: ISongState = {
   songs: [],
 }
 
-export function songReducer(state = initialState, action: TrackActions): ISongState {
-  switch (action.type) {
-    case ADD_TRACK:
+const songSlice = createSlice({
+  initialState,
+  reducers: {
+    addTrack(state, action: PayloadAction<ISong>) {
       const id = uuid();
-      action.track.id = id;
+      action.payload.id = id;
       return {
         ...state,
-        songs: [...state.songs, action.track]
+        songs: [...state.songs, action.payload]
       };
-    case DELETE_TRACK:
-      const newPlaylist = state.songs.filter(s => s.id !== action.track.id);
+    },
+    clearTracks(state) {
+      return {
+        ...state,
+        songs: []
+      };
+    },
+    deleteTrack(state, action: PayloadAction<ISong>) {
+      const newPlaylist = state.songs.filter(s => s.id !== action.payload.id);
       return {
         ...state,
         songs: newPlaylist,
       }
-    case CLEAR_TRACKS:
+    },
+    setTracks(state, action: PayloadAction<ISong[]>) {
       return {
         ...state,
-        songs: []
+        songs: action.payload
       }
-    case SET_TRACKS:
-      return {
-        ...state,
-        songs: action.tracks
-      }
-    default:
-      return state;
-  }
-}
+    }
+  },
+  slice: "song"
+});
+
+export const { setTracks, clearTracks, deleteTrack, addTrack } = songSlice.actions;
+export default songSlice.reducer;

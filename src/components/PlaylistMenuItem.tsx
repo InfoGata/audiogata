@@ -3,7 +3,7 @@ import PlaylistAddIcon from "@material-ui/icons/PlaylistAdd";
 import React from "react";
 import { useDispatch } from "react-redux";
 import { IPlaylist, ISong } from "../services/data/database";
-import { addSongs } from "../store/actions/playlist";
+import { addSongs } from "../store/reducers/playlistReducer";
 
 interface IProps {
   playlist: IPlaylist;

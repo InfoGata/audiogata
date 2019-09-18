@@ -1,10 +1,9 @@
 import { List, RootRef } from "@material-ui/core";
 import React from "react";
 import { DragDropContext, Droppable, DropResult } from "react-beautiful-dnd";
-import { connect, useDispatch, useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { RouteComponentProps } from "react-router";
-import { bindActionCreators, Dispatch } from "redux";
-import { setSongs } from "../store/actions/playlist";
+import { setSongs } from "../store/reducers/playlistReducer";
 import { AppState } from "../store/store";
 import PlaylistItem from "./PlaylistItem";
 

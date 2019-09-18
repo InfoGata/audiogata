@@ -10,7 +10,7 @@ import {
 import React from "react";
 import { useDispatch } from "react-redux";
 import { ISong } from "../services/data/database";
-import { addPlaylist } from "../store/actions/playlist";
+import { addPlaylist } from "../store/reducers/playlistReducer";
 
 interface IProps {
   open: boolean;
@@ -25,7 +25,11 @@ const AddPlaylistDialog: React.FC<IProps> = props => {
 
   function confirm() {
     const tracks = props.songs || [];
-    dispatch(addPlaylist(name, tracks));
+    const playlist = {
+      name,
+      songs: tracks,
+    };
+    dispatch(addPlaylist(playlist));
     handleClose();
   }
 
