@@ -47,9 +47,7 @@ import {
   toggleRepeat,
   toggleShuffle,
 } from "./store/reducers/playerReducer";
-import { addPlaylist, addSongs } from "./store/reducers/playlistReducer";
 import {
-  addTrack,
   clearTracks,
   deleteTrack,
   setTracks,
@@ -196,7 +194,7 @@ class App extends Component<IProps, IAppState> {
             <Navigation />
           </Drawer>
           <div>
-            <Route exact={true} path="/" component={this.homeRoute} />
+            <Route exact={true} path="/" component={Home} />
             <Route path="/plugins" component={Plugins} />
             <Route path="/sync" component={Sync} />
             <Route exact={true} path="/playlist/:id" component={Playlist} />
@@ -339,8 +337,6 @@ class App extends Component<IProps, IAppState> {
     this.props.clearTracks();
   };
 
-  private homeRoute = () => <Home onSelectSong={this.onClickSong} />;
-
   private handleDrawerOpen = () => {
     this.setState({ playQueueOpen: true });
   };
@@ -425,10 +421,6 @@ class App extends Component<IProps, IAppState> {
         isPlaying: true,
       });
     }
-  };
-
-  private onClickSong = async (song: ISong) => {
-    this.props.addTrack(song);
   };
 
   private onDeleteClick = async (song: ISong) => {
@@ -608,9 +600,6 @@ type StateProps = ReturnType<typeof mapStateToProps>;
 const mapDispatchToProps = (dispatch: Dispatch) =>
   bindActionCreators(
     {
-      addPlaylist,
-      addSongs,
-      addTrack,
       clearTracks,
       deleteTrack,
       setTrack,

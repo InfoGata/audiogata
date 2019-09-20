@@ -1,15 +1,13 @@
 import React from "react";
+import { useDispatch } from "react-redux";
 import { ISearchApi } from "../services/apis/ISearchApi";
 import Napster from "../services/apis/Napster";
 import SoundCloud from "../services/apis/SoundCloud";
 import Spotify from "../services/apis/Spotify";
 import Youtube from "../services/apis/Youtube";
 import { IAlbum, IArtist, ISong } from "../services/data/database";
+import { addTrack } from "../store/reducers/songReducer";
 import { formatSeconds } from "../utils";
-
-interface ISearchProps {
-  onSelectSong: (song: ISong) => void;
-}
 
 const getApiByName = (name: string): ISearchApi | undefined => {
   switch (name) {
@@ -78,11 +76,12 @@ const AlbumResult: React.FC<IAlbumResultProps> = props => {
 
 interface ITrackResultProps {
   track: ISong;
-  onSelectSong: (song: ISong) => void;
 }
 const TrackResult: React.FC<ITrackResultProps> = props => {
+  const dispatch = useDispatch();
+
   const onClickSong = () => {
-    props.onSelectSong(props.track);
+    dispatch(addTrack(props.track));
   };
   return (
     <li key={props.track.apiId}>
@@ -97,7 +96,7 @@ const TrackResult: React.FC<ITrackResultProps> = props => {
   );
 };
 
-const Search: React.FC<ISearchProps> = props => {
+const Search: React.FC = () => {
   const [searchType, setSearchType] = React.useState("soundcloud");
   const [search, setSearch] = React.useState("");
   const [trackResults, setTrackResults] = React.useState<ISong[]>([]);
@@ -131,11 +130,7 @@ const Search: React.FC<ISearchProps> = props => {
   };
 
   const trackList = trackResults.map(track => (
-    <TrackResult
-      key={track.apiId}
-      track={track}
-      onSelectSong={props.onSelectSong}
-    />
+    <TrackResult key={track.apiId} track={track} />
   ));
   const albumList = albumResults.map(album => (
     <AlbumResult

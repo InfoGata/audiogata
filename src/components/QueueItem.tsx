@@ -31,7 +31,6 @@ interface IProps {
 const QueueItem: React.FC<IProps> = props => {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [dialogOpen, setDialogOpen] = React.useState(false);
-  const dispatch = useDispatch();
   const playlists = useSelector((state: AppState) => state.playlist.playlists);
 
   function playListClick() {

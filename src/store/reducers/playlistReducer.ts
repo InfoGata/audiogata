@@ -5,6 +5,7 @@ import { IPlaylist, ISong } from "../../services/data/database";
 interface IPlaylistState {
   playlists: IPlaylist[];
 }
+
 const initialState: IPlaylistState = {
   playlists: []
 }
@@ -13,6 +14,7 @@ interface IAddSongs {
   id: string;
   songs: ISong[];
 }
+
 const prepareAddSongs = (id: string, songs: ISong[]) => ({
   payload: {
     id,

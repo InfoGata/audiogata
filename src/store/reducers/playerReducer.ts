@@ -6,6 +6,7 @@ interface IPlayerState {
   repeat: boolean;
   currentSong?: ISong;
 }
+
 const initialState: IPlayerState = {
   repeat: false,
   shuffle: false,
