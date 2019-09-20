@@ -39,7 +39,7 @@ const songSlice = createSlice({
         ...state,
         songs: action.payload
       }
-    }
+    },
   },
   slice: "song"
 });

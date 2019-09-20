@@ -1,15 +1,7 @@
 import { persistReducer, persistStore } from "redux-persist";
 import storage from "redux-persist/lib/storage";
-import { combineReducers, configureStore } from "redux-starter-kit";
-import playerReducer from "./reducers/playerReducer";
-import playlistReducer from "./reducers/playlistReducer";
-import songReducer from "./reducers/songReducer";
-
-const rootReducer = combineReducers({
-  player: playerReducer,
-  playlist: playlistReducer,
-  song: songReducer,
-});
+import { configureStore } from "redux-starter-kit";
+import rootReducer from "./rootReducer";
 
 const persistConfig = {
   key: "root",
@@ -18,9 +10,17 @@ const persistConfig = {
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
-
-
 const store = configureStore({ reducer: persistedReducer });
+
+if (process.env.NODE_ENV === 'development' && module.hot) {
+  module.hot.accept('./rootReducer', () => {
+    const newRootReducer = require('./rootReducer').default
+    store.replaceReducer(
+      persistReducer(persistConfig, newRootReducer)
+    )
+  })
+}
+
 export const persistor = persistStore(store);
 export type AppState = ReturnType<typeof persistedReducer>;
 export type AppDispatch = typeof store.dispatch;
