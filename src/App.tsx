@@ -43,14 +43,12 @@ import NapsterPlayer from "./players/napster";
 import SpotifyPlayer from "./players/spotify";
 import { ISong } from "./services/data/database";
 import {
-  setTrack,
-  toggleRepeat,
-  toggleShuffle,
-} from "./store/reducers/playerReducer";
-import {
   clearTracks,
   deleteTrack,
+  setTrack,
   setTracks,
+  toggleRepeat,
+  toggleShuffle,
 } from "./store/reducers/songReducer";
 import { AppState } from "./store/store";
 
@@ -589,10 +587,10 @@ class App extends Component<IProps, IAppState> {
 }
 
 const mapStateToProps = (state: AppState) => ({
-  currentSong: state.player.currentSong,
+  currentSong: state.song.currentSong,
   playlists: state.playlist.playlists,
-  repeat: state.player.repeat,
-  shuffle: state.player.shuffle,
+  repeat: state.song.repeat,
+  shuffle: state.song.shuffle,
   songs: state.song.songs,
 });
 type StateProps = ReturnType<typeof mapStateToProps>;

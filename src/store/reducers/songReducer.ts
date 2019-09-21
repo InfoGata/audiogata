@@ -4,9 +4,14 @@ import { ISong } from '../../services/data/database';
 
 interface ISongState {
   songs: ISong[];
+  shuffle: boolean;
+  repeat: boolean;
+  currentSong?: ISong;
 }
 
 const initialState: ISongState = {
+  repeat: false,
+  shuffle: false,
   songs: [],
 }
 
@@ -40,9 +45,35 @@ const songSlice = createSlice({
         songs: action.payload
       }
     },
+    setTrack: (state, action: PayloadAction<ISong | undefined>) => {
+      return {
+        ...state,
+        currentSong: action.payload,
+      }
+    },
+    toggleRepeat: (state) => {
+      return {
+        ...state,
+        repeat: !state.repeat,
+      }
+    },
+    toggleShuffle: (state) => {
+      return {
+        ...state,
+        shuffle: !state.shuffle,
+      }
+    },
   },
   slice: "song"
 });
 
-export const { setTracks, clearTracks, deleteTrack, addTrack } = songSlice.actions;
+export const {
+  setTracks,
+  clearTracks,
+  deleteTrack,
+  addTrack,
+  setTrack,
+  toggleRepeat,
+  toggleShuffle
+} = songSlice.actions;
 export default songSlice.reducer;

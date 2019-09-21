@@ -14,7 +14,7 @@ import MoreHorizIcon from "@material-ui/icons/MoreHoriz";
 import PlaylistAddIcon from "@material-ui/icons/PlaylistAdd";
 import React from "react";
 import { Draggable } from "react-beautiful-dnd";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { ISong } from "../services/data/database";
 import { AppState } from "../store/store";
 import AddPlaylistDialog from "./AddPlaylistDialog";

@@ -6,7 +6,7 @@ import rootReducer from "./rootReducer";
 const persistConfig = {
   key: "root",
   storage,
-  whitelist: ["player", "song"],
+  whitelist: ["song"],
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
