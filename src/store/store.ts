@@ -1,6 +1,6 @@
 import { persistReducer, persistStore } from "redux-persist";
 import storage from "redux-persist/lib/storage";
-import { configureStore } from "redux-starter-kit";
+import { configureStore, getDefaultMiddleware } from "redux-starter-kit";
 import rootReducer from "./rootReducer";
 
 const persistConfig = {
@@ -10,7 +10,12 @@ const persistConfig = {
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
-const store = configureStore({ reducer: persistedReducer });
+const store = configureStore({
+  middleware: getDefaultMiddleware({
+    serializableCheck: false
+  }),
+  reducer: persistedReducer,
+});
 
 if (process.env.NODE_ENV === 'development' && module.hot) {
   module.hot.accept('./rootReducer', () => {
