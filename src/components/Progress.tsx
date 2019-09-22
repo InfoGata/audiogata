@@ -1,19 +1,14 @@
-import {
-  createStyles,
-  Slider,
-  WithStyles,
-  withStyles,
-} from "@material-ui/core";
+import { makeStyles, Slider } from "@material-ui/core";
 import React from "react";
 import { formatSeconds } from "../utils";
 
-const styles = createStyles({
+const useStyles = makeStyles({
   container: {
     width: 500,
   },
 });
 
-interface IProps extends WithStyles<typeof styles> {
+interface IProps {
   elapsed: number;
   total: number;
   onSeek: (newTime: number) => void;
@@ -22,6 +17,7 @@ interface IProps extends WithStyles<typeof styles> {
 const Progress: React.FC<IProps> = props => {
   const [isDragging, setIsDragging] = React.useState(false);
   const [newElapsed, setNewElapsed] = React.useState(0);
+  const classes = useStyles();
 
   function onChange(_: React.ChangeEvent<{}>, value: number | number[]) {
     setIsDragging(true);
@@ -35,11 +31,9 @@ const Progress: React.FC<IProps> = props => {
 
   const elapsed = isDragging ? newElapsed : props.elapsed;
   return (
-    <div className="progress">
-      <span className="player__time-elapsed">
-        {formatSeconds(elapsed)} / {formatSeconds(props.total)}
-      </span>
-      <div className={props.classes.container}>
+    <div>
+      {formatSeconds(elapsed)} / {formatSeconds(props.total)}
+      <div className={classes.container}>
         <Slider
           min={0}
           max={props.total}
@@ -52,4 +46,4 @@ const Progress: React.FC<IProps> = props => {
   );
 };
 
-export default withStyles(styles)(Progress);
+export default Progress;
