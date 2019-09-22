@@ -17,7 +17,7 @@ interface IProps {
   repeat: boolean;
 }
 
-const Player: React.FC<IProps> = props => {
+const Controls: React.FC<IProps> = props => {
   const playIcon = props.isPlaying ? <Pause /> : <PlayArrow />;
   const shuffleColor = props.random ? "primary" : "inherit";
   const repeatColor = props.repeat ? "primary" : "inherit";
@@ -40,4 +40,4 @@ const Player: React.FC<IProps> = props => {
   );
 };
 
-export default Player;
+export default Controls;

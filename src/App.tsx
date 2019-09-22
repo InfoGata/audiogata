@@ -7,36 +7,24 @@ import {
   Menu,
   MenuItem,
   Theme,
-  Typography,
   withStyles,
   WithStyles,
 } from "@material-ui/core";
-import AppBar from "@material-ui/core/AppBar";
 import Drawer from "@material-ui/core/Drawer";
-import IconButton from "@material-ui/core/IconButton";
-import Toolbar from "@material-ui/core/Toolbar";
-import ChevronRightIcon from "@material-ui/icons/ChevronRight";
-import MenuIcon from "@material-ui/icons/Menu";
 import PlaylistAddIcon from "@material-ui/icons/PlaylistAdd";
-import clsx from "clsx";
 import React, { Component } from "react";
 import { hot } from "react-hot-loader/root";
 import { connect } from "react-redux";
-import { BrowserRouter as Router, Route } from "react-router-dom";
+import { BrowserRouter as Router } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { bindActionCreators, Dispatch } from "redux";
 import AddPlaylistDialog from "./components/AddPlaylistDialog";
-import Home from "./components/Home";
-import Navigation from "./components/Navigation";
-import Player from "./components/Player";
-import Playlist from "./components/Playlist";
+import PlayerBar from "./components/PlayerBar";
 import PlaylistMenuItem from "./components/PlaylistMenuItem";
 import PlayQueue from "./components/PlayQueue";
-import Plugins from "./components/Plugins";
-import Progress from "./components/Progress";
-import Sync from "./components/Sync";
-import Volume from "./components/Volume";
+import Routes from "./components/Routes";
+import SideBar from "./components/SideBar";
 import { ISong } from "./models";
 import { IPlayerComponent } from "./players/IPlayerComponent";
 import Local from "./players/local";
@@ -54,23 +42,6 @@ const drawerWidth = 300;
 
 const styles = (theme: Theme) =>
   createStyles({
-    appBarShift: {
-      marginRight: drawerWidth,
-      transition: theme.transitions.create(["margin", "width"], {
-        duration: theme.transitions.duration.enteringScreen,
-        easing: theme.transitions.easing.easeOut,
-      }),
-      width: `calc(100% - ${drawerWidth}px)`,
-    },
-    bottomAppBar: {
-      bottom: 0,
-      top: "auto",
-      transition: theme.transitions.create(["margin", "width"], {
-        duration: theme.transitions.duration.leavingScreen,
-        easing: theme.transitions.easing.sharp,
-      }),
-      zIndex: theme.zIndex.drawer + 1,
-    },
     drawer: {
       flexShrink: 0,
       width: drawerWidth,
@@ -85,19 +56,8 @@ const styles = (theme: Theme) =>
     drawerPaper: {
       width: drawerWidth,
     },
-    hide: {
-      display: "none",
-    },
-    menuButton: {
-      marginLeft: 12,
-      marginRight: 20,
-    },
     root: {
       display: "flex",
-    },
-    toolbar: {
-      alignItems: "center",
-      justifyContent: "space-between",
     },
   });
 
@@ -108,7 +68,6 @@ interface IAppState {
   total: number;
   volume: number;
   muted: boolean;
-  playQueueOpen: boolean;
   isStopped: boolean;
   anchorEl: HTMLElement | null;
   dialogOpen: boolean;
@@ -130,7 +89,6 @@ class App extends Component<IProps, IAppState> {
       isStopped: true,
       muted: false,
       playOnStartup: true,
-      playQueueOpen: true,
       total: 0,
       volume: 1.0,
     };
@@ -153,91 +111,41 @@ class App extends Component<IProps, IAppState> {
 
   public render() {
     const { classes } = this.props;
-    const { playQueueOpen } = this.state;
     return (
       <Router>
         <ToastContainer position={toast.POSITION.BOTTOM_LEFT} />
         <div className={classes.root}>
           <CssBaseline />
-          <Drawer
-            className={classes.drawer}
-            variant="permanent"
-            classes={{
-              paper: classes.drawerPaper,
-            }}
-            anchor="left"
-          >
-            <Navigation />
-          </Drawer>
-          <div>
-            <Route exact={true} path="/" component={Home} />
-            <Route path="/plugins" component={Plugins} />
-            <Route path="/sync" component={Sync} />
-            <Route exact={true} path="/playlist/:id" component={Playlist} />
-          </div>
-          <AppBar
-            position="fixed"
-            color="default"
-            className={clsx(classes.bottomAppBar, {
-              [classes.appBarShift]: playQueueOpen,
-            })}
-          >
-            <Toolbar className={classes.toolbar}>
-              <Typography
-                variant="body1"
-                dangerouslySetInnerHTML={{
-                  __html:
-                    (this.props.currentSong && this.props.currentSong.name) ||
-                    "",
-                }}
-              />
-              <Player
-                isPlaying={this.state.isPlaying}
-                backward={this.onPreviousClick}
-                foward={this.onNextClick}
-                togglePlay={this.togglePlay}
-                random={this.props.shuffle}
-                toggleShuffle={this.onToggleShuffle}
-                toggleRepeat={this.onToggleRepeat}
-                repeat={this.props.repeat}
-              />
-              <Progress
-                elapsed={this.state.elapsed}
-                total={this.state.total}
-                onSeek={this.onSeek}
-              />
-              <Volume
-                volume={this.state.volume}
-                muted={this.state.muted}
-                onVolumeChange={this.onVolumeChange}
-                onToggleMute={this.onToggleMute}
-              />
-              <IconButton
-                color="inherit"
-                aria-label="Open drawer"
-                onClick={this.handleDrawerOpen}
-                className={clsx(
-                  classes.menuButton,
-                  playQueueOpen && classes.hide,
-                )}
-              >
-                <MenuIcon />
-              </IconButton>
-            </Toolbar>
-          </AppBar>
+          <SideBar />
+          <Routes />
+          <PlayerBar
+            onPreviousClick={this.onPreviousClick}
+            onNextClick={this.onNextClick}
+            togglePlay={this.togglePlay}
+            onToggleShuffle={this.onToggleShuffle}
+            onToggleRepeat={this.onToggleRepeat}
+            onSeek={this.onSeek}
+            onVolumeChange={this.onVolumeChange}
+            onToggleMute={this.onToggleMute}
+            isMuted={this.state.muted}
+            elapsed={this.state.elapsed}
+            total={this.state.total}
+            isPlaying={this.state.isPlaying}
+            shuffle={this.props.shuffle}
+            repeat={this.props.repeat}
+            volume={this.state.volume}
+            muted={this.state.muted}
+          />
           <Drawer
             className={classes.drawer}
             variant="persistent"
             anchor="right"
-            open={this.state.playQueueOpen}
+            open={true}
             classes={{
               paper: classes.drawerPaper,
             }}
           >
             <div className={classes.drawerHeader}>
-              <IconButton onClick={this.handleDrawerClose}>
-                <ChevronRightIcon />
-              </IconButton>
               <button onClick={this.openMenu}>Save</button>
               <button onClick={this.clearTracks}>Clear</button>
             </div>
@@ -313,25 +221,11 @@ class App extends Component<IProps, IAppState> {
     this.props.clearTracks();
   };
 
-  private handleDrawerOpen = () => {
-    this.setState({ playQueueOpen: true });
-  };
-
-  private handleDrawerClose = () => {
-    this.setState({ playQueueOpen: false });
-  };
-
   private getPlayerComponentByName(name: string): IPlayerComponent {
     return this.getSpecificComponentByName(name) || this.audioPlayer;
   }
 
   private getSpecificComponentByName(_: string): IPlayerComponent | undefined {
-    // switch (name) {
-    //   case "napster":
-    //     return this.napsterPlayer;
-    //   case "spotify":
-    //     return this.spotifyPlayer;
-    // }
     return undefined;
   }
 
