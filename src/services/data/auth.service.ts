@@ -1,4 +1,4 @@
-import { db, IAuth, ISong } from "./database";
+import { db, IAuth } from "./database";
 
 export class AuthService {
   public async addAuth(newAuth: IAuth) {

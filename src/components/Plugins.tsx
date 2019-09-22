@@ -20,12 +20,8 @@ function onNapsterLoginClick(e: React.MouseEvent) {
 const Plugins: React.FC = () => {
   return (
     <div>
-      <a href="#" onClick={onSpotifyLoginClick}>
-        Login to Spotify
-      </a>
-      <a href="#" onClick={onNapsterLoginClick}>
-        Login to Napster
-      </a>
+      <button onClick={onSpotifyLoginClick}>Login to Spotify</button>
+      <button onClick={onNapsterLoginClick}>Login to Napster</button>
     </div>
   );
 };

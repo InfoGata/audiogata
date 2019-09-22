@@ -1,3 +1,4 @@
+import { List, ListItem, ListItemText, Typography } from "@material-ui/core";
 import React from "react";
 import { useDispatch } from "react-redux";
 import { ISearchApi } from "../services/apis/ISearchApi";
@@ -7,7 +8,6 @@ import Spotify from "../services/apis/Spotify";
 import Youtube from "../services/apis/Youtube";
 import { IAlbum, IArtist, ISong } from "../services/data/database";
 import { addTrack } from "../store/reducers/songReducer";
-import { formatSeconds } from "../utils";
 
 const getApiByName = (name: string): ISearchApi | undefined => {
   switch (name) {
@@ -28,8 +28,7 @@ interface IArtistResultProps {
   setAlbumResults: (albums: IAlbum[]) => void;
 }
 const ArtistResult: React.FC<IArtistResultProps> = props => {
-  const onClickArtist = async (e: React.MouseEvent) => {
-    e.preventDefault();
+  const onClickArtist = async () => {
     props.clearSearch();
     const api = getApiByName(props.artist.from);
     if (api) {
@@ -41,11 +40,9 @@ const ArtistResult: React.FC<IArtistResultProps> = props => {
     }
   };
   return (
-    <li key={props.artist.apiId}>
-      <a href="#" onClick={onClickArtist}>
-        {props.artist.name}
-      </a>
-    </li>
+    <ListItem button={true} onClick={onClickArtist}>
+      <ListItemText>{props.artist.name}</ListItemText>
+    </ListItem>
   );
 };
 
@@ -55,8 +52,7 @@ interface IAlbumResultProps {
   setTrackResults: (songs: ISong[]) => void;
 }
 const AlbumResult: React.FC<IAlbumResultProps> = props => {
-  const onClickAlbum = async (e: React.MouseEvent) => {
-    e.preventDefault();
+  const onClickAlbum = async () => {
     props.clearSearch();
     const api = getApiByName(props.album.from);
     if (api) {
@@ -65,12 +61,11 @@ const AlbumResult: React.FC<IAlbumResultProps> = props => {
     }
   };
   return (
-    <li key={props.album.apiId}>
-      <a href="#" onClick={onClickAlbum}>
-        {props.album.name}
-      </a>{" "}
-      - {props.album.artistName}
-    </li>
+    <ListItem button={true} onClick={onClickAlbum}>
+      <ListItemText>
+        {props.album.name} - {props.album.artistName}
+      </ListItemText>
+    </ListItem>
   );
 };
 
@@ -84,15 +79,13 @@ const TrackResult: React.FC<ITrackResultProps> = props => {
     dispatch(addTrack(props.track));
   };
   return (
-    <li key={props.track.apiId}>
-      <a
-        href="#"
-        onClick={onClickSong}
-        dangerouslySetInnerHTML={{ __html: props.track.name }}
-      />{" "}
-      - {props.track.artistName} -{" "}
-      {props.track.duration && formatSeconds(props.track.duration)}
-    </li>
+    <ListItem button={true} onClick={onClickSong}>
+      <ListItemText
+        primary={
+          <Typography dangerouslySetInnerHTML={{ __html: props.track.name }} />
+        }
+      />
+    </ListItem>
   );
 };
 
@@ -160,11 +153,11 @@ const Search: React.FC = () => {
       <button onClick={onSearchClick}>Search</button>
       <button onClick={onClearSearch}>Clear Search Results</button>
       {trackList.length > 0 ? <div>Songs:</div> : null}
-      <ul>{trackList}</ul>
+      <List>{trackList}</List>
       {albumList.length > 0 ? <div>Albums:</div> : null}
-      <ul>{albumList}</ul>
+      <List>{albumList}</List>
       {artistList.length > 0 ? <div>Artists:</div> : null}
-      <ul>{artistList}</ul>
+      <List>{artistList}</List>
     </div>
   );
 };
