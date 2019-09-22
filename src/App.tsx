@@ -73,22 +73,6 @@ const styles = (theme: Theme) =>
       }),
       zIndex: theme.zIndex.drawer + 1,
     },
-    content: {
-      flexGrow: 1,
-      marginRight: -drawerWidth,
-      padding: theme.spacing.unit * 3,
-      transition: theme.transitions.create("margin", {
-        duration: theme.transitions.duration.leavingScreen,
-        easing: theme.transitions.easing.sharp,
-      }),
-    },
-    contentShift: {
-      marginRight: 0,
-      transition: theme.transitions.create("margin", {
-        duration: theme.transitions.duration.enteringScreen,
-        easing: theme.transitions.easing.easeOut,
-      }),
-    },
     drawer: {
       flexShrink: 0,
       width: drawerWidth,
@@ -365,11 +349,15 @@ class App extends Component<IProps, IAppState> {
     }
   };
 
-  private onVolumeChange = (e: React.ChangeEvent<{}>, volume: number) => {
-    this.setVolume(volume);
+  private onVolumeChange = (
+    _: React.ChangeEvent<{}>,
+    volume: number | number[],
+  ) => {
+    const actualVolume = (volume as number) / 100;
+    this.setVolume(actualVolume);
     this.setState({
       muted: false,
-      volume,
+      volume: actualVolume,
     });
   };
 

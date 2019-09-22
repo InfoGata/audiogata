@@ -1,10 +1,13 @@
+import { Slider } from "@material-ui/core";
 import VolumeOff from "@material-ui/icons/VolumeOff";
 import VolumeUp from "@material-ui/icons/VolumeUp";
-import Slider from "@material-ui/lab/Slider";
 import React from "react";
 
 interface IProps {
-  onVolumeChange: (event: React.ChangeEvent<{}>, volume: number) => void;
+  onVolumeChange: (
+    event: React.ChangeEvent<{}>,
+    volume: number | number[],
+  ) => void;
   onToggleMute: () => void;
   volume: number;
   muted: boolean;
@@ -19,8 +22,8 @@ const Volume: React.FC<IProps> = props => {
       <div>
         <Slider
           min={0}
-          max={1}
-          value={props.volume}
+          max={100}
+          value={props.volume * 100}
           onChange={props.onVolumeChange}
         />
       </div>

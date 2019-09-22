@@ -1,5 +1,9 @@
-import { createStyles, WithStyles, withStyles } from "@material-ui/core";
-import Slider from "@material-ui/lab/Slider";
+import {
+  createStyles,
+  Slider,
+  WithStyles,
+  withStyles,
+} from "@material-ui/core";
 import React from "react";
 import { formatSeconds } from "../utils";
 
@@ -19,26 +23,17 @@ const Progress: React.FC<IProps> = props => {
   const [isDragging, setIsDragging] = React.useState(false);
   const [newElapsed, setNewElapsed] = React.useState(0);
 
-  function onChange(e: React.ChangeEvent<{}>, value: number) {
-    if (isDragging) {
-      setNewElapsed(value);
-    } else {
-      props.onSeek(value);
-    }
-  }
-
-  function onMouseDown() {
+  function onChange(_: React.ChangeEvent<{}>, value: number | number[]) {
     setIsDragging(true);
-    setNewElapsed(props.elapsed);
+    setNewElapsed(value as number);
   }
 
-  function onMouseUp() {
-    props.onSeek(newElapsed);
+  function onChangeCommited(e: any, value: number | number[]) {
     setIsDragging(false);
+    props.onSeek(value as number);
   }
 
   const elapsed = isDragging ? newElapsed : props.elapsed;
-
   return (
     <div className="progress">
       <span className="player__time-elapsed">
@@ -50,8 +45,7 @@ const Progress: React.FC<IProps> = props => {
           max={props.total}
           value={elapsed}
           onChange={onChange}
-          onDragStart={onMouseDown}
-          onDragEnd={onMouseUp}
+          onChangeCommitted={onChangeCommited}
         />
       </div>
     </div>

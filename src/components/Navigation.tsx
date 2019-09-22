@@ -78,7 +78,7 @@ const Navigation: React.FC = () => {
         {playlistOpen ? <ExpandLess /> : <ExpandMore />}
       </ListItem>
       <Collapse in={playlistOpen} timeout="auto" unmountOnExit={true}>
-        <List component="span">
+        <List>
           <ListItem button={true} onClick={openDialog}>
             <ListItemText primary="Add Playlist" />
             <ListItemSecondaryAction>
