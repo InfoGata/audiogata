@@ -1,27 +1,3 @@
-import Dexie from "dexie";
-import "dexie-observable";
-
-class Database extends Dexie {
-  public songs: Dexie.Table<ISong, string>;
-  public auth: Dexie.Table<IAuth, string>;
-  constructor() {
-    super("database");
-
-    this.version(1).stores({
-      config: "++id, currentSongId, currentTime",
-      songs:
-        "$$id, name, source, blob, useBlob, from, dateAdded, sortOrder, apiId",
-    });
-
-    this.version(2).stores({
-      auth: "$$id, name, accessToken, refreshToken",
-    });
-
-    this.songs = this.table("songs");
-    this.auth = this.table("auth");
-  }
-}
-
 export interface ISong {
   id?: string;
   name: string;
@@ -64,5 +40,3 @@ export interface IPlaylist {
   name: string;
   songs: ISong[];
 }
-
-export const db = new Database();

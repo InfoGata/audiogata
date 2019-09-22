@@ -1,4 +1,4 @@
-import { ISong } from "../services/data/database";
+import { ISong } from "../models";
 
 export interface IPlayerComponent {
   init: () => void;

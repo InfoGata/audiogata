@@ -9,7 +9,7 @@ import {
 } from "@material-ui/core";
 import React from "react";
 import { useDispatch } from "react-redux";
-import { ISong } from "../services/data/database";
+import { ISong } from "../models";
 import { addPlaylist } from "../store/reducers/playlistReducer";
 
 interface IProps {

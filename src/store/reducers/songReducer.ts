@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from "redux-starter-kit";
 import { v4 as uuid } from "uuid";
-import { ISong } from '../../services/data/database';
+import { ISong } from "../../models";
 
 interface ISongState {
   songs: ISong[];

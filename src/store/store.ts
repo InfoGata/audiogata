@@ -12,6 +12,7 @@ const persistConfig = {
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 const store = configureStore({
   middleware: getDefaultMiddleware({
+    // Setting to false because it causes a warning when using redux-persist
     serializableCheck: false
   }),
   reducer: persistedReducer,

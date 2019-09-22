@@ -37,9 +37,9 @@ import Plugins from "./components/Plugins";
 import Progress from "./components/Progress";
 import Sync from "./components/Sync";
 import Volume from "./components/Volume";
+import { ISong } from "./models";
 import { IPlayerComponent } from "./players/IPlayerComponent";
 import Local from "./players/local";
-import { ISong } from "./services/data/database";
 import {
   clearTracks,
   deleteTrack,

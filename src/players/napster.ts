@@ -1,4 +1,4 @@
-import { ISong } from "../services/data/database";
+import { ISong } from "../models";
 import { IPlayerComponent } from "./IPlayerComponent";
 
 declare var Napster: any;

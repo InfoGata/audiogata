@@ -1,4 +1,4 @@
-import { IAlbum, IArtist, ISong } from "../data/database";
+import { IAlbum, IArtist, ISong } from "../../models";
 
 export interface ISearchApi {
   searchAll: (

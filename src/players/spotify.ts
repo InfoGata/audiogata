@@ -1,6 +1,5 @@
 import axios from "axios";
-import { AuthService } from "../services/data/auth.service";
-import { ISong } from "../services/data/database";
+import { ISong } from "../models";
 import { IPlayerComponent } from "./IPlayerComponent";
 
 interface IRefreshTokenResponse {

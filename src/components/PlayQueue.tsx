@@ -1,7 +1,7 @@
 import { List, RootRef } from "@material-ui/core";
 import React from "react";
 import { DragDropContext, Droppable, DropResult } from "react-beautiful-dnd";
-import { ISong } from "../services/data/database";
+import { ISong } from "../models";
 import QueueItem from "./QueueItem";
 
 interface IProps {

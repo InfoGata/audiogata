@@ -1,5 +1,5 @@
 import { UserSession } from 'blockstack';
-import { ISong } from '../services/data/database';
+import { ISong } from '../models';
 
 class BlockstackSync {
   private readonly filename = "music.json";

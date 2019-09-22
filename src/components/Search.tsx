@@ -1,10 +1,10 @@
 import { List, ListItem, ListItemText, Typography } from "@material-ui/core";
 import React from "react";
 import { useDispatch } from "react-redux";
+import { IAlbum, IArtist, ISong } from "../models";
 import { ISearchApi } from "../services/apis/ISearchApi";
 import SoundCloud from "../services/apis/SoundCloud";
 import Youtube from "../services/apis/Youtube";
-import { IAlbum, IArtist, ISong } from "../services/data/database";
 import { addTrack } from "../store/reducers/songReducer";
 
 const getApiByName = (name: string): ISearchApi | undefined => {
@@ -13,10 +13,6 @@ const getApiByName = (name: string): ISearchApi | undefined => {
       return Youtube;
     case "soundcloud":
       return SoundCloud;
-    // case "napster":
-    //   return Napster;
-    // case "spotify":
-    //   return Spotify;
   }
 };
 

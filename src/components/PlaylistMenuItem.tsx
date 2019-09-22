@@ -2,7 +2,7 @@ import { ListItemIcon, ListItemText, MenuItem } from "@material-ui/core";
 import PlaylistAddIcon from "@material-ui/icons/PlaylistAdd";
 import React from "react";
 import { useDispatch } from "react-redux";
-import { IPlaylist, ISong } from "../services/data/database";
+import { IPlaylist, ISong } from "../models";
 import { addSongs } from "../store/reducers/playlistReducer";
 
 interface IProps {

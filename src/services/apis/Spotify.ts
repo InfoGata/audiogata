@@ -1,5 +1,5 @@
 import axios from "axios";
-import { IAlbum, IArtist, ISong } from "../data/database";
+import { IAlbum, IArtist, ISong } from "../../models";
 import { ISearchApi } from "./ISearchApi";
 
 interface ISpotifyResult {

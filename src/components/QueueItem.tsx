@@ -15,7 +15,7 @@ import PlaylistAddIcon from "@material-ui/icons/PlaylistAdd";
 import React from "react";
 import { Draggable } from "react-beautiful-dnd";
 import { useSelector } from "react-redux";
-import { ISong } from "../services/data/database";
+import { ISong } from "../models";
 import { AppState } from "../store/store";
 import AddPlaylistDialog from "./AddPlaylistDialog";
 import PlaylistMenuItem from "./PlaylistMenuItem";

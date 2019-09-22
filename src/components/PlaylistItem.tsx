@@ -1,7 +1,7 @@
 import { ListItem, ListItemText, Typography } from "@material-ui/core";
 import React from "react";
 import { Draggable } from "react-beautiful-dnd";
-import { ISong } from "../services/data/database";
+import { ISong } from "../models";
 
 interface IProps {
   index: number;

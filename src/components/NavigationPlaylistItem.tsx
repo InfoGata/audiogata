@@ -8,7 +8,7 @@ import DeleteIcon from "@material-ui/icons/Delete";
 import React from "react";
 import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
-import { IPlaylist } from "../services/data/database";
+import { IPlaylist } from "../models";
 import { deletePlaylist } from "../store/reducers/playlistReducer";
 
 const linkToPlaylist = (props: any, id?: string) => {
