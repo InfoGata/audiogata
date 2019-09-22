@@ -1,4 +1,3 @@
-import { AuthService } from "../services/data/auth.service";
 import { ISong } from "../services/data/database";
 import { IPlayerComponent } from "./IPlayerComponent";
 
@@ -6,7 +5,6 @@ declare var Napster: any;
 
 class NapsterPlayer implements IPlayerComponent {
   private readonly apiKey = "N2Q4YzVkYzctNjBiMi00YjBhLTkxNTAtOWRiNGM5YWE3OWRj";
-  private readonly authService = new AuthService();
   private readonly setTime: (elapsed: number, total: number) => void;
   private readonly onSongEnd: () => void;
 
@@ -26,28 +24,28 @@ class NapsterPlayer implements IPlayerComponent {
     });
     Napster.player.on("ready", () => {
       const query = new URLSearchParams(window.location.search);
-      if (query.has("accessToken") && query.has("refreshToken")) {
-        const accessToken = query.get("accessToken") || "";
-        const refreshToken = query.get("refreshToken") || "";
-        this.authService.addAuth({
-          accessToken,
-          name: "napster",
-          refreshToken,
-        });
-        Napster.member.set({
-          accessToken,
-          refreshToken,
-        });
-      } else {
-        this.authService.getAuthByName("napster").then(auth => {
-          if (auth) {
-            Napster.member.set({
-              accessToken: auth.accessToken,
-              refreshToken: auth.refreshToken,
-            });
-          }
-        });
-      }
+      // if (query.has("accessToken") && query.has("refreshToken")) {
+      //   const accessToken = query.get("accessToken") || "";
+      //   const refreshToken = query.get("refreshToken") || "";
+      //   this.authService.addAuth({
+      //     accessToken,
+      //     name: "napster",
+      //     refreshToken,
+      //   });
+      //   Napster.member.set({
+      //     accessToken,
+      //     refreshToken,
+      //   });
+      // } else {
+      //   this.authService.getAuthByName("napster").then(auth => {
+      //     if (auth) {
+      //       Napster.member.set({
+      //         accessToken: auth.accessToken,
+      //         refreshToken: auth.refreshToken,
+      //       });
+      //     }
+      //   });
+      // }
       Napster.player.on("playevent", (e: any) => {
         if (e.data.code === "PlayComplete") {
           this.onSongEnd();

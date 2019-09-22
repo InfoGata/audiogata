@@ -21,18 +21,6 @@ import { AppState } from "../store/store";
 import AddPlaylistDialog from "./AddPlaylistDialog";
 import NavigationPlaylistItem from "./NavigationPlaylistItem";
 
-const linkToHome = (props: any) => {
-  return <Link to="/" {...props} />;
-};
-
-const linkToPlugins = (props: any) => {
-  return <Link to="/plugins" {...props} />;
-};
-
-const linkToSync = (props: any) => {
-  return <Link to="/sync" {...props} />;
-};
-
 const Navigation: React.FC = () => {
   const [playlistOpen, setPlaylistOpen] = React.useState(false);
   const [dialogOpen, setDialogOpen] = React.useState(false);
@@ -52,19 +40,19 @@ const Navigation: React.FC = () => {
   ));
   return (
     <List>
-      <ListItem button={true} component={linkToHome} key="Home">
+      <ListItem button={true} component={Link} to="/" key="Home">
         <ListItemIcon>
           <HomeIcon />
         </ListItemIcon>
         <ListItemText>Home</ListItemText>
       </ListItem>
-      <ListItem button={true} component={linkToPlugins} key="Plugins">
+      <ListItem button={true} component={Link} to="/plugins" key="Plugins">
         <ListItemIcon>
           <ExtensionIcon />
         </ListItemIcon>
         <ListItemText>Plugins</ListItemText>
       </ListItem>
-      <ListItem button={true} component={linkToSync} key="Sync">
+      <ListItem button={true} component={Link} to="/sync" key="Sync">
         <ListItemIcon>
           <SyncIcon />
         </ListItemIcon>

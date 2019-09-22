@@ -2,9 +2,7 @@ import { List, ListItem, ListItemText, Typography } from "@material-ui/core";
 import React from "react";
 import { useDispatch } from "react-redux";
 import { ISearchApi } from "../services/apis/ISearchApi";
-import Napster from "../services/apis/Napster";
 import SoundCloud from "../services/apis/SoundCloud";
-import Spotify from "../services/apis/Spotify";
 import Youtube from "../services/apis/Youtube";
 import { IAlbum, IArtist, ISong } from "../services/data/database";
 import { addTrack } from "../store/reducers/songReducer";
@@ -15,10 +13,10 @@ const getApiByName = (name: string): ISearchApi | undefined => {
       return Youtube;
     case "soundcloud":
       return SoundCloud;
-    case "napster":
-      return Napster;
-    case "spotify":
-      return Spotify;
+    // case "napster":
+    //   return Napster;
+    // case "spotify":
+    //   return Spotify;
   }
 };
 
@@ -146,8 +144,6 @@ const Search: React.FC = () => {
       <select value={searchType} onChange={onSearchTypeChange}>
         <option value="soundcloud">SoundCloud</option>
         <option value="youtube">Youtube</option>
-        <option value="napster">Napster</option>
-        <option value="spotify">Spotify</option>
       </select>
       <input type="text" onChange={onSearchChange} />
       <button onClick={onSearchClick}>Search</button>

@@ -39,8 +39,6 @@ import Sync from "./components/Sync";
 import Volume from "./components/Volume";
 import { IPlayerComponent } from "./players/IPlayerComponent";
 import Local from "./players/local";
-import NapsterPlayer from "./players/napster";
-import SpotifyPlayer from "./players/spotify";
 import { ISong } from "./services/data/database";
 import {
   clearTracks,
@@ -120,8 +118,6 @@ interface IProps extends WithStyles<typeof styles>, StateProps, DispatchProps {}
 
 class App extends Component<IProps, IAppState> {
   private audioPlayer: Local;
-  private napsterPlayer: NapsterPlayer;
-  private spotifyPlayer: SpotifyPlayer;
   private shuffleList: number[] = [];
 
   constructor(props: any) {
@@ -139,8 +135,6 @@ class App extends Component<IProps, IAppState> {
       volume: 1.0,
     };
     this.audioPlayer = new Local(this.setTrackTimes, this.onSongEnd);
-    this.napsterPlayer = new NapsterPlayer(this.setTrackTimes, this.onSongEnd);
-    this.spotifyPlayer = new SpotifyPlayer(this.setTrackTimes, this.onSongEnd);
   }
 
   public async componentDidMount() {
@@ -331,15 +325,14 @@ class App extends Component<IProps, IAppState> {
     return this.getSpecificComponentByName(name) || this.audioPlayer;
   }
 
-  private getSpecificComponentByName(
-    name: string,
-  ): IPlayerComponent | undefined {
-    switch (name) {
-      case "napster":
-        return this.napsterPlayer;
-      case "spotify":
-        return this.spotifyPlayer;
-    }
+  private getSpecificComponentByName(_: string): IPlayerComponent | undefined {
+    // switch (name) {
+    //   case "napster":
+    //     return this.napsterPlayer;
+    //   case "spotify":
+    //     return this.spotifyPlayer;
+    // }
+    return undefined;
   }
 
   private onSeek = (newTime: number) => {

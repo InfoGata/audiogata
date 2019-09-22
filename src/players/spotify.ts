@@ -10,10 +10,8 @@ interface IRefreshTokenResponse {
 class SpotifyPlayer implements IPlayerComponent {
   private readonly apiUrl = "https://api.spotify.com/v1";
   private readonly serverUrl = "http://localhost:8888";
-  private readonly name = "spotify";
   private readonly setTime: (elapsed: number, total: number) => void;
   private readonly onSongEnd: () => void;
-  private readonly authService = new AuthService();
   private deviceId: string;
   private accessToken: string;
   private refreshToken: string;
@@ -37,30 +35,29 @@ class SpotifyPlayer implements IPlayerComponent {
 
   public init() {
     const query = new URLSearchParams(window.location.search);
-    if (query.has("access_token") && query.has("refresh_token")) {
-      const accessToken = query.get("access_token") || "";
-      const refreshToken = query.get("refresh_token") || "";
-      this.authService.addAuth({
-        accessToken,
-        name: "spotify",
-        refreshToken,
-      });
-      this.accessToken = accessToken;
-      this.refreshToken = refreshToken;
-    } else {
-      this.authService.getAuthByName("spotify").then(auth => {
-        if (auth) {
-          this.accessToken = auth.accessToken;
-          this.refreshToken = auth.refreshToken;
-        }
-      });
-    }
+    // if (query.has("access_token") && query.has("refresh_token")) {
+    //   const accessToken = query.get("access_token") || "";
+    //   const refreshToken = query.get("refresh_token") || "";
+    //   this.authService.addAuth({
+    //     accessToken,
+    //     name: "spotify",
+    //     refreshToken,
+    //   });
+    //   this.accessToken = accessToken;
+    //   this.refreshToken = refreshToken;
+    // } else {
+    //   this.authService.getAuthByName("spotify").then(auth => {
+    //     if (auth) {
+    //       this.accessToken = auth.accessToken;
+    //       this.refreshToken = auth.refreshToken;
+    //     }
+    //   });
+    // }
     (window as any).onSpotifyWebPlaybackSDKReady = () => {
       if (this.accessToken.length > 0) {
         const player = new (window as any).Spotify.Player({
           getOAuthToken: async (cb: (arg0: string) => void) => {
-            const accessToken = await this.refreshLogin();
-            cb(accessToken);
+            cb(this.accessToken);
           },
           name: "Web Playback SDK Quick Start Player",
         });
@@ -177,23 +174,6 @@ class SpotifyPlayer implements IPlayerComponent {
     this.internalTime += 1000;
     this.setTime(this.internalTime / 1000, this.totalTime / 1000);
   };
-
-  private async refreshLogin() {
-    if (this.refreshToken.length > 0) {
-      const refreshUrl = `${this.serverUrl}/refresh_token?refresh_token=${this.refreshToken}`;
-      const response = await axios.get<IRefreshTokenResponse>(refreshUrl);
-      const accessToken = response.data.access_token;
-      this.accessToken = accessToken;
-      const refreshToken = this.refreshToken;
-      await this.authService.addAuth({
-        accessToken,
-        name: "spotify",
-        refreshToken,
-      });
-      return accessToken;
-    }
-    return "";
-  }
 }
 
 export default SpotifyPlayer;
