@@ -18,7 +18,7 @@ import Toolbar from "@material-ui/core/Toolbar";
 import ChevronRightIcon from "@material-ui/icons/ChevronRight";
 import MenuIcon from "@material-ui/icons/Menu";
 import PlaylistAddIcon from "@material-ui/icons/PlaylistAdd";
-import classNames from "classnames";
+import clsx from "clsx";
 import React, { Component } from "react";
 import { hot } from "react-hot-loader/root";
 import { connect } from "react-redux";
@@ -184,7 +184,7 @@ class App extends Component<IProps, IAppState> {
           <AppBar
             position="fixed"
             color="default"
-            className={classNames(classes.bottomAppBar, {
+            className={clsx(classes.bottomAppBar, {
               [classes.appBarShift]: playQueueOpen,
             })}
           >
@@ -222,7 +222,7 @@ class App extends Component<IProps, IAppState> {
                 color="inherit"
                 aria-label="Open drawer"
                 onClick={this.handleDrawerOpen}
-                className={classNames(
+                className={clsx(
                   classes.menuButton,
                   playQueueOpen && classes.hide,
                 )}

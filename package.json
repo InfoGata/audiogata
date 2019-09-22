@@ -5,7 +5,6 @@
   "dependencies": {
     "@material-ui/core": "^4.4.2",
     "@material-ui/icons": "^4.4.1",
-    "@types/classnames": "^2.2.9",
     "@types/jest": "24.0.5",
     "@types/node": "11.9.4",
     "@types/react": "16.8.3",
@@ -17,7 +16,7 @@
     "@types/wicg-mediasession": "^1.0.3",
     "axios": "^0.18.1",
     "blockstack": "^19.3.0",
-    "classnames": "^2.2.6",
+    "clsx": "^1.0.4",
     "dexie": "^2.0.4",
     "dexie-observable": "^1.0.0-beta.5",
     "http-proxy-middleware": "^0.19.1",
