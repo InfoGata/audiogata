@@ -11,25 +11,18 @@ import { Link } from "react-router-dom";
 import { IPlaylist } from "../models";
 import { deletePlaylist } from "../store/reducers/playlistReducer";
 
-const linkToPlaylist = (props: any, id?: string) => {
-  const path = `/playlist/${id}`;
-  return <Link to={path} {...props} />;
-};
-
 interface IProps {
   playlist: IPlaylist;
 }
 
 const NavigationPlaylistItem: React.FC<IProps> = (props: IProps) => {
   const dispatch = useDispatch();
+  const playlistPath = `/playlist/${props.playlist.id}`;
   function deletePlaylistItem() {
     dispatch(deletePlaylist(props.playlist));
   }
-  function goToPlaylist(playlistProps: any) {
-    return linkToPlaylist(playlistProps, props.playlist.id);
-  }
   return (
-    <ListItem button={true} component={goToPlaylist}>
+    <ListItem button={true} component={Link} to={playlistPath}>
       <ListItemText primary={props.playlist.name} />
       <ListItemSecondaryAction>
         <IconButton aria-label="Delete" onClick={deletePlaylistItem}>
