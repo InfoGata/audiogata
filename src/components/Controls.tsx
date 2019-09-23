@@ -5,6 +5,8 @@ import Shuffle from "@material-ui/icons/Shuffle";
 import SkipNext from "@material-ui/icons/SkipNext";
 import SkipPrevious from "@material-ui/icons/SkipPrevious";
 import React from "react";
+import { useSelector } from "react-redux";
+import { AppState } from "../store/store";
 
 interface IProps {
   backward: () => void;
@@ -13,14 +15,13 @@ interface IProps {
   toggleShuffle: () => void;
   toggleRepeat: () => void;
   isPlaying: boolean;
-  random: boolean;
-  repeat: boolean;
 }
 
 const Controls: React.FC<IProps> = props => {
   const playIcon = props.isPlaying ? <Pause /> : <PlayArrow />;
-  const shuffleColor = props.random ? "primary" : "inherit";
-  const repeatColor = props.repeat ? "primary" : "inherit";
+  const { repeat, shuffle } = useSelector((state: AppState) => state.song);
+  const shuffleColor = shuffle ? "primary" : "inherit";
+  const repeatColor = repeat ? "primary" : "inherit";
   return (
     <div>
       <button onClick={props.toggleShuffle}>

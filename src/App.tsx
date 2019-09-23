@@ -1,17 +1,10 @@
 import {
   createStyles,
   CssBaseline,
-  Divider,
-  ListItemIcon,
-  ListItemText,
-  Menu,
-  MenuItem,
   Theme,
   withStyles,
   WithStyles,
 } from "@material-ui/core";
-import Drawer from "@material-ui/core/Drawer";
-import PlaylistAddIcon from "@material-ui/icons/PlaylistAdd";
 import React, { Component } from "react";
 import { hot } from "react-hot-loader/root";
 import { connect } from "react-redux";
@@ -19,17 +12,14 @@ import { BrowserRouter as Router } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { bindActionCreators, Dispatch } from "redux";
-import AddPlaylistDialog from "./components/AddPlaylistDialog";
 import PlayerBar from "./components/PlayerBar";
-import PlaylistMenuItem from "./components/PlaylistMenuItem";
-import PlayQueue from "./components/PlayQueue";
+import QueueBar from "./components/QueueBar";
 import Routes from "./components/Routes";
 import SideBar from "./components/SideBar";
 import { ISong } from "./models";
 import { IPlayerComponent } from "./players/IPlayerComponent";
 import Local from "./players/local";
 import {
-  clearTracks,
   deleteTrack,
   setTrack,
   setTracks,
@@ -38,24 +28,8 @@ import {
 } from "./store/reducers/songReducer";
 import { AppState } from "./store/store";
 
-const drawerWidth = 300;
-
-const styles = (theme: Theme) =>
+const styles = (_: Theme) =>
   createStyles({
-    drawer: {
-      flexShrink: 0,
-      width: drawerWidth,
-    },
-    drawerHeader: {
-      alignItems: "center",
-      display: "flex",
-      padding: "0 8px",
-      ...theme.mixins.toolbar,
-      justifyContent: "flex-start",
-    },
-    drawerPaper: {
-      width: drawerWidth,
-    },
     root: {
       display: "flex",
     },
@@ -131,95 +105,18 @@ class App extends Component<IProps, IAppState> {
             elapsed={this.state.elapsed}
             total={this.state.total}
             isPlaying={this.state.isPlaying}
-            shuffle={this.props.shuffle}
-            repeat={this.props.repeat}
             volume={this.state.volume}
             muted={this.state.muted}
           />
-          <Drawer
-            className={classes.drawer}
-            variant="persistent"
-            anchor="right"
-            open={true}
-            classes={{
-              paper: classes.drawerPaper,
-            }}
-          >
-            <div className={classes.drawerHeader}>
-              <button onClick={this.openMenu}>Save</button>
-              <button onClick={this.clearTracks}>Clear</button>
-            </div>
-            <Menu
-              open={Boolean(this.state.anchorEl)}
-              onClose={this.closeMenu}
-              anchorEl={this.state.anchorEl}
-            >
-              <MenuItem onClick={this.addToNewPlaylist}>
-                <ListItemIcon>
-                  <PlaylistAddIcon />
-                </ListItemIcon>
-                <ListItemText primary="Add To New Playlist" />
-              </MenuItem>
-              {this.props.playlists.map(p => (
-                <PlaylistMenuItem
-                  key={p.id}
-                  playlist={p}
-                  songs={this.props.songs}
-                  closeMenu={this.closeMenu}
-                />
-              ))}
-            </Menu>
-            <AddPlaylistDialog
-              songs={this.props.songs}
-              open={this.state.dialogOpen}
-              handleClose={this.closeDialog}
-            />
-            <Divider />
-            <PlayQueue
-              songList={this.props.songs}
-              currentSong={this.props.currentSong}
-              onDeleteClick={this.onDeleteClick}
-              onPlaylistClick={this.onPlaylistClick}
-              setTracks={this.setPlayQueue}
-            />
-          </Drawer>
+          <QueueBar
+            onPlaylistClick={this.onPlaylistClick}
+            onDeleteClick={this.onDeleteClick}
+            setPlayQueue={this.setPlayQueue}
+          />
         </div>
       </Router>
     );
   }
-
-  private openDialog = () => {
-    this.setState({
-      dialogOpen: true,
-    });
-  };
-
-  private closeDialog = () => {
-    this.setState({
-      dialogOpen: false,
-    });
-  };
-
-  private openMenu = (event: React.MouseEvent<HTMLButtonElement>) => {
-    this.setState({
-      anchorEl: event.currentTarget,
-    });
-  };
-
-  private closeMenu = () => {
-    this.setState({
-      anchorEl: null,
-    });
-  };
-
-  private addToNewPlaylist = () => {
-    this.openDialog();
-    this.closeMenu();
-  };
-
-  private clearTracks = () => {
-    this.props.clearTracks();
-  };
 
   private getPlayerComponentByName(name: string): IPlayerComponent {
     return this.getSpecificComponentByName(name) || this.audioPlayer;
@@ -473,7 +370,6 @@ type StateProps = ReturnType<typeof mapStateToProps>;
 const mapDispatchToProps = (dispatch: Dispatch) =>
   bindActionCreators(
     {
-      clearTracks,
       deleteTrack,
       setTrack,
       setTracks,

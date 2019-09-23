@@ -57,8 +57,6 @@ interface IProps {
   elapsed: number;
   total: number;
   isPlaying: boolean;
-  shuffle: boolean;
-  repeat: boolean;
   volume: number;
   muted: boolean;
 }
@@ -87,10 +85,8 @@ const PlayerBar: React.FC<IProps> = props => {
           backward={props.onPreviousClick}
           foward={props.onNextClick}
           togglePlay={props.togglePlay}
-          random={props.shuffle}
           toggleShuffle={props.onToggleShuffle}
           toggleRepeat={props.onToggleRepeat}
-          repeat={props.repeat}
         />
         <Progress
           elapsed={props.elapsed}
