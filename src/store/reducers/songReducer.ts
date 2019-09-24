@@ -4,6 +4,7 @@ import { ISong } from "../../models";
 
 interface ISongState {
   songs: ISong[];
+  shuffleList: number[];
   shuffle: boolean;
   repeat: boolean;
   currentSong?: ISong;
@@ -12,7 +13,15 @@ interface ISongState {
 const initialState: ISongState = {
   repeat: false,
   shuffle: false,
+  shuffleList: [],
   songs: [],
+}
+
+const shuffleArray = (array: any[]) => {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
 }
 
 const songSlice = createSlice({
@@ -29,6 +38,7 @@ const songSlice = createSlice({
     clearTracks(state) {
       return {
         ...state,
+        shuffleList: [],
         songs: []
       };
     },
@@ -36,13 +46,26 @@ const songSlice = createSlice({
       const newPlaylist = state.songs.filter(s => s.id !== action.payload.id);
       return {
         ...state,
+        shuffleList: [],
         songs: newPlaylist,
       }
+    },
+    popShuffleList: (state) => {
+      state.shuffleList.pop();
     },
     setTracks(state, action: PayloadAction<ISong[]>) {
       return {
         ...state,
+        shuffleList: [],
         songs: action.payload
+      }
+    },
+    setShuffleList: (state) => {
+      const indexArray = Object.keys(state.songs).map(Number);
+      shuffleArray(indexArray);
+      return {
+        ...state,
+        shuffleList: indexArray
       }
     },
     setTrack: (state, action: PayloadAction<ISong | undefined>) => {
@@ -61,6 +84,7 @@ const songSlice = createSlice({
       return {
         ...state,
         shuffle: !state.shuffle,
+        shuffleList: [],
       }
     },
   },
@@ -72,8 +96,9 @@ export const {
   clearTracks,
   deleteTrack,
   addTrack,
+  setShuffleList,
   setTrack,
   toggleRepeat,
-  toggleShuffle
+  toggleShuffle,
 } = songSlice.actions;
 export default songSlice.reducer;

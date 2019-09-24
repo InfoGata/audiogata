@@ -45,8 +45,6 @@ interface IProps {
   onPreviousClick: () => void;
   onNextClick: () => void;
   togglePlay: () => void;
-  onToggleShuffle: () => void;
-  onToggleRepeat: () => void;
   onSeek: (newTime: number) => void;
   onVolumeChange: (
     event: React.ChangeEvent<{}>,
@@ -85,8 +83,6 @@ const PlayerBar: React.FC<IProps> = props => {
           backward={props.onPreviousClick}
           foward={props.onNextClick}
           togglePlay={props.togglePlay}
-          toggleShuffle={props.onToggleShuffle}
-          toggleRepeat={props.onToggleRepeat}
         />
         <Progress
           elapsed={props.elapsed}

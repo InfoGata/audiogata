@@ -21,10 +21,9 @@ import { IPlayerComponent } from "./players/IPlayerComponent";
 import Local from "./players/local";
 import {
   deleteTrack,
+  setShuffleList,
   setTrack,
   setTracks,
-  toggleRepeat,
-  toggleShuffle,
 } from "./store/reducers/songReducer";
 import { AppState } from "./store/store";
 
@@ -51,7 +50,6 @@ interface IProps extends WithStyles<typeof styles>, StateProps, DispatchProps {}
 
 class App extends Component<IProps, IAppState> {
   private audioPlayer: Local;
-  private shuffleList: number[] = [];
 
   constructor(props: any) {
     super(props);
@@ -96,8 +94,6 @@ class App extends Component<IProps, IAppState> {
             onPreviousClick={this.onPreviousClick}
             onNextClick={this.onNextClick}
             togglePlay={this.togglePlay}
-            onToggleShuffle={this.onToggleShuffle}
-            onToggleRepeat={this.onToggleRepeat}
             onSeek={this.onSeek}
             onVolumeChange={this.onVolumeChange}
             onToggleMute={this.onToggleMute}
@@ -111,7 +107,6 @@ class App extends Component<IProps, IAppState> {
           <QueueBar
             onPlaylistClick={this.onPlaylistClick}
             onDeleteClick={this.onDeleteClick}
-            setPlayQueue={this.setPlayQueue}
           />
         </div>
       </Router>
@@ -152,15 +147,6 @@ class App extends Component<IProps, IAppState> {
     }
   }
 
-  private onToggleShuffle = () => {
-    this.shuffleList = [];
-    this.props.toggleShuffle();
-  };
-
-  private onToggleRepeat = () => {
-    this.props.toggleRepeat();
-  };
-
   private onToggleMute = () => {
     if (this.state.muted) {
       this.setVolume(this.state.volume);
@@ -198,14 +184,12 @@ class App extends Component<IProps, IAppState> {
       this.pausePlayer();
       this.props.setTrack(undefined);
     }
-    this.shuffleList = [];
 
     this.props.deleteTrack(song);
   };
 
   private setPlayQueue = (tracks: ISong[]) => {
     this.props.setTracks(tracks);
-    this.shuffleList = [];
   };
 
   private getCurrentIndex() {
@@ -244,10 +228,10 @@ class App extends Component<IProps, IAppState> {
   private onNextClick = async () => {
     let newIndex = this.getCurrentIndex() + 1;
     if (this.props.shuffle) {
-      if (this.shuffleList.length === 0) {
-        this.createShuffleList();
+      if (this.props.shuffleQueue.length === 0) {
+        this.props.setShuffleList();
       }
-      newIndex = this.shuffleList.pop() || 0;
+      newIndex = this.props.shuffleQueue[0] || 0;
     }
     if (this.props.songs.length > newIndex) {
       await this.playSongByIndex(newIndex);
@@ -256,19 +240,6 @@ class App extends Component<IProps, IAppState> {
       await this.playSongByIndex(newIndex);
     }
   };
-
-  private createShuffleList() {
-    const indexArray = Object.keys(this.props.songs).map(Number);
-    this.shuffleArray(indexArray);
-    this.shuffleList = indexArray;
-  }
-
-  private shuffleArray(array: any[]) {
-    for (let i = array.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [array[i], array[j]] = [array[j], array[i]];
-    }
-  }
 
   private onSongEnd = () => {
     this.onNextClick();
@@ -319,7 +290,7 @@ class App extends Component<IProps, IAppState> {
 
   private onPlaylistClick = async (song: ISong) => {
     await this.playSong(song);
-    this.createShuffleList();
+    this.props.setShuffleList();
   };
 
   private resumePlayer() {
@@ -363,6 +334,7 @@ const mapStateToProps = (state: AppState) => ({
   playlists: state.playlist.playlists,
   repeat: state.song.repeat,
   shuffle: state.song.shuffle,
+  shuffleQueue: state.song.shuffleList,
   songs: state.song.songs,
 });
 type StateProps = ReturnType<typeof mapStateToProps>;
@@ -371,10 +343,9 @@ const mapDispatchToProps = (dispatch: Dispatch) =>
   bindActionCreators(
     {
       deleteTrack,
+      setShuffleList,
       setTrack,
       setTracks,
-      toggleRepeat,
-      toggleShuffle,
     },
     dispatch,
   );

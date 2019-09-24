@@ -38,7 +38,6 @@ const useStyles = makeStyles(theme => ({
 
 interface IProps {
   onDeleteClick: (song: ISong) => void;
-  setPlayQueue: (songs: ISong[]) => void;
   onPlaylistClick: (song: ISong) => void;
 }
 
@@ -110,7 +109,6 @@ const QueueBar: React.FC<IProps> = props => {
         currentSong={currentSong}
         onDeleteClick={props.onDeleteClick}
         onPlaylistClick={props.onPlaylistClick}
-        setTracks={props.setPlayQueue}
       />
     </Drawer>
   );

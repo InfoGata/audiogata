@@ -1,7 +1,9 @@
 import { List, RootRef } from "@material-ui/core";
 import React from "react";
 import { DragDropContext, Droppable, DropResult } from "react-beautiful-dnd";
+import { useDispatch } from "react-redux";
 import { ISong } from "../models";
+import { setTracks } from "../store/reducers/songReducer";
 import QueueItem from "./QueueItem";
 
 interface IProps {
@@ -9,10 +11,10 @@ interface IProps {
   currentSong?: ISong;
   onDeleteClick: (song: ISong) => void;
   onPlaylistClick: (song: ISong) => void;
-  setTracks: (tracks: ISong[]) => void;
 }
 
 const PlayQueue: React.FC<IProps> = props => {
+  const dispatch = useDispatch();
   function onDragEnd(result: DropResult) {
     const { destination, source, draggableId } = result;
 
@@ -32,7 +34,7 @@ const PlayQueue: React.FC<IProps> = props => {
     if (track) {
       tracks.splice(source.index, 1);
       tracks.splice(destination.index, 0, track);
-      props.setTracks(tracks);
+      dispatch(setTracks(tracks));
     }
   }
   return (
