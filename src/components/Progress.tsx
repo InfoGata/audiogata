@@ -1,5 +1,7 @@
 import { makeStyles, Slider } from "@material-ui/core";
 import React from "react";
+import { useSelector } from "react-redux";
+import { AppState } from "../store/store";
 import { formatSeconds } from "../utils";
 
 const useStyles = makeStyles({
@@ -9,7 +11,6 @@ const useStyles = makeStyles({
 });
 
 interface IProps {
-  elapsed: number;
   total: number;
   onSeek: (newTime: number) => void;
 }
@@ -18,6 +19,7 @@ const Progress: React.FC<IProps> = props => {
   const [isDragging, setIsDragging] = React.useState(false);
   const [newElapsed, setNewElapsed] = React.useState(0);
   const classes = useStyles();
+  const elapsed = useSelector((state: AppState) => state.song.elapsed);
 
   function onChange(_: React.ChangeEvent<{}>, value: number | number[]) {
     setIsDragging(true);
@@ -29,10 +31,10 @@ const Progress: React.FC<IProps> = props => {
     props.onSeek(value as number);
   }
 
-  const elapsed = isDragging ? newElapsed : props.elapsed;
+  const displayElapsed = isDragging ? newElapsed : elapsed || 0;
   return (
     <div>
-      {formatSeconds(elapsed)} / {formatSeconds(props.total)}
+      {formatSeconds(displayElapsed)} / {formatSeconds(props.total)}
       <div className={classes.container}>
         <Slider
           min={0}

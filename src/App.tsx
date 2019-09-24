@@ -22,6 +22,7 @@ import Local from "./players/local";
 import {
   deleteTrack,
   dequeueShuffleList,
+  setElapsed,
   setShuffleList,
   setTrack,
   setTracks,
@@ -38,7 +39,6 @@ const styles = (_: Theme) =>
 interface IAppState {
   playOnStartup: boolean;
   isPlaying: boolean;
-  elapsed: number;
   total: number;
   volume: number;
   muted: boolean;
@@ -57,7 +57,6 @@ class App extends Component<IProps, IAppState> {
     this.state = {
       anchorEl: null,
       dialogOpen: false,
-      elapsed: 0,
       isPlaying: false,
       isStopped: true,
       muted: false,
@@ -72,13 +71,6 @@ class App extends Component<IProps, IAppState> {
     this.setMediaSessionActions();
     if (this.state.playOnStartup) {
       this.playCurrentSong();
-    }
-  }
-
-  public async playCurrentSong() {
-    const currentSong = this.props.currentSong;
-    if (currentSong) {
-      this.playSong(currentSong);
     }
   }
 
@@ -99,7 +91,6 @@ class App extends Component<IProps, IAppState> {
             onVolumeChange={this.onVolumeChange}
             onToggleMute={this.onToggleMute}
             isMuted={this.state.muted}
-            elapsed={this.state.elapsed}
             total={this.state.total}
             isPlaying={this.state.isPlaying}
             volume={this.state.volume}
@@ -112,6 +103,13 @@ class App extends Component<IProps, IAppState> {
         </div>
       </Router>
     );
+  }
+
+  private async playCurrentSong() {
+    const currentSong = this.props.currentSong;
+    if (currentSong) {
+      this.playSong(currentSong, this.props.elapsed);
+    }
   }
 
   private getPlayerComponentByName(name: string): IPlayerComponent {
@@ -189,10 +187,6 @@ class App extends Component<IProps, IAppState> {
     this.props.deleteTrack(song);
   };
 
-  private setPlayQueue = (tracks: ISong[]) => {
-    this.props.setTracks(tracks);
-  };
-
   private getCurrentIndex() {
     if (this.props.currentSong) {
       return this.props.songs.indexOf(this.props.currentSong);
@@ -213,7 +207,7 @@ class App extends Component<IProps, IAppState> {
   }
 
   private onPreviousClick = async () => {
-    if (this.state.elapsed > 2) {
+    if (this.props.elapsed && this.props.elapsed > 2) {
       this.onSeek(0);
       return;
     }
@@ -248,8 +242,8 @@ class App extends Component<IProps, IAppState> {
   };
 
   private setTrackTimes = async (elapsed: number, total: number) => {
+    this.props.setElapsed(elapsed);
     this.setState({
-      elapsed,
       total,
     });
   };
@@ -333,6 +327,7 @@ class App extends Component<IProps, IAppState> {
 
 const mapStateToProps = (state: AppState) => ({
   currentSong: state.song.currentSong,
+  elapsed: state.song.elapsed,
   playlists: state.playlist.playlists,
   repeat: state.song.repeat,
   shuffle: state.song.shuffle,
@@ -346,6 +341,7 @@ const mapDispatchToProps = (dispatch: Dispatch) =>
     {
       deleteTrack,
       dequeueShuffleList,
+      setElapsed,
       setShuffleList,
       setTrack,
       setTracks,

@@ -44,7 +44,8 @@ interface IProps {
 const QueueBar: React.FC<IProps> = props => {
   const classes = useStyles();
   const dispatch = useDispatch();
-  const { songs, currentSong } = useSelector((state: AppState) => state.song);
+  const songs = useSelector((state: AppState) => state.song.songs);
+  const currentSong = useSelector((state: AppState) => state.song.currentSong);
   const playlists = useSelector((state: AppState) => state.playlist.playlists);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [dialogOpen, setDialogOpen] = React.useState(false);

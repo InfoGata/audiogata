@@ -8,6 +8,7 @@ interface ISongState {
   shuffle: boolean;
   repeat: boolean;
   currentSong?: ISong;
+  elapsed?: number;
 }
 
 const initialState: ISongState = {
@@ -52,6 +53,12 @@ const songSlice = createSlice({
     },
     dequeueShuffleList: (state) => {
       state.shuffleList.shift();
+    },
+    setElapsed: (state, action: PayloadAction<number>) => {
+      return {
+        ...state,
+        elapsed: action.payload
+      };
     },
     setTracks(state, action: PayloadAction<ISong[]>) {
       return {
@@ -100,6 +107,7 @@ export const {
   setTrack,
   toggleRepeat,
   toggleShuffle,
-  dequeueShuffleList
+  dequeueShuffleList,
+  setElapsed
 } = songSlice.actions;
 export default songSlice.reducer;

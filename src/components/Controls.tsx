@@ -18,7 +18,8 @@ interface IProps {
 
 const Controls: React.FC<IProps> = props => {
   const playIcon = props.isPlaying ? <Pause /> : <PlayArrow />;
-  const { repeat, shuffle } = useSelector((state: AppState) => state.song);
+  const repeat = useSelector((state: AppState) => state.song.repeat);
+  const shuffle = useSelector((state: AppState) => state.song.shuffle);
   const dispatch = useDispatch();
 
   const onToggleShuffle = () => {

@@ -52,7 +52,6 @@ interface IProps {
   ) => void;
   onToggleMute: () => void;
   isMuted: boolean;
-  elapsed: number;
   total: number;
   isPlaying: boolean;
   volume: number;
@@ -84,11 +83,7 @@ const PlayerBar: React.FC<IProps> = props => {
           foward={props.onNextClick}
           togglePlay={props.togglePlay}
         />
-        <Progress
-          elapsed={props.elapsed}
-          total={props.total}
-          onSeek={props.onSeek}
-        />
+        <Progress total={props.total} onSeek={props.onSeek} />
         <Volume
           volume={props.volume}
           muted={props.muted}
