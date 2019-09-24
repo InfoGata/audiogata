@@ -42,9 +42,6 @@ interface IAppState {
   total: number;
   volume: number;
   muted: boolean;
-  isStopped: boolean;
-  anchorEl: HTMLElement | null;
-  dialogOpen: boolean;
 }
 
 interface IProps extends WithStyles<typeof styles>, StateProps, DispatchProps {}
@@ -55,10 +52,7 @@ class App extends Component<IProps, IAppState> {
   constructor(props: any) {
     super(props);
     this.state = {
-      anchorEl: null,
-      dialogOpen: false,
       isPlaying: false,
-      isStopped: true,
       muted: false,
       playOnStartup: true,
       total: 0,
@@ -162,14 +156,10 @@ class App extends Component<IProps, IAppState> {
 
   private togglePlay = () => {
     if (this.state.isPlaying) {
-      if (this.state.isStopped) {
-        this.playCurrentSong();
-      } else {
-        this.pausePlayer();
-        this.setState({
-          isPlaying: false,
-        });
-      }
+      this.pausePlayer();
+      this.setState({
+        isPlaying: false,
+      });
     } else {
       this.resumePlayer();
       this.setState({
@@ -249,12 +239,19 @@ class App extends Component<IProps, IAppState> {
   };
 
   private onSongError(err: any) {
+    // NotAllowedError occurs when autoplay is denied.
+    if (err.name === "NotAllowedError") {
+      this.props.setElapsed(0);
+      return;
+    }
+
     if (this.props.currentSong) {
       const message = `${this.props.currentSong.name}: ${err.message}`;
       toast.error(message);
       // tslint:disable-next-line: no-console
-      console.log(message);
+      console.log(err);
     }
+
     this.onNextClick();
   }
 
@@ -274,7 +271,6 @@ class App extends Component<IProps, IAppState> {
     this.setState(
       {
         isPlaying: true,
-        isStopped: false,
       },
       () => {
         if (time) {
