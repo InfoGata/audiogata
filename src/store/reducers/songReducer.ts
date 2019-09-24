@@ -50,8 +50,8 @@ const songSlice = createSlice({
         songs: newPlaylist,
       }
     },
-    popShuffleList: (state) => {
-      state.shuffleList.pop();
+    dequeueShuffleList: (state) => {
+      state.shuffleList.shift();
     },
     setTracks(state, action: PayloadAction<ISong[]>) {
       return {
@@ -100,5 +100,6 @@ export const {
   setTrack,
   toggleRepeat,
   toggleShuffle,
+  dequeueShuffleList
 } = songSlice.actions;
 export default songSlice.reducer;

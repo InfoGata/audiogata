@@ -21,6 +21,7 @@ import { IPlayerComponent } from "./players/IPlayerComponent";
 import Local from "./players/local";
 import {
   deleteTrack,
+  dequeueShuffleList,
   setShuffleList,
   setTrack,
   setTracks,
@@ -228,10 +229,11 @@ class App extends Component<IProps, IAppState> {
   private onNextClick = async () => {
     let newIndex = this.getCurrentIndex() + 1;
     if (this.props.shuffle) {
-      if (this.props.shuffleQueue.length === 0) {
+      if (this.props.shuffleList.length === 0) {
         this.props.setShuffleList();
       }
-      newIndex = this.props.shuffleQueue[0] || 0;
+      newIndex = this.props.shuffleList[0] || 0;
+      this.props.dequeueShuffleList();
     }
     if (this.props.songs.length > newIndex) {
       await this.playSongByIndex(newIndex);
@@ -334,7 +336,7 @@ const mapStateToProps = (state: AppState) => ({
   playlists: state.playlist.playlists,
   repeat: state.song.repeat,
   shuffle: state.song.shuffle,
-  shuffleQueue: state.song.shuffleList,
+  shuffleList: state.song.shuffleList,
   songs: state.song.songs,
 });
 type StateProps = ReturnType<typeof mapStateToProps>;
@@ -343,6 +345,7 @@ const mapDispatchToProps = (dispatch: Dispatch) =>
   bindActionCreators(
     {
       deleteTrack,
+      dequeueShuffleList,
       setShuffleList,
       setTrack,
       setTracks,

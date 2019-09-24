@@ -21,14 +21,22 @@ const Controls: React.FC<IProps> = props => {
   const { repeat, shuffle } = useSelector((state: AppState) => state.song);
   const dispatch = useDispatch();
 
+  const onToggleShuffle = () => {
+    dispatch(toggleShuffle());
+  };
+
+  const onToggleRepeat = () => {
+    dispatch(toggleRepeat());
+  };
+
   const shuffleColor = shuffle ? "primary" : "inherit";
   const repeatColor = repeat ? "primary" : "inherit";
   return (
     <div>
-      <button onClick={dispatch(toggleShuffle)}>
+      <button onClick={onToggleShuffle}>
         <Shuffle color={shuffleColor} />
       </button>
-      <button onClick={dispatch(toggleRepeat)}>
+      <button onClick={onToggleRepeat}>
         <Repeat color={repeatColor} />
       </button>
       <button onClick={props.backward}>

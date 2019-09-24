@@ -18,6 +18,7 @@ const Playlist: React.FC<IProps> = props => {
   const playlist = useSelector((state: AppState) =>
     state.playlist.playlists.find(p => p.id === props.match.params.id),
   );
+  const currentSong = useSelector((state: AppState) => state.song.currentSong);
 
   function onDragEnd(result: DropResult) {
     const { destination, source, draggableId } = result;
@@ -45,13 +46,19 @@ const Playlist: React.FC<IProps> = props => {
   return playlist ? (
     <div>
       {playlist.name}
+      <button>Play</button>
       <DragDropContext onDragEnd={onDragEnd}>
         <Droppable droppableId="playlist">
           {provided => (
             <RootRef rootRef={provided.innerRef}>
               <List>
                 {playlist.songs.map((song, index) => (
-                  <PlaylistItem key={song.id} index={index} song={song} />
+                  <PlaylistItem
+                    key={song.id}
+                    index={index}
+                    song={song}
+                    currentSong={currentSong}
+                  />
                 ))}
               </List>
             </RootRef>
