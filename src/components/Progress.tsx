@@ -20,6 +20,7 @@ const Progress: React.FC<IProps> = props => {
   const [newElapsed, setNewElapsed] = React.useState(0);
   const classes = useStyles();
   const elapsed = useSelector((state: AppState) => state.song.elapsed);
+  const currentSong = useSelector((state: AppState) => state.song.currentSong);
 
   function onChange(_: React.ChangeEvent<{}>, value: number | number[]) {
     setIsDragging(true);
@@ -32,13 +33,15 @@ const Progress: React.FC<IProps> = props => {
   }
 
   const displayElapsed = isDragging ? newElapsed : elapsed || 0;
+  const totalDuration =
+    currentSong && currentSong.duration ? currentSong.duration : props.total;
   return (
     <div>
-      {formatSeconds(displayElapsed)} / {formatSeconds(props.total)}
+      {formatSeconds(displayElapsed)} / {formatSeconds(totalDuration)}
       <div className={classes.container}>
         <Slider
           min={0}
-          max={props.total}
+          max={totalDuration}
           value={elapsed}
           onChange={onChange}
           onChangeCommitted={onChangeCommited}

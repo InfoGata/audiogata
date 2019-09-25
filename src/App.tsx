@@ -22,10 +22,11 @@ import Local from "./players/local";
 import {
   deleteTrack,
   dequeueShuffleList,
+  pause,
+  play,
   setElapsed,
   setShuffleList,
   setTrack,
-  setTracks,
 } from "./store/reducers/songReducer";
 import { AppState } from "./store/store";
 
@@ -38,10 +39,10 @@ const styles = (_: Theme) =>
 
 interface IAppState {
   playOnStartup: boolean;
-  isPlaying: boolean;
   total: number;
   volume: number;
   muted: boolean;
+  isLoaded: boolean;
 }
 
 interface IProps extends WithStyles<typeof styles>, StateProps, DispatchProps {}
@@ -52,7 +53,7 @@ class App extends Component<IProps, IAppState> {
   constructor(props: any) {
     super(props);
     this.state = {
-      isPlaying: false,
+      isLoaded: false,
       muted: false,
       playOnStartup: true,
       total: 0,
@@ -63,7 +64,7 @@ class App extends Component<IProps, IAppState> {
 
   public async componentDidMount() {
     this.setMediaSessionActions();
-    if (this.state.playOnStartup) {
+    if (this.state.playOnStartup && this.props.isPlaying) {
       this.playCurrentSong();
     }
   }
@@ -86,7 +87,7 @@ class App extends Component<IProps, IAppState> {
             onToggleMute={this.onToggleMute}
             isMuted={this.state.muted}
             total={this.state.total}
-            isPlaying={this.state.isPlaying}
+            isPlaying={this.props.isPlaying}
             volume={this.state.volume}
             muted={this.state.muted}
           />
@@ -155,16 +156,16 @@ class App extends Component<IProps, IAppState> {
   };
 
   private togglePlay = () => {
-    if (this.state.isPlaying) {
+    if (this.props.isPlaying) {
       this.pausePlayer();
-      this.setState({
-        isPlaying: false,
-      });
+      this.props.pause();
     } else {
-      this.resumePlayer();
-      this.setState({
-        isPlaying: true,
-      });
+      if (this.state.isLoaded) {
+        this.resumePlayer();
+      } else {
+        this.playCurrentSong();
+      }
+      this.props.play();
     }
   };
 
@@ -268,16 +269,13 @@ class App extends Component<IProps, IAppState> {
       }
     }
     this.setMediaSessionMetaData();
-    this.setState(
-      {
-        isPlaying: true,
-      },
-      () => {
-        if (time) {
-          this.onSeek(time);
-        }
-      },
-    );
+    this.setState({
+      isLoaded: true,
+    });
+    this.props.play();
+    if (time) {
+      this.onSeek(time);
+    }
   }
 
   private onPlaylistClick = async (song: ISong) => {
@@ -324,6 +322,7 @@ class App extends Component<IProps, IAppState> {
 const mapStateToProps = (state: AppState) => ({
   currentSong: state.song.currentSong,
   elapsed: state.song.elapsed,
+  isPlaying: state.song.isPlaying,
   playlists: state.playlist.playlists,
   repeat: state.song.repeat,
   shuffle: state.song.shuffle,
@@ -337,10 +336,11 @@ const mapDispatchToProps = (dispatch: Dispatch) =>
     {
       deleteTrack,
       dequeueShuffleList,
+      pause,
+      play,
       setElapsed,
       setShuffleList,
       setTrack,
-      setTracks,
     },
     dispatch,
   );

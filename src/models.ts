@@ -5,20 +5,11 @@ export interface ISong {
   useBlob: boolean;
   blob?: Blob;
   from?: string;
-  dateAdded: Date;
-  sortOrder: number;
   apiId?: string;
   duration?: number;
   albumId?: string;
   artistId?: string;
   artistName?: string;
-}
-
-export interface IAuth {
-  id?: string;
-  name: string;
-  accessToken: string;
-  refreshToken: string;
 }
 
 export interface IAlbum {
