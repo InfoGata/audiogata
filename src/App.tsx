@@ -38,7 +38,6 @@ const styles = (_: Theme) =>
   });
 
 interface IAppState {
-  playOnStartup: boolean;
   total: number;
   volume: number;
   muted: boolean;
@@ -55,7 +54,6 @@ class App extends Component<IProps, IAppState> {
     this.state = {
       isLoaded: false,
       muted: false,
-      playOnStartup: true,
       total: 0,
       volume: 1.0,
     };
@@ -64,8 +62,10 @@ class App extends Component<IProps, IAppState> {
 
   public async componentDidMount() {
     this.setMediaSessionActions();
-    if (this.state.playOnStartup && this.props.isPlaying) {
+    if (this.props.playOnStartup && this.props.isPlaying) {
       this.playCurrentSong();
+    } else if (this.props.isPlaying) {
+      this.props.pause();
     }
   }
 
@@ -323,6 +323,7 @@ const mapStateToProps = (state: AppState) => ({
   currentSong: state.song.currentSong,
   elapsed: state.song.elapsed,
   isPlaying: state.song.isPlaying,
+  playOnStartup: state.settings.playOnStartup,
   playlists: state.playlist.playlists,
   repeat: state.song.repeat,
   shuffle: state.song.shuffle,

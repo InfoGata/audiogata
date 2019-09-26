@@ -13,6 +13,7 @@ import ExtensionIcon from "@material-ui/icons/Extension";
 import HomeIcon from "@material-ui/icons/Home";
 import MenuIcon from "@material-ui/icons/Menu";
 import PlaylistAddIcon from "@material-ui/icons/PlaylistAdd";
+import SettingsApplicationsIcon from "@material-ui/icons/SettingsApplications";
 import SyncIcon from "@material-ui/icons/Sync";
 import React from "react";
 import { useSelector } from "react-redux";
@@ -79,6 +80,12 @@ const Navigation: React.FC = () => {
         </List>
         <AddPlaylistDialog handleClose={closeDialog} open={dialogOpen} />
       </Collapse>
+      <ListItem button={true} component={Link} to="/settings" key="Settings">
+        <ListItemIcon>
+          <SettingsApplicationsIcon />
+        </ListItemIcon>
+        <ListItemText>Settings</ListItemText>
+      </ListItem>
     </List>
   );
 };
