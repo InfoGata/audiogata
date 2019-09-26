@@ -50,25 +50,25 @@ const QueueBar: React.FC<IProps> = props => {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [dialogOpen, setDialogOpen] = React.useState(false);
 
-  function openMenu(event: React.MouseEvent<HTMLButtonElement>) {
+  const openMenu = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
-  }
-  function closeMenu() {
+  };
+  const closeMenu = () => {
     setAnchorEl(null);
-  }
-  function clearQueue() {
+  };
+  const clearQueue = () => {
     dispatch(clearTracks());
-  }
-  function openDialog() {
+  };
+  const openDialog = () => {
     setDialogOpen(true);
-  }
-  function addToNewPlaylist() {
+  };
+  const addToNewPlaylist = () => {
     openDialog();
     closeMenu();
-  }
-  function closeDialog() {
+  };
+  const closeDialog = () => {
     setDialogOpen(false);
-  }
+  };
   return (
     <Drawer
       className={classes.drawer}

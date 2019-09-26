@@ -6,16 +6,14 @@ const napsterServerUrl = "http://localhost:2000";
 const napsterOauthUrl = `${napsterApi}/oauth/authorize?client_id=${napsterApiKey}&response_type=code`;
 const spotifyServerUrl = "http://localhost:8888";
 
-function onSpotifyLoginClick(e: React.MouseEvent) {
-  e.preventDefault();
+const onSpotifyLoginClick = () => {
   const redirectUrl = `${napsterServerUrl}/authorize`;
   window.location.href = `${napsterOauthUrl}&redirect_uri=${redirectUrl}`;
-}
-function onNapsterLoginClick(e: React.MouseEvent) {
-  e.preventDefault();
+};
+const onNapsterLoginClick = () => {
   const loginUrl = `${spotifyServerUrl}/login`;
   window.location.href = `${loginUrl}`;
-}
+};
 
 const Plugins: React.FC = () => {
   return (

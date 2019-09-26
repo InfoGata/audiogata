@@ -24,7 +24,7 @@ const AddPlaylistDialog: React.FC<IProps> = props => {
   const [name, setName] = React.useState("");
   const dispatch = useDispatch<AppDispatch>();
 
-  function confirm() {
+  const confirm = () => {
     const tracks = props.songs || [];
     const playlist = {
       name,
@@ -32,12 +32,12 @@ const AddPlaylistDialog: React.FC<IProps> = props => {
     };
     dispatch(addPlaylist(playlist));
     handleClose();
-  }
+  };
 
-  function onChange(e: React.ChangeEvent<HTMLInputElement>) {
+  const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setName(value);
-  }
+  };
 
   return (
     <div>

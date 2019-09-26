@@ -33,29 +33,29 @@ const QueueItem: React.FC<IProps> = props => {
   const [dialogOpen, setDialogOpen] = React.useState(false);
   const playlists = useSelector((state: AppState) => state.playlist.playlists);
 
-  function playListClick() {
+  const playListClick = () => {
     props.onPlaylistClick(props.song);
-  }
-  function deleteClick() {
+  };
+  const deleteClick = () => {
     props.onDeleteClick(props.song);
     closeMenu();
-  }
-  function openMenu(event: React.MouseEvent<HTMLButtonElement>) {
+  };
+  const openMenu = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
-  }
-  function closeMenu() {
+  };
+  const closeMenu = () => {
     setAnchorEl(null);
-  }
-  function addToNewPlaylist() {
+  };
+  const addToNewPlaylist = () => {
     openDialog();
     closeMenu();
-  }
-  function openDialog() {
+  };
+  const openDialog = () => {
     setDialogOpen(true);
-  }
-  function closeDialog() {
+  };
+  const closeDialog = () => {
     setDialogOpen(false);
-  }
+  };
   return (
     <Draggable
       key={props.song.id}

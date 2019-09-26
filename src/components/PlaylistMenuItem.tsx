@@ -15,12 +15,13 @@ interface IProps {
 const PlaylistMenuItem: React.FC<IProps> = props => {
   const { playlist, closeMenu, songs } = props;
   const dispatch = useDispatch<AppDispatch>();
-  function addToPlaylist() {
+
+  const addToPlaylist = () => {
     if (playlist.id) {
       dispatch(addSongs(playlist.id, songs));
     }
     closeMenu();
-  }
+  };
   return (
     <MenuItem onClick={addToPlaylist}>
       <ListItemIcon>

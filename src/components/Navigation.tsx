@@ -26,15 +26,16 @@ const Navigation: React.FC = () => {
   const [playlistOpen, setPlaylistOpen] = React.useState(false);
   const [dialogOpen, setDialogOpen] = React.useState(false);
   const playlists = useSelector((state: AppState) => state.playlist.playlists);
-  function handlePlaylistClick() {
+
+  const handlePlaylistClick = () => {
     setPlaylistOpen(!playlistOpen);
-  }
-  function openDialog() {
+  };
+  const openDialog = () => {
     setDialogOpen(true);
-  }
-  function closeDialog() {
+  };
+  const closeDialog = () => {
     setDialogOpen(false);
-  }
+  };
 
   const playlistItems = playlists.map(p => (
     <NavigationPlaylistItem playlist={p} key={p.id} />

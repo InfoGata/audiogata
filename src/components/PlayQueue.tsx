@@ -16,7 +16,7 @@ interface IProps {
 
 const PlayQueue: React.FC<IProps> = props => {
   const dispatch = useDispatch<AppDispatch>();
-  function onDragEnd(result: DropResult) {
+  const onDragEnd = (result: DropResult) => {
     const { destination, source, draggableId } = result;
 
     if (!destination) {
@@ -37,7 +37,7 @@ const PlayQueue: React.FC<IProps> = props => {
       tracks.splice(destination.index, 0, track);
       dispatch(setTracks(tracks));
     }
-  }
+  };
   return (
     <DragDropContext onDragEnd={onDragEnd}>
       <Droppable droppableId="song-queue">

@@ -19,9 +19,11 @@ interface IProps {
 const NavigationPlaylistItem: React.FC<IProps> = (props: IProps) => {
   const dispatch = useDispatch<AppDispatch>();
   const playlistPath = `/playlist/${props.playlist.id}`;
-  function deletePlaylistItem() {
+
+  const deletePlaylistItem = () => {
     dispatch(deletePlaylist(props.playlist));
-  }
+  };
+
   return (
     <ListItem button={true} component={Link} to={playlistPath}>
       <ListItemText primary={props.playlist.name} />

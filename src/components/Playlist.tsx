@@ -20,7 +20,7 @@ const Playlist: React.FC<IProps> = props => {
   );
   const currentSong = useSelector((state: AppState) => state.song.currentSong);
 
-  function onDragEnd(result: DropResult) {
+  const onDragEnd = (result: DropResult) => {
     const { destination, source, draggableId } = result;
     if (!destination) {
       return;
@@ -42,7 +42,7 @@ const Playlist: React.FC<IProps> = props => {
         dispatch(setSongs(props.match.params.id, tracks));
       }
     }
-  }
+  };
   return playlist ? (
     <div>
       {playlist.name}

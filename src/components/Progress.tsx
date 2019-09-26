@@ -22,15 +22,15 @@ const Progress: React.FC<IProps> = props => {
   const elapsed = useSelector((state: AppState) => state.song.elapsed);
   const currentSong = useSelector((state: AppState) => state.song.currentSong);
 
-  function onChange(_: React.ChangeEvent<{}>, value: number | number[]) {
+  const onChange = (_: React.ChangeEvent<{}>, value: number | number[]) => {
     setIsDragging(true);
     setNewElapsed(value as number);
-  }
+  };
 
-  function onChangeCommited(e: any, value: number | number[]) {
+  const onChangeCommited = (e: any, value: number | number[]) => {
     setIsDragging(false);
     props.onSeek(value as number);
-  }
+  };
 
   const displayElapsed = isDragging ? newElapsed : elapsed || 0;
   const totalDuration =
