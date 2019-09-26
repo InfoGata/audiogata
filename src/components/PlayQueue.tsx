@@ -4,6 +4,7 @@ import { DragDropContext, Droppable, DropResult } from "react-beautiful-dnd";
 import { useDispatch } from "react-redux";
 import { ISong } from "../models";
 import { setTracks } from "../store/reducers/songReducer";
+import { AppDispatch } from "../store/store";
 import QueueItem from "./QueueItem";
 
 interface IProps {
@@ -14,7 +15,7 @@ interface IProps {
 }
 
 const PlayQueue: React.FC<IProps> = props => {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
   function onDragEnd(result: DropResult) {
     const { destination, source, draggableId } = result;
 

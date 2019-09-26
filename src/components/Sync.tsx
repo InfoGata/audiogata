@@ -1,13 +1,13 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setTracks } from "../store/reducers/songReducer";
-import { AppState } from "../store/store";
+import { AppDispatch, AppState } from "../store/store";
 import BlockstackSync from "../syncs/BlockstackSync";
 
 const sync = new BlockstackSync();
 const Sync: React.FC = () => {
   const [isLoggedIn, setIsLoggedIn] = React.useState(false);
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
   const songs = useSelector((state: AppState) => state.song.songs);
   React.useEffect(() => {
     sync.init().then(() => {

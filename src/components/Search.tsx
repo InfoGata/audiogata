@@ -6,6 +6,7 @@ import { ISearchApi } from "../services/apis/ISearchApi";
 import SoundCloud from "../services/apis/SoundCloud";
 import Youtube from "../services/apis/Youtube";
 import { addTrack } from "../store/reducers/songReducer";
+import { AppDispatch } from "../store/store";
 
 const getApiByName = (name: string): ISearchApi | undefined => {
   switch (name) {
@@ -67,7 +68,7 @@ interface ITrackResultProps {
   track: ISong;
 }
 const TrackResult: React.FC<ITrackResultProps> = props => {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
 
   const onClickSong = () => {
     dispatch(addTrack(props.track));

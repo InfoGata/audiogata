@@ -7,7 +7,7 @@ import SkipPrevious from "@material-ui/icons/SkipPrevious";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { toggleRepeat, toggleShuffle } from "../store/reducers/songReducer";
-import { AppState } from "../store/store";
+import { AppDispatch, AppState } from "../store/store";
 
 interface IProps {
   backward: () => void;
@@ -20,7 +20,7 @@ const Controls: React.FC<IProps> = props => {
   const playIcon = props.isPlaying ? <Pause /> : <PlayArrow />;
   const repeat = useSelector((state: AppState) => state.song.repeat);
   const shuffle = useSelector((state: AppState) => state.song.shuffle);
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
 
   const onToggleShuffle = () => {
     dispatch(toggleShuffle());

@@ -10,13 +10,14 @@ import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
 import { IPlaylist } from "../models";
 import { deletePlaylist } from "../store/reducers/playlistReducer";
+import { AppDispatch } from "../store/store";
 
 interface IProps {
   playlist: IPlaylist;
 }
 
 const NavigationPlaylistItem: React.FC<IProps> = (props: IProps) => {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
   const playlistPath = `/playlist/${props.playlist.id}`;
   function deletePlaylistItem() {
     dispatch(deletePlaylist(props.playlist));

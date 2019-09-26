@@ -11,6 +11,7 @@ import React from "react";
 import { useDispatch } from "react-redux";
 import { ISong } from "../models";
 import { addPlaylist } from "../store/reducers/playlistReducer";
+import { AppDispatch } from "../store/store";
 
 interface IProps {
   open: boolean;
@@ -21,7 +22,7 @@ interface IProps {
 const AddPlaylistDialog: React.FC<IProps> = props => {
   const { open, handleClose } = props;
   const [name, setName] = React.useState("");
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
 
   function confirm() {
     const tracks = props.songs || [];

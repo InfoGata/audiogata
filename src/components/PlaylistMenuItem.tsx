@@ -4,6 +4,7 @@ import React from "react";
 import { useDispatch } from "react-redux";
 import { IPlaylist, ISong } from "../models";
 import { addSongs } from "../store/reducers/playlistReducer";
+import { AppDispatch } from "../store/store";
 
 interface IProps {
   playlist: IPlaylist;
@@ -13,7 +14,7 @@ interface IProps {
 
 const PlaylistMenuItem: React.FC<IProps> = props => {
   const { playlist, closeMenu, songs } = props;
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
   function addToPlaylist() {
     if (playlist.id) {
       dispatch(addSongs(playlist.id, songs));

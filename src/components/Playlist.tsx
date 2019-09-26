@@ -4,7 +4,7 @@ import { DragDropContext, Droppable, DropResult } from "react-beautiful-dnd";
 import { useDispatch, useSelector } from "react-redux";
 import { RouteComponentProps } from "react-router";
 import { setSongs } from "../store/reducers/playlistReducer";
-import { AppState } from "../store/store";
+import { AppDispatch, AppState } from "../store/store";
 import PlaylistItem from "./PlaylistItem";
 
 interface IParams {
@@ -14,7 +14,7 @@ interface IParams {
 interface IProps extends RouteComponentProps<IParams> {}
 
 const Playlist: React.FC<IProps> = props => {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
   const playlist = useSelector((state: AppState) =>
     state.playlist.playlists.find(p => p.id === props.match.params.id),
   );

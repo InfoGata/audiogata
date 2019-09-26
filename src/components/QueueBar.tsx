@@ -12,7 +12,7 @@ import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { ISong } from "../models";
 import { clearTracks } from "../store/reducers/songReducer";
-import { AppState } from "../store/store";
+import { AppDispatch, AppState } from "../store/store";
 import AddPlaylistDialog from "./AddPlaylistDialog";
 import PlaylistMenuItem from "./PlaylistMenuItem";
 import PlayQueue from "./PlayQueue";
@@ -43,7 +43,7 @@ interface IProps {
 
 const QueueBar: React.FC<IProps> = props => {
   const classes = useStyles();
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
   const songs = useSelector((state: AppState) => state.song.songs);
   const currentSong = useSelector((state: AppState) => state.song.currentSong);
   const playlists = useSelector((state: AppState) => state.playlist.playlists);
