@@ -1,4 +1,7 @@
-export function formatSeconds(seconds: number) {
+export function formatSeconds(seconds?: number) {
+  if (!seconds) {
+    return "";
+  }
   const hours = Math.floor(seconds / 3600);
   seconds = seconds % 3600;
 

@@ -10,7 +10,6 @@ import Drawer from "@material-ui/core/Drawer";
 import PlaylistAddIcon from "@material-ui/icons/PlaylistAdd";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { ISong } from "../models";
 import { clearTracks } from "../store/reducers/songReducer";
 import { AppDispatch, AppState } from "../store/store";
 import AddPlaylistDialog from "./AddPlaylistDialog";
@@ -36,12 +35,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-interface IProps {
-  onDeleteClick: (song: ISong) => void;
-  onPlaylistClick: (song: ISong) => void;
-}
-
-const QueueBar: React.FC<IProps> = props => {
+const QueueBar: React.FC = () => {
   const classes = useStyles();
   const dispatch = useDispatch<AppDispatch>();
   const songs = useSelector((state: AppState) => state.song.songs);
@@ -105,12 +99,7 @@ const QueueBar: React.FC<IProps> = props => {
         handleClose={closeDialog}
       />
       <Divider />
-      <PlayQueue
-        songList={songs}
-        currentSong={currentSong}
-        onDeleteClick={props.onDeleteClick}
-        onPlaylistClick={props.onPlaylistClick}
-      />
+      <PlayQueue songList={songs} currentSong={currentSong} />
     </Drawer>
   );
 };

@@ -26,11 +26,15 @@ class Local implements IPlayerComponent {
   }
 
   public pause() {
-    this.audio.pause();
+    if (this.audio.readyState === 4) {
+      this.audio.pause();
+    }
   }
 
   public resume() {
-    this.audio.play();
+    if (this.audio.readyState === 4) {
+      this.audio.play();
+    }
   }
 
   public async play(song: ISong) {

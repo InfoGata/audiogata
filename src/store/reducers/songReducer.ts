@@ -10,14 +10,18 @@ interface ISongState {
   currentSong?: ISong;
   elapsed?: number;
   isPlaying: boolean;
+  volume: number;
+  mute: boolean;
 }
 
 const initialState: ISongState = {
   isPlaying: false,
+  mute: false,
   repeat: false,
   shuffle: false,
   shuffleList: [],
   songs: [],
+  volume: 1.0,
 }
 
 const shuffleArray = (array: any[]) => {
@@ -25,6 +29,11 @@ const shuffleArray = (array: any[]) => {
     const j = Math.floor(Math.random() * (i + 1));
     [array[i], array[j]] = [array[j], array[i]];
   }
+}
+const createShuffleArray = (tracks: ISong[]): number[] => {
+  const indexArray = Object.keys(tracks).map(Number);
+  shuffleArray(tracks);
+  return indexArray;
 }
 
 const songSlice = createSlice({
@@ -47,25 +56,45 @@ const songSlice = createSlice({
     },
     deleteTrack(state, action: PayloadAction<ISong>) {
       const newPlaylist = state.songs.filter(s => s.id !== action.payload.id);
+      let currentSong = state.currentSong;
+      if (currentSong && currentSong.id === action.payload.id) {
+        currentSong = undefined;
+      }
       return {
         ...state,
+        currentSong,
         shuffleList: [],
         songs: newPlaylist,
       }
     },
-    dequeueShuffleList: (state) => {
-      state.shuffleList.shift();
-    },
-    pause: (state) => {
+    nextTrack: (state) => {
+      let shuffleList = [...state.shuffleList];
+      let newIndex = state.currentSong ? state.songs.indexOf(state.currentSong) + 1 : 0;
+      if (state.shuffle) {
+        if (state.shuffleList.length === 0) {
+          shuffleList = createShuffleArray(state.songs);
+        }
+        newIndex = shuffleList.shift() || 0;
+      }
+      if (state.songs.length > newIndex) {
+        newIndex = 0;
+      }
+      const currentSong = state.songs[newIndex];
       return {
         ...state,
-        isPlaying: false
+        currentSong,
+        shuffleList,
       }
     },
-    play: (state) => {
+    prevTrack: (state) => {
+      let newIndex = state.currentSong ? state.songs.indexOf(state.currentSong) - 1 : 0;
+      if (newIndex < 0) {
+        newIndex = state.songs.length - 1;
+      }
+      const currentSong = state.songs[newIndex];
       return {
         ...state,
-        isPlaying: true
+        currentSong,
       }
     },
     setElapsed: (state, action: PayloadAction<number>) => {
@@ -81,19 +110,30 @@ const songSlice = createSlice({
         songs: action.payload
       }
     },
-    setShuffleList: (state) => {
-      const indexArray = Object.keys(state.songs).map(Number);
-      shuffleArray(indexArray);
-      return {
-        ...state,
-        shuffleList: indexArray
-      }
-    },
     setTrack: (state, action: PayloadAction<ISong | undefined>) => {
       return {
         ...state,
         currentSong: action.payload,
       }
+    },
+    setVolume: (state, action: PayloadAction<number>) => {
+      return {
+        ...state,
+        mute: false,
+        volume: action.payload,
+      }
+    },
+    toggleIsPlaying: (state) => {
+      return {
+        ...state,
+        isPlaying: !state.isPlaying
+      }
+    },
+    toggleMute: (state) => {
+      return {
+        ...state,
+        mute: !state.mute,
+      };
     },
     toggleRepeat: (state) => {
       return {
@@ -117,13 +157,14 @@ export const {
   clearTracks,
   deleteTrack,
   addTrack,
-  pause,
-  play,
-  setShuffleList,
   setTrack,
   toggleRepeat,
   toggleShuffle,
-  dequeueShuffleList,
-  setElapsed
+  setElapsed,
+  setVolume,
+  toggleMute,
+  nextTrack,
+  prevTrack,
+  toggleIsPlaying,
 } = songSlice.actions;
 export default songSlice.reducer;

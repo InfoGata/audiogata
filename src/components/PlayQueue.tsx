@@ -10,8 +10,6 @@ import QueueItem from "./QueueItem";
 interface IProps {
   songList: ISong[];
   currentSong?: ISong;
-  onDeleteClick: (song: ISong) => void;
-  onPlaylistClick: (song: ISong) => void;
 }
 
 const PlayQueue: React.FC<IProps> = props => {
@@ -50,8 +48,6 @@ const PlayQueue: React.FC<IProps> = props => {
                   index={index}
                   song={songInfo}
                   currentSong={props.currentSong}
-                  onDeleteClick={props.onDeleteClick}
-                  onPlaylistClick={props.onPlaylistClick}
                 />
               ))}
               {provided.placeholder}

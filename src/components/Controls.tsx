@@ -6,29 +6,27 @@ import SkipNext from "@material-ui/icons/SkipNext";
 import SkipPrevious from "@material-ui/icons/SkipPrevious";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { toggleRepeat, toggleShuffle } from "../store/reducers/songReducer";
+import {
+  nextTrack,
+  prevTrack,
+  toggleIsPlaying,
+  toggleRepeat,
+  toggleShuffle,
+} from "../store/reducers/songReducer";
 import { AppDispatch, AppState } from "../store/store";
 
-interface IProps {
-  backward: () => void;
-  foward: () => void;
-  togglePlay: () => void;
-  isPlaying: boolean;
-}
-
-const Controls: React.FC<IProps> = props => {
-  const playIcon = props.isPlaying ? <Pause /> : <PlayArrow />;
+const Controls: React.FC = () => {
   const repeat = useSelector((state: AppState) => state.song.repeat);
   const shuffle = useSelector((state: AppState) => state.song.shuffle);
+  const isPlaying = useSelector((state: AppState) => state.song.isPlaying);
   const dispatch = useDispatch<AppDispatch>();
+  const playIcon = isPlaying ? <Pause /> : <PlayArrow />;
 
-  const onToggleShuffle = () => {
-    dispatch(toggleShuffle());
-  };
-
-  const onToggleRepeat = () => {
-    dispatch(toggleRepeat());
-  };
+  const onToggleShuffle = () => dispatch(toggleShuffle());
+  const onToggleRepeat = () => dispatch(toggleRepeat());
+  const onPreviousClick = () => dispatch(prevTrack());
+  const onNextClick = () => dispatch(nextTrack());
+  const onTogglePlay = () => dispatch(toggleIsPlaying());
 
   const shuffleColor = shuffle ? "primary" : "inherit";
   const repeatColor = repeat ? "primary" : "inherit";
@@ -40,11 +38,11 @@ const Controls: React.FC<IProps> = props => {
       <button onClick={onToggleRepeat}>
         <Repeat color={repeatColor} />
       </button>
-      <button onClick={props.backward}>
+      <button onClick={onPreviousClick}>
         <SkipPrevious />
       </button>
-      <button onClick={props.togglePlay}>{playIcon}</button>
-      <button onClick={props.foward}>
+      <button onClick={onTogglePlay}>{playIcon}</button>
+      <button onClick={onNextClick}>
         <SkipNext />
       </button>
     </div>

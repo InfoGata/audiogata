@@ -14,9 +14,10 @@ import MoreHorizIcon from "@material-ui/icons/MoreHoriz";
 import PlaylistAddIcon from "@material-ui/icons/PlaylistAdd";
 import React from "react";
 import { Draggable } from "react-beautiful-dnd";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { ISong } from "../models";
-import { AppState } from "../store/store";
+import { setTrack, deleteTrack } from "../store/reducers/songReducer";
+import { AppDispatch, AppState } from "../store/store";
 import AddPlaylistDialog from "./AddPlaylistDialog";
 import PlaylistMenuItem from "./PlaylistMenuItem";
 
@@ -24,20 +25,19 @@ interface IProps {
   index: number;
   song: ISong;
   currentSong?: ISong;
-  onDeleteClick: (song: ISong) => void;
-  onPlaylistClick: (song: ISong) => void;
 }
 
 const QueueItem: React.FC<IProps> = props => {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [dialogOpen, setDialogOpen] = React.useState(false);
   const playlists = useSelector((state: AppState) => state.playlist.playlists);
+  const dispatch = useDispatch<AppDispatch>();
 
   const playListClick = () => {
-    props.onPlaylistClick(props.song);
+    dispatch(setTrack(props.song));
   };
   const deleteClick = () => {
-    props.onDeleteClick(props.song);
+    dispatch(deleteTrack(props.song));
     closeMenu();
   };
   const openMenu = (event: React.MouseEvent<HTMLButtonElement>) => {

@@ -10,12 +10,7 @@ const useStyles = makeStyles({
   },
 });
 
-interface IProps {
-  total: number;
-  onSeek: (newTime: number) => void;
-}
-
-const Progress: React.FC<IProps> = props => {
+const Progress: React.FC = () => {
   const [isDragging, setIsDragging] = React.useState(false);
   const [newElapsed, setNewElapsed] = React.useState(0);
   const classes = useStyles();
@@ -29,12 +24,10 @@ const Progress: React.FC<IProps> = props => {
 
   const onChangeCommited = (e: any, value: number | number[]) => {
     setIsDragging(false);
-    props.onSeek(value as number);
   };
 
   const displayElapsed = isDragging ? newElapsed : elapsed || 0;
-  const totalDuration =
-    currentSong && currentSong.duration ? currentSong.duration : props.total;
+  const totalDuration = currentSong && currentSong.duration;
   return (
     <div>
       {formatSeconds(displayElapsed)} / {formatSeconds(totalDuration)}

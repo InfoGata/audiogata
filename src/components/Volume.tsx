@@ -2,29 +2,34 @@ import { Slider } from "@material-ui/core";
 import VolumeOff from "@material-ui/icons/VolumeOff";
 import VolumeUp from "@material-ui/icons/VolumeUp";
 import React from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { setVolume, toggleMute } from "../store/reducers/songReducer";
+import { AppDispatch, AppState } from "../store/store";
 
-interface IProps {
-  onVolumeChange: (
-    event: React.ChangeEvent<{}>,
-    volume: number | number[],
-  ) => void;
-  onToggleMute: () => void;
-  volume: number;
-  muted: boolean;
-}
+const Volume: React.FC = () => {
+  const dispatch = useDispatch<AppDispatch>();
+  const muted = useSelector((state: AppState) => state.song.mute);
+  const volume = useSelector((state: AppState) => state.song.volume);
 
-const Volume: React.FC<IProps> = props => {
-  const volumeIcon =
-    props.volume === 0 || props.muted ? <VolumeOff /> : <VolumeUp />;
+  const onToggleMute = () => dispatch(toggleMute());
+  const onVolumeChange = (
+    _: React.ChangeEvent<{}>,
+    newVolume: number | number[],
+  ) => {
+    const actualVolume = (newVolume as number) / 100;
+    dispatch(setVolume(actualVolume));
+  };
+
+  const volumeIcon = volume === 0 || muted ? <VolumeOff /> : <VolumeUp />;
   return (
     <div>
-      <button onClick={props.onToggleMute}>{volumeIcon}</button>
+      <button onClick={onToggleMute}>{volumeIcon}</button>
       <div>
         <Slider
           min={0}
           max={100}
-          value={props.volume * 100}
-          onChange={props.onVolumeChange}
+          value={volume * 100}
+          onChange={onVolumeChange}
         />
       </div>
     </div>

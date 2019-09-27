@@ -41,24 +41,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-interface IProps {
-  onPreviousClick: () => void;
-  onNextClick: () => void;
-  togglePlay: () => void;
-  onSeek: (newTime: number) => void;
-  onVolumeChange: (
-    event: React.ChangeEvent<{}>,
-    volume: number | number[],
-  ) => void;
-  onToggleMute: () => void;
-  isMuted: boolean;
-  total: number;
-  isPlaying: boolean;
-  volume: number;
-  muted: boolean;
-}
-
-const PlayerBar: React.FC<IProps> = props => {
+const PlayerBar: React.FC = () => {
   const classes = useStyles();
   const currentSong = useSelector((state: AppState) => state.song.currentSong);
 
@@ -77,19 +60,9 @@ const PlayerBar: React.FC<IProps> = props => {
             __html: (currentSong && currentSong.name) || "",
           }}
         />
-        <Controls
-          isPlaying={props.isPlaying}
-          backward={props.onPreviousClick}
-          foward={props.onNextClick}
-          togglePlay={props.togglePlay}
-        />
-        <Progress total={props.total} onSeek={props.onSeek} />
-        <Volume
-          volume={props.volume}
-          muted={props.muted}
-          onVolumeChange={props.onVolumeChange}
-          onToggleMute={props.onToggleMute}
-        />
+        <Controls />
+        <Progress />
+        <Volume />
       </Toolbar>
     </AppBar>
   );
