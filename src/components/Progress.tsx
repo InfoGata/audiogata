@@ -1,4 +1,5 @@
-import { makeStyles, Slider } from "@material-ui/core";
+import { Slider } from "@material-ui/core";
+import { makeStyles } from "@material-ui/core/styles";
 import React from "react";
 import { useSelector } from "react-redux";
 import { AppState } from "../store/store";

@@ -2,11 +2,11 @@ import {
   Divider,
   ListItemIcon,
   ListItemText,
-  makeStyles,
   Menu,
   MenuItem,
 } from "@material-ui/core";
 import Drawer from "@material-ui/core/Drawer";
+import { makeStyles } from "@material-ui/core/styles";
 import PlaylistAddIcon from "@material-ui/icons/PlaylistAdd";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";

@@ -1,5 +1,5 @@
-import { makeStyles } from "@material-ui/core";
 import Drawer from "@material-ui/core/Drawer";
+import { makeStyles } from "@material-ui/core/styles";
 import React from "react";
 import Navigation from "./Navigation";
 

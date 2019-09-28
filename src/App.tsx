@@ -1,4 +1,5 @@
-import { CssBaseline, makeStyles } from "@material-ui/core";
+import { CssBaseline } from "@material-ui/core";
+import { makeStyles } from "@material-ui/core/styles";
 import React from "react";
 import { hot } from "react-hot-loader/root";
 import { BrowserRouter as Router } from "react-router-dom";
