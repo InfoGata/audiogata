@@ -6,12 +6,13 @@ import { ISong } from "../models";
 import Local from "../players/local";
 import {
   nextTrack,
+  prevTrack,
   setElapsed,
   toggleIsPlaying,
 } from "../store/reducers/songReducer";
 import { AppState } from "../store/store";
 
-interface IProps extends StateProps, DispatchProps { }
+interface IProps extends StateProps, DispatchProps {}
 
 class AudioComponent extends React.Component<IProps, {}> {
   private readonly local: Local;
@@ -21,6 +22,7 @@ class AudioComponent extends React.Component<IProps, {}> {
   }
 
   public componentDidMount() {
+    this.setMediaSessionActions();
     if (this.props.playOnStartup && this.props.isPlaying) {
       this.playCurrentSong();
     } else if (this.props.isPlaying) {
@@ -41,7 +43,11 @@ class AudioComponent extends React.Component<IProps, {}> {
   }
 
   private async onCurrentSongUpdate(prevProps: IProps, newProps: IProps) {
-    if (prevProps.currentSong && newProps.currentSong && prevProps.currentSong.id !== newProps.currentSong.id) {
+    if (
+      prevProps.currentSong &&
+      newProps.currentSong &&
+      prevProps.currentSong.id !== newProps.currentSong.id
+    ) {
       await this.playSong(newProps.currentSong);
     }
   }
@@ -78,7 +84,8 @@ class AudioComponent extends React.Component<IProps, {}> {
   private async playCurrentSong() {
     const currentSong = this.props.currentSong;
     if (currentSong) {
-      this.playSong(currentSong);
+      await this.playSong(currentSong);
+      this.setMediaSessionMetaData();
     }
   }
   private setTrackTimes = (currentTime: number, _: number) => {
@@ -115,6 +122,27 @@ class AudioComponent extends React.Component<IProps, {}> {
     }
 
     this.props.nextTrack();
+  };
+
+  private setMediaSessionMetaData() {
+    if (navigator && navigator.mediaSession) {
+      if (this.props.currentSong) {
+        navigator.mediaSession.metadata = new MediaMetadata({
+          title: this.props.currentSong.name,
+        });
+      }
+    }
+  }
+
+  private setMediaSessionActions() {
+    if (navigator && navigator.mediaSession) {
+      navigator.mediaSession.setActionHandler("previoustrack", () => {
+        this.props.prevTrack();
+      });
+      navigator.mediaSession.setActionHandler("nexttrack", () => {
+        this.props.nextTrack();
+      });
+    }
   }
 }
 const mapStateToProps = (state: AppState) => ({
@@ -131,10 +159,14 @@ const mapDispatchToProps = (dispatch: Dispatch) =>
   bindActionCreators(
     {
       nextTrack,
+      prevTrack,
       setElapsed,
-      toggleIsPlaying
+      toggleIsPlaying,
     },
     dispatch,
   );
 type DispatchProps = ReturnType<typeof mapDispatchToProps>;
-export default connect(mapStateToProps, mapDispatchToProps)(AudioComponent);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(AudioComponent);
