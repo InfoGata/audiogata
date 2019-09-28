@@ -6,6 +6,7 @@ import { RouteComponentProps } from "react-router";
 import { setSongs } from "../store/reducers/playlistReducer";
 import { AppDispatch, AppState } from "../store/store";
 import PlaylistItem from "./PlaylistItem";
+import { setTrack, setTracks } from "../store/reducers/songReducer";
 
 interface IParams {
   id: string;
@@ -19,6 +20,16 @@ const Playlist: React.FC<IProps> = props => {
     state.playlist.playlists.find(p => p.id === props.match.params.id),
   );
   const currentSong = useSelector((state: AppState) => state.song.currentSong);
+
+  const playPlaylist = () => {
+    if (!playlist) {
+      return;
+    }
+
+    const firstSong = playlist.songs[0];
+    dispatch(setTrack(firstSong));
+    dispatch(setTracks(playlist.songs));
+  };
 
   const onDragEnd = (result: DropResult) => {
     const { destination, source, draggableId } = result;
@@ -46,7 +57,7 @@ const Playlist: React.FC<IProps> = props => {
   return playlist ? (
     <div>
       {playlist.name}
-      <button>Play</button>
+      <button onClick={playPlaylist}>Play</button>
       <DragDropContext onDragEnd={onDragEnd}>
         <Droppable droppableId="playlist">
           {provided => (
@@ -58,6 +69,7 @@ const Playlist: React.FC<IProps> = props => {
                     index={index}
                     song={song}
                     currentSong={currentSong}
+                    playlist={playlist}
                   />
                 ))}
               </List>

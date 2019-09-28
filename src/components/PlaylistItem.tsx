@@ -1,21 +1,27 @@
 import { ListItem, ListItemText, Typography } from "@material-ui/core";
 import React from "react";
 import { Draggable } from "react-beautiful-dnd";
-import { ISong } from "../models";
+import { useDispatch } from "react-redux";
+import { IPlaylist, ISong } from "../models";
+import { setTrack, setTracks } from "../store/reducers/songReducer";
+import { AppDispatch } from "../store/store";
 
 interface IProps {
   index: number;
   song: ISong;
   currentSong?: ISong;
+  playlist: IPlaylist;
 }
 
 const PlaylistItem: React.FC<IProps> = props => {
+  const { song, index, currentSong, playlist } = props;
+  const dispatch = useDispatch<AppDispatch>();
+  const playSong = () => {
+    dispatch(setTrack(song));
+    dispatch(setTracks(playlist.songs));
+  };
   return (
-    <Draggable
-      key={props.song.id}
-      draggableId={props.song.id || ""}
-      index={props.index}
-    >
+    <Draggable key={song.id} draggableId={song.id || ""} index={index}>
       {provided => (
         <div
           ref={provided.innerRef}
@@ -24,16 +30,13 @@ const PlaylistItem: React.FC<IProps> = props => {
         >
           <ListItem
             button={true}
-            key={props.song.id}
-            selected={
-              props.currentSong && props.currentSong.id === props.song.id
-            }
+            key={song.id}
+            selected={currentSong && currentSong.id === song.id}
+            onClick={playSong}
           >
             <ListItemText
               primary={
-                <Typography
-                  dangerouslySetInnerHTML={{ __html: props.song.name }}
-                />
+                <Typography dangerouslySetInnerHTML={{ __html: song.name }} />
               }
             />
           </ListItem>
