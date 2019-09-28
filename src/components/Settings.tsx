@@ -11,9 +11,7 @@ const Settings: React.FC = () => {
   const playOnStartup = useSelector(
     (state: AppState) => state.settings.playOnStartup,
   );
-  const onChangePlayOnStartup = () => {
-    dispatch(togglePlayOnStartup());
-  };
+  const onChangePlayOnStartup = () => dispatch(togglePlayOnStartup());
 
   return (
     <FormGroup>

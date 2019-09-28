@@ -16,7 +16,7 @@ import React from "react";
 import { Draggable } from "react-beautiful-dnd";
 import { useDispatch, useSelector } from "react-redux";
 import { ISong } from "../models";
-import { setTrack, deleteTrack } from "../store/reducers/songReducer";
+import { deleteTrack, setTrack } from "../store/reducers/songReducer";
 import { AppDispatch, AppState } from "../store/store";
 import AddPlaylistDialog from "./AddPlaylistDialog";
 import PlaylistMenuItem from "./PlaylistMenuItem";
@@ -33,29 +33,21 @@ const QueueItem: React.FC<IProps> = props => {
   const playlists = useSelector((state: AppState) => state.playlist.playlists);
   const dispatch = useDispatch<AppDispatch>();
 
-  const playListClick = () => {
-    dispatch(setTrack(props.song));
-  };
+  const playListClick = () => dispatch(setTrack(props.song));
+  const openMenu = (event: React.MouseEvent<HTMLButtonElement>) =>
+    setAnchorEl(event.currentTarget);
+  const closeMenu = () => setAnchorEl(null);
+  const openDialog = () => setDialogOpen(true);
+  const closeDialog = () => setDialogOpen(false);
   const deleteClick = () => {
     dispatch(deleteTrack(props.song));
     closeMenu();
-  };
-  const openMenu = (event: React.MouseEvent<HTMLButtonElement>) => {
-    setAnchorEl(event.currentTarget);
-  };
-  const closeMenu = () => {
-    setAnchorEl(null);
   };
   const addToNewPlaylist = () => {
     openDialog();
     closeMenu();
   };
-  const openDialog = () => {
-    setDialogOpen(true);
-  };
-  const closeDialog = () => {
-    setDialogOpen(false);
-  };
+
   return (
     <Draggable
       key={props.song.id}

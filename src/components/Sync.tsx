@@ -15,21 +15,12 @@ const Sync: React.FC = () => {
     });
   }, []);
 
-  const signIn = () => {
-    sync.login();
-  };
-
-  const signOut = () => {
-    sync.logout();
-  };
-
+  const signIn = () => sync.login();
+  const signOut = () => sync.logout();
+  const syncData = async () => await sync.sync(songs);
   const getData = async () => {
     const data = await sync.getData();
     dispatch(setTracks(data));
-  };
-
-  const syncData = async () => {
-    await sync.sync(songs);
   };
 
   return isLoggedIn ? (
