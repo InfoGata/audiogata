@@ -69,14 +69,19 @@ const songSlice = createSlice({
     },
     nextTrack: (state) => {
       let shuffleList = [...state.shuffleList];
-      let newIndex = state.currentSong ? state.songs.indexOf(state.currentSong) + 1 : 0;
+      let index = -1;
+      if (state.currentSong) {
+        const prevSong = state.currentSong;
+        index = state.songs.findIndex(s => s.id === prevSong.id);
+      }
+      let newIndex = index + 1;
       if (state.shuffle) {
         if (state.shuffleList.length === 0) {
           shuffleList = createShuffleArray(state.songs);
         }
         newIndex = shuffleList.shift() || 0;
       }
-      if (state.songs.length > newIndex) {
+      if (newIndex > state.songs.length) {
         newIndex = 0;
       }
       const currentSong = state.songs[newIndex];

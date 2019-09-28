@@ -21,6 +21,10 @@ class Local implements IPlayerComponent {
 
   }
 
+  public ready() {
+    return this.audio.readyState > 2;
+  }
+
   public setVolume(volume: number) {
     this.audio.volume = volume;
   }

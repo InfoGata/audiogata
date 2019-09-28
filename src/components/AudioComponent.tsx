@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { ISong } from "../models";
@@ -19,8 +19,9 @@ const AudioComponent: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const volume = useSelector((state: AppState) => state.song.volume);
   const muted = useSelector((state: AppState) => state.song.mute);
-  const prevSong = useRef<ISong | undefined>();
-  const [isLoaded, setIsLoaded] = useState(false);
+  const firstRunRef = useRef(true);
+  const firstCurrentSongRef = useRef(true);
+  const firstIsPlayingRef = useRef(true);
 
   const onError = useCallback(
     (err: any, song?: ISong) => {
@@ -55,8 +56,6 @@ const AudioComponent: React.FC = () => {
     async (song: ISong) => {
       try {
         await local.current.play(song);
-        prevSong.current = song;
-        setIsLoaded(true);
       } catch (err) {
         onError(err, song);
       }
@@ -66,52 +65,49 @@ const AudioComponent: React.FC = () => {
 
   // On App Start up
   useEffect(() => {
-    prevSong.current = currentSong;
-    if (playOnStartup && isPlaying) {
+    if (firstRunRef.current && playOnStartup && isPlaying) {
       if (currentSong) {
         playSong(currentSong);
       }
-    } else if (isPlaying) {
+    } else if (firstRunRef.current && isPlaying) {
       dispatch(toggleIsPlaying());
     }
-  }, []);
+    firstRunRef.current = false;
+  }, [playOnStartup, isPlaying, currentSong, playSong, dispatch]);
 
   // On new song
   useEffect(() => {
-    if (
-      prevSong.current &&
-      currentSong &&
-      prevSong.current.id === currentSong.id
-    ) {
-      return;
-    }
-
     const play = async () => {
       local.current.pause();
       if (currentSong) {
         await playSong(currentSong);
-        if (!isPlaying) {
-          dispatch(toggleIsPlaying());
-        }
       }
     };
-    play();
-  }, [playSong, currentSong, dispatch, isPlaying]);
+    if (!firstCurrentSongRef.current) {
+      play();
+    } else {
+      firstCurrentSongRef.current = false;
+    }
+  }, [playSong, currentSong, dispatch]);
 
   // On toggle play/pause
   useEffect(() => {
     const playPause = async () => {
       if (isPlaying) {
         local.current.resume();
-        if (!isLoaded && currentSong) {
+        if (!local.current.ready() && currentSong) {
           await playSong(currentSong);
         }
       } else {
         local.current.pause();
       }
     };
-    playPause();
-  }, [isPlaying]);
+    if (!firstIsPlayingRef.current) {
+      playPause();
+    } else {
+      firstIsPlayingRef.current = false;
+    }
+  }, [isPlaying, currentSong, playSong]);
 
   // On volume change
   useEffect(() => {
