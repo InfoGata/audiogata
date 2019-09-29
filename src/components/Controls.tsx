@@ -1,9 +1,11 @@
-import Pause from "@material-ui/icons/Pause";
-import PlayArrow from "@material-ui/icons/PlayArrow";
-import Repeat from "@material-ui/icons/Repeat";
-import Shuffle from "@material-ui/icons/Shuffle";
-import SkipNext from "@material-ui/icons/SkipNext";
-import SkipPrevious from "@material-ui/icons/SkipPrevious";
+import {
+  Pause,
+  PlayArrow,
+  Repeat,
+  Shuffle,
+  SkipNext,
+  SkipPrevious,
+} from "@material-ui/icons";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {

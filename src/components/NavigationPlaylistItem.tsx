@@ -4,7 +4,7 @@ import {
   ListItemSecondaryAction,
   ListItemText,
 } from "@material-ui/core";
-import DeleteIcon from "@material-ui/icons/Delete";
+import { Delete } from "@material-ui/icons";
 import React from "react";
 import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
@@ -29,7 +29,7 @@ const NavigationPlaylistItem: React.FC<IProps> = (props: IProps) => {
       <ListItemText primary={props.playlist.name} />
       <ListItemSecondaryAction>
         <IconButton aria-label="Delete" onClick={deletePlaylistItem}>
-          <DeleteIcon />
+          <Delete />
         </IconButton>
       </ListItemSecondaryAction>
     </ListItem>

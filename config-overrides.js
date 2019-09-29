@@ -13,4 +13,8 @@ module.exports = override(
     'libraryDirectory': 'esm',
     'camel2DashComponentName': false
   }),
+  fixBabelImports('@material-ui/icons', {
+    'libraryDirectory': 'esm',
+    'camel2DashComponentName': false
+  }),
 )

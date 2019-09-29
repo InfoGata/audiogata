@@ -7,7 +7,7 @@ import {
 } from "@material-ui/core";
 import Drawer from "@material-ui/core/Drawer";
 import { makeStyles } from "@material-ui/core/styles";
-import PlaylistAddIcon from "@material-ui/icons/PlaylistAdd";
+import { PlaylistAdd } from "@material-ui/icons";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { clearTracks } from "../store/reducers/songReducer";
@@ -72,7 +72,7 @@ const QueueBar: React.FC = () => {
       <Menu open={Boolean(anchorEl)} onClose={closeMenu} anchorEl={anchorEl}>
         <MenuItem onClick={addToNewPlaylist}>
           <ListItemIcon>
-            <PlaylistAddIcon />
+            <PlaylistAdd />
           </ListItemIcon>
           <ListItemText primary="Add To New Playlist" />
         </MenuItem>

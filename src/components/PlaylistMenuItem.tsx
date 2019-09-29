@@ -1,5 +1,5 @@
 import { ListItemIcon, ListItemText, MenuItem } from "@material-ui/core";
-import PlaylistAddIcon from "@material-ui/icons/PlaylistAdd";
+import { PlaylistAdd } from "@material-ui/icons";
 import React from "react";
 import { useDispatch } from "react-redux";
 import { IPlaylist, ISong } from "../models";
@@ -25,7 +25,7 @@ const PlaylistMenuItem: React.FC<IProps> = props => {
   return (
     <MenuItem onClick={addToPlaylist}>
       <ListItemIcon>
-        <PlaylistAddIcon />
+        <PlaylistAdd />
       </ListItemIcon>
       <ListItemText primary={playlist.name} />
     </MenuItem>

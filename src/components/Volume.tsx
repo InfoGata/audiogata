@@ -1,6 +1,5 @@
 import { Slider } from "@material-ui/core";
-import VolumeOff from "@material-ui/icons/VolumeOff";
-import VolumeUp from "@material-ui/icons/VolumeUp";
+import { VolumeOff, VolumeUp } from "@material-ui/icons";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setVolume, toggleMute } from "../store/reducers/songReducer";

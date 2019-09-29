@@ -9,9 +9,7 @@ import {
   MenuItem,
   Typography,
 } from "@material-ui/core";
-import DeleteIcon from "@material-ui/icons/Delete";
-import MoreHorizIcon from "@material-ui/icons/MoreHoriz";
-import PlaylistAddIcon from "@material-ui/icons/PlaylistAdd";
+import { Delete, MoreHoriz, PlaylistAdd } from "@material-ui/icons";
 import React from "react";
 import { Draggable } from "react-beautiful-dnd";
 import { useDispatch, useSelector } from "react-redux";
@@ -77,7 +75,7 @@ const QueueItem: React.FC<IProps> = props => {
             />
             <ListItemSecondaryAction>
               <IconButton onClick={openMenu}>
-                <MoreHorizIcon />
+                <MoreHoriz />
               </IconButton>
             </ListItemSecondaryAction>
           </ListItem>
@@ -88,14 +86,14 @@ const QueueItem: React.FC<IProps> = props => {
           >
             <MenuItem onClick={deleteClick}>
               <ListItemIcon>
-                <DeleteIcon />
+                <Delete />
               </ListItemIcon>
               <ListItemText primary="Delete" />
             </MenuItem>
             <Divider />
             <MenuItem onClick={addToNewPlaylist}>
               <ListItemIcon>
-                <PlaylistAddIcon />
+                <PlaylistAdd />
               </ListItemIcon>
               <ListItemText primary="Add To New Playlist" />
             </MenuItem>

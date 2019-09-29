@@ -4,9 +4,9 @@ import { DragDropContext, Droppable, DropResult } from "react-beautiful-dnd";
 import { useDispatch, useSelector } from "react-redux";
 import { RouteComponentProps } from "react-router";
 import { setSongs } from "../store/reducers/playlistReducer";
+import { setTrack, setTracks } from "../store/reducers/songReducer";
 import { AppDispatch, AppState } from "../store/store";
 import PlaylistItem from "./PlaylistItem";
-import { setTrack, setTracks } from "../store/reducers/songReducer";
 
 interface IParams {
   id: string;
