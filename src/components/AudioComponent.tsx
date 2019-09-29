@@ -7,6 +7,7 @@ import Local from "../players/local";
 import {
   nextTrack,
   prevTrack,
+  seek,
   setElapsed,
   toggleIsPlaying,
 } from "../store/reducers/songReducer";
@@ -36,6 +37,7 @@ class AudioComponent extends React.Component<IProps, {}> {
     await this.onIsPlayingUpdate(prevProps, currentProps);
     this.onVolumeUpdate(prevProps, currentProps);
     this.onMuteUpdate(prevProps, currentProps);
+    this.onSeek(prevProps, currentProps);
   }
 
   public render() {
@@ -78,6 +80,14 @@ class AudioComponent extends React.Component<IProps, {}> {
       } else {
         this.local.setVolume(newProps.volume);
       }
+    }
+  }
+
+  private onSeek(prevProps: IProps, newProps: IProps) {
+    console.log(newProps.seekTime);
+    if (newProps.seekTime && prevProps.seekTime !== newProps.seekTime) {
+      this.local.seek(newProps.seekTime);
+      this.props.seek(undefined);
     }
   }
 
@@ -151,6 +161,7 @@ const mapStateToProps = (state: AppState) => ({
   isPlaying: state.song.isPlaying,
   mute: state.song.mute,
   playOnStartup: state.settings.playOnStartup,
+  seekTime: state.song.seekTime,
   volume: state.song.volume,
 });
 type StateProps = ReturnType<typeof mapStateToProps>;
@@ -160,6 +171,7 @@ const mapDispatchToProps = (dispatch: Dispatch) =>
     {
       nextTrack,
       prevTrack,
+      seek,
       setElapsed,
       toggleIsPlaying,
     },

@@ -12,6 +12,7 @@ interface ISongState {
   isPlaying: boolean;
   volume: number;
   mute: boolean;
+  seekTime?: number;
 }
 
 const initialState: ISongState = {
@@ -39,7 +40,7 @@ const createShuffleArray = (tracks: ISong[]): number[] => {
 const songSlice = createSlice({
   initialState,
   reducers: {
-    addTrack(state, action: PayloadAction<ISong>) {
+    addTrack(state, action: PayloadAction<ISong>): ISongState {
       const id = uuid();
       action.payload.id = id;
       return {
@@ -47,14 +48,14 @@ const songSlice = createSlice({
         songs: [...state.songs, action.payload]
       };
     },
-    clearTracks(state) {
+    clearTracks(state): ISongState {
       return {
         ...state,
         shuffleList: [],
         songs: []
       };
     },
-    deleteTrack(state, action: PayloadAction<ISong>) {
+    deleteTrack(state, action: PayloadAction<ISong>): ISongState {
       const newPlaylist = state.songs.filter(s => s.id !== action.payload.id);
       let currentSong = state.currentSong;
       if (currentSong && currentSong.id === action.payload.id) {
@@ -67,7 +68,7 @@ const songSlice = createSlice({
         songs: newPlaylist,
       }
     },
-    nextTrack: (state) => {
+    nextTrack: (state): ISongState => {
       let shuffleList = [...state.shuffleList];
       let index = -1;
       if (state.currentSong) {
@@ -91,7 +92,7 @@ const songSlice = createSlice({
         shuffleList,
       }
     },
-    prevTrack: (state) => {
+    prevTrack: (state): ISongState => {
       let index = -1
       if (state.currentSong) {
         const prevSong = state.currentSong;
@@ -107,51 +108,57 @@ const songSlice = createSlice({
         currentSong,
       }
     },
-    setElapsed: (state, action: PayloadAction<number>) => {
+    seek: (state, action: PayloadAction<number | undefined>): ISongState  => {
+      return {
+        ...state,
+        seekTime: action.payload,
+      }
+    },
+    setElapsed: (state, action: PayloadAction<number>): ISongState => {
       return {
         ...state,
         elapsed: action.payload
       };
     },
-    setTracks(state, action: PayloadAction<ISong[]>) {
+    setTracks(state, action: PayloadAction<ISong[]>): ISongState {
       return {
         ...state,
         shuffleList: [],
         songs: action.payload
       }
     },
-    setTrack: (state, action: PayloadAction<ISong | undefined>) => {
+    setTrack: (state, action: PayloadAction<ISong | undefined>): ISongState => {
       return {
         ...state,
         currentSong: action.payload,
       }
     },
-    setVolume: (state, action: PayloadAction<number>) => {
+    setVolume: (state, action: PayloadAction<number>): ISongState => {
       return {
         ...state,
         mute: false,
         volume: action.payload,
       }
     },
-    toggleIsPlaying: (state) => {
+    toggleIsPlaying: (state): ISongState => {
       return {
         ...state,
         isPlaying: !state.isPlaying
       }
     },
-    toggleMute: (state) => {
+    toggleMute: (state): ISongState => {
       return {
         ...state,
         mute: !state.mute,
       };
     },
-    toggleRepeat: (state) => {
+    toggleRepeat: (state): ISongState => {
       return {
         ...state,
         repeat: !state.repeat,
       }
     },
-    toggleShuffle: (state) => {
+    toggleShuffle: (state): ISongState => {
       return {
         ...state,
         shuffle: !state.shuffle,
@@ -176,5 +183,6 @@ export const {
   nextTrack,
   prevTrack,
   toggleIsPlaying,
+  seek
 } = songSlice.actions;
 export default songSlice.reducer;
