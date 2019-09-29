@@ -36,7 +36,7 @@ const Progress: React.FC = () => {
         <Slider
           min={0}
           max={totalDuration}
-          value={elapsed}
+          value={displayElapsed}
           onChange={onChange}
           onChangeCommitted={onChangeCommited}
         />

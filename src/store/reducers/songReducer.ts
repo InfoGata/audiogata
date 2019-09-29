@@ -92,7 +92,12 @@ const songSlice = createSlice({
       }
     },
     prevTrack: (state) => {
-      let newIndex = state.currentSong ? state.songs.indexOf(state.currentSong) - 1 : 0;
+      let index = -1
+      if (state.currentSong) {
+        const prevSong = state.currentSong;
+        index = state.songs.findIndex(s => s.id === prevSong.id);
+      }
+      let newIndex = index - 1;
       if (newIndex < 0) {
         newIndex = state.songs.length - 1;
       }
