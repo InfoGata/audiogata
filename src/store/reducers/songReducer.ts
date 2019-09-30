@@ -52,7 +52,7 @@ const songSlice = createSlice({
       return {
         ...state,
         shuffleList: [],
-        songs: []
+        songs: [],
       };
     },
     deleteTrack(state, action: PayloadAction<ISong>): ISongState {
@@ -68,8 +68,7 @@ const songSlice = createSlice({
         songs: newPlaylist,
       }
     },
-    nextTrack: (state): ISongState => {
-      let shuffleList = [...state.shuffleList];
+    nextTrack: (state): void => {
       let index = -1;
       if (state.currentSong) {
         const prevSong = state.currentSong;
@@ -78,21 +77,16 @@ const songSlice = createSlice({
       let newIndex = index + 1;
       if (state.shuffle) {
         if (state.shuffleList.length === 0) {
-          shuffleList = createShuffleArray(state.songs);
+          state.shuffleList = createShuffleArray(state.songs);
         }
-        newIndex = shuffleList.shift() || 0;
+        newIndex = state.shuffleList.shift() || 0;
       }
       if (newIndex > state.songs.length) {
         newIndex = 0;
       }
-      const currentSong = state.songs[newIndex];
-      return {
-        ...state,
-        currentSong,
-        shuffleList,
-      }
+      state.currentSong = state.songs[newIndex];
     },
-    prevTrack: (state): ISongState => {
+    prevTrack: (state): void => {
       let index = -1
       if (state.currentSong) {
         const prevSong = state.currentSong;
@@ -102,13 +96,9 @@ const songSlice = createSlice({
       if (newIndex < 0) {
         newIndex = state.songs.length - 1;
       }
-      const currentSong = state.songs[newIndex];
-      return {
-        ...state,
-        currentSong,
-      }
+      state.currentSong = state.songs[newIndex];
     },
-    seek: (state, action: PayloadAction<number | undefined>): ISongState  => {
+    seek: (state, action: PayloadAction<number | undefined>): ISongState => {
       return {
         ...state,
         seekTime: action.payload,
@@ -131,6 +121,7 @@ const songSlice = createSlice({
       return {
         ...state,
         currentSong: action.payload,
+        isPlaying: true,
       }
     },
     setVolume: (state, action: PayloadAction<number>): ISongState => {
