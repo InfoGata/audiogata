@@ -1,10 +1,10 @@
 import { Slider } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import React from "react";
-import { useSelector, useDispatch } from "react-redux";
-import { AppState, AppDispatch } from "../store/store";
-import { formatSeconds } from "../utils";
+import { useDispatch, useSelector } from "react-redux";
 import { seek } from "../store/reducers/songReducer";
+import { AppDispatch, AppState } from "../store/store";
+import { formatSeconds } from "../utils";
 
 const useStyles = makeStyles({
   container: {
@@ -18,6 +18,7 @@ const Progress: React.FC = () => {
   const classes = useStyles();
   const elapsed = useSelector((state: AppState) => state.song.elapsed);
   const currentSong = useSelector((state: AppState) => state.song.currentSong);
+  const seekTime = useSelector((state: AppState) => state.song.seekTime);
   const dispatch = useDispatch<AppDispatch>();
 
   const onChange = (_: React.ChangeEvent<{}>, value: number | number[]) => {
@@ -27,11 +28,11 @@ const Progress: React.FC = () => {
 
   const onChangeCommited = (_: any, value: number | number[]) => {
     setIsDragging(false);
-    const seekTime = value as number;
-    dispatch(seek(seekTime));
+    const newSeekTime = value as number;
+    dispatch(seek(newSeekTime));
   };
 
-  const displayElapsed = isDragging ? newElapsed : elapsed || 0;
+  const displayElapsed = isDragging ? newElapsed : seekTime || elapsed || 0;
   const totalDuration = currentSong && currentSong.duration;
   return (
     <div>

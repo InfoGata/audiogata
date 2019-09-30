@@ -84,7 +84,6 @@ class AudioComponent extends React.Component<IProps, {}> {
   }
 
   private onSeek(prevProps: IProps, newProps: IProps) {
-    console.log(newProps.seekTime);
     if (newProps.seekTime && prevProps.seekTime !== newProps.seekTime) {
       this.local.seek(newProps.seekTime);
       this.props.seek(undefined);
@@ -94,7 +93,7 @@ class AudioComponent extends React.Component<IProps, {}> {
   private async playCurrentSong() {
     const currentSong = this.props.currentSong;
     if (currentSong) {
-      await this.playSong(currentSong);
+      await this.playSong(currentSong, this.props.elapsed);
       this.setMediaSessionMetaData();
     }
   }
@@ -106,13 +105,16 @@ class AudioComponent extends React.Component<IProps, {}> {
     this.props.nextTrack();
   };
 
-  private async playSong(song: ISong) {
+  private async playSong(song: ISong, time?: number) {
     if (song.from) {
       try {
         await this.local.play(song);
       } catch (err) {
         this.onError(err);
         return;
+      }
+      if (time) {
+        this.local.seek(time);
       }
     }
   }
