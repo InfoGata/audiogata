@@ -107,6 +107,7 @@ class AudioComponent extends React.Component<IProps, {}> {
 
   private async playSong(song: ISong, time?: number) {
     if (song.from) {
+      this.local.pause();
       try {
         await this.local.play(song);
       } catch (err) {
