@@ -85,8 +85,14 @@ const songSlice = createSlice({
         newIndex = 0;
       }
       state.currentSong = state.songs[newIndex];
+      state.elapsed = 0;
     },
     prevTrack: (state): void => {
+      if (state.elapsed && state.elapsed > 2) {
+        state.seekTime = 0;
+        return;
+      }
+
       let index = -1
       if (state.currentSong) {
         const prevSong = state.currentSong;
@@ -97,6 +103,7 @@ const songSlice = createSlice({
         newIndex = state.songs.length - 1;
       }
       state.currentSong = state.songs[newIndex];
+      state.elapsed = 0;
     },
     seek: (state, action: PayloadAction<number | undefined>): ISongState => {
       return {
@@ -121,6 +128,7 @@ const songSlice = createSlice({
       return {
         ...state,
         currentSong: action.payload,
+        elapsed: 0,
         isPlaying: true,
       }
     },
