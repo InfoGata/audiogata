@@ -22,3 +22,6 @@ export function formatSeconds(seconds?: number) {
   }
   return result;
 }
+
+export const queuebarWidth = 300;
+export const navbarWidth = 300;

@@ -6,19 +6,19 @@ import clsx from "clsx";
 import React from "react";
 import { useSelector } from "react-redux";
 import { AppState } from "../store/store";
+import { queuebarWidth } from "../utils";
 import Controls from "./Controls";
 import Progress from "./Progress";
 import Volume from "./Volume";
 
-const drawerWidth = 300;
 const useStyles = makeStyles(theme => ({
   appBarShift: {
-    marginRight: drawerWidth,
+    marginRight: queuebarWidth,
     transition: theme.transitions.create(["margin", "width"], {
       duration: theme.transitions.duration.enteringScreen,
       easing: theme.transitions.easing.easeOut,
     }),
-    width: `calc(100% - ${drawerWidth}px)`,
+    width: `calc(100% - ${queuebarWidth}px)`,
   },
   bottomAppBar: {
     bottom: 0,
@@ -45,13 +45,14 @@ const useStyles = makeStyles(theme => ({
 const PlayerBar: React.FC = () => {
   const classes = useStyles();
   const currentSong = useSelector((state: AppState) => state.song.currentSong);
+  const queuebarOpen = useSelector((state: AppState) => state.ui.queuebarOpen);
 
   return (
     <AppBar
       position="fixed"
       color="default"
       className={clsx(classes.bottomAppBar, {
-        [classes.appBarShift]: true,
+        [classes.appBarShift]: queuebarOpen,
       })}
     >
       <Toolbar className={classes.toolbar}>

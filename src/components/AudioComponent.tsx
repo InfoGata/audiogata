@@ -84,7 +84,7 @@ class AudioComponent extends React.Component<IProps, {}> {
   }
 
   private onSeek(prevProps: IProps, newProps: IProps) {
-    if (newProps.seekTime && prevProps.seekTime !== newProps.seekTime) {
+    if (newProps.seekTime != null && prevProps.seekTime !== newProps.seekTime) {
       this.local.seek(newProps.seekTime);
       this.props.seek(undefined);
     }

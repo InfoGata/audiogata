@@ -10,6 +10,7 @@ import PlayerBar from "./components/PlayerBar";
 import QueueBar from "./components/QueueBar";
 import Routes from "./components/Routes";
 import SideBar from "./components/SideBar";
+import TopBar from "./components/TopBar";
 
 const useStyles = makeStyles({
   root: {
@@ -24,6 +25,7 @@ const App: React.FC = () => {
       <ToastContainer position={toast.POSITION.BOTTOM_LEFT} />
       <div className={classes.root}>
         <CssBaseline />
+        <TopBar />
         <SideBar />
         <Routes />
         <PlayerBar />

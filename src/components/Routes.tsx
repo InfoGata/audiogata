@@ -8,13 +8,13 @@ import Sync from "./Sync";
 
 const Routes: React.FC = () => {
   return (
-    <>
+    <main>
       <Route exact={true} path="/" component={Home} />
       <Route path="/plugins" component={Plugins} />
       <Route path="/sync" component={Sync} />
       <Route exact={true} path="/playlist/:id" component={Playlist} />
       <Route exact={true} path="/settings" component={Settings} />
-    </>
+    </main>
   );
 };
 
