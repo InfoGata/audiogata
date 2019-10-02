@@ -6,11 +6,20 @@ import App from "./App";
 import "./index.css";
 import * as serviceWorker from "./serviceWorker";
 import store, { persistor } from "./store/store";
+import { createMuiTheme, MuiThemeProvider } from "@material-ui/core/styles";
+
+const theme = createMuiTheme({
+  palette: {
+    type: 'dark',
+  },
+});
 
 ReactDOM.render(
   <Provider store={store}>
     <PersistGate loading={null} persistor={persistor}>
-      <App />
+      <MuiThemeProvider theme={theme}>
+        <App />
+      </MuiThemeProvider>
     </PersistGate>
   </Provider>,
   document.getElementById("root"),
