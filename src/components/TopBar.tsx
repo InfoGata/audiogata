@@ -35,9 +35,6 @@ const useStyles = makeStyles((theme: Theme) =>
       }),
       width: `calc(100% - ${navbarWidth}px)`,
     },
-    grow: {
-      flexGrow: 1,
-    },
     inputInput: {
       padding: theme.spacing(1, 1, 1, 7),
       transition: theme.transitions.create("width"),
@@ -94,49 +91,48 @@ const TopBar: React.FC = () => {
   const onToggleNavbar = () => dispatch(toggleNavbar());
 
   return (
-    <div className={classes.grow}>
-      <AppBar
-        position="fixed"
-        className={clsx(classes.appBar, { [classes.appBarShift]: navbarOpen })}
-      >
-        <Toolbar>
-          <IconButton
-            edge="start"
-            className={classes.menuButton}
-            color="inherit"
-            aria-label="open drawer"
-            onClick={onToggleNavbar}
-          >
-            <Menu />
-          </IconButton>
-          <Typography className={classes.title} variant="h6" noWrap={true}>
-            Audio PWA
-          </Typography>
-          <div className={classes.search}>
-            <div className={classes.searchIcon}>
-              <Search />
-            </div>
-            <InputBase
-              placeholder="Search…"
-              classes={{
-                input: classes.inputInput,
-                root: classes.inputRoot,
-              }}
-              inputProps={{ "aria-label": "search" }}
-            />
+    <AppBar
+      position="fixed"
+      color="default"
+      className={clsx(classes.appBar, { [classes.appBarShift]: navbarOpen })}
+    >
+      <Toolbar>
+        <IconButton
+          edge="start"
+          className={classes.menuButton}
+          color="inherit"
+          aria-label="open drawer"
+          onClick={onToggleNavbar}
+        >
+          <Menu />
+        </IconButton>
+        <Typography className={classes.title} variant="h6" noWrap={true}>
+          Audio PWA
+        </Typography>
+        <div className={classes.search}>
+          <div className={classes.searchIcon}>
+            <Search />
           </div>
-          <IconButton
-            edge="start"
-            className={classes.menuButton}
-            color="inherit"
-            aria-label="open drawer"
-            onClick={onToggleQuebar}
-          >
-            <PlaylistPlay />
-          </IconButton>
-        </Toolbar>
-      </AppBar>
-    </div>
+          <InputBase
+            placeholder="Search…"
+            classes={{
+              input: classes.inputInput,
+              root: classes.inputRoot,
+            }}
+            inputProps={{ "aria-label": "search" }}
+          />
+        </div>
+        <IconButton
+          edge="start"
+          className={classes.menuButton}
+          color="inherit"
+          aria-label="open drawer"
+          onClick={onToggleQuebar}
+        >
+          <PlaylistPlay />
+        </IconButton>
+      </Toolbar>
+    </AppBar>
   );
 };
 
