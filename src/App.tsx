@@ -23,8 +23,8 @@ const App: React.FC = () => {
   return (
     <Router>
       <ToastContainer position={toast.POSITION.BOTTOM_LEFT} />
+      <CssBaseline />
       <div className={classes.root}>
-        <CssBaseline />
         <TopBar />
         <SideBar />
         <Routes />

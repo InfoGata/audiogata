@@ -1,15 +1,15 @@
+import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
+import clsx from "clsx";
 import React from "react";
+import { useSelector } from "react-redux";
 import { Route } from "react-router-dom";
+import { AppState } from "../store/store";
+import { navbarWidth } from "../utils";
 import Home from "./Home";
 import Playlist from "./Playlist";
 import Plugins from "./Plugins";
 import Settings from "./Settings";
 import Sync from "./Sync";
-import { Theme, makeStyles, createStyles } from "@material-ui/core/styles";
-import { navbarWidth } from "../utils";
-import { AppState } from "../store/store";
-import clsx from "clsx";
-import { useSelector } from "react-redux";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -44,9 +44,9 @@ const Routes: React.FC = () => {
   const navbarOpen = useSelector((state: AppState) => state.ui.navbarOpen);
   return (
     <main
-        className={clsx(classes.content, {
-          [classes.contentShift]: navbarOpen,
-        })}
+      className={clsx(classes.content, {
+        [classes.contentShift]: navbarOpen,
+      })}
     >
       <div className={classes.drawerHeader} />
       <Route exact={true} path="/" component={Home} />

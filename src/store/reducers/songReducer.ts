@@ -33,7 +33,7 @@ const shuffleArray = (array: any[]) => {
 }
 const createShuffleArray = (tracks: ISong[]): number[] => {
   const indexArray = Object.keys(tracks).map(Number);
-  shuffleArray(tracks);
+  shuffleArray(indexArray);
   return indexArray;
 }
 
@@ -68,7 +68,8 @@ const songSlice = createSlice({
         songs: newPlaylist,
       }
     },
-    nextTrack: (state): void => {
+    nextTrack: (state): ISongState => {
+      let shuffleList = [...state.shuffleList];
       let index = -1;
       if (state.currentSong) {
         const prevSong = state.currentSong;
@@ -76,21 +77,28 @@ const songSlice = createSlice({
       }
       let newIndex = index + 1;
       if (state.shuffle) {
-        if (state.shuffleList.length === 0) {
-          state.shuffleList = createShuffleArray(state.songs);
+        if (shuffleList.length === 0) {
+          shuffleList = createShuffleArray(state.songs);
         }
-        newIndex = state.shuffleList.shift() || 0;
+        newIndex = shuffleList.shift() || 0;
       }
       if (newIndex > state.songs.length) {
         newIndex = 0;
       }
-      state.currentSong = state.songs[newIndex];
-      state.elapsed = 0;
+      const currentSong = state.songs[newIndex];
+      return {
+        ...state,
+        currentSong,
+        elapsed: 0,
+        shuffleList,
+      };
     },
-    prevTrack: (state): void => {
+    prevTrack: (state): ISongState => {
       if (state.elapsed && state.elapsed > 2) {
-        state.seekTime = 0;
-        return;
+        return {
+          ...state,
+          seekTime: 0,
+        };
       }
 
       let index = -1
@@ -102,12 +110,17 @@ const songSlice = createSlice({
       if (newIndex < 0) {
         newIndex = state.songs.length - 1;
       }
-      state.currentSong = state.songs[newIndex];
-      state.elapsed = 0;
+      const currentSong = state.songs[newIndex];
+      return {
+        ...state,
+        currentSong,
+        elapsed: 0,
+      }
     },
     seek: (state, action: PayloadAction<number | undefined>): ISongState => {
       return {
         ...state,
+        elapsed: action.payload,
         seekTime: action.payload,
       }
     },
