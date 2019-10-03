@@ -86,6 +86,15 @@ const songSlice = createSlice({
         newIndex = 0;
       }
       const currentSong = state.songs[newIndex];
+      if (currentSong && state.currentSong && currentSong.id === state.currentSong.id) {
+        return {
+          ...state,
+          elapsed: 0,
+          isPlaying: true,
+          seekTime: 0,
+          shuffleList,
+        };
+      }
       return {
         ...state,
         currentSong,
@@ -138,6 +147,14 @@ const songSlice = createSlice({
       }
     },
     setTrack: (state, action: PayloadAction<ISong | undefined>): ISongState => {
+      if (state.currentSong && action.payload && state.currentSong.id === action.payload.id) {
+        return {
+          ...state,
+          elapsed: 0,
+          isPlaying: true,
+          seekTime: 0,
+        }
+      }
       return {
         ...state,
         currentSong: action.payload,
