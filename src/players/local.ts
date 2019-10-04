@@ -46,9 +46,7 @@ class Local implements IPlayerComponent {
       const formatApi = this.getFormatTrackApiFromName(song.from);
       let source = song.source;
 
-      if (song.useBlob) {
-        source = URL.createObjectURL(song.source);
-      } else if (formatApi) {
+      if (formatApi) {
         source = await formatApi.getTrackUrl(song);
       }
 

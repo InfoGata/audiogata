@@ -118,7 +118,6 @@ function trackResultToSong(results: INapsterTrack[]): ISong[] {
         duration: r.playbackSeconds,
         from: "napster",
         name: r.name,
-        useBlob: false,
       } as ISong),
   );
 }

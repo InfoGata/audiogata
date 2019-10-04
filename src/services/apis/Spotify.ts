@@ -52,7 +52,6 @@ function trackResultToSong(results: ISpotifyTrack[]): ISong[] {
         duration: r.duration_ms / 1000,
         from: "spotify",
         name: r.name,
-        useBlob: false,
       } as ISong),
   );
 }

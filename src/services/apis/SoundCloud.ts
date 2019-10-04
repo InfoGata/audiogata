@@ -36,7 +36,6 @@ function songResultToSong(results: ISoundCloudTrackResult[]): ISong[] {
         from: "soundcloud",
         name: r.title,
         source: r.stream_url,
-        useBlob: false,
       } as ISong),
   );
 }
