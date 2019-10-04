@@ -35,7 +35,7 @@ const Progress: React.FC = () => {
   const displayElapsed = isDragging ? newElapsed : seekTime || elapsed || 0;
   const totalDuration = currentSong && currentSong.duration;
   return (
-    <div>
+    <>
       {formatSeconds(displayElapsed)} / {formatSeconds(totalDuration)}
       <div className={classes.container}>
         <Slider
@@ -46,7 +46,7 @@ const Progress: React.FC = () => {
           onChangeCommitted={onChangeCommited}
         />
       </div>
-    </div>
+    </>
   );
 };
 

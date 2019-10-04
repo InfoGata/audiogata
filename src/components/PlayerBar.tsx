@@ -6,6 +6,7 @@ import clsx from "clsx";
 import React from "react";
 import { useSelector } from "react-redux";
 import { AppState } from "../store/store";
+import thumbnail from "../thumbnail.png";
 import { queuebarWidth } from "../utils";
 import Controls from "./Controls";
 import Progress from "./Progress";
@@ -36,6 +37,10 @@ const useStyles = makeStyles(theme => ({
     marginLeft: 12,
     marginRight: 20,
   },
+  thumbnail: {
+    height: 45,
+    width: 45,
+  },
   toolbar: {
     alignItems: "center",
     justifyContent: "space-between",
@@ -46,6 +51,8 @@ const PlayerBar: React.FC = () => {
   const classes = useStyles();
   const currentSong = useSelector((state: AppState) => state.song.currentSong);
   const queuebarOpen = useSelector((state: AppState) => state.ui.queuebarOpen);
+  const image = currentSong && currentSong.images && currentSong.images.length > 0 ?
+    currentSong.images[0].url : thumbnail;
 
   return (
     <AppBar
@@ -56,6 +63,7 @@ const PlayerBar: React.FC = () => {
       })}
     >
       <Toolbar className={classes.toolbar}>
+        <img className={classes.thumbnail}  alt="thumbnail" src={image} />
         <Typography
           variant="body1"
           dangerouslySetInnerHTML={{

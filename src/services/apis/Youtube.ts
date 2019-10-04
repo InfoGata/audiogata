@@ -7,6 +7,13 @@ interface IInvidiousVideoResult {
   title: string;
   videoId: string;
   lengthSeconds: number;
+  videoThumbnails: IVideoThumbnail[];
+}
+
+interface  IVideoThumbnail {
+  url: string;
+  width: number;
+  height: number;
 }
 
 interface IInvidiousVideoResponse {
@@ -25,6 +32,11 @@ function resultToSong(results: IInvidiousVideoResult[]): ISong[] {
         apiId: r.videoId,
         duration: r.lengthSeconds,
         from: "youtube",
+        images: r.videoThumbnails.map(v => ({
+          height: v.height,
+          url: v.url,
+          width: v.width,
+        })),
         name: r.title,
       } as ISong),
   );
