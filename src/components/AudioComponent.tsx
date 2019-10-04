@@ -59,7 +59,7 @@ class AudioComponent extends React.Component<IProps, {}> {
       if (newProps.isPlaying) {
         this.local.resume();
         if (!this.local.ready() && newProps.currentSong) {
-          await this.playSong(newProps.currentSong);
+          await this.playSong(newProps.currentSong, newProps.elapsed);
         }
       } else {
         this.local.pause();
