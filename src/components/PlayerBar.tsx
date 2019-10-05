@@ -12,6 +12,8 @@ import Controls from "./Controls";
 import Progress from "./Progress";
 import Volume from "./Volume";
 
+const thumbnailSize = 75;
+
 const useStyles = makeStyles(theme => ({
   appBarShift: {
     marginRight: queuebarWidth,
@@ -38,8 +40,8 @@ const useStyles = makeStyles(theme => ({
     marginRight: 20,
   },
   thumbnail: {
-    height: 75,
-    width: 75,
+    height: thumbnailSize,
+    width: thumbnailSize,
   },
   toolbar: {
     alignItems: "center",
@@ -51,10 +53,20 @@ const PlayerBar: React.FC = () => {
   const classes = useStyles();
   const currentSong = useSelector((state: AppState) => state.song.currentSong);
   const queuebarOpen = useSelector((state: AppState) => state.ui.queuebarOpen);
-  const image =
-    currentSong && currentSong.images && currentSong.images.length > 0
-      ? currentSong.images[0].url
-      : thumbnail;
+
+  // Retreive smallest image bigger than thumbnail size
+  const getThumbnailImage = (): string => {
+    const images = currentSong && currentSong.images;
+    if (!images) {
+      return thumbnail;
+    }
+
+    const sortedImages = [...images].sort((a, b) => a.height - b.height);
+    const thumbnailImage = sortedImages.find(i => i.height >= thumbnailSize);
+    return thumbnailImage ? thumbnailImage.url : thumbnail;
+  };
+
+  const image = getThumbnailImage();
 
   return (
     <AppBar

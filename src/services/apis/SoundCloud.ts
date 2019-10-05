@@ -1,5 +1,5 @@
 import axios from "axios";
-import { IAlbum, IArtist, ISong } from "../../models";
+import { IAlbum, IArtist, ISong, IImage } from "../../models";
 import { IFormatTrackApi } from "./IFormatTrackApi";
 import { ISearchApi } from "./ISearchApi";
 
@@ -9,6 +9,7 @@ interface ISoundCloudTrackResult {
   id: number;
   duration: number;
   user: ISoundCloudArtistResult;
+  artwork_url: string;
 }
 
 interface ISoundCloudArtistResult {
@@ -34,6 +35,7 @@ function songResultToSong(results: ISoundCloudTrackResult[]): ISong[] {
         artistName: r.user.username,
         duration: r.duration / 1000,
         from: "soundcloud",
+        images: trackImages(r.artwork_url),
         name: r.title,
         source: r.stream_url,
       } as ISong),
@@ -91,6 +93,30 @@ function playlistResultToAlbum(
         name: r.title,
       } as IAlbum),
   );
+}
+
+function trackImages(url: string): IImage[] {
+  if (!url) {
+    return [];
+  }
+
+  const imageSizes = [
+    { type: "t500x500", size: 500 },
+    { type: "crop", size: 400 },
+    { type: "t300x300", size: 300 },
+    { type: "large", size: 100 },
+    { type: "t67x67", size: 67 },
+    { type: "badge", size: 47 },
+    { type: "small", size: 32 },
+    { type: "tiny", size: 20 },
+    { type: "mini", size: 16 },
+  ];
+
+  return imageSizes.map(i => ({
+    height: i.size,
+    url: url.replace("large", i.type),
+    width: i.size,
+  }));
 }
 
 export default {
