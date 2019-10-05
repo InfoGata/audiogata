@@ -38,8 +38,8 @@ const useStyles = makeStyles(theme => ({
     marginRight: 20,
   },
   thumbnail: {
-    height: 45,
-    width: 45,
+    height: 75,
+    width: 75,
   },
   toolbar: {
     alignItems: "center",
@@ -51,8 +51,10 @@ const PlayerBar: React.FC = () => {
   const classes = useStyles();
   const currentSong = useSelector((state: AppState) => state.song.currentSong);
   const queuebarOpen = useSelector((state: AppState) => state.ui.queuebarOpen);
-  const image = currentSong && currentSong.images && currentSong.images.length > 0 ?
-    currentSong.images[0].url : thumbnail;
+  const image =
+    currentSong && currentSong.images && currentSong.images.length > 0
+      ? currentSong.images[0].url
+      : thumbnail;
 
   return (
     <AppBar
@@ -62,8 +64,8 @@ const PlayerBar: React.FC = () => {
         [classes.appBarShift]: queuebarOpen,
       })}
     >
-      <Toolbar className={classes.toolbar}>
-        <img className={classes.thumbnail}  alt="thumbnail" src={image} />
+      <Toolbar className={classes.toolbar} disableGutters={true}>
+        <img className={classes.thumbnail} alt="thumbnail" src={image} />
         <Typography
           variant="body1"
           dangerouslySetInnerHTML={{
