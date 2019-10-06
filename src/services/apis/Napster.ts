@@ -1,5 +1,5 @@
 import axios from "axios";
-import { IAlbum, IArtist, ISong } from "../../models";
+import { IAlbum, IArtist, ISong, IImage } from "../../models";
 import { ISearchApi } from "./ISearchApi";
 
 interface INapsterResult {
@@ -107,6 +107,15 @@ function aristResultToArtist(results: INapsterArtist[]): IArtist[] {
   );
 }
 
+function getImages(albumId: string): IImage[] {
+  const sizes = [70, 170, 200, 300, 500];
+  return sizes.map(s => ({
+    height: s,
+    url: `https://api.napster.com/imageserver/v2/albums/${albumId}/images/${s}x${s}.jpg`,
+    width: s
+  }));
+}
+
 function trackResultToSong(results: INapsterTrack[]): ISong[] {
   return results.map(
     r =>
@@ -117,6 +126,7 @@ function trackResultToSong(results: INapsterTrack[]): ISong[] {
         artistName: r.artistName,
         duration: r.playbackSeconds,
         from: "napster",
+        images: getImages(r.albumId),
         name: r.name,
       } as ISong),
   );

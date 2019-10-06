@@ -1,5 +1,5 @@
 import axios from "axios";
-import { IAlbum, IArtist, ISong } from "../../models";
+import { IAlbum, IArtist, ISong, IImage } from "../../models";
 import { ISearchApi } from "./ISearchApi";
 
 interface ISpotifyResult {
@@ -16,6 +16,7 @@ interface ISpotifyAlbum {
   name: string;
   uri: string;
   artists: ISpotifyArtist[];
+  images: IImage[];
 }
 
 interface ISpotifyArtistResult {
@@ -51,6 +52,7 @@ function trackResultToSong(results: ISpotifyTrack[]): ISong[] {
         artistName: r.artists[0].name,
         duration: r.duration_ms / 1000,
         from: "spotify",
+        images: r.album.images,
         name: r.name,
       } as ISong),
   );
