@@ -1,4 +1,11 @@
-import { List, ListItem, ListItemText, Typography } from "@material-ui/core";
+import {
+  Avatar,
+  List,
+  ListItem,
+  ListItemAvatar,
+  ListItemText,
+  Typography,
+} from "@material-ui/core";
 import React from "react";
 import { useDispatch } from "react-redux";
 import { IAlbum, IArtist, ISong } from "../models";
@@ -7,6 +14,7 @@ import SoundCloud from "../services/apis/SoundCloud";
 import Youtube from "../services/apis/Youtube";
 import { addTrack } from "../store/reducers/songReducer";
 import { AppDispatch } from "../store/store";
+import { getThumbnailImage } from "../utils";
 
 const getApiByName = (name: string): ISearchApi | undefined => {
   switch (name) {
@@ -34,8 +42,17 @@ const ArtistResult: React.FC<IArtistResultProps> = props => {
       props.setAlbumResults(albums);
     }
   };
+
+  const image = getThumbnailImage(props.artist.images, 40);
   return (
     <ListItem button={true} onClick={onClickArtist}>
+      <ListItemAvatar>
+        <Avatar
+          alt={props.artist.name}
+          src={image}
+          style={{ borderRadius: 0 }}
+        />
+      </ListItemAvatar>
       <ListItemText>{props.artist.name}</ListItemText>
     </ListItem>
   );
@@ -55,8 +72,18 @@ const AlbumResult: React.FC<IAlbumResultProps> = props => {
       props.setTrackResults(songs);
     }
   };
+
+  const image = getThumbnailImage(props.album.images, 40);
+
   return (
     <ListItem button={true} onClick={onClickAlbum}>
+      <ListItemAvatar>
+        <Avatar
+          alt={props.album.name}
+          src={image}
+          style={{ borderRadius: 0 }}
+        />
+      </ListItemAvatar>
       <ListItemText>
         {props.album.name} - {props.album.artistName}
       </ListItemText>
@@ -73,8 +100,17 @@ const TrackResult: React.FC<ITrackResultProps> = props => {
   const onClickSong = () => {
     dispatch(addTrack(props.track));
   };
+
+  const image = getThumbnailImage(props.track.images, 40);
   return (
     <ListItem button={true} onClick={onClickSong}>
+      <ListItemAvatar>
+        <Avatar
+          alt={props.track.name}
+          src={image}
+          style={{ borderRadius: 0 }}
+        />
+      </ListItemAvatar>
       <ListItemText
         primary={
           <Typography dangerouslySetInnerHTML={{ __html: props.track.name }} />

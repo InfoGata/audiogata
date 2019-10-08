@@ -6,8 +6,8 @@ import clsx from "clsx";
 import React from "react";
 import { useSelector } from "react-redux";
 import { AppState } from "../store/store";
-import thumbnail from "../thumbnail.png";
 import { queuebarWidth } from "../utils";
+import { getThumbnailImage } from "../utils";
 import Controls from "./Controls";
 import Progress from "./Progress";
 import Volume from "./Volume";
@@ -54,19 +54,10 @@ const PlayerBar: React.FC = () => {
   const currentSong = useSelector((state: AppState) => state.song.currentSong);
   const queuebarOpen = useSelector((state: AppState) => state.ui.queuebarOpen);
 
-  // Retreive smallest image bigger than thumbnail size
-  const getThumbnailImage = (): string => {
-    const images = currentSong && currentSong.images;
-    if (!images) {
-      return thumbnail;
-    }
-
-    const sortedImages = [...images].sort((a, b) => a.height - b.height);
-    const thumbnailImage = sortedImages.find(i => i.height >= thumbnailSize);
-    return thumbnailImage ? thumbnailImage.url : thumbnail;
-  };
-
-  const image = getThumbnailImage();
+  const image = getThumbnailImage(
+    currentSong && currentSong.images,
+    thumbnailSize,
+  );
 
   return (
     <AppBar

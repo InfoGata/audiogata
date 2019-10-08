@@ -17,12 +17,14 @@ export interface IAlbum {
   from: string;
   artistName?: string;
   artistId?: string;
+  images: IImage[];
 }
 
 export interface IArtist {
   name: string;
   apiId: string;
   from: string;
+  images: IImage[];
 }
 
 export interface IPlaylist {
