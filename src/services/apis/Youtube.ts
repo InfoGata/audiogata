@@ -1,4 +1,5 @@
 import axios from "axios";
+import { parse, toSeconds } from "iso8601-duration";
 import ytdl from "ytdl-core";
 import { IAlbum, IArtist, IImage, ISong } from "../../models";
 import { IFormatTrackApi } from "./IFormatTrackApi";
@@ -9,10 +10,19 @@ interface IYoutubeSearchResult {
 }
 interface IYoutubeSearchResultItem {
   id: IYoutubeItemId;
-  snippet: IYoutubeItemSnippet;
 }
+
 interface IYoutubeItemId {
   videoId: string;
+}
+
+interface IYoutubeVideoResult {
+  items: IYoutubeVideoItem[];
+}
+interface IYoutubeVideoItem {
+  id: string;
+  snippet: IYoutubeItemSnippet;
+  contentDetails: IYoutubeContentDetails;
 }
 interface IYoutubeItemSnippet {
   title: string;
@@ -22,6 +32,9 @@ interface IYoutubeThumbnails {
   default: IImage;
   medium: IImage;
   high: IImage;
+}
+interface IYoutubeContentDetails {
+  duration: string;
 }
 
 interface IInvidiousVideoResult {
@@ -40,7 +53,8 @@ interface IInvidiousFormat {
   url: string;
 }
 
-const useInvidious = true;
+const useInvidiousTracks = false;
+const useInvidiousSearch = false;
 const key = "AIzaSyDryzen_v2kWUhKuZFCnF6e9wtUxdXWhqY";
 const corsProxyUrl = "localhost";
 
@@ -61,12 +75,13 @@ function resultToSongInvidous(results: IInvidiousVideoResult[]): ISong[] {
   );
 }
 
-function resultToSongYoutube(result: IYoutubeSearchResult): ISong[] {
+function resultToSongYoutube(result: IYoutubeVideoResult): ISong[] {
   const items = result.items;
   return items.map(
     i =>
       ({
-        apiId: i.id.videoId,
+        apiId: i.id,
+        duration: toSeconds(parse(i.contentDetails.duration)),
         from: "youtube",
         images: [
           i.snippet.thumbnails.default,
@@ -79,18 +94,22 @@ function resultToSongYoutube(result: IYoutubeSearchResult): ISong[] {
 }
 
 async function searchTracks(query: string): Promise<ISong[]> {
-  return useInvidious ?
+  return useInvidiousSearch ?
     searchInvidious(query) :
     searchYoutube(query);
 }
 
 async function searchYoutube(query: string): Promise<ISong[]> {
   const url = "https://www.googleapis.com/youtube/v3/search";
-  const urlWithQuery = `${url}?part=id,snippet&type=video&maxResults=50&key=${
+  const urlWithQuery = `${url}?part=id&type=video&maxResults=50&key=${
     key
     }&q=${encodeURIComponent(query)}`;
   const results = await axios.get<IYoutubeSearchResult>(urlWithQuery);
-  return resultToSongYoutube(results.data);
+  const detailsUrl = "https://www.googleapis.com/youtube/v3/videos";
+  const ids = results.data.items.map(i => i.id.videoId).join(',');
+  const detailsUrlWithQuery = `${detailsUrl}?key=${key}&part=snippet,contentDetails&id=${ids}`
+  const detailsResults = await axios.get<IYoutubeVideoResult>(detailsUrlWithQuery);
+  return resultToSongYoutube(detailsResults.data);
 }
 
 async function searchInvidious(query: string): Promise<ISong[]> {
@@ -142,6 +161,6 @@ export default {
     };
   },
   async getTrackUrl(song: ISong): Promise<string> {
-    return useInvidious ? getInvidiousTrack(song) : getYoutubeTrack(song);
+    return useInvidiousTracks ? getInvidiousTrack(song) : getYoutubeTrack(song);
   }
 } as IFormatTrackApi & ISearchApi
