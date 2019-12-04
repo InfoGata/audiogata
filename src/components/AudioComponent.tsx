@@ -24,6 +24,7 @@ class AudioComponent extends React.Component<IProps, {}> {
 
   public componentDidMount() {
     this.setMediaSessionActions();
+    this.local.setVolume(this.props.volume);
     if (this.props.playOnStartup && this.props.isPlaying) {
       this.playCurrentSong();
     } else if (this.props.isPlaying) {
