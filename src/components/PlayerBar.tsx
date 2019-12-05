@@ -1,7 +1,5 @@
-import { Typography } from "@material-ui/core";
-import AppBar from "@material-ui/core/AppBar";
+import { AppBar, Grid, Toolbar, Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import Toolbar from "@material-ui/core/Toolbar";
 import clsx from "clsx";
 import React from "react";
 import { useSelector } from "react-redux";
@@ -12,7 +10,7 @@ import Controls from "./Controls";
 import Progress from "./Progress";
 import Volume from "./Volume";
 
-const thumbnailSize = 75;
+const thumbnailSize = 60;
 
 const useStyles = makeStyles(theme => ({
   appBarShift: {
@@ -32,12 +30,21 @@ const useStyles = makeStyles(theme => ({
     }),
     zIndex: theme.zIndex.drawer + 1,
   },
+  card: {
+    display: "flex",
+  },
   hide: {
     display: "none",
   },
   menuButton: {
     marginLeft: 12,
     marginRight: 20,
+  },
+  nameContainer: {
+    width: "10%",
+  },
+  noWrap: {
+    textOverflow: "...",
   },
   thumbnail: {
     height: thumbnailSize,
@@ -69,15 +76,20 @@ const PlayerBar: React.FC = () => {
     >
       <Toolbar className={classes.toolbar} disableGutters={true}>
         <img className={classes.thumbnail} alt="thumbnail" src={image} />
-        <Typography
-          variant="body1"
-          dangerouslySetInnerHTML={{
-            __html: (currentSong && currentSong.name) || "",
-          }}
-        />
-        <Controls />
-        <Progress />
-        <Volume />
+        <div className={classes.nameContainer}>
+          <Typography
+            noWrap={true}
+            className={classes.noWrap}
+            variant="body1"
+            dangerouslySetInnerHTML={{
+              __html: (currentSong && currentSong.name) || "",
+            }}
+          />
+        </div>
+        <Grid justify="center" alignItems="center" container={true}>
+          <Controls />
+          <Progress />
+        </Grid>
       </Toolbar>
     </AppBar>
   );

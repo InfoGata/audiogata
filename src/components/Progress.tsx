@@ -8,7 +8,7 @@ import { formatSeconds } from "../utils";
 
 const useStyles = makeStyles({
   container: {
-    width: 500,
+    width: "40%",
   },
 });
 
@@ -36,7 +36,7 @@ const Progress: React.FC = () => {
   const totalDuration = currentSong && currentSong.duration;
   return (
     <>
-      {formatSeconds(displayElapsed)} / {formatSeconds(totalDuration)}
+      {formatSeconds(displayElapsed)}
       <div className={classes.container}>
         <Slider
           min={0}
@@ -46,6 +46,7 @@ const Progress: React.FC = () => {
           onChangeCommitted={onChangeCommited}
         />
       </div>
+      {formatSeconds(totalDuration)}
     </>
   );
 };
