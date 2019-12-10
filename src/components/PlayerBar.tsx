@@ -1,4 +1,4 @@
-import { AppBar, Grid, Toolbar, Typography } from "@material-ui/core";
+import { AppBar, Toolbar, Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import clsx from "clsx";
 import React from "react";
@@ -76,20 +76,17 @@ const PlayerBar: React.FC = () => {
     >
       <Toolbar className={classes.toolbar} disableGutters={true}>
         <img className={classes.thumbnail} alt="thumbnail" src={image} />
-        <div className={classes.nameContainer}>
-          <Typography
-            noWrap={true}
-            className={classes.noWrap}
-            variant="body1"
-            dangerouslySetInnerHTML={{
-              __html: (currentSong && currentSong.name) || "",
-            }}
-          />
-        </div>
-        <Grid justify="center" alignItems="center" container={true}>
-          <Controls />
-          <Progress />
-        </Grid>
+        <Typography
+          noWrap={true}
+          className={classes.noWrap}
+          variant="body1"
+          dangerouslySetInnerHTML={{
+            __html: (currentSong && currentSong.name) || "",
+          }}
+        />
+        <Controls />
+        <Progress />
+        <Volume />
       </Toolbar>
     </AppBar>
   );
