@@ -61,6 +61,7 @@ const SideBar: React.FC = () => {
     >
       <div className={classes.toolbar} />
       <Navigation />
+      <div className={classes.toolbar} />
     </Drawer>
   );
 };
