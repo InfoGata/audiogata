@@ -1,20 +1,43 @@
 import Drawer from "@material-ui/core/Drawer";
-import { makeStyles } from "@material-ui/core/styles";
+import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
+import clsx from "clsx";
 import React from "react";
 import { useSelector } from "react-redux";
 import { AppState } from "../store/store";
 import { navbarWidth } from "../utils";
 import Navigation from "./Navigation";
 
-const useStyles = makeStyles({
-  drawer: {
-    flexShrink: 0,
-    width: navbarWidth,
-  },
-  drawerPaper: {
-    width: navbarWidth,
-  },
-});
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    drawer: {
+      flexShrink: 0,
+      whiteSpace: "nowrap",
+      width: navbarWidth,
+    },
+    drawerClose: {
+      overflowX: "hidden",
+      transition: theme.transitions.create("width", {
+        duration: theme.transitions.duration.leavingScreen,
+        easing: theme.transitions.easing.sharp,
+      }),
+      width: theme.spacing(7) + 1,
+      [theme.breakpoints.up("sm")]: {
+        width: theme.spacing(8) + 1,
+      },
+    },
+    drawerOpen: {
+      transition: theme.transitions.create("width", {
+        duration: theme.transitions.duration.enteringScreen,
+        easing: theme.transitions.easing.sharp,
+      }),
+      width: navbarWidth,
+    },
+    drawerPaper: {
+      width: navbarWidth,
+    },
+    toolbar: theme.mixins.toolbar,
+  }),
+);
 
 const SideBar: React.FC = () => {
   const classes = useStyles();
@@ -22,14 +45,21 @@ const SideBar: React.FC = () => {
 
   return (
     <Drawer
-      className={classes.drawer}
-      variant="persistent"
+      variant="permanent"
       open={navbarOpen}
+      className={clsx(classes.drawer, {
+        [classes.drawerOpen]: navbarOpen,
+        [classes.drawerClose]: !navbarOpen,
+      })}
       classes={{
-        paper: classes.drawerPaper,
+        paper: clsx({
+          [classes.drawerOpen]: navbarOpen,
+          [classes.drawerClose]: !navbarOpen,
+        }),
       }}
       anchor="left"
     >
+      <div className={classes.toolbar} />
       <Navigation />
     </Drawer>
   );

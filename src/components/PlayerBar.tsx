@@ -1,26 +1,16 @@
 import { AppBar, Toolbar, Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import clsx from "clsx";
 import React from "react";
 import { useSelector } from "react-redux";
 import { AppState } from "../store/store";
-import { queuebarWidth } from "../utils";
 import { getThumbnailImage } from "../utils";
 import Controls from "./Controls";
 import Progress from "./Progress";
 import Volume from "./Volume";
 
-const thumbnailSize = 60;
+const thumbnailSize = 65;
 
 const useStyles = makeStyles(theme => ({
-  appBarShift: {
-    marginRight: queuebarWidth,
-    transition: theme.transitions.create(["margin", "width"], {
-      duration: theme.transitions.duration.enteringScreen,
-      easing: theme.transitions.easing.easeOut,
-    }),
-    width: `calc(100% - ${queuebarWidth}px)`,
-  },
   bottomAppBar: {
     bottom: 0,
     top: "auto",
@@ -28,7 +18,7 @@ const useStyles = makeStyles(theme => ({
       duration: theme.transitions.duration.leavingScreen,
       easing: theme.transitions.easing.sharp,
     }),
-    zIndex: theme.zIndex.drawer + 1,
+    zIndex: theme.zIndex.drawer + 3,
   },
   card: {
     display: "flex",
@@ -59,7 +49,6 @@ const useStyles = makeStyles(theme => ({
 const PlayerBar: React.FC = () => {
   const classes = useStyles();
   const currentSong = useSelector((state: AppState) => state.song.currentSong);
-  const queuebarOpen = useSelector((state: AppState) => state.ui.queuebarOpen);
 
   const image = getThumbnailImage(
     currentSong && currentSong.images,
@@ -67,13 +56,7 @@ const PlayerBar: React.FC = () => {
   );
 
   return (
-    <AppBar
-      position="fixed"
-      color="default"
-      className={clsx(classes.bottomAppBar, {
-        [classes.appBarShift]: queuebarOpen,
-      })}
-    >
+    <AppBar position="fixed" color="default" className={classes.bottomAppBar}>
       <Toolbar className={classes.toolbar} disableGutters={true}>
         <img className={classes.thumbnail} alt="thumbnail" src={image} />
         <Typography

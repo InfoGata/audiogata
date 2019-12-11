@@ -12,28 +12,15 @@ import {
   Theme,
 } from "@material-ui/core/styles";
 import { Menu, PlaylistPlay, Search } from "@material-ui/icons";
-import clsx from "clsx";
 import React from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { toggleNavbar, toggleQueuebar } from "../store/reducers/uiReducer";
-import { AppDispatch, AppState } from "../store/store";
-import { navbarWidth } from "../utils";
+import { AppDispatch } from "../store/store";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     appBar: {
-      transition: theme.transitions.create(["margin", "width"], {
-        duration: theme.transitions.duration.leavingScreen,
-        easing: theme.transitions.easing.sharp,
-      }),
-    },
-    appBarShift: {
-      marginLeft: navbarWidth,
-      transition: theme.transitions.create(["margin", "width"], {
-        duration: theme.transitions.duration.enteringScreen,
-        easing: theme.transitions.easing.easeOut,
-      }),
-      width: `calc(100% - ${navbarWidth}px)`,
+      zIndex: theme.zIndex.drawer + 1,
     },
     inputInput: {
       padding: theme.spacing(1, 1, 1, 7),
@@ -85,17 +72,12 @@ const useStyles = makeStyles((theme: Theme) =>
 const TopBar: React.FC = () => {
   const classes = useStyles();
   const dispatch = useDispatch<AppDispatch>();
-  const navbarOpen = useSelector((state: AppState) => state.ui.navbarOpen);
 
   const onToggleQuebar = () => dispatch(toggleQueuebar());
   const onToggleNavbar = () => dispatch(toggleNavbar());
 
   return (
-    <AppBar
-      position="fixed"
-      color="default"
-      className={clsx(classes.appBar, { [classes.appBarShift]: navbarOpen })}
-    >
+    <AppBar position="fixed" color="default" className={classes.appBar}>
       <Toolbar>
         <IconButton
           edge="start"

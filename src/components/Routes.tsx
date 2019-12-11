@@ -4,7 +4,6 @@ import React from "react";
 import { useSelector } from "react-redux";
 import { Route } from "react-router-dom";
 import { AppState } from "../store/store";
-import { navbarWidth } from "../utils";
 import Home from "./Home";
 import Playlist from "./Playlist";
 import Plugins from "./Plugins";
@@ -15,12 +14,7 @@ const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     content: {
       flexGrow: 1,
-      marginLeft: -navbarWidth,
       padding: theme.spacing(3),
-      transition: theme.transitions.create("margin", {
-        duration: theme.transitions.duration.leavingScreen,
-        easing: theme.transitions.easing.sharp,
-      }),
     },
     contentShift: {
       marginLeft: 0,

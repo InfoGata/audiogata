@@ -33,7 +33,9 @@ const useStyles = makeStyles(theme => ({
   },
   drawerPaper: {
     width: queuebarWidth,
+    zIndex: theme.zIndex.drawer + 2,
   },
+  toolbar: theme.mixins.toolbar,
 }));
 
 const QueueBar: React.FC = () => {
@@ -98,6 +100,7 @@ const QueueBar: React.FC = () => {
       />
       <Divider />
       <PlayQueue songList={songs} currentSong={currentSong} />
+      <div className={classes.toolbar} />
     </Drawer>
   );
 };
