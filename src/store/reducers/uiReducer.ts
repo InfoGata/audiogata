@@ -6,8 +6,8 @@ interface ISettings {
 }
 
 const initialState: ISettings = {
-  navbarOpen: true,
-  queuebarOpen: true,
+  navbarOpen: false,
+  queuebarOpen: false,
 };
 
 const uiSlice = createSlice({
