@@ -33,7 +33,7 @@ const Controls: React.FC = () => {
   const shuffleColor = shuffle ? "primary" : "inherit";
   const repeatColor = repeat ? "primary" : "inherit";
   return (
-    <div>
+    <>
       <button onClick={onToggleShuffle}>
         <Shuffle color={shuffleColor} />
       </button>
@@ -47,7 +47,7 @@ const Controls: React.FC = () => {
       <button onClick={onNextClick}>
         <SkipNext />
       </button>
-    </div>
+    </>
   );
 };
 

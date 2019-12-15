@@ -1,4 +1,4 @@
-import { AppBar, Toolbar, Typography } from "@material-ui/core";
+import { AppBar, Toolbar, Typography, Grid } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import React from "react";
 import { useSelector } from "react-redux";
@@ -58,18 +58,20 @@ const PlayerBar: React.FC = () => {
   return (
     <AppBar position="fixed" color="default" className={classes.bottomAppBar}>
       <Toolbar className={classes.toolbar} disableGutters={true}>
-        <img className={classes.thumbnail} alt="thumbnail" src={image} />
-        <Typography
-          noWrap={true}
-          className={classes.noWrap}
-          variant="body1"
-          dangerouslySetInnerHTML={{
-            __html: (currentSong && currentSong.name) || "",
-          }}
-        />
-        <Controls />
-        <Progress />
-        <Volume />
+        <Grid container={true}>
+          <img className={classes.thumbnail} alt="thumbnail" src={image} />
+          <Typography
+            noWrap={true}
+            className={classes.noWrap}
+            variant="body1"
+            dangerouslySetInnerHTML={{
+              __html: (currentSong && currentSong.name) || "",
+            }}
+          />
+          <Controls />
+          <Progress />
+          <Volume />
+        </Grid>
       </Toolbar>
     </AppBar>
   );
