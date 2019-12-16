@@ -1,9 +1,9 @@
-import thumbnail from "./thumbnail.png";
 import { IImage } from "./models";
+import thumbnail from "./thumbnail.png";
 
 export function formatSeconds(seconds?: number) {
   if (!seconds) {
-    return "";
+    return "00:00";
   }
   const hours = Math.floor(seconds / 3600);
   seconds = seconds % 3600;

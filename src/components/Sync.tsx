@@ -1,3 +1,4 @@
+import { Button } from "@material-ui/core";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setTracks } from "../store/reducers/songReducer";
@@ -24,13 +25,13 @@ const Sync: React.FC = () => {
   };
 
   return isLoggedIn ? (
-    <div>
-      <button onClick={signOut}>Sign Out</button>
-      <button onClick={syncData}>Sync Data</button>
-      <button onClick={getData}>Get Data</button>
-    </div>
+    <>
+      <Button onClick={signOut}>Sign Out</Button>
+      <Button onClick={syncData}>Sync Data</Button>
+      <Button onClick={getData}>Get Data</Button>
+    </>
   ) : (
-    <button onClick={signIn}>Sign In</button>
+    <Button onClick={signIn}>Sign In</Button>
   );
 };
 

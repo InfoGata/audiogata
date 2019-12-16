@@ -1,4 +1,4 @@
-import { AppBar, Toolbar, Typography, Grid } from "@material-ui/core";
+import { AppBar, Grid, Toolbar, Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import React from "react";
 import { useSelector } from "react-redux";
@@ -6,7 +6,6 @@ import { AppState } from "../store/store";
 import { getThumbnailImage } from "../utils";
 import Controls from "./Controls";
 import Progress from "./Progress";
-import Volume from "./Volume";
 
 const thumbnailSize = 65;
 
@@ -59,18 +58,33 @@ const PlayerBar: React.FC = () => {
     <AppBar position="fixed" color="default" className={classes.bottomAppBar}>
       <Toolbar className={classes.toolbar} disableGutters={true}>
         <Grid container={true}>
-          <img className={classes.thumbnail} alt="thumbnail" src={image} />
-          <Typography
-            noWrap={true}
-            className={classes.noWrap}
-            variant="body1"
-            dangerouslySetInnerHTML={{
-              __html: (currentSong && currentSong.name) || "",
-            }}
-          />
-          <Controls />
-          <Progress />
-          <Volume />
+          <Grid item={true}>
+            <img className={classes.thumbnail} alt="thumbnail" src={image} />
+          </Grid>
+          <Grid
+            xs={12}
+            sm={true}
+            item={true}
+            container={true}
+            direction="column"
+          >
+            <Grid item={true}>
+              <Typography
+                noWrap={true}
+                className={classes.noWrap}
+                variant="body1"
+                dangerouslySetInnerHTML={{
+                  __html: (currentSong && currentSong.name) || "",
+                }}
+              />
+            </Grid>
+            <Grid item={true}>
+              <Controls />
+            </Grid>
+            <Grid item={true} container={true} direction="row">
+              <Progress />
+            </Grid>
+          </Grid>
         </Grid>
       </Toolbar>
     </AppBar>

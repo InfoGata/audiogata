@@ -40,35 +40,33 @@ const AddPlaylistDialog: React.FC<IProps> = props => {
   };
 
   return (
-    <div>
-      <Dialog
-        open={open}
-        onClose={handleClose}
-        aria-labelledby="form-dialog-title"
-      >
-        <DialogTitle id="form-dialog-title">Add Playlist</DialogTitle>
-        <DialogContent>
-          <DialogContentText>Give it a name</DialogContentText>
-          <TextField
-            autoFocus={true}
-            margin="dense"
-            id="name"
-            label="Name"
-            type="text"
-            fullWidth={true}
-            onChange={onChange}
-          />
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleClose} color="primary">
-            Cancel
-          </Button>
-          <Button onClick={confirm} color="primary">
-            Add Playlist
-          </Button>
-        </DialogActions>
-      </Dialog>
-    </div>
+    <Dialog
+      open={open}
+      onClose={handleClose}
+      aria-labelledby="form-dialog-title"
+    >
+      <DialogTitle id="form-dialog-title">Add Playlist</DialogTitle>
+      <DialogContent>
+        <DialogContentText>Give it a name</DialogContentText>
+        <TextField
+          autoFocus={true}
+          margin="dense"
+          id="name"
+          label="Name"
+          type="text"
+          fullWidth={true}
+          onChange={onChange}
+        />
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={handleClose} color="primary">
+          Cancel
+        </Button>
+        <Button onClick={confirm} color="primary">
+          Add Playlist
+        </Button>
+      </DialogActions>
+    </Dialog>
   );
 };
 

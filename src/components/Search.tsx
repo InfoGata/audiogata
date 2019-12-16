@@ -1,5 +1,6 @@
 import {
   Avatar,
+  Button,
   List,
   ListItem,
   ListItemAvatar,
@@ -173,21 +174,21 @@ const Search: React.FC = () => {
     />
   ));
   return (
-    <div>
+    <>
       <select value={searchType} onChange={onSearchTypeChange}>
         <option value="soundcloud">SoundCloud</option>
         <option value="youtube">Youtube</option>
       </select>
       <input type="text" onChange={onSearchChange} />
-      <button onClick={onSearchClick}>Search</button>
-      <button onClick={onClearSearch}>Clear Search Results</button>
-      {trackList.length > 0 ? <div>Songs:</div> : null}
+      <Button onClick={onSearchClick}>Search</Button>
+      <Button onClick={onClearSearch}>Clear Search Results</Button>
+      {trackList.length > 0 ? <Typography>Songs:</Typography> : null}
       <List>{trackList}</List>
-      {albumList.length > 0 ? <div>Albums:</div> : null}
+      {albumList.length > 0 ? <Typography>Albums:</Typography> : null}
       <List>{albumList}</List>
-      {artistList.length > 0 ? <div>Artists:</div> : null}
+      {artistList.length > 0 ? <Typography>Artists:</Typography> : null}
       <List>{artistList}</List>
-    </div>
+    </>
   );
 };
 

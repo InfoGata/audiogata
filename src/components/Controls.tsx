@@ -1,3 +1,4 @@
+import { IconButton } from "@material-ui/core";
 import {
   Pause,
   PlayArrow,
@@ -34,19 +35,19 @@ const Controls: React.FC = () => {
   const repeatColor = repeat ? "primary" : "inherit";
   return (
     <>
-      <button onClick={onToggleShuffle}>
+      <IconButton onClick={onToggleShuffle}>
         <Shuffle color={shuffleColor} />
-      </button>
-      <button onClick={onToggleRepeat}>
+      </IconButton>
+      <IconButton onClick={onToggleRepeat}>
         <Repeat color={repeatColor} />
-      </button>
-      <button onClick={onPreviousClick}>
+      </IconButton>
+      <IconButton onClick={onPreviousClick}>
         <SkipPrevious />
-      </button>
-      <button onClick={onTogglePlay}>{playIcon}</button>
-      <button onClick={onNextClick}>
+      </IconButton>
+      <IconButton onClick={onTogglePlay}>{playIcon}</IconButton>
+      <IconButton onClick={onNextClick}>
         <SkipNext />
-      </button>
+      </IconButton>
     </>
   );
 };

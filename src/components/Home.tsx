@@ -1,10 +1,6 @@
 import React from "react";
 import Search from "./Search";
 
-const Home: React.FC = () => (
-  <div>
-    <Search />
-  </div>
-);
+const Home: React.FC = () => <Search />;
 
 export default Home;

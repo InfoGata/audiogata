@@ -1,4 +1,4 @@
-import { Slider } from "@material-ui/core";
+import { IconButton, Slider } from "@material-ui/core";
 import { VolumeOff, VolumeUp } from "@material-ui/icons";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -21,8 +21,8 @@ const Volume: React.FC = () => {
 
   const volumeIcon = volume === 0 || muted ? <VolumeOff /> : <VolumeUp />;
   return (
-    <div>
-      <button onClick={onToggleMute}>{volumeIcon}</button>
+    <>
+      <IconButton onClick={onToggleMute}>{volumeIcon}</IconButton>
       <div>
         <Slider
           min={0}
@@ -31,7 +31,7 @@ const Volume: React.FC = () => {
           onChange={onVolumeChange}
         />
       </div>
-    </div>
+    </>
   );
 };
 

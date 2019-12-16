@@ -1,4 +1,4 @@
-import { Slider } from "@material-ui/core";
+import { Slider, Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -8,7 +8,7 @@ import { formatSeconds } from "../utils";
 
 const useStyles = makeStyles({
   container: {
-    width: "40%",
+    width: "100%",
   },
 });
 
@@ -36,7 +36,7 @@ const Progress: React.FC = () => {
   const totalDuration = currentSong && currentSong.duration;
   return (
     <>
-      {formatSeconds(displayElapsed)}
+      <Typography>{formatSeconds(displayElapsed)}</Typography>
       <div className={classes.container}>
         <Slider
           min={0}
@@ -46,7 +46,7 @@ const Progress: React.FC = () => {
           onChangeCommitted={onChangeCommited}
         />
       </div>
-      {formatSeconds(totalDuration)}
+      <Typography>{formatSeconds(totalDuration)}</Typography>
     </>
   );
 };

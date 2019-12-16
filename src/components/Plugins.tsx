@@ -1,3 +1,4 @@
+import { Button } from "@material-ui/core";
 import React from "react";
 
 const napsterApiKey = "N2Q4YzVkYzctNjBiMi00YjBhLTkxNTAtOWRiNGM5YWE3OWRj";
@@ -17,10 +18,10 @@ const onNapsterLoginClick = () => {
 
 const Plugins: React.FC = () => {
   return (
-    <div>
-      <button onClick={onSpotifyLoginClick}>Login to Spotify</button>
-      <button onClick={onNapsterLoginClick}>Login to Napster</button>
-    </div>
+    <>
+      <Button onClick={onSpotifyLoginClick}>Login to Spotify</Button>
+      <Button onClick={onNapsterLoginClick}>Login to Napster</Button>
+    </>
   );
 };
 
