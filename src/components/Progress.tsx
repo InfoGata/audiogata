@@ -36,7 +36,7 @@ const Progress: React.FC = () => {
   const totalDuration = currentSong && currentSong.duration;
   return (
     <>
-      <Typography>{formatSeconds(displayElapsed)}</Typography>
+      <Typography variant="body2">{formatSeconds(displayElapsed)}</Typography>
       <div className={classes.container}>
         <Slider
           min={0}
@@ -46,7 +46,7 @@ const Progress: React.FC = () => {
           onChangeCommitted={onChangeCommited}
         />
       </div>
-      <Typography>{formatSeconds(totalDuration)}</Typography>
+      <Typography variant="body2">{formatSeconds(totalDuration)}</Typography>
     </>
   );
 };

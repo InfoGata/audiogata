@@ -35,17 +35,19 @@ const Controls: React.FC = () => {
   const repeatColor = repeat ? "primary" : "inherit";
   return (
     <>
-      <IconButton onClick={onToggleShuffle}>
+      <IconButton size="small" onClick={onToggleShuffle}>
         <Shuffle color={shuffleColor} />
       </IconButton>
-      <IconButton onClick={onToggleRepeat}>
+      <IconButton size="small" onClick={onToggleRepeat}>
         <Repeat color={repeatColor} />
       </IconButton>
-      <IconButton onClick={onPreviousClick}>
+      <IconButton size="small" onClick={onPreviousClick}>
         <SkipPrevious />
       </IconButton>
-      <IconButton onClick={onTogglePlay}>{playIcon}</IconButton>
-      <IconButton onClick={onNextClick}>
+      <IconButton size="small" onClick={onTogglePlay}>
+        {playIcon}
+      </IconButton>
+      <IconButton size="small" onClick={onNextClick}>
         <SkipNext />
       </IconButton>
     </>

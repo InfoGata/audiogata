@@ -72,7 +72,7 @@ const PlayerBar: React.FC = () => {
               <Typography
                 noWrap={true}
                 className={classes.noWrap}
-                variant="body1"
+                variant="body2"
                 dangerouslySetInnerHTML={{
                   __html: (currentSong && currentSong.name) || "",
                 }}
