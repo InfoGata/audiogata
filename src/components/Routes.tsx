@@ -6,6 +6,7 @@ import { Route } from "react-router-dom";
 import { AppState } from "../store/store";
 import Home from "./Home";
 import Playlist from "./Playlist";
+import Playlists from "./Playlists";
 import Plugins from "./Plugins";
 import Settings from "./Settings";
 import Sync from "./Sync";
@@ -46,8 +47,9 @@ const Routes: React.FC = () => {
       <Route exact={true} path="/" component={Home} />
       <Route path="/plugins" component={Plugins} />
       <Route path="/sync" component={Sync} />
-      <Route exact={true} path="/playlist/:id" component={Playlist} />
-      <Route exact={true} path="/settings" component={Settings} />
+      <Route exact={true} path="/playlists" component={Playlists} />
+      <Route path="/playlists/:id" component={Playlist} />
+      <Route path="/settings" component={Settings} />
     </main>
   );
 };

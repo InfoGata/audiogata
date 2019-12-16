@@ -1,15 +1,5 @@
+import { List, ListItem, ListItemIcon, ListItemText } from "@material-ui/core";
 import {
-  Collapse,
-  IconButton,
-  List,
-  ListItem,
-  ListItemIcon,
-  ListItemSecondaryAction,
-  ListItemText,
-} from "@material-ui/core";
-import {
-  ExpandLess,
-  ExpandMore,
   Extension,
   Home,
   Menu,
@@ -25,13 +15,10 @@ import AddPlaylistDialog from "./AddPlaylistDialog";
 import NavigationPlaylistItem from "./NavigationPlaylistItem";
 
 const Navigation: React.FC = () => {
-  const [playlistOpen, setPlaylistOpen] = React.useState(false);
   const [dialogOpen, setDialogOpen] = React.useState(false);
   const playlists = useSelector((state: AppState) => state.playlist.playlists);
+  const navbarOpen = useSelector((state: AppState) => state.ui.navbarOpen);
 
-  const handlePlaylistClick = () => {
-    setPlaylistOpen(!playlistOpen);
-  };
   const openDialog = () => {
     setDialogOpen(true);
   };
@@ -62,33 +49,26 @@ const Navigation: React.FC = () => {
         </ListItemIcon>
         <ListItemText>Sync</ListItemText>
       </ListItem>
-      <ListItem button={true} key="Playlists" onClick={handlePlaylistClick}>
-        <ListItemIcon>
-          <Menu />
-        </ListItemIcon>
-        <ListItemText>Playlists</ListItemText>
-        {playlistOpen ? <ExpandLess /> : <ExpandMore />}
-      </ListItem>
-      <Collapse in={playlistOpen} timeout="auto" unmountOnExit={true}>
-        <List>
-          <ListItem button={true} onClick={openDialog}>
-            <ListItemText primary="Add Playlist" />
-            <ListItemSecondaryAction>
-              <IconButton aria-label="Add" onClick={openDialog}>
-                <PlaylistAdd />
-              </IconButton>
-            </ListItemSecondaryAction>
-          </ListItem>
-          {playlistItems}
-        </List>
-        <AddPlaylistDialog handleClose={closeDialog} open={dialogOpen} />
-      </Collapse>
       <ListItem button={true} component={Link} to="/settings" key="Settings">
         <ListItemIcon>
           <SettingsApplications />
         </ListItemIcon>
         <ListItemText>Settings</ListItemText>
       </ListItem>
+      <ListItem button={true} key="AddPlaylist" onClick={openDialog}>
+        <ListItemIcon>
+          <PlaylistAdd />
+        </ListItemIcon>
+        <ListItemText>Add Playlist</ListItemText>
+      </ListItem>
+      <ListItem button={true} component={Link} to="/playlists" key="Playlists">
+        <ListItemIcon>
+          <Menu />
+        </ListItemIcon>
+        <ListItemText>Playlists</ListItemText>
+      </ListItem>
+      {navbarOpen ? playlistItems : null}
+      <AddPlaylistDialog handleClose={closeDialog} open={dialogOpen} />
     </List>
   );
 };
