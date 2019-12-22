@@ -142,7 +142,7 @@ async function getYoutubeTrack(song: ISong): Promise<string> {
       },
     },
   });
-  const formatInfo = info.formats.filter(f => f.itag === "140")[0];
+  const formatInfo = info.formats.filter(f => f.itag === 140)[0];
   return formatInfo.url;
 }
 
