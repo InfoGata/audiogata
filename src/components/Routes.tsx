@@ -10,6 +10,7 @@ import Playlists from "./Playlists";
 import Plugins from "./Plugins";
 import Settings from "./Settings";
 import Sync from "./Sync";
+import NowPlaying from "./NowPlaying";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -45,6 +46,7 @@ const Routes: React.FC = () => {
     >
       <div className={classes.drawerHeader} />
       <Route exact={true} path="/" component={Home} />
+      <Route path="/nowplaying" component={NowPlaying} />
       <Route path="/plugins" component={Plugins} />
       <Route path="/sync" component={Sync} />
       <Route exact={true} path="/playlists" component={Playlists} />

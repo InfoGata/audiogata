@@ -7,7 +7,6 @@ import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import AudioComponent from "./components/AudioComponent";
 import PlayerBar from "./components/PlayerBar";
-import QueueBar from "./components/QueueBar";
 import Routes from "./components/Routes";
 import SideBar from "./components/SideBar";
 import TopBar from "./components/TopBar";
@@ -29,7 +28,6 @@ const App: React.FC = () => {
         <SideBar />
         <Routes />
         <PlayerBar />
-        <QueueBar />
         <AudioComponent />
       </div>
     </Router>

@@ -11,10 +11,10 @@ import {
   makeStyles,
   Theme,
 } from "@material-ui/core/styles";
-import { Menu, PlaylistPlay, Search } from "@material-ui/icons";
+import { Menu, Search } from "@material-ui/icons";
 import React from "react";
 import { useDispatch } from "react-redux";
-import { toggleNavbar, toggleQueuebar } from "../store/reducers/uiReducer";
+import { toggleNavbar } from "../store/reducers/uiReducer";
 import { AppDispatch } from "../store/store";
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -71,8 +71,6 @@ const useStyles = makeStyles((theme: Theme) =>
 const TopBar: React.FC = () => {
   const classes = useStyles();
   const dispatch = useDispatch<AppDispatch>();
-
-  const onToggleQuebar = () => dispatch(toggleQueuebar());
   const onToggleNavbar = () => dispatch(toggleNavbar());
 
   return (
@@ -103,15 +101,6 @@ const TopBar: React.FC = () => {
             inputProps={{ "aria-label": "search" }}
           />
         </div>
-        <IconButton
-          edge="start"
-          className={classes.menuButton}
-          color="inherit"
-          aria-label="open drawer"
-          onClick={onToggleQuebar}
-        >
-          <PlaylistPlay />
-        </IconButton>
       </Toolbar>
     </AppBar>
   );

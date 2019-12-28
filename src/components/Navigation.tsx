@@ -4,6 +4,7 @@ import {
   Home,
   Menu,
   PlaylistAdd,
+  PlaylistPlay,
   SettingsApplications,
   Sync,
 } from "@material-ui/icons";
@@ -36,6 +37,17 @@ const Navigation: React.FC = () => {
           <Home />
         </ListItemIcon>
         <ListItemText>Home</ListItemText>
+      </ListItem>
+      <ListItem
+        button={true}
+        component={Link}
+        to="/nowplaying"
+        key="Now Playing"
+      >
+        <ListItemIcon>
+          <PlaylistPlay />
+        </ListItemIcon>
+        <ListItemText>Now Playing</ListItemText>
       </ListItem>
       <ListItem button={true} component={Link} to="/plugins" key="Plugins">
         <ListItemIcon>

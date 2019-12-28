@@ -2,12 +2,10 @@ import { createSlice } from "redux-starter-kit";
 
 interface ISettings {
   navbarOpen: boolean;
-  queuebarOpen: boolean;
 }
 
 const initialState: ISettings = {
   navbarOpen: false,
-  queuebarOpen: false,
 };
 
 const uiSlice = createSlice({
@@ -19,15 +17,9 @@ const uiSlice = createSlice({
         navbarOpen: !state.navbarOpen
       };
     },
-    toggleQueuebar: (state) => {
-      return {
-        ...state,
-        queuebarOpen: !state.queuebarOpen
-      };
-    }
   },
   slice: "ui",
 });
 
-export const { toggleNavbar, toggleQueuebar } = uiSlice.actions;
+export const { toggleNavbar } = uiSlice.actions;
 export default uiSlice.reducer;
