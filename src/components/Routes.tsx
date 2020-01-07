@@ -5,12 +5,12 @@ import { useSelector } from "react-redux";
 import { Route } from "react-router-dom";
 import { AppState } from "../store/store";
 import Home from "./Home";
+import NowPlaying from "./NowPlaying";
 import Playlist from "./Playlist";
 import Playlists from "./Playlists";
 import Plugins from "./Plugins";
 import Settings from "./Settings";
 import Sync from "./Sync";
-import NowPlaying from "./NowPlaying";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -52,6 +52,7 @@ const Routes: React.FC = () => {
       <Route exact={true} path="/playlists" component={Playlists} />
       <Route path="/playlists/:id" component={Playlist} />
       <Route path="/settings" component={Settings} />
+      <div className={classes.drawerHeader} />
     </main>
   );
 };

@@ -37,5 +37,4 @@ export const getThumbnailImage = (images: IImage[] | undefined, size: number): s
   return thumbnailImage ? thumbnailImage.url : thumbnail;
 };
 
-export const queuebarWidth = 250;
-export const navbarWidth = 250;
+export const navbarWidth = 200;

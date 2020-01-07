@@ -22,7 +22,7 @@ const useStyles = makeStyles((theme: Theme) =>
       }),
       width: theme.spacing(7) + 1,
       [theme.breakpoints.up("sm")]: {
-        width: theme.spacing(8) + 1,
+        width: theme.spacing(7) + 1,
       },
     },
     drawerOpen: {
@@ -30,9 +30,6 @@ const useStyles = makeStyles((theme: Theme) =>
         duration: theme.transitions.duration.enteringScreen,
         easing: theme.transitions.easing.sharp,
       }),
-      width: navbarWidth,
-    },
-    drawerPaper: {
       width: navbarWidth,
     },
     toolbar: theme.mixins.toolbar,

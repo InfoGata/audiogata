@@ -7,7 +7,7 @@ import { getThumbnailImage } from "../utils";
 import Controls from "./Controls";
 import Progress from "./Progress";
 
-const thumbnailSize = 65;
+const thumbnailSize = 75;
 
 const useStyles = makeStyles(theme => ({
   bottomAppBar: {
@@ -58,11 +58,11 @@ const PlayerBar: React.FC = () => {
     <AppBar position="fixed" color="default" className={classes.bottomAppBar}>
       <Toolbar className={classes.toolbar} disableGutters={true}>
         <Grid container={true}>
-          <Grid item={true}>
+          <Grid item={true} spacing={0}>
             <img className={classes.thumbnail} alt="thumbnail" src={image} />
           </Grid>
           <Grid
-            xs={12}
+            xs={8}
             sm={true}
             item={true}
             container={true}
@@ -81,9 +81,7 @@ const PlayerBar: React.FC = () => {
             <Grid item={true}>
               <Controls />
             </Grid>
-            <Grid item={true} container={true} direction="row">
-              <Progress />
-            </Grid>
+            <Progress />
           </Grid>
         </Grid>
       </Toolbar>
