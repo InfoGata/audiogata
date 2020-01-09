@@ -34,6 +34,7 @@ const useStyles = makeStyles(theme => ({
   },
   noWrap: {
     textOverflow: "...",
+    width: "250px",
   },
   thumbnail: {
     height: thumbnailSize,
@@ -57,16 +58,16 @@ const PlayerBar: React.FC = () => {
   return (
     <AppBar position="fixed" color="default" className={classes.bottomAppBar}>
       <Toolbar className={classes.toolbar} disableGutters={true}>
-        <Grid container={true}>
+        <Grid container={true} spacing={1}>
           <Grid item={true} spacing={0}>
             <img className={classes.thumbnail} alt="thumbnail" src={image} />
           </Grid>
           <Grid
-            xs={8}
-            sm={true}
+            xs={9}
             item={true}
             container={true}
             direction="column"
+            alignItems="center"
           >
             <Grid item={true}>
               <Typography
