@@ -33,8 +33,8 @@ const useStyles = makeStyles(theme => ({
     width: "10%",
   },
   noWrap: {
+    maxWidth: "250px",
     textOverflow: "...",
-    width: "250px",
   },
   thumbnail: {
     height: thumbnailSize,
