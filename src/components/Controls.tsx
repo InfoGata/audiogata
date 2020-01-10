@@ -17,6 +17,7 @@ import {
   toggleShuffle,
 } from "../store/reducers/songReducer";
 import { AppDispatch, AppState } from "../store/store";
+import Volume from "./Volume";
 
 const Controls: React.FC = () => {
   const repeat = useSelector((state: AppState) => state.song.repeat);
@@ -38,9 +39,6 @@ const Controls: React.FC = () => {
       <IconButton size="small" onClick={onToggleShuffle}>
         <Shuffle color={shuffleColor} />
       </IconButton>
-      <IconButton size="small" onClick={onToggleRepeat}>
-        <Repeat color={repeatColor} />
-      </IconButton>
       <IconButton size="small" onClick={onPreviousClick}>
         <SkipPrevious />
       </IconButton>
@@ -50,6 +48,10 @@ const Controls: React.FC = () => {
       <IconButton size="small" onClick={onNextClick}>
         <SkipNext />
       </IconButton>
+      <IconButton size="small" onClick={onToggleRepeat}>
+        <Repeat color={repeatColor} />
+      </IconButton>
+      <Volume />
     </>
   );
 };

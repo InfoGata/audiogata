@@ -59,11 +59,11 @@ const PlayerBar: React.FC = () => {
     <AppBar position="fixed" color="default" className={classes.bottomAppBar}>
       <Toolbar className={classes.toolbar} disableGutters={true}>
         <Grid container={true} spacing={1}>
-          <Grid item={true} spacing={0}>
+          <Grid item={true} spacing={0} sm={2} xs={3}>
             <img className={classes.thumbnail} alt="thumbnail" src={image} />
           </Grid>
           <Grid
-            xs={9}
+            xs={8}
             item={true}
             container={true}
             direction="column"
