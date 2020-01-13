@@ -176,8 +176,8 @@ const Search: React.FC = () => {
   return (
     <>
       <select value={searchType} onChange={onSearchTypeChange}>
-        <option value="soundcloud">SoundCloud</option>
         <option value="youtube">Youtube</option>
+        <option value="soundcloud">SoundCloud</option>
       </select>
       <input type="text" onChange={onSearchChange} />
       <Button onClick={onSearchClick}>Search</Button>
