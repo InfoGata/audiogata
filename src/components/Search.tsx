@@ -122,7 +122,7 @@ const TrackResult: React.FC<ITrackResultProps> = props => {
 };
 
 const Search: React.FC = () => {
-  const [searchType, setSearchType] = React.useState("soundcloud");
+  const [searchType, setSearchType] = React.useState("youtube");
   const [search, setSearch] = React.useState("");
   const [trackResults, setTrackResults] = React.useState<ISong[]>([]);
   const [albumResults, setAlbumResults] = React.useState<IAlbum[]>([]);
