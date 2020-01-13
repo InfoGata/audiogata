@@ -1,7 +1,7 @@
 import axios from "axios";
 import { parse, toSeconds } from "iso8601-duration";
 import ytdl from "ytdl-core";
-import { IAlbum, IArtist, IImage, ISong } from "../../models";
+import { IAlbum, IArtist, IImage, IPlaylist, ISong } from "../../models";
 import { IFormatTrackApi } from "./IFormatTrackApi";
 import { ISearchApi } from "./ISearchApi";
 
@@ -99,6 +99,21 @@ async function searchTracks(query: string): Promise<ISong[]> {
     searchYoutube(query);
 }
 
+async function searchPlaylists(query: string): Promise<IPlaylist[]> {
+  return searchYoutubePlaylists(query);
+}
+
+async function searchYoutubePlaylists(query: string): Promise<IPlaylist[]> {
+  const url = "https://www.googleapis.com/youtube/v3/search";
+  const urlWithQuery = `${url}?part=snippet&type=playlist&maxResults=50&key=${key}&q=${encodeURIComponent(
+    query,
+  )}`;
+  const results = await axios.get(urlWithQuery);
+  // tslint:disable-next-line: no-console
+  console.log(results);
+  return [];
+}
+
 async function searchYoutube(query: string): Promise<ISong[]> {
   const url = "https://www.googleapis.com/youtube/v3/search";
   const urlWithQuery = `${url}?part=id&type=video&maxResults=50&key=${
@@ -157,6 +172,7 @@ export default {
     return {
       albums: [],
       artists: [],
+      playlists: await searchPlaylists(query),
       tracks: await searchTracks(query),
     };
   },
