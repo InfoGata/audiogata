@@ -1,4 +1,7 @@
 import { IImage } from "./models";
+import { ISearchApi } from "./services/apis/ISearchApi";
+import SoundCloud from "./services/apis/SoundCloud";
+import Youtube from "./services/apis/Youtube";
 import thumbnail from "./thumbnail.png";
 
 export function formatSeconds(seconds?: number) {
@@ -37,4 +40,15 @@ export const getThumbnailImage = (images: IImage[] | undefined, size: number): s
   return thumbnailImage ? thumbnailImage.url : thumbnail;
 };
 
+export const getApiByName = (name: string): ISearchApi | undefined => {
+  switch (name) {
+    case "youtube":
+      return Youtube;
+    case "soundcloud":
+      return SoundCloud;
+  }
+};
+
 export const navbarWidth = 200;
+
+export const searchThumbnailSize = 40;
