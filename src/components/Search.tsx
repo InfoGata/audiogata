@@ -1,10 +1,14 @@
 import {
+  AppBar,
   Avatar,
+  Box,
   Button,
   List,
   ListItem,
   ListItemAvatar,
   ListItemText,
+  Tab,
+  Tabs,
   Typography,
 } from "@material-ui/core";
 import React from "react";
@@ -159,6 +163,29 @@ const PlaylistResult: React.FC<IPlaylistResultProps> = props => {
   );
 };
 
+interface ITabPanelProps {
+  children?: React.ReactNode;
+  index: any;
+  value: any;
+}
+
+function TabPanel(props: ITabPanelProps) {
+  const { children, value, index, ...other } = props;
+
+  return (
+    <Typography
+      component="div"
+      role="tabpanel"
+      hidden={value !== index}
+      id={`wrapped-tabpanel-${index}`}
+      aria-labelledby={`wrapped-tab-${index}`}
+      {...other}
+    >
+      {value === index && <Box p={3}>{children}</Box>}
+    </Typography>
+  );
+}
+
 const Search: React.FC = () => {
   const [searchType, setSearchType] = React.useState("youtube");
   const [search, setSearch] = React.useState("");
@@ -166,6 +193,7 @@ const Search: React.FC = () => {
   const [albumResults, setAlbumResults] = React.useState<IAlbum[]>([]);
   const [artistResults, setArtistResults] = React.useState<IArtist[]>([]);
   const [playlistResults, setPlaylistResults] = React.useState<IPlaylist[]>([]);
+  const [tabValue, setTabValue] = React.useState("tracks");
   const onSearchTypeChange = (e: React.FormEvent<HTMLSelectElement>) => {
     setSearchType(e.currentTarget.value);
   };
@@ -223,6 +251,9 @@ const Search: React.FC = () => {
       setTrackResults={setTrackResults}
     />
   ));
+  const handleChange = (event: React.ChangeEvent<{}>, newValue: string) => {
+    setTabValue(newValue);
+  };
   return (
     <>
       <select value={searchType} onChange={onSearchTypeChange}>
@@ -232,14 +263,36 @@ const Search: React.FC = () => {
       <input type="text" onChange={onSearchChange} />
       <Button onClick={onSearchClick}>Search</Button>
       <Button onClick={onClearSearch}>Clear Search Results</Button>
-      {trackList.length > 0 ? <Typography>Songs:</Typography> : null}
-      <List dense={true}>{trackList}</List>
-      {albumList.length > 0 ? <Typography>Albums:</Typography> : null}
-      <List dense={true}>{albumList}</List>
-      {artistList.length > 0 ? <Typography>Artists:</Typography> : null}
-      <List dense={true}>{artistList}</List>
-      {playlistList.length > 0 ? <Typography>Playlists:</Typography> : null}
-      <List dense={true}>{playlistList}</List>
+      <AppBar position="static" color="default">
+        <Tabs
+          value={tabValue}
+          onChange={handleChange}
+          indicatorColor="primary"
+          textColor="primary"
+          variant="fullWidth"
+        >
+          {trackList.length > 0 ? <Tab label="Songs" value="tracks" /> : null}
+          {albumList.length > 0 ? <Tab label="Albums" value="albums" /> : null}
+          {artistList.length > 0 ? (
+            <Tab label="Artists" value="artists" />
+          ) : null}
+          {playlistList.length > 0 ? (
+            <Tab label="Playlists" value="playlists" />
+          ) : null}
+        </Tabs>
+      </AppBar>
+      <TabPanel value={tabValue} index="tracks">
+        <List dense={true}>{trackList}</List>
+      </TabPanel>
+      <TabPanel value={tabValue} index="albums">
+        <List dense={true}>{albumList}</List>
+      </TabPanel>
+      <TabPanel value={tabValue} index="artists">
+        <List dense={true}>{artistList}</List>
+      </TabPanel>
+      <TabPanel value={tabValue} index="playlists">
+        <List dense={true}>{playlistList}</List>
+      </TabPanel>
     </>
   );
 };
