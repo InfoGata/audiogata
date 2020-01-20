@@ -9,13 +9,15 @@ import {
 } from "@material-ui/core";
 import React from "react";
 import { useDispatch } from "react-redux";
-import { IAlbum, IArtist, ISong } from "../models";
+import { IAlbum, IArtist, IPlaylist, ISong } from "../models";
 import { ISearchApi } from "../services/apis/ISearchApi";
 import SoundCloud from "../services/apis/SoundCloud";
 import Youtube from "../services/apis/Youtube";
 import { addTrack } from "../store/reducers/songReducer";
 import { AppDispatch } from "../store/store";
 import { getThumbnailImage } from "../utils";
+
+const thumbnailsize = 40;
 
 const getApiByName = (name: string): ISearchApi | undefined => {
   switch (name) {
@@ -44,7 +46,7 @@ const ArtistResult: React.FC<IArtistResultProps> = props => {
     }
   };
 
-  const image = getThumbnailImage(props.artist.images, 40);
+  const image = getThumbnailImage(props.artist.images, thumbnailsize);
   return (
     <ListItem button={true} onClick={onClickArtist}>
       <ListItemAvatar>
@@ -74,7 +76,7 @@ const AlbumResult: React.FC<IAlbumResultProps> = props => {
     }
   };
 
-  const image = getThumbnailImage(props.album.images, 40);
+  const image = getThumbnailImage(props.album.images, thumbnailsize);
 
   return (
     <ListItem button={true} onClick={onClickAlbum}>
@@ -102,7 +104,7 @@ const TrackResult: React.FC<ITrackResultProps> = props => {
     dispatch(addTrack(props.track));
   };
 
-  const image = getThumbnailImage(props.track.images, 40);
+  const image = getThumbnailImage(props.track.images, thumbnailsize);
   return (
     <ListItem button={true} onClick={onClickSong}>
       <ListItemAvatar>
@@ -121,12 +123,49 @@ const TrackResult: React.FC<ITrackResultProps> = props => {
   );
 };
 
+interface IPlaylistResultProps {
+  playlist: IPlaylist;
+  clearSearch: () => void;
+  setTrackResults: (songs: ISong[]) => void;
+}
+
+const PlaylistResult: React.FC<IPlaylistResultProps> = props => {
+  const onClickPlaylist = async () => {
+    props.clearSearch();
+    const api = getApiByName(props.playlist.from || "");
+    if (api) {
+      const songs = await api.getPlaylistTracks(props.playlist);
+      props.setTrackResults(songs);
+    }
+  };
+  const image = getThumbnailImage(props.playlist.images, thumbnailsize);
+  return (
+    <ListItem button={true} onClick={onClickPlaylist}>
+      <ListItemAvatar>
+        <Avatar
+          alt={props.playlist.name}
+          src={image}
+          style={{ borderRadius: 0 }}
+        />
+      </ListItemAvatar>
+      <ListItemText
+        primary={
+          <Typography
+            dangerouslySetInnerHTML={{ __html: props.playlist.name }}
+          />
+        }
+      />
+    </ListItem>
+  );
+};
+
 const Search: React.FC = () => {
   const [searchType, setSearchType] = React.useState("youtube");
   const [search, setSearch] = React.useState("");
   const [trackResults, setTrackResults] = React.useState<ISong[]>([]);
   const [albumResults, setAlbumResults] = React.useState<IAlbum[]>([]);
   const [artistResults, setArtistResults] = React.useState<IArtist[]>([]);
+  const [playlistResults, setPlaylistResults] = React.useState<IPlaylist[]>([]);
   const onSearchTypeChange = (e: React.FormEvent<HTMLSelectElement>) => {
     setSearchType(e.currentTarget.value);
   };
@@ -139,19 +178,22 @@ const Search: React.FC = () => {
     setTrackResults([]);
     setAlbumResults([]);
     setArtistResults([]);
+    setPlaylistResults([]);
   };
 
   const onSearchClick = async () => {
     let tracks: ISong[] = [];
     let albums: IAlbum[] = [];
     let artists: IArtist[] = [];
+    let playlists: IPlaylist[] = [];
     const api = getApiByName(searchType);
     if (api) {
-      ({ tracks, albums, artists } = await api.searchAll(search));
+      ({ tracks, albums, artists, playlists } = await api.searchAll(search));
     }
     setAlbumResults(albums);
     setArtistResults(artists);
     setTrackResults(tracks);
+    setPlaylistResults(playlists);
   };
 
   const trackList = trackResults.map(track => (
@@ -173,6 +215,14 @@ const Search: React.FC = () => {
       setAlbumResults={setAlbumResults}
     />
   ));
+  const playlistList = playlistResults.map(playlist => (
+    <PlaylistResult
+      key={playlist.apiId}
+      playlist={playlist}
+      clearSearch={onClearSearch}
+      setTrackResults={setTrackResults}
+    />
+  ));
   return (
     <>
       <select value={searchType} onChange={onSearchTypeChange}>
@@ -183,11 +233,13 @@ const Search: React.FC = () => {
       <Button onClick={onSearchClick}>Search</Button>
       <Button onClick={onClearSearch}>Clear Search Results</Button>
       {trackList.length > 0 ? <Typography>Songs:</Typography> : null}
-      <List>{trackList}</List>
+      <List dense={true}>{trackList}</List>
       {albumList.length > 0 ? <Typography>Albums:</Typography> : null}
-      <List>{albumList}</List>
+      <List dense={true}>{albumList}</List>
       {artistList.length > 0 ? <Typography>Artists:</Typography> : null}
-      <List>{artistList}</List>
+      <List dense={true}>{artistList}</List>
+      {playlistList.length > 0 ? <Typography>Playlists:</Typography> : null}
+      <List dense={true}>{playlistList}</List>
     </>
   );
 };

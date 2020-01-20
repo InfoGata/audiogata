@@ -37,7 +37,7 @@ const PlayQueue: React.FC = () => {
       <Droppable droppableId="song-queue">
         {provided => (
           <RootRef rootRef={provided.innerRef}>
-            <List>
+            <List dense={true}>
               {songList.map((songInfo, index) => (
                 <QueueItem
                   key={songInfo.id}

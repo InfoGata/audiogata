@@ -31,6 +31,9 @@ export interface IPlaylist {
   id?: string;
   name: string;
   songs: ISong[];
+  apiId?: string;
+  images?: IImage[];
+  from?: string;
 }
 
 export interface IImage {

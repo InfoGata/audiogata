@@ -1,5 +1,5 @@
 import axios from "axios";
-import { IAlbum, IArtist, ISong, IImage } from "../../models";
+import { IAlbum, IArtist, IImage, ISong } from "../../models";
 import { ISearchApi } from "./ISearchApi";
 
 interface INapsterResult {

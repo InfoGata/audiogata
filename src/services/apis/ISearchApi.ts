@@ -10,6 +10,7 @@ export interface ISearchApi {
     playlists: IPlaylist[];
   }>;
   getAlbumTracks: (album: IAlbum) => Promise<ISong[]>;
+  getPlaylistTracks: (playlist: IPlaylist) => Promise<ISong[]>;
   getArtistAlbums: (artist: IArtist) => Promise<IAlbum[]>;
   setAuth?: (accessToken: string, refreshToken?: string) => void;
 }

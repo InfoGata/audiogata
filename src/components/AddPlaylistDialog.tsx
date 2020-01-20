@@ -9,7 +9,7 @@ import {
 } from "@material-ui/core";
 import React from "react";
 import { useDispatch } from "react-redux";
-import { ISong } from "../models";
+import { IPlaylist, ISong } from "../models";
 import { addPlaylist } from "../store/reducers/playlistReducer";
 import { AppDispatch } from "../store/store";
 
@@ -26,7 +26,7 @@ const AddPlaylistDialog: React.FC<IProps> = props => {
 
   const confirm = () => {
     const tracks = props.songs || [];
-    const playlist = {
+    const playlist: IPlaylist = {
       name,
       songs: tracks,
     };
