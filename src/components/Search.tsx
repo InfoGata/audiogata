@@ -2,11 +2,15 @@ import {
   AppBar,
   Box,
   Button,
+  IconButton,
+  Input,
+  InputAdornment,
   List,
   Tab,
   Tabs,
   Typography,
 } from "@material-ui/core";
+import { Clear } from "@material-ui/icons";
 import React from "react";
 import { IAlbum, IArtist, IPlaylist, ISong } from "../models";
 import { getApiByName } from "../utils";
@@ -50,7 +54,7 @@ const Search: React.FC = () => {
     setSearchType(e.currentTarget.value);
   };
 
-  const onSearchChange = (e: React.FormEvent<HTMLInputElement>) => {
+  const onSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearch(e.currentTarget.value);
   };
 
@@ -112,9 +116,18 @@ const Search: React.FC = () => {
         <option value="youtube">Youtube</option>
         <option value="soundcloud">SoundCloud</option>
       </select>
-      <input type="text" onChange={onSearchChange} />
+      <Input
+        type="text"
+        onChange={onSearchChange}
+        endAdornment={
+          <InputAdornment position="end">
+            <IconButton onClick={onClearSearch}>
+              <Clear />
+            </IconButton>
+          </InputAdornment>
+        }
+      />
       <Button onClick={onSearchClick}>Search</Button>
-      <Button onClick={onClearSearch}>Clear Search Results</Button>
       <AppBar position="static" color="default">
         <Tabs
           value={tabValue}
