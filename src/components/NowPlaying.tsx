@@ -51,7 +51,7 @@ const PlayQueue: React.FC = () => {
               height={height}
               width={width}
               rowCount={songList.length}
-              rowHeight={45}
+              rowHeight={50}
               rowRenderer={rowRenderer(songList)}
               isScrolling={isScrolling}
               onScroll={onChildScroll}

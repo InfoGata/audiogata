@@ -58,7 +58,10 @@ const QueueItem: React.FC<IProps> = props => {
         <ListItemText
           disableTypography={true}
           primary={
-            <Typography dangerouslySetInnerHTML={{ __html: props.song.name }} />
+            <Typography
+              noWrap={true}
+              dangerouslySetInnerHTML={{ __html: props.song.name }}
+            />
           }
         />
         <ListItemSecondaryAction>
