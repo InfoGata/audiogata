@@ -5,6 +5,7 @@ import { hot } from "react-hot-loader/root";
 import { BrowserRouter as Router } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import "react-virtualized/styles.css";
 import AudioComponent from "./components/AudioComponent";
 import PlayerBar from "./components/PlayerBar";
 import Routes from "./components/Routes";

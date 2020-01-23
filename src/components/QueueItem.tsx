@@ -11,7 +11,6 @@ import {
 } from "@material-ui/core";
 import { Delete, MoreHoriz, PlaylistAdd } from "@material-ui/icons";
 import React from "react";
-import { Draggable } from "react-beautiful-dnd";
 import { useDispatch, useSelector } from "react-redux";
 import { ISong } from "../models";
 import { deleteTrack, setTrack } from "../store/reducers/songReducer";
@@ -20,15 +19,15 @@ import AddPlaylistDialog from "./AddPlaylistDialog";
 import PlaylistMenuItem from "./PlaylistMenuItem";
 
 interface IProps {
-  index: number;
   song: ISong;
-  currentSong?: ISong;
+  style: object;
 }
 
 const QueueItem: React.FC<IProps> = props => {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [dialogOpen, setDialogOpen] = React.useState(false);
   const playlists = useSelector((state: AppState) => state.playlist.playlists);
+  const currentSong = useSelector((state: AppState) => state.song.currentSong);
   const dispatch = useDispatch<AppDispatch>();
 
   const playListClick = () => dispatch(setTrack(props.song));
@@ -47,73 +46,55 @@ const QueueItem: React.FC<IProps> = props => {
   };
 
   return (
-    <Draggable
-      key={props.song.id}
-      draggableId={props.song.id || ""}
-      index={props.index}
-    >
-      {provided => (
-        <div
-          ref={provided.innerRef}
-          {...provided.draggableProps}
-          {...provided.dragHandleProps}
-        >
-          <ListItem
-            button={true}
-            key={props.song.id}
-            selected={
-              props.currentSong && props.currentSong.id === props.song.id
-            }
-            onClick={playListClick}
-          >
-            <ListItemText
-              primary={
-                <Typography
-                  dangerouslySetInnerHTML={{ __html: props.song.name }}
-                />
-              }
-            />
-            <ListItemSecondaryAction>
-              <IconButton onClick={openMenu}>
-                <MoreHoriz />
-              </IconButton>
-            </ListItemSecondaryAction>
-          </ListItem>
-          <Menu
-            open={Boolean(anchorEl)}
-            onClose={closeMenu}
-            anchorEl={anchorEl}
-          >
-            <MenuItem onClick={deleteClick}>
-              <ListItemIcon>
-                <Delete />
-              </ListItemIcon>
-              <ListItemText primary="Delete" />
-            </MenuItem>
-            <Divider />
-            <MenuItem onClick={addToNewPlaylist}>
-              <ListItemIcon>
-                <PlaylistAdd />
-              </ListItemIcon>
-              <ListItemText primary="Add To New Playlist" />
-            </MenuItem>
-            {playlists.map(p => (
-              <PlaylistMenuItem
-                key={p.id}
-                playlist={p}
-                songs={[props.song]}
-                closeMenu={closeMenu}
-              />
-            ))}
-          </Menu>
-          <AddPlaylistDialog
+    <>
+      <ListItem
+        button={true}
+        key={props.song.id}
+        ContainerProps={{ style: props.style }}
+        selected={currentSong && currentSong.id === props.song.id}
+        onClick={playListClick}
+        ContainerComponent="div"
+      >
+        <ListItemText
+          primary={
+            <Typography dangerouslySetInnerHTML={{ __html: props.song.name }} />
+          }
+        />
+        <ListItemSecondaryAction>
+          <IconButton onClick={openMenu}>
+            <MoreHoriz />
+          </IconButton>
+        </ListItemSecondaryAction>
+      </ListItem>
+      <Menu open={Boolean(anchorEl)} onClose={closeMenu} anchorEl={anchorEl}>
+        <MenuItem onClick={deleteClick}>
+          <ListItemIcon>
+            <Delete />
+          </ListItemIcon>
+          <ListItemText primary="Delete" />
+        </MenuItem>
+        <Divider />
+        <MenuItem onClick={addToNewPlaylist}>
+          <ListItemIcon>
+            <PlaylistAdd />
+          </ListItemIcon>
+          <ListItemText primary="Add To New Playlist" />
+        </MenuItem>
+        {playlists.map(p => (
+          <PlaylistMenuItem
+            key={p.id}
+            playlist={p}
             songs={[props.song]}
-            open={dialogOpen}
-            handleClose={closeDialog}
+            closeMenu={closeMenu}
           />
-        </div>
-      )}
-    </Draggable>
+        ))}
+      </Menu>
+      <AddPlaylistDialog
+        songs={[props.song]}
+        open={dialogOpen}
+        handleClose={closeDialog}
+      />
+    </>
   );
 };
 
