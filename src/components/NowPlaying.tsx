@@ -1,10 +1,10 @@
 import React from "react";
 import { useSelector } from "react-redux";
 import {
+  AutoSizer,
   List,
   ListRowProps,
   WindowScroller,
-  AutoSizer,
 } from "react-virtualized";
 import { ISong } from "../models";
 import { AppState } from "../store/store";
@@ -13,7 +13,7 @@ import QueueItem from "./QueueItem";
 const rowRenderer = (songs: ISong[]) => (props: ListRowProps) => {
   const { index, style } = props;
   const song = songs[index];
-  return <QueueItem song={song} style={style} />;
+  return <QueueItem song={song} style={style} key={props.key} />;
 };
 
 const PlayQueue: React.FC = () => {

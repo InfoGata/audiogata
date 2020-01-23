@@ -56,6 +56,7 @@ const QueueItem: React.FC<IProps> = props => {
         ContainerComponent="div"
       >
         <ListItemText
+          disableTypography={true}
           primary={
             <Typography dangerouslySetInnerHTML={{ __html: props.song.name }} />
           }
