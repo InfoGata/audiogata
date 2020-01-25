@@ -9,6 +9,7 @@ import NowPlaying from "./NowPlaying";
 import Playlist from "./Playlist";
 import Playlists from "./Playlists";
 import Plugins from "./Plugins";
+import Search from "./Search";
 import Settings from "./Settings";
 import Sync from "./Sync";
 
@@ -53,6 +54,7 @@ const Routes: React.FC = () => {
       <Route exact={true} path="/playlists" component={Playlists} />
       <Route path="/playlists/:id" component={Playlist} />
       <Route path="/settings" component={Settings} />
+      <Route path="/search" component={Search} />
       <div className={classes.drawerHeader} />
     </main>
   );

@@ -1,17 +1,6 @@
-import {
-  AppBar,
-  Box,
-  Button,
-  IconButton,
-  Input,
-  InputAdornment,
-  List,
-  Tab,
-  Tabs,
-  Typography,
-} from "@material-ui/core";
-import { Clear } from "@material-ui/icons";
-import React from "react";
+import { AppBar, Box, List, Tab, Tabs, Typography } from "@material-ui/core";
+import React, { useEffect } from "react";
+import { RouteComponentProps } from "react-router";
 import { IAlbum, IArtist, IPlaylist, ISong } from "../models";
 import { getApiByName } from "../utils";
 import AlbumSearchResult from "./AlbumSearchResult";
@@ -42,9 +31,8 @@ function TabPanel(props: ITabPanelProps) {
   );
 }
 
-const Search: React.FC = () => {
+const Search: React.FC<RouteComponentProps> = props => {
   const [searchType, setSearchType] = React.useState("youtube");
-  const [search, setSearch] = React.useState("");
   const [trackResults, setTrackResults] = React.useState<ISong[]>([]);
   const [albumResults, setAlbumResults] = React.useState<IAlbum[]>([]);
   const [artistResults, setArtistResults] = React.useState<IArtist[]>([]);
@@ -54,10 +42,6 @@ const Search: React.FC = () => {
     setSearchType(e.currentTarget.value);
   };
 
-  const onSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearch(e.currentTarget.value);
-  };
-
   const onClearSearch = () => {
     setTrackResults([]);
     setAlbumResults([]);
@@ -65,20 +49,27 @@ const Search: React.FC = () => {
     setPlaylistResults([]);
   };
 
-  const onSearchClick = async () => {
-    let tracks: ISong[] = [];
-    let albums: IAlbum[] = [];
-    let artists: IArtist[] = [];
-    let playlists: IPlaylist[] = [];
-    const api = getApiByName(searchType);
-    if (api) {
-      ({ tracks, albums, artists, playlists } = await api.searchAll(search));
+  useEffect(() => {
+    const onSearch = async (search: string) => {
+      let tracks: ISong[] = [];
+      let albums: IAlbum[] = [];
+      let artists: IArtist[] = [];
+      let playlists: IPlaylist[] = [];
+      const api = getApiByName(searchType);
+      if (api) {
+        ({ tracks, albums, artists, playlists } = await api.searchAll(search));
+      }
+      setAlbumResults(albums);
+      setArtistResults(artists);
+      setTrackResults(tracks);
+      setPlaylistResults(playlists);
+    };
+    const params = new URLSearchParams(props.location.search);
+    const query = params.get("q");
+    if (query && query.length > 3) {
+      onSearch(query);
     }
-    setAlbumResults(albums);
-    setArtistResults(artists);
-    setTrackResults(tracks);
-    setPlaylistResults(playlists);
-  };
+  }, [props.location.search, searchType]);
 
   const trackList = trackResults.map(track => (
     <TrackSearchResult key={track.apiId} track={track} />
@@ -116,18 +107,6 @@ const Search: React.FC = () => {
         <option value="youtube">Youtube</option>
         <option value="soundcloud">SoundCloud</option>
       </select>
-      <Input
-        type="text"
-        onChange={onSearchChange}
-        endAdornment={
-          <InputAdornment position="end">
-            <IconButton onClick={onClearSearch}>
-              <Clear />
-            </IconButton>
-          </InputAdornment>
-        }
-      />
-      <Button onClick={onSearchClick}>Search</Button>
       <AppBar position="static" color="default">
         <Tabs
           value={tabValue}

@@ -1,6 +1,7 @@
 import {
   AppBar,
   IconButton,
+  InputAdornment,
   InputBase,
   Toolbar,
   Typography,
@@ -12,8 +13,10 @@ import {
   Theme,
 } from "@material-ui/core/styles";
 import { Menu, Search } from "@material-ui/icons";
+import { Clear } from "@material-ui/icons";
 import React from "react";
 import { useDispatch } from "react-redux";
+import { RouteComponentProps, withRouter } from "react-router";
 import { toggleNavbar } from "../store/reducers/uiReducer";
 import { AppDispatch } from "../store/store";
 
@@ -68,10 +71,22 @@ const useStyles = makeStyles((theme: Theme) =>
   }),
 );
 
-const TopBar: React.FC = () => {
+const TopBar: React.FC<RouteComponentProps> = props => {
   const classes = useStyles();
   const dispatch = useDispatch<AppDispatch>();
   const onToggleNavbar = () => dispatch(toggleNavbar());
+  const [search, setSearch] = React.useState("");
+
+  const onSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearch(event.currentTarget.value);
+  };
+  const handleSubmit = (event: React.FormEvent<{}>) => {
+    props.history.push(`/search?q=${search}`);
+    event.preventDefault();
+  };
+  const onClearSearch = (event: React.ChangeEvent<{}>) => {
+    setSearch("");
+  };
 
   return (
     <AppBar position="fixed" color="default" className={classes.appBar}>
@@ -88,22 +103,34 @@ const TopBar: React.FC = () => {
         <Typography className={classes.title} variant="h6" noWrap={true}>
           Audio PWA
         </Typography>
-        <div className={classes.search}>
-          <div className={classes.searchIcon}>
-            <Search />
+        <form onSubmit={handleSubmit}>
+          <div className={classes.search}>
+            <div className={classes.searchIcon}>
+              <Search />
+            </div>
+            <InputBase
+              placeholder="Search…"
+              classes={{
+                input: classes.inputInput,
+                root: classes.inputRoot,
+              }}
+              inputProps={{ "aria-label": "search" }}
+              onChange={onSearchChange}
+              value={search}
+              name="query"
+              endAdornment={
+                <InputAdornment position="end">
+                  <IconButton onClick={onClearSearch} size="small">
+                    <Clear />
+                  </IconButton>
+                </InputAdornment>
+              }
+            />
           </div>
-          <InputBase
-            placeholder="Search…"
-            classes={{
-              input: classes.inputInput,
-              root: classes.inputRoot,
-            }}
-            inputProps={{ "aria-label": "search" }}
-          />
-        </div>
+        </form>
       </Toolbar>
     </AppBar>
   );
 };
 
-export default TopBar;
+export default withRouter(TopBar);
