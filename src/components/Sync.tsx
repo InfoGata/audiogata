@@ -1,37 +1,75 @@
-import { Button } from "@material-ui/core";
+import {
+  LoggedIn,
+  LoggedOut,
+  LoginButton,
+  LogoutButton,
+  useWebId,
+} from "@solid/react";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { ISong } from "../models";
 import { setTracks } from "../store/reducers/songReducer";
 import { AppDispatch, AppState } from "../store/store";
-import BlockstackSync from "../syncs/BlockstackSync";
 
-const sync = new BlockstackSync();
+const path = "/private/audiopwa/queue.json";
+const createFile = async (webId: string, todos: ISong[]) => {
+  const url = new URL(webId || "");
+  const origin = url.origin;
+  const todoUrl = `${origin}${path}`;
+  const options: RequestInit = {
+    body: JSON.stringify(todos),
+    credentials: "include",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    method: "PUT",
+  };
+  await fetch(todoUrl, options);
+};
+
+const loadFile = async (webId: string) => {
+  const url = new URL(webId || "");
+  const origin = url.origin;
+  const todoUrl = `${origin}${path}`;
+  const options: RequestInit = {
+    credentials: "include",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    method: "GET",
+  };
+  const response = await fetch(todoUrl, options);
+  const todos = await response.json();
+  return todos as ISong[];
+};
+
 const Sync: React.FC = () => {
-  const [isLoggedIn, setIsLoggedIn] = React.useState(false);
+  const webId = useWebId();
   const dispatch = useDispatch<AppDispatch>();
   const songs = useSelector((state: AppState) => state.song.songs);
-  React.useEffect(() => {
-    sync.init().then(() => {
-      setIsLoggedIn(sync.isLoggedIn());
-    });
-  }, []);
-
-  const signIn = () => sync.login();
-  const signOut = () => sync.logout();
-  const syncData = async () => await sync.sync(songs);
-  const getData = async () => {
-    const data = await sync.getData();
-    dispatch(setTracks(data));
+  const onSave = async () => {
+    if (webId) {
+      await createFile(webId, songs);
+    }
+  };
+  const onLoad = async () => {
+    if (webId) {
+      const data = await loadFile(webId);
+      dispatch(setTracks(data));
+    }
   };
 
-  return isLoggedIn ? (
+  return (
     <>
-      <Button onClick={signOut}>Sign Out</Button>
-      <Button onClick={syncData}>Sync Data</Button>
-      <Button onClick={getData}>Get Data</Button>
+      <LoggedOut>
+        <LoginButton popup="popup.html" />
+      </LoggedOut>
+      <LoggedIn>
+        <LogoutButton />
+        <button onClick={onSave}>Save</button>
+        <button onClick={onLoad}>Load</button>
+      </LoggedIn>
     </>
-  ) : (
-    <Button onClick={signIn}>Sign In</Button>
   );
 };
 
