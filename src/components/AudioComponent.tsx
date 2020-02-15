@@ -131,7 +131,6 @@ class AudioComponent extends React.Component<IProps, {}> {
     if (this.props.currentSong) {
       const message = `${this.props.currentSong.name}: ${err.message}`;
       toast.error(message);
-      // tslint:disable-next-line: no-console
       console.log(err);
     }
 

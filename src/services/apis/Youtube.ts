@@ -148,7 +148,6 @@ async function getYoutubePlaylistTracks(playlist: IPlaylist): Promise<ISong[]> {
 async function getInvidiousPlaylistTracks(playlist: IPlaylist): Promise<ISong[]> {
   const url = `https://invidio.us/api/v1/playlists/${playlist.apiId}`;
   const results = await axios.get(url);
-  // tslint:disable-next-line: no-console
   console.log(results);
   return [];
 }

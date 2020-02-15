@@ -64,31 +64,26 @@ class SpotifyPlayer implements IPlayerComponent {
         player.addListener(
           "initialization_error",
           ({ message }: { message: any }) => {
-            // tslint:disable-next-line: no-console
             console.error(message);
           },
         );
         player.addListener(
           "authentication_error",
           ({ message }: { message: any }) => {
-            // tslint:disable-next-line: no-console
             console.error(message);
           },
         );
         player.addListener("account_error", ({ message }: { message: any }) => {
-          // tslint:disable-next-line: no-console
           console.error(message);
         });
         player.addListener(
           "playback_error",
           ({ message }: { message: any }) => {
-            // tslint:disable-next-line: no-console
             console.error(message);
           },
         );
         // Playback status updates
         player.addListener("player_state_changed", (state: any) => {
-          // tslint:disable-next-line: no-console
           console.log(state);
           this.setTime(state.position / 1000, state.duration / 1000);
           this.internalTime = state.position;
@@ -108,7 +103,6 @@ class SpotifyPlayer implements IPlayerComponent {
         });
         // Ready
         player.addListener("ready", ({ device_id }: { device_id: string }) => {
-          // tslint:disable-next-line: no-console
           console.log("Ready with Device ID", device_id);
           this.deviceId = device_id;
         });
@@ -116,7 +110,6 @@ class SpotifyPlayer implements IPlayerComponent {
         player.addListener(
           "not_ready",
           ({ device_id }: { device_id: string }) => {
-            // tslint:disable-next-line: no-console
             console.log("Device ID has gone offline", device_id);
           },
         );
