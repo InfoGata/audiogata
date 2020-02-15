@@ -33,7 +33,7 @@ class SpotifyPlayer implements IPlayerComponent {
   }
 
   public init() {
-    const query = new URLSearchParams(window.location.search);
+    // const query = new URLSearchParams(window.location.search);
     // if (query.has("access_token") && query.has("refresh_token")) {
     //   const accessToken = query.get("access_token") || "";
     //   const refreshToken = query.get("refresh_token") || "";
