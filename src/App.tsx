@@ -15,6 +15,7 @@ import TopBar from "./components/TopBar";
 const useStyles = makeStyles({
   root: {
     display: "flex",
+    minHeight: "100vh"
   },
 });
 
