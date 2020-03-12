@@ -9,7 +9,7 @@ import {
   MenuItem,
   Typography,
 } from "@material-ui/core";
-import { Delete, MoreHoriz, PlaylistAdd } from "@material-ui/icons";
+import { Delete, MoreHoriz, PlaylistAdd, Info } from "@material-ui/icons";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { ISong } from "../models";
@@ -17,6 +17,7 @@ import { deleteTrack, setTrack } from "../store/reducers/songReducer";
 import { AppDispatch, AppState } from "../store/store";
 import AddPlaylistDialog from "./AddPlaylistDialog";
 import PlaylistMenuItem from "./PlaylistMenuItem";
+import { Link } from "react-router-dom";
 
 interface IProps {
   song: ISong;
@@ -29,6 +30,7 @@ const QueueItem: React.FC<IProps> = props => {
   const playlists = useSelector((state: AppState) => state.playlist.playlists);
   const currentSong = useSelector((state: AppState) => state.song.currentSong);
   const dispatch = useDispatch<AppDispatch>();
+  const infoPath = `/track/${props.song.id}`;
 
   const playListClick = () => dispatch(setTrack(props.song));
   const openMenu = (event: React.MouseEvent<HTMLButtonElement>) =>
@@ -76,6 +78,12 @@ const QueueItem: React.FC<IProps> = props => {
             <Delete />
           </ListItemIcon>
           <ListItemText primary="Delete" />
+        </MenuItem>
+        <MenuItem component={Link} to={infoPath} >
+          <ListItemIcon>
+            <Info />
+          </ListItemIcon>
+          <ListItemText primary="Info" />
         </MenuItem>
         <Divider />
         <MenuItem onClick={addToNewPlaylist}>

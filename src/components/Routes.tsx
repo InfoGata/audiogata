@@ -12,6 +12,7 @@ import Plugins from "./Plugins";
 import Search from "./Search";
 import Settings from "./Settings";
 import Sync from "./Sync";
+import QueueTrackInfo from "./QueueTrackInfo";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -55,6 +56,7 @@ const Routes: React.FC = () => {
       <Route path="/playlists/:id" component={Playlist} />
       <Route path="/settings" component={Settings} />
       <Route path="/search" component={Search} />
+      <Route path="/track/:id" component={QueueTrackInfo} />
       <div className={classes.drawerHeader} />
     </main>
   );
