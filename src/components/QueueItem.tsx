@@ -11,15 +11,17 @@ import { useDispatch, useSelector } from "react-redux";
 import { ISong } from "../models";
 import { setTrack } from "../store/reducers/songReducer";
 import { AppDispatch, AppState } from "../store/store";
+import { DraggableProvided } from "react-beautiful-dnd";
 
 interface IProps {
   song: ISong;
   style: object;
+  provided: DraggableProvided,
   openMenu: (event: React.MouseEvent<HTMLButtonElement>, song: ISong) => void;
 }
 
 const QueueItem: React.FC<IProps> = props => {
-  const { song, style, openMenu } = props;
+  const { song, style, openMenu, provided } = props;
   const currentSong = useSelector((state: AppState) => state.song.currentSong);
   const dispatch = useDispatch<AppDispatch>();
   const playListClick = () => dispatch(setTrack(song));
@@ -29,6 +31,9 @@ const QueueItem: React.FC<IProps> = props => {
 
   return (
     <ListItem
+    ref={provided.innerRef}
+    {...provided.draggableProps}
+    {...provided.dragHandleProps}
       button={true}
       key={song.id}
       ContainerProps={{ style: style }}
