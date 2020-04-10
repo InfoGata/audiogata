@@ -22,7 +22,7 @@ const useStyles = makeStyles({
 const App: React.FC = () => {
   const classes = useStyles();
   return (
-    <Router>
+    <Router basename="/audio-pwa">
       <ToastContainer position={toast.POSITION.BOTTOM_LEFT} />
       <div className={classes.root}>
         <CssBaseline />

@@ -1,5 +1,9 @@
 image: node:11.2.0
 
+cache:
+  paths:
+    - node_modules/
+
 pages:
   stage: deploy
   script:
