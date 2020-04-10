@@ -64,7 +64,7 @@ interface IInvidiousFormat {
   url: string;
 }
 
-const useInvidiousTracks = false;
+const useInvidiousTracks = true;
 const useInvidiousSearch = false;
 const key = "AIzaSyDryzen_v2kWUhKuZFCnF6e9wtUxdXWhqY";
 const corsProxyUrl = "localhost";
