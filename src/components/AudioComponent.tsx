@@ -14,12 +14,18 @@ import {
 import { AppState } from "../store/store";
 
 interface IProps extends StateProps, DispatchProps {}
+interface IState {
+  errorCount: number;
+}
 
-class AudioComponent extends React.Component<IProps, {}> {
+class AudioComponent extends React.Component<IProps, IState> {
   private readonly local: Local;
   constructor(props: IProps) {
     super(props);
     this.local = new Local(this.setTrackTimes, this.onSongEnd);
+    this.state = {
+      errorCount: 0
+    }
   }
 
   public componentDidMount() {
@@ -111,6 +117,9 @@ class AudioComponent extends React.Component<IProps, {}> {
       this.local.pause();
       try {
         await this.local.play(song);
+        this.setState({
+          errorCount: 0
+        });
       } catch (err) {
         this.onError(err);
         return;
@@ -133,8 +142,12 @@ class AudioComponent extends React.Component<IProps, {}> {
       toast.error(message);
       console.log(err);
     }
-
-    this.props.nextTrack();
+    this.setState({
+      errorCount: this.state.errorCount + 1
+    });
+    if (this.state.errorCount < 3) {
+      this.props.nextTrack();
+    }
   };
 
   private setMediaSessionMetaData() {
@@ -142,9 +155,23 @@ class AudioComponent extends React.Component<IProps, {}> {
       if (this.props.currentSong) {
         navigator.mediaSession.metadata = new MediaMetadata({
           title: this.props.currentSong.name,
+          artwork: this.props.currentSong.images.map(i => ({ src: i.url, sizes: `${i.height}x${i.width}`, type: this.getImageType(i.url) }))
         });
       }
     }
+  }
+
+  private getImageType(url: string) : string
+  {
+    if (url.endsWith(".png"))
+    {
+      return "image/png";
+    }
+    if (url.endsWith(".jpg"))
+    {
+      return "image/jpg";
+    }
+    return "";
   }
 
   private setMediaSessionActions() {
