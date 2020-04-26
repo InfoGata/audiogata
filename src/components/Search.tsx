@@ -1,4 +1,4 @@
-import { AppBar, Box, List, Tab, Tabs, Typography } from "@material-ui/core";
+import { AppBar, Box, List, Tab, Tabs, Typography, Menu, MenuItem, ListItemIcon, ListItemText } from "@material-ui/core";
 import React, { useEffect } from "react";
 import { RouteComponentProps } from "react-router";
 import { IAlbum, IArtist, IPlaylist, ISong } from "../models";
@@ -7,6 +7,10 @@ import AlbumSearchResult from "./AlbumSearchResult";
 import ArtistSearchResult from "./ArtistSearchResult";
 import PlaylistSearchResult from "./PlaylistSearchResult";
 import TrackSearchResult from "./TrackSearchResult";
+import { Delete } from "@material-ui/icons";
+import PlaylistMenuItem from "./PlaylistMenuItem";
+import { useSelector } from "react-redux";
+import { AppState } from "../store/store";
 
 interface ITabPanelProps {
   children?: React.ReactNode;
@@ -38,6 +42,9 @@ const Search: React.FC<RouteComponentProps> = props => {
   const [artistResults, setArtistResults] = React.useState<IArtist[]>([]);
   const [playlistResults, setPlaylistResults] = React.useState<IPlaylist[]>([]);
   const [tabValue, setTabValue] = React.useState("tracks");
+  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const [menuSong, setMenuSong] = React.useState<ISong>({} as ISong);
+  const playlists = useSelector((state: AppState) => state.playlist.playlists);
   const onSearchTypeChange = (e: React.FormEvent<HTMLSelectElement>) => {
     setSearchType(e.currentTarget.value);
   };
@@ -71,8 +78,13 @@ const Search: React.FC<RouteComponentProps> = props => {
     }
   }, [props.location.search, searchType]);
 
+  const openMenu = (event: React.MouseEvent<HTMLButtonElement>, song: ISong) => {
+    setAnchorEl(event.currentTarget);
+    setMenuSong(song);
+  };
+  const closeMenu = () => setAnchorEl(null);
   const trackList = trackResults.map(track => (
-    <TrackSearchResult key={track.apiId} track={track} />
+    <TrackSearchResult key={track.apiId} track={track} openMenu={openMenu} />
   ));
   const albumList = albumResults.map(album => (
     <AlbumSearchResult
@@ -137,6 +149,22 @@ const Search: React.FC<RouteComponentProps> = props => {
       <TabPanel value={tabValue} index="playlists">
         <List dense={true}>{playlistList}</List>
       </TabPanel>
+      <Menu open={Boolean(anchorEl)} onClose={closeMenu} anchorEl={anchorEl}>
+        <MenuItem>
+          <ListItemIcon>
+            <Delete />
+          </ListItemIcon>
+          <ListItemText primary="Add To Queue" />
+        </MenuItem>
+        {playlists.map(p => (
+          <PlaylistMenuItem
+            key={p.id}
+            playlist={p}
+            songs={[menuSong]}
+            closeMenu={closeMenu}
+          />
+        ))}
+      </Menu>
     </>
   );
 };
