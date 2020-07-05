@@ -13,6 +13,7 @@ interface ISongState {
   volume: number;
   mute: boolean;
   seekTime?: number;
+  playbackRate?: number;
 }
 
 const initialState: ISongState = {
@@ -23,19 +24,20 @@ const initialState: ISongState = {
   shuffleList: [],
   songs: [],
   volume: 1.0,
-}
+  playbackRate: 1.0,
+};
 
 const shuffleArray = (array: any[]) => {
   for (let i = array.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
     [array[i], array[j]] = [array[j], array[i]];
   }
-}
+};
 const createShuffleArray = (tracks: ISong[]): number[] => {
   const indexArray = Object.keys(tracks).map(Number);
   shuffleArray(indexArray);
   return indexArray;
-}
+};
 
 const songSlice = createSlice({
   initialState,
@@ -45,7 +47,7 @@ const songSlice = createSlice({
       action.payload.id = id;
       return {
         ...state,
-        songs: [...state.songs, action.payload]
+        songs: [...state.songs, action.payload],
       };
     },
     clearTracks(state): ISongState {
@@ -66,7 +68,7 @@ const songSlice = createSlice({
         currentSong,
         shuffleList: [],
         songs: newPlaylist,
-      }
+      };
     },
     nextTrack: (state): ISongState => {
       let shuffleList = [...state.shuffleList];
@@ -86,7 +88,11 @@ const songSlice = createSlice({
         newIndex = 0;
       }
       const currentSong = state.songs[newIndex];
-      if (currentSong && state.currentSong && currentSong.id === state.currentSong.id) {
+      if (
+        currentSong &&
+        state.currentSong &&
+        currentSong.id === state.currentSong.id
+      ) {
         return {
           ...state,
           elapsed: 0,
@@ -110,7 +116,7 @@ const songSlice = createSlice({
         };
       }
 
-      let index = -1
+      let index = -1;
       if (state.currentSong) {
         const prevSong = state.currentSong;
         index = state.songs.findIndex(s => s.id === prevSong.id);
@@ -124,56 +130,66 @@ const songSlice = createSlice({
         ...state,
         currentSong,
         elapsed: 0,
-      }
+      };
     },
     seek: (state, action: PayloadAction<number | undefined>): ISongState => {
       return {
         ...state,
         elapsed: action.payload,
         seekTime: action.payload,
-      }
+      };
     },
     setElapsed: (state, action: PayloadAction<number>): ISongState => {
       return {
         ...state,
-        elapsed: action.payload
+        elapsed: action.payload,
       };
     },
     setTracks(state, action: PayloadAction<ISong[]>): ISongState {
       return {
         ...state,
         shuffleList: [],
-        songs: action.payload
-      }
+        songs: action.payload,
+      };
     },
     setTrack: (state, action: PayloadAction<ISong | undefined>): ISongState => {
-      if (state.currentSong && action.payload && state.currentSong.id === action.payload.id) {
+      if (
+        state.currentSong &&
+        action.payload &&
+        state.currentSong.id === action.payload.id
+      ) {
         return {
           ...state,
           elapsed: 0,
           isPlaying: true,
           seekTime: 0,
-        }
+        };
       }
       return {
         ...state,
         currentSong: action.payload,
         elapsed: 0,
         isPlaying: true,
-      }
+      };
     },
     setVolume: (state, action: PayloadAction<number>): ISongState => {
       return {
         ...state,
         mute: false,
         volume: action.payload,
-      }
+      };
+    },
+    setPlaybackRate: (state, action: PayloadAction<number>): ISongState => {
+      return {
+        ...state,
+        playbackRate: action.payload,
+      };
     },
     toggleIsPlaying: (state): ISongState => {
       return {
         ...state,
-        isPlaying: !state.isPlaying
-      }
+        isPlaying: !state.isPlaying,
+      };
     },
     toggleMute: (state): ISongState => {
       return {
@@ -185,17 +201,17 @@ const songSlice = createSlice({
       return {
         ...state,
         repeat: !state.repeat,
-      }
+      };
     },
     toggleShuffle: (state): ISongState => {
       return {
         ...state,
         shuffle: !state.shuffle,
         shuffleList: [],
-      }
+      };
     },
   },
-  slice: "song"
+  slice: "song",
 });
 
 export const {
@@ -208,10 +224,11 @@ export const {
   toggleShuffle,
   setElapsed,
   setVolume,
+  setPlaybackRate,
   toggleMute,
   nextTrack,
   prevTrack,
   toggleIsPlaying,
-  seek
+  seek,
 } = songSlice.actions;
 export default songSlice.reducer;

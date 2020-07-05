@@ -18,6 +18,7 @@ import {
 } from "../store/reducers/songReducer";
 import { AppDispatch, AppState } from "../store/store";
 import Volume from "./Volume";
+import PlaybackRate from "./PlaybackRate";
 
 const Controls: React.FC = () => {
   const repeat = useSelector((state: AppState) => state.song.repeat);
@@ -52,6 +53,7 @@ const Controls: React.FC = () => {
         <Repeat color={repeatColor} />
       </IconButton>
       <Volume />
+      <PlaybackRate />
     </>
   );
 };

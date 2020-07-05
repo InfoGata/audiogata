@@ -8,7 +8,8 @@ class Local implements IPlayerComponent {
   private audio: HTMLAudioElement;
   constructor(
     setTime: (currentTime: number, duration: number) => void,
-    onSongEnd: () => void) {
+    onSongEnd: () => void,
+  ) {
     this.audio = new Audio();
     this.audio.ontimeupdate = () => {
       setTime(this.audio.currentTime, this.audio.duration);
@@ -16,9 +17,7 @@ class Local implements IPlayerComponent {
     this.audio.onended = onSongEnd;
   }
 
-  public init() {
-
-  }
+  public init() {}
 
   public ready() {
     return this.audio.readyState > 2;
@@ -26,6 +25,11 @@ class Local implements IPlayerComponent {
 
   public setVolume(volume: number) {
     this.audio.volume = volume;
+  }
+
+  public setPlaybackRate(rate: number) {
+    console.log("why");
+    this.audio.playbackRate = rate;
   }
 
   public pause() {

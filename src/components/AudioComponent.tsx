@@ -24,13 +24,14 @@ class AudioComponent extends React.Component<IProps, IState> {
     super(props);
     this.local = new Local(this.setTrackTimes, this.onSongEnd);
     this.state = {
-      errorCount: 0
-    }
+      errorCount: 0,
+    };
   }
 
   public componentDidMount() {
     this.setMediaSessionActions();
     this.local.setVolume(this.props.volume);
+    this.local.setPlaybackRate(this.props.playbackRate || 1.0);
     if (this.props.playOnStartup && this.props.isPlaying) {
       this.playCurrentSong();
     } else if (this.props.isPlaying) {
@@ -44,6 +45,7 @@ class AudioComponent extends React.Component<IProps, IState> {
     await this.onIsPlayingUpdate(prevProps, currentProps);
     this.onVolumeUpdate(prevProps, currentProps);
     this.onMuteUpdate(prevProps, currentProps);
+    this.onRateUpdate(prevProps, currentProps);
     this.onSeek(prevProps, currentProps);
   }
 
@@ -77,6 +79,12 @@ class AudioComponent extends React.Component<IProps, IState> {
   private onVolumeUpdate(prevProps: IProps, newProps: IProps) {
     if (prevProps.volume !== newProps.volume) {
       this.local.setVolume(newProps.volume);
+    }
+  }
+
+  private onRateUpdate(prevProps: IProps, newProps: IProps) {
+    if (prevProps.playbackRate !== newProps.playbackRate) {
+      this.local.setPlaybackRate(newProps.playbackRate || 1.0);
     }
   }
 
@@ -118,7 +126,7 @@ class AudioComponent extends React.Component<IProps, IState> {
       try {
         await this.local.play(song);
         this.setState({
-          errorCount: 0
+          errorCount: 0,
         });
       } catch (err) {
         this.onError(err);
@@ -143,7 +151,7 @@ class AudioComponent extends React.Component<IProps, IState> {
       console.log(err);
     }
     this.setState({
-      errorCount: this.state.errorCount + 1
+      errorCount: this.state.errorCount + 1,
     });
     if (this.state.errorCount < 3) {
       this.props.nextTrack();
@@ -155,20 +163,21 @@ class AudioComponent extends React.Component<IProps, IState> {
       if (this.props.currentSong) {
         navigator.mediaSession.metadata = new MediaMetadata({
           title: this.props.currentSong.name,
-          artwork: this.props.currentSong.images.map(i => ({ src: i.url, sizes: `${i.height}x${i.width}`, type: this.getImageType(i.url) }))
+          artwork: this.props.currentSong.images.map(i => ({
+            src: i.url,
+            sizes: `${i.height}x${i.width}`,
+            type: this.getImageType(i.url),
+          })),
         });
       }
     }
   }
 
-  private getImageType(url: string) : string
-  {
-    if (url.endsWith(".png"))
-    {
+  private getImageType(url: string): string {
+    if (url.endsWith(".png")) {
       return "image/png";
     }
-    if (url.endsWith(".jpg"))
-    {
+    if (url.endsWith(".jpg")) {
       return "image/jpg";
     }
     return "";
@@ -193,6 +202,7 @@ const mapStateToProps = (state: AppState) => ({
   playOnStartup: state.settings.playOnStartup,
   seekTime: state.song.seekTime,
   volume: state.song.volume,
+  playbackRate: state.song.playbackRate,
 });
 type StateProps = ReturnType<typeof mapStateToProps>;
 
@@ -208,7 +218,4 @@ const mapDispatchToProps = (dispatch: Dispatch) =>
     dispatch,
   );
 type DispatchProps = ReturnType<typeof mapDispatchToProps>;
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(AudioComponent);
+export default connect(mapStateToProps, mapDispatchToProps)(AudioComponent);
