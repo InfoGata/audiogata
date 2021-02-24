@@ -1,7 +1,6 @@
 import { CssBaseline } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import React from "react";
-import { hot } from "react-hot-loader/root";
 import { BrowserRouter as Router } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -36,4 +35,4 @@ const App: React.FC = () => {
   );
 };
 
-export default process.env.NODE_ENV === "development" ? hot(App) : App;
+export default App;

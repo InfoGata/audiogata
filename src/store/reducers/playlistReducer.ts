@@ -1,4 +1,4 @@
-import { createSlice, PayloadAction } from "redux-starter-kit";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { v4 as uuid } from "uuid";
 import { IPlaylist, ISong } from "../../models";
 
@@ -23,6 +23,7 @@ const prepareAddSongs = (id: string, songs: ISong[]) => ({
 });
 
 const playlistSlice = createSlice({
+  name: "playlist",
   initialState,
   reducers: {
     addPlaylist(state, action: PayloadAction<IPlaylist>) {
@@ -60,7 +61,6 @@ const playlistSlice = createSlice({
       }
     }
   },
-  slice: 'playlist',
 });
 
 export const { setSongs, addSongs, addPlaylist, deletePlaylist } = playlistSlice.actions;

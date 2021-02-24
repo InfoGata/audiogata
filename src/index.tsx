@@ -6,8 +6,8 @@ import { PersistGate } from "redux-persist/integration/react";
 import "typeface-roboto";
 import App from "./App";
 import "./index.css";
-import * as serviceWorker from "./serviceWorker";
 import store, { persistor } from "./store/store";
+import reportWebVitals from "./reportWebVitals";
 
 const theme = createMuiTheme({
   palette: {
@@ -16,14 +16,16 @@ const theme = createMuiTheme({
 });
 
 ReactDOM.render(
-  <Provider store={store}>
-    <PersistGate loading={null} persistor={persistor}>
-      <MuiThemeProvider theme={theme}>
-        <App />
-      </MuiThemeProvider>
-    </PersistGate>
-  </Provider>,
+  <React.StrictMode>
+    <Provider store={store}>
+      <PersistGate loading={null} persistor={persistor}>
+        <MuiThemeProvider theme={theme}>
+          <App />
+        </MuiThemeProvider>
+      </PersistGate>
+    </Provider>
+  </React.StrictMode>,
   document.getElementById("root"),
 );
 
-serviceWorker.register();
+reportWebVitals();

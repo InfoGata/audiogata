@@ -1,4 +1,4 @@
-import { createSlice } from "redux-starter-kit";
+import { createSlice } from "@reduxjs/toolkit";
 
 interface ISettings {
   navbarOpen: boolean;
@@ -9,6 +9,7 @@ const initialState: ISettings = {
 };
 
 const uiSlice = createSlice({
+  name: "ui",
   initialState,
   reducers: {
     toggleNavbar: (state) => {
@@ -18,7 +19,6 @@ const uiSlice = createSlice({
       };
     },
   },
-  slice: "ui",
 });
 
 export const { toggleNavbar } = uiSlice.actions;

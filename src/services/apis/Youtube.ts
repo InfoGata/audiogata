@@ -64,10 +64,11 @@ interface IInvidiousFormat {
   url: string;
 }
 
-const useInvidiousTracks = true;
-const useInvidiousSearch = false;
+const useInvidiousTracks = false;
+const useInvidiousSearch = true;
 const key = "AIzaSyDryzen_v2kWUhKuZFCnF6e9wtUxdXWhqY";
 const corsProxyUrl = "localhost";
+const invidiousInstance = "https://invidious.tube"
 
 function resultToSongInvidous(results: IInvidiousVideoResult[]): ISong[] {
   return results.map(
@@ -146,7 +147,7 @@ async function getYoutubePlaylistTracks(playlist: IPlaylist): Promise<ISong[]> {
 }
 
 async function getInvidiousPlaylistTracks(playlist: IPlaylist): Promise<ISong[]> {
-  const url = `https://invidio.us/api/v1/playlists/${playlist.apiId}`;
+  const url = `${invidiousInstance}/api/v1/playlists/${playlist.apiId}`;
   const results = await axios.get(url);
   console.log(results);
   return [];
@@ -168,7 +169,7 @@ async function searchYoutubePlaylists(query: string): Promise<IPlaylist[]> {
 }
 
 async function searchInvidiousPlaylists(query: string): Promise<IPlaylist[]> {
-  const url = `https://invidio.us/api/v1/search?q=${encodeURIComponent(query)}&type=playlist`;
+  const url = `${invidiousInstance}/api/v1/search?q=${encodeURIComponent(query)}&type=playlist`;
   const results = await axios.get<IInvidiousPlaylistResult[]>(url);
   return playlistResultToPlaylistInvidious(results.data);
 }
@@ -187,13 +188,13 @@ async function searchYoutube(query: string): Promise<ISong[]> {
 }
 
 async function searchInvidious(query: string): Promise<ISong[]> {
-  const url = `https://invidio.us/api/v1/search?q=${encodeURIComponent(query)}`;
+  const url = `${invidiousInstance}/api/v1/search?q=${encodeURIComponent(query)}`;
   const results = await axios.get<IInvidiousVideoResult[]>(url);
   return resultToSongInvidous(results.data);
 }
 
 async function getInvidiousTrack(song: ISong): Promise<string> {
-  const url = `https://invidio.us/api/v1/videos/${song.apiId}`;
+  const url = `${invidiousInstance}/api/v1/videos/${song.apiId}`;
   const results = await axios.get<IInvidiousVideoResponse>(url);
   const formats = results.data.adaptiveFormats;
   const audioFormat = formats.filter(f => f.itag === "140")[0];
@@ -202,6 +203,7 @@ async function getInvidiousTrack(song: ISong): Promise<string> {
 
 async function getYoutubeTrack(song: ISong): Promise<string> {
   const youtubeUrl = `http://www.youtube.com/watch?v=${song.apiId}`;
+  console.log(youtubeUrl);
   const info = await ytdl.getInfo(youtubeUrl, {
     requestOptions: {
       transform: (parsed: any) => {
@@ -210,12 +212,14 @@ async function getYoutubeTrack(song: ISong): Promise<string> {
           headers: { Host: parsed.host },
           host: corsProxyUrl,
           path: "/" + parsed.href,
-          port: 8080,
+          maxRedirects: 10,
+          port: 8085,
           protocol: "http:",
         };
       },
     },
   });
+  console.log(info);
   const formatInfo = info.formats.filter(f => f.itag === 140)[0];
   return formatInfo.url;
 }

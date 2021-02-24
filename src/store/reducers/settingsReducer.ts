@@ -1,4 +1,4 @@
-import { createSlice } from "redux-starter-kit";
+import { createSlice } from "@reduxjs/toolkit";
 
 interface ISettings {
   playOnStartup: boolean;
@@ -9,6 +9,7 @@ const initialState: ISettings = {
 };
 
 const settingsSlice = createSlice({
+  name: "song",
   initialState,
   reducers: {
     togglePlayOnStartup: (state) => {
@@ -18,7 +19,6 @@ const settingsSlice = createSlice({
       };
     }
   },
-  slice: "settings",
 });
 
 export const { togglePlayOnStartup } = settingsSlice.actions;

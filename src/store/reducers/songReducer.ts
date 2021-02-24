@@ -1,4 +1,4 @@
-import { createSlice, PayloadAction } from "redux-starter-kit";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { v4 as uuid } from "uuid";
 import { ISong } from "../../models";
 
@@ -40,6 +40,7 @@ const createShuffleArray = (tracks: ISong[]): number[] => {
 };
 
 const songSlice = createSlice({
+  name: "song",
   initialState,
   reducers: {
     addTrack(state, action: PayloadAction<ISong>): ISongState {
@@ -210,8 +211,7 @@ const songSlice = createSlice({
         shuffleList: [],
       };
     },
-  },
-  slice: "song",
+  }
 });
 
 export const {
