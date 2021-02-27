@@ -55,7 +55,6 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "napster-server": "node servers/napster/server.js",
-    "spotify-server": "node servers/spotify/server.js",
     "cors-server": "node servers/cors/server.js",
     "postinstall": "cd servers/cors && npm install",
     "dev": "concurrently --kill-others \"npm run cors-server\" \"npm start\""

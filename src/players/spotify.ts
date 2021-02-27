@@ -4,12 +4,10 @@ import { IPlayerComponent } from "./IPlayerComponent";
 
 class SpotifyPlayer implements IPlayerComponent {
   private readonly apiUrl = "https://api.spotify.com/v1";
-  private readonly serverUrl = "http://localhost:8888";
   private readonly setTime: (elapsed: number, total: number) => void;
   private readonly onSongEnd: () => void;
   private deviceId: string;
   private accessToken: string;
-  private refreshToken: string;
   private internalTime: number;
   private totalTime: number;
   private player: any;
@@ -22,7 +20,6 @@ class SpotifyPlayer implements IPlayerComponent {
     this.onSongEnd = onSongEnd;
     this.deviceId = "";
     this.accessToken = "";
-    this.refreshToken = ""
     this.internalTime = 0;
     this.totalTime = 0;
     this.init();
