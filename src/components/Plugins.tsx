@@ -2,10 +2,8 @@ import { Button } from "@material-ui/core";
 import { UserManager, UserManagerSettings } from 'oidc-client';
 import React from "react";
 
-const napsterApiKey = "N2Q4YzVkYzctNjBiMi00YjBhLTkxNTAtOWRiNGM5YWE3OWRj";
 const napsterApi = "https://api.napster.com";
-const napsterServerUrl = "http://localhost:2000";
-const napsterOauthUrl = `${napsterApi}/oauth/authorize?client_id=${napsterApiKey}&response_type=code`;
+const napsterOauthUrl = `${napsterApi}/oauth/authorize`;
 const spotifyUrl = "https://accounts.spotify.com/authorize";
 const spotifyTokenEndpoint = "https://accounts.spotify.com/api/token"
 
@@ -23,19 +21,53 @@ const onSpotifyLoginClick = async () => {
     }
   };
   const userManager = new UserManager(settings);
-  userManager.signinPopup();
-};
-const onNapsterLoginClick = () => {
-  const redirectUrl = `${napsterServerUrl}/authorize`;
-  window.location.href = `${napsterOauthUrl}&redirect_uri=${redirectUrl}`;
+  const user = await userManager.signinPopup();
+  console.log(user);
 };
 
 const Plugins: React.FC = () => {
+  const [napsterClientId, setNapsterClientId] = React.useState("");
+  const [napsterSecretKey, setNapsterSecretKey] = React.useState("");
+
+  const onNapsterLoginClick = async () => {
+      if (napsterClientId && napsterSecretKey) {
+        const settings: UserManagerSettings = {
+          authority: "https://api.napster.com",
+          client_id: napsterClientId,
+          client_secret: napsterSecretKey,
+          response_type: "code",
+          redirect_uri: "http://localhost:3000",
+          popup_redirect_uri: window.origin + "/audio-pwa/login_popup.html",
+          metadata: {
+            authorization_endpoint: napsterOauthUrl,
+            token_endpoint: "https://api.napster.com/oauth/access_token",
+            userinfo_endpoint: "https://api.napster.com/v2.2/me/account"
+          },
+        };
+        const userManager = new UserManager(settings);
+        const user = await userManager.signinPopup();
+        console.log(user);
+      }
+  };
+
+  const onClientIdChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setNapsterClientId(e.target.value);
+  };
+  const onSecretKeyChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setNapsterSecretKey(e.target.value);
+  }
+
   return (
-    <>
-      <Button onClick={onSpotifyLoginClick}>Login to Spotify</Button>
-      <Button onClick={onNapsterLoginClick}>Login to Napster</Button>
-    </>
+    <div>
+      <div>
+        <Button onClick={onSpotifyLoginClick}>Login to Spotify</Button>
+      </div>
+      <div>
+        <input value={napsterClientId} onChange={onClientIdChange} />
+        <input value={napsterSecretKey} onChange={onSecretKeyChange} />
+        <Button onClick={onNapsterLoginClick}>Login to Napster</Button>
+      </div>
+    </div>
   );
 };
 
