@@ -41,3 +41,8 @@ export interface IImage {
   height: number;
   width: number;
 }
+
+export interface Plugin {
+  name: string;
+  data: {[key: string]: string; }
+}

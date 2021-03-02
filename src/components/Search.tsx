@@ -56,6 +56,7 @@ const Search: React.FC<RouteComponentProps> = props => {
     setPlaylistResults([]);
   };
 
+
   useEffect(() => {
     const onSearch = async (search: string) => {
       let tracks: ISong[] = [];
@@ -118,6 +119,8 @@ const Search: React.FC<RouteComponentProps> = props => {
       <select value={searchType} onChange={onSearchTypeChange}>
         <option value="youtube">Youtube</option>
         <option value="soundcloud">SoundCloud</option>
+        <option value="napster">Napster</option>
+        <option value="spotify">Spotify</option>
       </select>
       <AppBar position="static" color="default">
         <Tabs

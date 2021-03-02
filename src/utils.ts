@@ -1,6 +1,8 @@
 import { IImage } from "./models";
 import { ISearchApi } from "./services/apis/ISearchApi";
 import SoundCloud from "./services/apis/SoundCloud";
+import Napster from "./services/apis/Napster";
+import Spotify from "./services/apis/Spotify";
 import Youtube from "./services/apis/Youtube";
 import thumbnail from "./thumbnail.png";
 
@@ -46,6 +48,10 @@ export const getApiByName = (name: string): ISearchApi | undefined => {
       return Youtube;
     case "soundcloud":
       return SoundCloud;
+    case "spotify":
+      return Spotify;
+    case "napster":
+      return Napster;
   }
 };
 
