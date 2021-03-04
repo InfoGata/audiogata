@@ -45,6 +45,7 @@ const Search: React.FC<RouteComponentProps> = props => {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [menuSong, setMenuSong] = React.useState<ISong>({} as ISong);
   const playlists = useSelector((state: AppState) => state.playlist.playlists);
+  const plugins = useSelector((state: AppState) => state.plugin.plugins);
   const onSearchTypeChange = (e: React.FormEvent<HTMLSelectElement>) => {
     setSearchType(e.currentTarget.value);
   };
@@ -56,28 +57,33 @@ const Search: React.FC<RouteComponentProps> = props => {
     setPlaylistResults([]);
   };
 
-
   useEffect(() => {
     const onSearch = async (search: string) => {
-      let tracks: ISong[] = [];
-      let albums: IAlbum[] = [];
-      let artists: IArtist[] = [];
-      let playlists: IPlaylist[] = [];
+      let tracks: ISong[] | undefined = [];
+      let albums: IAlbum[] | undefined = [];
+      let artists: IArtist[] | undefined = [];
+      let playlists: IPlaylist[] | undefined = [];
       const api = getApiByName(searchType);
+      if (api?.setAuth) {
+        const plugin = plugins.find(p => p.name === "spotify");
+        if (plugin && plugin.data["access_token"]) {
+          api.setAuth(plugin.data["access_token"]);
+        }
+      }
       if (api) {
         ({ tracks, albums, artists, playlists } = await api.searchAll(search));
       }
-      setAlbumResults(albums);
-      setArtistResults(artists);
-      setTrackResults(tracks);
-      setPlaylistResults(playlists);
+      setAlbumResults(albums || []);
+      setArtistResults(artists || []);
+      setTrackResults(tracks || []);
+      setPlaylistResults(playlists || []);
     };
     const params = new URLSearchParams(props.location.search);
     const query = params.get("q");
     if (query && query.length > 3) {
       onSearch(query);
     }
-  }, [props.location.search, searchType]);
+  }, [props.location.search, searchType, plugins]);
 
   const openMenu = (event: React.MouseEvent<HTMLButtonElement>, song: ISong) => {
     setAnchorEl(event.currentTarget);
@@ -119,7 +125,6 @@ const Search: React.FC<RouteComponentProps> = props => {
       <select value={searchType} onChange={onSearchTypeChange}>
         <option value="youtube">Youtube</option>
         <option value="soundcloud">SoundCloud</option>
-        <option value="napster">Napster</option>
         <option value="spotify">Spotify</option>
       </select>
       <AppBar position="static" color="default">

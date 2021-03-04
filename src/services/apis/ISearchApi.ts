@@ -4,10 +4,10 @@ export interface ISearchApi {
   searchAll: (
     query: string,
   ) => Promise<{
-    tracks: ISong[];
-    albums: IAlbum[];
-    artists: IArtist[];
-    playlists: IPlaylist[];
+    tracks?: ISong[];
+    albums?: IAlbum[];
+    artists?: IArtist[];
+    playlists?: IPlaylist[];
   }>;
   getAlbumTracks: (album: IAlbum) => Promise<ISong[]>;
   getPlaylistTracks: (playlist: IPlaylist) => Promise<ISong[]>;

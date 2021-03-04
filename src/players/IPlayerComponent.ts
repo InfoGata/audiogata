@@ -7,5 +7,6 @@ export interface IPlayerComponent {
   resume: () => void;
   seek: (time: number) => void;
   play: (song: ISong) => Promise<void>;
-  setAuth?: (accessToken: string, refreshToken: string) => void;
+  setAuth?: (accessToken: string) => void;
+  setPlaybackRate?: (rate: number) => void;
 }

@@ -23,7 +23,7 @@ const Plugins: React.FC = () => {
       client_id: "b8f2fce4341b42e580e66a37302b358e",
       response_type: "code",
       redirect_uri: "http://localhost:3000",
-      scope: "streaming",
+      scope: "streaming user-read-email user-read-private",
       popup_redirect_uri: window.origin + "/audio-pwa/login_popup.html",
       metadata: {
         authorization_endpoint: spotifyUrl,
@@ -33,7 +33,7 @@ const Plugins: React.FC = () => {
     const userManager = new UserManager(settings);
     const user = await userManager.signinPopup();
     const plugin: Plugin = {
-      name: "napster",
+      name: "spotify",
       data: {
         "access_token": user.access_token,
         "refresh_token": user.refresh_token || "",

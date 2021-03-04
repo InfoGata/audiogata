@@ -23,7 +23,7 @@ class NapsterPlayer implements IPlayerComponent {
       isHTML5Compatible: true,
     });
     Napster.player.on("ready", () => {
-      const query = new URLSearchParams(window.location.search);
+      //  const query = new URLSearchParams(window.location.search);
       // if (query.has("accessToken") && query.has("refreshToken")) {
       //   const accessToken = query.get("accessToken") || "";
       //   const refreshToken = query.get("refreshToken") || "";

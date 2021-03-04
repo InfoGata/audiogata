@@ -3,7 +3,9 @@ import { connect } from "react-redux";
 import { toast } from "react-toastify";
 import { bindActionCreators, Dispatch } from "redux";
 import { ISong } from "../models";
+import { IPlayerComponent } from "../players/IPlayerComponent";
 import Local from "../players/local";
+import SpotifyPlayer from "../players/spotify";
 import {
   nextTrack,
   prevTrack,
@@ -20,9 +22,13 @@ interface IState {
 
 class AudioComponent extends React.Component<IProps, IState> {
   private readonly local: Local;
+  private readonly spotifyPlayer: SpotifyPlayer;
+
+  private songLoaded = false;
   constructor(props: IProps) {
     super(props);
     this.local = new Local(this.setTrackTimes, this.onSongEnd);
+    this.spotifyPlayer = new SpotifyPlayer(this.setTrackTimes, this.onSongEnd);
     this.state = {
       errorCount: 0,
     };
@@ -30,8 +36,11 @@ class AudioComponent extends React.Component<IProps, IState> {
 
   public componentDidMount() {
     this.setMediaSessionActions();
-    this.local.setVolume(this.props.volume);
-    this.local.setPlaybackRate(this.props.playbackRate || 1.0);
+    const player = this.getPlayerFromName(this.props.currentSong?.from || "");
+    player.setVolume(this.props.volume);
+    if (player.setPlaybackRate) {
+      player.setPlaybackRate(this.props.playbackRate || 1.0);
+    }
     if (this.props.playOnStartup && this.props.isPlaying) {
       this.playCurrentSong();
     } else if (this.props.isPlaying) {
@@ -53,6 +62,14 @@ class AudioComponent extends React.Component<IProps, IState> {
     return null;
   }
 
+  private getPlayerFromName(name: string): IPlayerComponent {
+     switch (name) {
+       case "spotify":
+         return this.spotifyPlayer;
+    }
+    return this.local;
+  }
+
   private async onCurrentSongUpdate(prevProps: IProps, newProps: IProps) {
     if (
       prevProps.currentSong &&
@@ -64,43 +81,50 @@ class AudioComponent extends React.Component<IProps, IState> {
   }
 
   private async onIsPlayingUpdate(prevProps: IProps, newProps: IProps) {
+    const player = this.getPlayerFromName(newProps.currentSong?.from || "");
     if (prevProps.isPlaying !== newProps.isPlaying) {
       if (newProps.isPlaying) {
-        this.local.resume();
-        if (!this.local.ready() && newProps.currentSong) {
+        player.resume();
+        if (!this.songLoaded && newProps.currentSong) {
           await this.playSong(newProps.currentSong, newProps.elapsed);
         }
       } else {
-        this.local.pause();
+        player.pause();
       }
     }
   }
 
   private onVolumeUpdate(prevProps: IProps, newProps: IProps) {
     if (prevProps.volume !== newProps.volume) {
-      this.local.setVolume(newProps.volume);
+      const player = this.getPlayerFromName(newProps.currentSong?.from || "");
+      player.setVolume(newProps.volume);
     }
   }
 
   private onRateUpdate(prevProps: IProps, newProps: IProps) {
     if (prevProps.playbackRate !== newProps.playbackRate) {
-      this.local.setPlaybackRate(newProps.playbackRate || 1.0);
+      const player = this.getPlayerFromName(this.props.currentSong?.from || "");
+      if (player.setPlaybackRate) {
+        player.setPlaybackRate(newProps.playbackRate || 1.0);
+      }
     }
   }
 
   private onMuteUpdate(prevProps: IProps, newProps: IProps) {
     if (prevProps.mute !== newProps.mute) {
+      const player = this.getPlayerFromName(this.props.currentSong?.from || "");
       if (newProps.mute) {
-        this.local.setVolume(0);
+        player.setVolume(0);
       } else {
-        this.local.setVolume(newProps.volume);
+        player.setVolume(newProps.volume);
       }
     }
   }
 
   private onSeek(prevProps: IProps, newProps: IProps) {
     if (newProps.seekTime != null && prevProps.seekTime !== newProps.seekTime) {
-      this.local.seek(newProps.seekTime);
+      const player = this.getPlayerFromName(newProps.currentSong?.from || "");
+      player.seek(newProps.seekTime);
       this.props.seek(undefined);
     }
   }
@@ -122,9 +146,18 @@ class AudioComponent extends React.Component<IProps, IState> {
 
   private async playSong(song: ISong, time?: number) {
     if (song.from) {
+      const player = this.getPlayerFromName(song.from || "");
+      if (player.setAuth) {
+        const plugin = this.props.plugins.find((p) => p.name === "spotify");
+        if (plugin && plugin.data["access_token"]) {
+          player.setAuth(plugin.data["access_token"]);
+        }
+      }
       this.local.pause();
+      player.pause();
       try {
-        await this.local.play(song);
+        await player.play(song);
+        this.songLoaded = true;
         this.setState({
           errorCount: 0,
         });
@@ -133,7 +166,7 @@ class AudioComponent extends React.Component<IProps, IState> {
         return;
       }
       if (time) {
-        this.local.seek(time);
+        player.seek(time);
       }
     }
   }
@@ -203,6 +236,7 @@ const mapStateToProps = (state: AppState) => ({
   seekTime: state.song.seekTime,
   volume: state.song.volume,
   playbackRate: state.song.playbackRate,
+  plugins: state.plugin.plugins
 });
 type StateProps = ReturnType<typeof mapStateToProps>;
 

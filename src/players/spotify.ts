@@ -12,6 +12,7 @@ class SpotifyPlayer implements IPlayerComponent {
   private totalTime: number;
   private player: any;
   private interval: NodeJS.Timeout | undefined;
+  private playerLoaded = false;
   constructor(
     setTime: (elapsed: number, total: number) => void,
     onSongEnd: () => void) {
@@ -26,91 +27,79 @@ class SpotifyPlayer implements IPlayerComponent {
   }
 
   public init() {
-    // const query = new URLSearchParams(window.location.search);
-    // if (query.has("access_token") && query.has("refresh_token")) {
-    //   const accessToken = query.get("access_token") || "";
-    //   const refreshToken = query.get("refresh_token") || "";
-    //   this.authService.addAuth({
-    //     accessToken,
-    //     name: "spotify",
-    //     refreshToken,
-    //   });
-    //   this.accessToken = accessToken;
-    //   this.refreshToken = refreshToken;
-    // } else {
-    //   this.authService.getAuthByName("spotify").then(auth => {
-    //     if (auth) {
-    //       this.accessToken = auth.accessToken;
-    //       this.refreshToken = auth.refreshToken;
-    //     }
-    //   });
-    // }
     (window as any).onSpotifyWebPlaybackSDKReady = () => {
-      if (this.accessToken.length > 0) {
-        const player = new (window as any).Spotify.Player({
-          getOAuthToken: async (cb: (arg0: string) => void) => {
-            cb(this.accessToken);
-          },
-          name: "Web Playback SDK Quick Start Player",
-        });
-        // Error handling
-        player.addListener(
-          "initialization_error",
-          ({ message }: { message: any }) => {
-            console.error(message);
-          },
-        );
-        player.addListener(
-          "authentication_error",
-          ({ message }: { message: any }) => {
-            console.error(message);
-          },
-        );
-        player.addListener("account_error", ({ message }: { message: any }) => {
-          console.error(message);
-        });
-        player.addListener(
-          "playback_error",
-          ({ message }: { message: any }) => {
-            console.error(message);
-          },
-        );
-        // Playback status updates
-        player.addListener("player_state_changed", (state: any) => {
-          console.log(state);
-          this.setTime(state.position / 1000, state.duration / 1000);
-          this.internalTime = state.position;
-          this.totalTime = state.duration;
-          // Attempt to detect if the song has ended
-          if (
-            state.paused &&
-            state.position === 0 &&
-            state.restrictions.disallow_resuming_reasons &&
-            state.restrictions.disallow_resuming_reasons[0] === "not_paused"
-          ) {
-            if (this.interval) {
-              clearInterval(this.interval);
-            }
-            this.onSongEnd();
-          }
-        });
-        // Ready
-        player.addListener("ready", ({ device_id }: { device_id: string }) => {
-          console.log("Ready with Device ID", device_id);
-          this.deviceId = device_id;
-        });
-        // Not Ready
-        player.addListener(
-          "not_ready",
-          ({ device_id }: { device_id: string }) => {
-            console.log("Device ID has gone offline", device_id);
-          },
-        );
-        // Connect to the player!
-        player.connect();
-        this.player = player;
-      }
+      this.playerLoaded = true;
     };
+  }
+
+  public setAuth(accessToken: string) {
+    console.log("auth set");
+    this.accessToken = accessToken;
+    if (this.playerLoaded) {
+      const player = new (window as any).Spotify.Player({
+        getOAuthToken: async (cb: (arg0: string) => void) => {
+          cb(this.accessToken);
+        },
+        name: "Web Playback SDK Quick Start Player",
+      });
+      // Error handling
+      player.addListener(
+        "initialization_error",
+        ({ message }: { message: any }) => {
+          console.error(message);
+        }
+      );
+      player.addListener(
+        "authentication_error",
+        ({ message }: { message: any }) => {
+          console.error(message);
+        }
+      );
+      player.addListener("account_error", ({ message }: { message: any }) => {
+        console.error(message);
+      });
+      player.addListener(
+        "playback_error",
+        ({ message }: { message: any }) => {
+          console.error(message);
+        }
+      );
+      // Playback status updates
+      player.addListener("player_state_changed", (state: any) => {
+        console.log(state);
+        this.setTime(state.position / 1000, state.duration / 1000);
+        this.internalTime = state.position;
+        this.totalTime = state.duration;
+        // Attempt to detect if the song has ended
+        if (
+          state.paused &&
+          state.position === 0 &&
+          state.restrictions.disallow_resuming_reasons &&
+          state.restrictions.disallow_resuming_reasons[0] === "not_paused"
+        ) {
+          if (this.interval) {
+            clearInterval(this.interval);
+          }
+          this.onSongEnd();
+        }
+      });
+      // Ready
+      player.addListener("ready", ({ device_id }: { device_id: string }) => {
+        console.log("Ready with Device ID", device_id);
+        this.deviceId = device_id;
+      });
+      // Not Ready
+      player.addListener(
+        "not_ready",
+        ({ device_id }: { device_id: string }) => {
+          console.log("Device ID has gone offline", device_id);
+        }
+      );
+      // Connect to the player!
+      player.connect();
+      this.player = player;
+
+    }
   }
 
   public async play(song: ISong) {
@@ -136,23 +125,31 @@ class SpotifyPlayer implements IPlayerComponent {
   }
 
   public pause() {
-    this.player.pause();
-    if (this.interval) {
-      clearInterval(this.interval);
+    if (this.player) {
+      this.player.pause();
+      if (this.interval) {
+        clearInterval(this.interval);
+      }
     }
   }
 
   public resume() {
-    this.player.resume();
-    this.interval = setInterval(this.updateTime, 1000);
+    if (this.player) {
+      this.player.resume();
+      this.interval = setInterval(this.updateTime, 1000);
+    }
   }
 
   public seek(timeInSeconds: number) {
-    this.player.seek(timeInSeconds * 1000);
+    if (this.player) {
+      this.player.seek(timeInSeconds * 1000);
+    }
   }
 
   public setVolume(volume: number) {
-    this.player.setVolume(volume);
+    if (this.player) {
+      this.player.setVolume(volume);
+    }
   }
 
   private updateTime = () => {
