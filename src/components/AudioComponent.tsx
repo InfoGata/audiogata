@@ -34,15 +34,15 @@ class AudioComponent extends React.Component<IProps, IState> {
     };
   }
 
-  public componentDidMount() {
+  public async componentDidMount() {
     this.setMediaSessionActions();
     const player = this.getPlayerFromName(this.props.currentSong?.from || "");
-    player.setVolume(this.props.volume);
+    await player.setVolume(this.props.volume);
     if (player.setPlaybackRate) {
       player.setPlaybackRate(this.props.playbackRate || 1.0);
     }
     if (this.props.playOnStartup && this.props.isPlaying) {
-      this.playCurrentSong();
+      await this.playCurrentSong();
     } else if (this.props.isPlaying) {
       this.props.toggleIsPlaying();
     }
@@ -52,10 +52,10 @@ class AudioComponent extends React.Component<IProps, IState> {
     const currentProps = this.props;
     await this.onCurrentSongUpdate(prevProps, currentProps);
     await this.onIsPlayingUpdate(prevProps, currentProps);
-    this.onVolumeUpdate(prevProps, currentProps);
-    this.onMuteUpdate(prevProps, currentProps);
+    await this.onVolumeUpdate(prevProps, currentProps);
+    await this.onMuteUpdate(prevProps, currentProps);
     this.onRateUpdate(prevProps, currentProps);
-    this.onSeek(prevProps, currentProps);
+    await this.onSeek(prevProps, currentProps);
   }
 
   public render() {
@@ -89,15 +89,15 @@ class AudioComponent extends React.Component<IProps, IState> {
           await this.playSong(newProps.currentSong, newProps.elapsed);
         }
       } else {
-        player.pause();
+        await player.pause();
       }
     }
   }
 
-  private onVolumeUpdate(prevProps: IProps, newProps: IProps) {
+  private async onVolumeUpdate(prevProps: IProps, newProps: IProps) {
     if (prevProps.volume !== newProps.volume) {
       const player = this.getPlayerFromName(newProps.currentSong?.from || "");
-      player.setVolume(newProps.volume);
+      await player.setVolume(newProps.volume);
     }
   }
 
@@ -110,21 +110,21 @@ class AudioComponent extends React.Component<IProps, IState> {
     }
   }
 
-  private onMuteUpdate(prevProps: IProps, newProps: IProps) {
+  private async onMuteUpdate(prevProps: IProps, newProps: IProps) {
     if (prevProps.mute !== newProps.mute) {
       const player = this.getPlayerFromName(this.props.currentSong?.from || "");
       if (newProps.mute) {
-        player.setVolume(0);
+        await player.setVolume(0);
       } else {
-        player.setVolume(newProps.volume);
+        await player.setVolume(newProps.volume);
       }
     }
   }
 
-  private onSeek(prevProps: IProps, newProps: IProps) {
+  private async onSeek(prevProps: IProps, newProps: IProps) {
     if (newProps.seekTime != null && prevProps.seekTime !== newProps.seekTime) {
       const player = this.getPlayerFromName(newProps.currentSong?.from || "");
-      player.seek(newProps.seekTime);
+      await player.seek(newProps.seekTime);
       this.props.seek(undefined);
     }
   }
@@ -154,7 +154,7 @@ class AudioComponent extends React.Component<IProps, IState> {
         }
       }
       this.local.pause();
-      player.pause();
+      await player.pause();
       try {
         await player.play(song);
         this.songLoaded = true;
@@ -166,7 +166,7 @@ class AudioComponent extends React.Component<IProps, IState> {
         return;
       }
       if (time) {
-        player.seek(time);
+        await player.seek(time);
       }
     }
   }

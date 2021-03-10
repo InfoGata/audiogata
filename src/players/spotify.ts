@@ -2,6 +2,16 @@ import axios from "axios";
 import { ISong } from "../models";
 import { IPlayerComponent } from "./IPlayerComponent";
 
+
+type WebPlaybackErrors =
+  | 'initialization_error'
+  | 'authentication_error'
+  | 'account_error'
+  | 'playback_error';
+
+interface WebPlaybackError {
+  message: WebPlaybackErrors;
+}
 class SpotifyPlayer implements IPlayerComponent {
   private readonly apiUrl = "https://api.spotify.com/v1";
   private readonly setTime: (elapsed: number, total: number) => void;
@@ -10,9 +20,8 @@ class SpotifyPlayer implements IPlayerComponent {
   private accessToken: string;
   private internalTime: number;
   private totalTime: number;
-  private player: any;
   private interval: NodeJS.Timeout | undefined;
-  private playerLoaded = false;
+  private scriptLoaded = false;
   constructor(
     setTime: (elapsed: number, total: number) => void,
     onSongEnd: () => void) {
@@ -26,79 +35,78 @@ class SpotifyPlayer implements IPlayerComponent {
     this.init();
   }
 
+
   public init() {
-    (window as any).onSpotifyWebPlaybackSDKReady = () => {
-      this.playerLoaded = true;
-    };
+    (window as any).onSpotifyWebPlaybackSDKReady = this.initializePlayer.bind(this);
   }
 
-  public setAuth(accessToken: string) {
-    console.log("auth set");
-    this.accessToken = accessToken;
-    if (this.playerLoaded) {
-      const player = new (window as any).Spotify.Player({
-        getOAuthToken: async (cb: (arg0: string) => void) => {
-          cb(this.accessToken);
-        },
-        name: "Web Playback SDK Quick Start Player",
-      });
-      // Error handling
-      player.addListener(
-        "initialization_error",
-        ({ message }: { message: any }) => {
-          console.error(message);
+  private initializePlayer = () => {
+    const player = new (window as any).Spotify.Player({
+      getOAuthToken: async (cb: (arg0: string) => void) => {
+        cb(this.accessToken);
+      },
+      name: "Web Playback SDK Quick Start Player",
+    });
+    // Error handling
+    player.addListener("initialization_error", (error: WebPlaybackError) => {
+      console.error(error);
+    });
+    player.addListener("authentication_error", (error: WebPlaybackError) => {
+      console.error(error);
+    });
+    player.addListener("account_error", (error: WebPlaybackError) => {
+      console.error(error);
+    });
+    player.addListener("playback_error", (error: WebPlaybackError) => {
+      console.error(error);
+    });
+    // Playback status updates
+    player.addListener("player_state_changed", (state: any) => {
+      console.log(state);
+      this.setTime(state.position / 1000, state.duration / 1000);
+      this.internalTime = state.position;
+      this.totalTime = state.duration;
+      // Attempt to detect if the song has ended
+      if (
+        state.paused &&
+        state.position === 0 &&
+        state.restrictions.disallow_resuming_reasons &&
+        state.restrictions.disallow_resuming_reasons[0] === "not_paused"
+      ) {
+        if (this.interval) {
+          clearInterval(this.interval);
         }
-      );
-      player.addListener(
-        "authentication_error",
-        ({ message }: { message: any }) => {
-          console.error(message);
-        }
-      );
-      player.addListener("account_error", ({ message }: { message: any }) => {
-        console.error(message);
-      });
-      player.addListener(
-        "playback_error",
-        ({ message }: { message: any }) => {
-          console.error(message);
-        }
-      );
-      // Playback status updates
-      player.addListener("player_state_changed", (state: any) => {
-        console.log(state);
-        this.setTime(state.position / 1000, state.duration / 1000);
-        this.internalTime = state.position;
-        this.totalTime = state.duration;
-        // Attempt to detect if the song has ended
-        if (
-          state.paused &&
-          state.position === 0 &&
-          state.restrictions.disallow_resuming_reasons &&
-          state.restrictions.disallow_resuming_reasons[0] === "not_paused"
-        ) {
-          if (this.interval) {
-            clearInterval(this.interval);
-          }
-          this.onSongEnd();
-        }
-      });
-      // Ready
-      player.addListener("ready", ({ device_id }: { device_id: string }) => {
-        console.log("Ready with Device ID", device_id);
-        this.deviceId = device_id;
-      });
-      // Not Ready
-      player.addListener(
-        "not_ready",
-        ({ device_id }: { device_id: string }) => {
-          console.log("Device ID has gone offline", device_id);
-        }
-      );
-      // Connect to the player!
-      player.connect();
-      this.player = player;
+        this.onSongEnd();
+      }
+    });
+    // Ready
+    player.addListener("ready", ({ device_id }: { device_id: string }) => {
+      console.log("Ready with Device ID", device_id);
+      this.deviceId = device_id;
+    });
+    // Not Ready
+    player.addListener(
+      "not_ready",
+      ({ device_id }: { device_id: string }) => {
+        console.log("Device ID has gone offline", device_id);
+      }
+    );
+    // Connect to the player!
+    player.connect();
+  };
 
+  public setAuth(accessToken: string) {
+    this.accessToken = accessToken;
+    if (!this.scriptLoaded) {
+      const script = document.createElement('script');
+      script.id = 'spotify-player';
+      script.type = 'text/javascript';
+      script.async = false;
+      script.defer = true;
+      script.src = 'https://sdk.scdn.co/spotify-player.js';
+      document.head.appendChild(script);
+    } else {
+      this.scriptLoaded = true;
     }
   }
 
@@ -124,32 +132,63 @@ class SpotifyPlayer implements IPlayerComponent {
     this.interval = setInterval(this.updateTime, 1000);
   }
 
-  public pause() {
-    if (this.player) {
-      this.player.pause();
-      if (this.interval) {
-        clearInterval(this.interval);
+  public async pause() {
+    if (!this.deviceId) {
+      return;
+    }
+
+    await fetch(`https://api.spotify.com/v1/me/player/pause`, {
+      headers: {
+        Authorization: `Bearer ${this.accessToken}`,
+        'Content-Type': 'application/json',
+      },
+      method: 'PUT',
+    });
+    if (this.interval) {
+      clearInterval(this.interval);
+    }
+  }
+
+  public async resume() {
+    if (!this.deviceId) {
+      return;
+    }
+
+    await fetch(
+      `https://api.spotify.com/v1/me/player/play?device_id=${this.deviceId}`,
+      {
+        headers: {
+          Authorization: `Bearer ${this.accessToken}`,
+          "Content-Type": "application/json",
+        },
+        method: "PUT",
       }
-    }
+    );
+    this.interval = setInterval(this.updateTime, 1000);
   }
 
-  public resume() {
-    if (this.player) {
-      this.player.resume();
-      this.interval = setInterval(this.updateTime, 1000);
+  public async seek(timeInSeconds: number) {
+    if (!this.deviceId) {
+      return;
     }
+
+    await fetch(`https://api.spotify.com/v1/me/player/seek?position_ms=${timeInSeconds * 1000}`, {
+      headers: {
+        Authorization: `Bearer ${this.accessToken}`,
+        'Content-Type': 'application/json',
+      },
+      method: 'PUT',
+    });
   }
 
-  public seek(timeInSeconds: number) {
-    if (this.player) {
-      this.player.seek(timeInSeconds * 1000);
-    }
-  }
-
-  public setVolume(volume: number) {
-    if (this.player) {
-      this.player.setVolume(volume);
-    }
+  public async setVolume(volume: number) {
+    await fetch(`https://api.spotify.com/v1/me/player/volume?volume_percent=${volume * 100}`, {
+      headers: {
+        Authorization: `Bearer ${this.accessToken}`,
+        'Content-Type': 'application/json',
+      },
+      method: 'PUT',
+    });
   }
 
   private updateTime = () => {
