@@ -225,6 +225,7 @@ async function getYoutubeTrack(song: ISong): Promise<string> {
 }
 
 export default {
+  name: "youtube",
   async getAlbumTracks(album: IAlbum) {
     return [];
   },

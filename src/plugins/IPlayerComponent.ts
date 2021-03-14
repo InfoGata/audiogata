@@ -1,6 +1,7 @@
 import { ISong } from "../models";
 
 export interface IPlayerComponent {
+  name: string;
   init: () => void;
   setVolume: (volume: number) => Promise<void> | void;
   pause: () => Promise<void> | void;

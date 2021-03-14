@@ -5,6 +5,7 @@ import Youtube from "../plugins/Youtube";
 import { IPlayerComponent } from "./IPlayerComponent";
 
 class Local implements IPlayerComponent {
+  public name = "local";
   private audio: HTMLAudioElement;
   public setTime?: (elapsed: number, total: number) => void;
   public onSongEnd?: () => void;

@@ -91,6 +91,7 @@ function albumResultToAlbum(results: ISpotifyAlbum[]): IAlbum[] {
   );
 }
 class SpotifyPlayer implements IPlayerComponent, ISearchApi {
+  public name = "spotify";
   private readonly apiUrl = "https://api.spotify.com/v1";
   public setTime?: (elapsed: number, total: number) => void;
   public onSongEnd?: () => void;

@@ -5,6 +5,7 @@ import { bindActionCreators, Dispatch } from "redux";
 import { ISong } from "../models";
 import { IPlayerComponent } from "../plugins/IPlayerComponent";
 import Local from "../plugins/local";
+import napster from "../plugins/napster";
 import SpotifyPlayer from "../plugins/spotify";
 import {
   nextTrack,
@@ -25,8 +26,6 @@ class AudioComponent extends React.Component<IProps, IState> {
   constructor(props: IProps) {
     super(props);
 
-    //this.local = new Local(this.setTrackTimes, this.onSongEnd);
-    //this.spotifyPlayer = new SpotifyPlayer(this.setTrackTimes, this.onSongEnd);
     Local.onSongEnd = this.onSongEnd;
     Local.setTime = this.setTrackTimes;
     SpotifyPlayer.onSongEnd = this.onSongEnd;
@@ -68,6 +67,8 @@ class AudioComponent extends React.Component<IProps, IState> {
      switch (name) {
        case "spotify":
          return SpotifyPlayer;
+       case "napster":
+         return napster;
     }
     return Local;
   }
@@ -149,6 +150,15 @@ class AudioComponent extends React.Component<IProps, IState> {
   private async playSong(song: ISong, time?: number) {
     if (song.from) {
       const player = this.getPlayerFromName(song.from || "");
+      if (player.setAuth) {
+        const plugin = this.props.plugins.find((p) => p.name === player.name);
+        if (plugin && plugin.data["access_token"]) {
+          player.setAuth(
+            plugin.data["access_token"],
+            plugin.data["refresh_token"]
+          );
+        }
+      }
       Local.pause();
       await player.pause();
       try {

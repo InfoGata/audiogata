@@ -65,9 +65,10 @@ const Search: React.FC<RouteComponentProps> = props => {
       let playlists: IPlaylist[] | undefined = [];
       const api = getApiByName(searchType);
       if (api?.setAuth) {
-        const plugin = plugins.find(p => p.name === "spotify");
+        const plugin = plugins.find(p => p.name === api.name);
         if (plugin && plugin.data["access_token"]) {
           api.setAuth(plugin.data["access_token"]);
+          api.setAuth(plugin.data["refresh_token"]);
         }
       }
       if (api) {
@@ -126,6 +127,7 @@ const Search: React.FC<RouteComponentProps> = props => {
         <option value="youtube">Youtube</option>
         <option value="soundcloud">SoundCloud</option>
         <option value="spotify">Spotify</option>
+        <option value="napster">Napster</option>
       </select>
       <AppBar position="static" color="default">
         <Tabs

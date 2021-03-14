@@ -136,6 +136,7 @@ function trackResultToSong(results: INapsterTrack[]): ISong[] {
 }
 
 class NapsterPlayer implements IPlayerComponent, ISearchApi {
+  public name = "napster";
   private readonly apiKey = "N2Q4YzVkYzctNjBiMi00YjBhLTkxNTAtOWRiNGM5YWE3OWRj";
   public setTime?: (elapsed: number, total: number) => void;
   public onSongEnd?: () => void;
@@ -178,6 +179,7 @@ class NapsterPlayer implements IPlayerComponent, ISearchApi {
       isHTML5Compatible: true,
     });
     Napster.player.on("ready", () => {
+      console.log("napster ready");
       Napster.player.on("playevent", (e: any) => {
         if (e.data.code === "PlayComplete") {
           if (this.onSongEnd) {
@@ -201,7 +203,9 @@ class NapsterPlayer implements IPlayerComponent, ISearchApi {
   }
 
   public pause() {
-    Napster.player.pause();
+    if (Napster.player) {
+      Napster.player.pause();
+    }
   }
 
   public resume() {
@@ -213,7 +217,9 @@ class NapsterPlayer implements IPlayerComponent, ISearchApi {
   }
 
   public setVolume(volume: number) {
-    Napster.player.setVolume(volume);
+    if (Napster && Napster.player) {
+      Napster.player.setVolume(volume);
+    }
   }
   
   public async searchAll(query: string) {

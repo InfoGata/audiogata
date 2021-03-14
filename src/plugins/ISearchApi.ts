@@ -1,6 +1,7 @@
 import { IAlbum, IArtist, IPlaylist, ISong } from "../models";
 
 export interface ISearchApi {
+  name: string;
   searchAll: (
     query: string,
   ) => Promise<{

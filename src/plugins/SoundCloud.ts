@@ -124,6 +124,7 @@ function getImages(url: string): IImage[] {
 }
 
 export default {
+  name: "soundcloud",
   async searchAll(query: string) {
     const [tracks, albums, artists] = await Promise.all([
       searchTracks(query),
