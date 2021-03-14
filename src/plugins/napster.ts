@@ -2,6 +2,7 @@ import axios from "axios";
 import { IAlbum, IArtist, IImage, IPlaylist, ISong } from "../models";
 import { ISearchApi } from "../plugins/ISearchApi";
 import { IPlayerComponent } from "./IPlayerComponent";
+import { UserManager, UserManagerSettings } from 'oidc-client';
 
 declare var Napster: any;
 
@@ -46,6 +47,7 @@ interface INapsterTrack {
 
 const apiKey = "N2Q4YzVkYzctNjBiMi00YjBhLTkxNTAtOWRiNGM5YWE3OWRj";
 const path = "https://api.napster.com/v2.2";
+const napsterOauthUrl = `https://api.napster.com/oauth/authorize`;
 
 async function searchTracks(query: string) {
   const url = `${path}/search?apikey=${
@@ -157,29 +159,24 @@ class NapsterPlayer implements IPlayerComponent, ISearchApi {
       script.async = false;
       script.defer = true;
       script.src = url;
-      script.onload = () => {
-        if (index ===  scripts.length - 1) {
-          this.init();
-        }
-      };
       document.head.appendChild(script);
     });
   }
 
-  public setAuth(accessToken: string, refreshToken?: string) {
-    Napster.member.set({
-      accessToken: accessToken,
-      refreshToken: refreshToken,
-    });
+  public init() {
   }
 
-  public init() {
+  public initalizePlayer(accessToken: string, refreshToken?: string) {
     Napster.init({
       consumerKey: this.apiKey,
       isHTML5Compatible: true,
     });
     Napster.player.on("ready", () => {
-      console.log("napster ready");
+      Napster.member.set({
+        accessToken: accessToken,
+        refreshToken: refreshToken,
+      });
+      Napster.player.auth();
       Napster.player.on("playevent", (e: any) => {
         if (e.data.code === "PlayComplete") {
           if (this.onSongEnd) {
@@ -195,6 +192,7 @@ class NapsterPlayer implements IPlayerComponent, ISearchApi {
         }
       });
     });
+
   }
 
   public async play(song: ISong) {
@@ -259,6 +257,25 @@ class NapsterPlayer implements IPlayerComponent, ISearchApi {
 
   public async getPlaylistTracks(_playlist: IPlaylist) {
     return []
+  }
+
+  public async login(clientId: string, secretKey: string) {
+    const settings: UserManagerSettings = {
+      authority: "https://api.napster.com",
+      client_id: clientId,
+      client_secret: secretKey,
+      response_type: "code",
+      redirect_uri: "http://localhost:3000",
+      popup_redirect_uri: window.origin + "/audio-pwa/login_popup.html",
+      metadata: {
+        authorization_endpoint: napsterOauthUrl,
+        token_endpoint: "https://api.napster.com/oauth/access_token",
+        userinfo_endpoint: "https://api.napster.com/v2.2/me/account",
+      },
+    };
+    const userManager = new UserManager(settings);
+    const user= await userManager.signinPopup();
+    this.initalizePlayer(user.access_token, user.refresh_token);
   }
 }
 
