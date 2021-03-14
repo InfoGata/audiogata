@@ -5,11 +5,10 @@ import { setPlugin } from "../store/reducers/pluginReducer";
 import { AppDispatch } from "../store/store";
 import { useDispatch } from "react-redux";
 import { Plugin } from "../models";
+import Spotify from "../plugins/spotify";
 
 const napsterApi = "https://api.napster.com";
 const napsterOauthUrl = `${napsterApi}/oauth/authorize`;
-const spotifyUrl = "https://accounts.spotify.com/authorize";
-const spotifyTokenEndpoint = "https://accounts.spotify.com/api/token"
 
 const Plugins: React.FC = () => {
   const [napsterClientId, setNapsterClientId] = React.useState("");
@@ -18,28 +17,7 @@ const Plugins: React.FC = () => {
 
 
   const onSpotifyLoginClick = async () => {
-    const settings: UserManagerSettings = {
-      authority: "https://accounts.spotify.com",
-      client_id: "b8f2fce4341b42e580e66a37302b358e",
-      response_type: "code",
-      redirect_uri: "http://localhost:3000",
-      scope: "streaming user-read-email user-read-private",
-      popup_redirect_uri: window.origin + "/audio-pwa/login_popup.html",
-      metadata: {
-        authorization_endpoint: spotifyUrl,
-        token_endpoint: spotifyTokenEndpoint
-      }
-    };
-    const userManager = new UserManager(settings);
-    const user = await userManager.signinPopup();
-    const plugin: Plugin = {
-      name: "spotify",
-      data: {
-        "access_token": user.access_token,
-        "refresh_token": user.refresh_token || "",
-      }
-    };
-    dispatch(setPlugin(plugin));
+    Spotify.login();
   };
 
   const onNapsterLoginClick = async () => {

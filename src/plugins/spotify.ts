@@ -2,6 +2,7 @@ import axios from "axios";
 import { IAlbum, IArtist, IImage, IPlaylist, ISong } from "../models";
 import { ISearchApi } from "./ISearchApi";
 import { IPlayerComponent } from "./IPlayerComponent";
+import { UserManager, UserManagerSettings } from 'oidc-client';
 
 interface ISpotifyResult {
   albums: ISpotifyAlbumResult;
@@ -100,7 +101,8 @@ class SpotifyPlayer implements IPlayerComponent, ISearchApi {
   private internalTime: number;
   private totalTime: number;
   private interval: NodeJS.Timeout | undefined;
-  private scriptLoaded = false;
+  private authorizeUrl = "https://accounts.spotify.com/authorize";
+  private tokenUrl = "https://accounts.spotify.com/api/token";
   constructor() {
     this.deviceId = "";
     this.accessToken = "";
@@ -108,7 +110,6 @@ class SpotifyPlayer implements IPlayerComponent, ISearchApi {
     this.totalTime = 0;
     this.init();
   }
-
 
   public init() {
     (window as any).onSpotifyWebPlaybackSDKReady = this.initializePlayer.bind(this);
@@ -172,9 +173,7 @@ class SpotifyPlayer implements IPlayerComponent, ISearchApi {
     player.connect();
   };
 
-  public setAuth(accessToken: string) {
-    this.accessToken = accessToken;
-    if (!this.scriptLoaded) {
+  private loadScript() {
       const script = document.createElement('script');
       script.id = 'spotify-player';
       script.type = 'text/javascript';
@@ -182,9 +181,7 @@ class SpotifyPlayer implements IPlayerComponent, ISearchApi {
       script.defer = true;
       script.src = 'https://sdk.scdn.co/spotify-player.js';
       document.head.appendChild(script);
-    } else {
-      this.scriptLoaded = true;
-    }
+
   }
 
   public async play(song: ISong) {
@@ -328,6 +325,25 @@ class SpotifyPlayer implements IPlayerComponent, ISearchApi {
 
   public async getPlaylistTracks(_playlist: IPlaylist) {
     return [];
+  }
+
+  public async login() {
+    const settings: UserManagerSettings = {
+      authority: "https://accounts.spotify.com",
+      client_id: "b8f2fce4341b42e580e66a37302b358e",
+      response_type: "code",
+      redirect_uri: "http://localhost:3000",
+      scope: "streaming user-read-email user-read-private",
+      popup_redirect_uri: window.origin + "/audio-pwa/login_popup.html",
+      metadata: {
+        authorization_endpoint: this.authorizeUrl,
+        token_endpoint: this.tokenUrl
+      }
+    };
+    const userManager = new UserManager(settings);
+    const user = await userManager.signinPopup();
+    this.accessToken = user.access_token;
+    this.loadScript();
   }
 }
 
