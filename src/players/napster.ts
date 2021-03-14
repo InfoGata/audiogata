@@ -1,20 +1,175 @@
-import { ISong } from "../models";
+import axios from "axios";
+import { IAlbum, IArtist, IImage, IPlaylist, ISong } from "../models";
+import { ISearchApi } from "../services/apis/ISearchApi";
 import { IPlayerComponent } from "./IPlayerComponent";
 
 declare var Napster: any;
 
-class NapsterPlayer implements IPlayerComponent {
-  private readonly apiKey = "N2Q4YzVkYzctNjBiMi00YjBhLTkxNTAtOWRiNGM5YWE3OWRj";
-  private readonly setTime: (elapsed: number, total: number) => void;
-  private readonly onSongEnd: () => void;
+interface INapsterResult {
+  search: INapsterSearch;
+}
 
-  constructor(
-    setTime: (elapsed: number, total: number) => void,
-    onSongEnd: () => void
-  ) {
-    this.setTime = setTime;
-    this.onSongEnd = onSongEnd;
-    this.init();
+interface INapsterSearch {
+  data: INapsterData;
+}
+
+interface INapsterData {
+  artists: INapsterArtist[];
+  albums: INapsterAlbum[];
+  tracks: INapsterTrack[];
+}
+
+interface INapsterArtist {
+  id: string;
+  name: string;
+}
+
+interface INapsterAlbum {
+  id: string;
+  name: string;
+  artistName: string;
+  contributingArtists: IContributingArtists;
+}
+
+interface IContributingArtists {
+  primaryArtist: string;
+}
+
+interface INapsterTrack {
+  id: string;
+  name: string;
+  playbackSeconds: number;
+  albumId: string;
+  artistId: string;
+  artistName: string;
+}
+
+const apiKey = "N2Q4YzVkYzctNjBiMi00YjBhLTkxNTAtOWRiNGM5YWE3OWRj";
+const path = "https://api.napster.com/v2.2";
+
+async function searchTracks(query: string) {
+  const url = `${path}/search?apikey=${
+    apiKey
+    }&query=${encodeURIComponent(query)}&type=track`;
+  try {
+    const results = await axios.get<INapsterResult>(url);
+    const tracks = results.data.search.data.tracks;
+    return trackResultToSong(tracks);
+  } catch {
+    return [];
+  }
+}
+
+async function searchArtists(query: string) {
+  const url = `${path}/search?apikey=${
+    apiKey
+    }&query=${encodeURIComponent(query)}&type=artist`;
+  try {
+    const results = await axios.get<INapsterResult>(url);
+    const artists = results.data.search.data.artists;
+    return aristResultToArtist(artists);
+  } catch {
+    return [];
+  }
+}
+
+async function searchAlbums(query: string) {
+  const url = `${path}/search?apikey=${
+    apiKey
+    }&query=${encodeURIComponent(query)}&type=album`;
+  try {
+    const results = await axios.get<INapsterResult>(url);
+    const albums = results.data.search.data.albums;
+    return albumResultToAlbum(albums);
+  } catch {
+    return [];
+  }
+}
+
+function albumResultToAlbum(results: INapsterAlbum[]): IAlbum[] {
+  return results.map(
+    r =>
+      ({
+        apiId: r.id.toString(),
+        artistId: r.contributingArtists.primaryArtist,
+        artistName: r.artistName,
+        from: "napster",
+        name: r.name,
+      } as IAlbum),
+  );
+}
+
+function aristResultToArtist(results: INapsterArtist[]): IArtist[] {
+  return results.map(
+    r =>
+      ({
+        apiId: r.id.toString(),
+        from: "napster",
+        name: r.name,
+      } as IArtist),
+  );
+}
+
+function getImages(albumId: string): IImage[] {
+  const sizes = [70, 170, 200, 300, 500];
+  return sizes.map(s => ({
+    height: s,
+    url: `https://api.napster.com/imageserver/v2/albums/${albumId}/images/${s}x${s}.jpg`,
+    width: s
+  }));
+}
+
+function trackResultToSong(results: INapsterTrack[]): ISong[] {
+  return results.map(
+    r =>
+      ({
+        albumId: r.albumId,
+        apiId: r.id,
+        artistId: r.artistId,
+        artistName: r.artistName,
+        duration: r.playbackSeconds,
+        from: "napster",
+        images: getImages(r.albumId),
+        name: r.name,
+      } as ISong),
+  );
+}
+
+class NapsterPlayer implements IPlayerComponent, ISearchApi {
+  private readonly apiKey = "N2Q4YzVkYzctNjBiMi00YjBhLTkxNTAtOWRiNGM5YWE3OWRj";
+  public setTime?: (elapsed: number, total: number) => void;
+  public onSongEnd?: () => void;
+
+  constructor() {
+    this.loadScripts();
+  }
+
+  private loadScripts() {
+    const scripts = [
+      "//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js",
+      "https://cdn.jsdelivr.net/gh/Napster/napster.js@master/napster.min.js",
+    ];
+
+    scripts.forEach((url, index) => {
+      const script = document.createElement('script');
+      script.type = "text/javascript";
+      script.async = false;
+      script.defer = true;
+      script.src = url;
+      script.onload = () => {
+        if (index ===  scripts.length - 1) {
+          this.init();
+        }
+      };
+      document.head.appendChild(script);
+    });
+  }
+
+  public setAuth(accessToken: string, refreshToken?: string) {
+    Napster.member.set({
+      accessToken: accessToken,
+      refreshToken: refreshToken,
+    });
   }
 
   public init() {
@@ -23,38 +178,19 @@ class NapsterPlayer implements IPlayerComponent {
       isHTML5Compatible: true,
     });
     Napster.player.on("ready", () => {
-      //  const query = new URLSearchParams(window.location.search);
-      // if (query.has("accessToken") && query.has("refreshToken")) {
-      //   const accessToken = query.get("accessToken") || "";
-      //   const refreshToken = query.get("refreshToken") || "";
-      //   this.authService.addAuth({
-      //     accessToken,
-      //     name: "napster",
-      //     refreshToken,
-      //   });
-      //   Napster.member.set({
-      //     accessToken,
-      //     refreshToken,
-      //   });
-      // } else {
-      //   this.authService.getAuthByName("napster").then(auth => {
-      //     if (auth) {
-      //       Napster.member.set({
-      //         accessToken: auth.accessToken,
-      //         refreshToken: auth.refreshToken,
-      //       });
-      //     }
-      //   });
-      // }
       Napster.player.on("playevent", (e: any) => {
         if (e.data.code === "PlayComplete") {
-          this.onSongEnd();
+          if (this.onSongEnd) {
+            this.onSongEnd();
+          }
         }
       });
       Napster.player.on("playtimer", (e: any) => {
         const current = e.data.currentTime;
         const duration = e.data.totalTime;
-        this.setTime(current, duration);
+        if (this.setTime) {
+          this.setTime(current, duration);
+        }
       });
     });
   }
@@ -79,6 +215,45 @@ class NapsterPlayer implements IPlayerComponent {
   public setVolume(volume: number) {
     Napster.player.setVolume(volume);
   }
+  
+  public async searchAll(query: string) {
+    const [tracks, albums, artists] = await Promise.all([
+      searchTracks(query),
+      searchAlbums(query),
+      searchArtists(query),
+    ]);
+    return { tracks, albums, artists };
+  };
+
+  public async getAlbumTracks(album: IAlbum) {
+    const url = `${path}/albums/${album.apiId}/tracks?apikey=${
+      apiKey
+      }`;
+    try {
+      const results = await axios.get<INapsterData>(url);
+      const tracks = results.data.tracks;
+      return trackResultToSong(tracks);
+    } catch {
+      return [];
+    }
+  };
+
+  public async getArtistAlbums(artist: IArtist) {
+    const url = `${path}/artists/${artist.apiId}/albums/top?apikey=${
+      apiKey
+      }`;
+    try {
+      const results = await axios.get<INapsterData>(url);
+      const albums = results.data.albums;
+      return albumResultToAlbum(albums);
+    } catch {
+      return [];
+    }
+  }
+
+  public async getPlaylistTracks(_playlist: IPlaylist) {
+    return []
+  }
 }
 
-export default NapsterPlayer;
+export default new NapsterPlayer();

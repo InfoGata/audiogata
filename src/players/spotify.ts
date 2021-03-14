@@ -1,7 +1,45 @@
 import axios from "axios";
-import { ISong } from "../models";
+import { IAlbum, IArtist, IImage, IPlaylist, ISong } from "../models";
+import { ISearchApi } from "../services/apis/ISearchApi";
 import { IPlayerComponent } from "./IPlayerComponent";
 
+interface ISpotifyResult {
+  albums: ISpotifyAlbumResult;
+  artists: ISpotifyArtistResult;
+  tracks: ISpotifyTrackResult;
+}
+
+interface ISpotifyAlbumResult {
+  items: ISpotifyAlbum[];
+}
+
+interface ISpotifyAlbum {
+  name: string;
+  uri: string;
+  artists: ISpotifyArtist[];
+  images: IImage[];
+}
+
+interface ISpotifyArtistResult {
+  items: ISpotifyArtist[];
+}
+
+interface ISpotifyArtist {
+  name: string;
+  uri: string;
+}
+
+interface ISpotifyTrackResult {
+  items: ISpotifyTrack[];
+}
+
+interface ISpotifyTrack {
+  name: string;
+  uri: string;
+  duration_ms: number;
+  album: ISpotifyAlbum;
+  artists: ISpotifyArtist[];
+}
 
 type WebPlaybackErrors =
   | 'initialization_error'
@@ -12,22 +50,57 @@ type WebPlaybackErrors =
 interface WebPlaybackError {
   message: WebPlaybackErrors;
 }
-class SpotifyPlayer implements IPlayerComponent {
+
+function trackResultToSong(results: ISpotifyTrack[]): ISong[] {
+  return results.map(
+    r =>
+      ({
+        albumId: r.album && r.album.uri,
+        apiId: r.uri,
+        artistId: r.artists[0].uri,
+        artistName: r.artists[0].name,
+        duration: r.duration_ms / 1000,
+        from: "spotify",
+        images: r.album.images,
+        name: r.name,
+      } as ISong),
+  );
+}
+
+function artistResultToArtist(results: ISpotifyArtist[]): IArtist[] {
+  return results.map(
+    r =>
+      ({
+        apiId: r.uri,
+        from: "spotify",
+        name: r.name,
+      } as IArtist),
+  );
+}
+
+function albumResultToAlbum(results: ISpotifyAlbum[]): IAlbum[] {
+  return results.map(
+    r =>
+      ({
+        apiId: r.uri,
+        artistId: r.artists[0].uri,
+        artistName: r.artists[0].name,
+        from: "spotify",
+        name: r.name,
+      } as IAlbum),
+  );
+}
+class SpotifyPlayer implements IPlayerComponent, ISearchApi {
   private readonly apiUrl = "https://api.spotify.com/v1";
-  private readonly setTime: (elapsed: number, total: number) => void;
-  private readonly onSongEnd: () => void;
+  public setTime?: (elapsed: number, total: number) => void;
+  public onSongEnd?: () => void;
   private deviceId: string;
   private accessToken: string;
   private internalTime: number;
   private totalTime: number;
   private interval: NodeJS.Timeout | undefined;
   private scriptLoaded = false;
-  constructor(
-    setTime: (elapsed: number, total: number) => void,
-    onSongEnd: () => void) {
-
-    this.setTime = setTime
-    this.onSongEnd = onSongEnd;
+  constructor() {
     this.deviceId = "";
     this.accessToken = "";
     this.internalTime = 0;
@@ -62,8 +135,9 @@ class SpotifyPlayer implements IPlayerComponent {
     });
     // Playback status updates
     player.addListener("player_state_changed", (state: any) => {
-      console.log(state);
-      this.setTime(state.position / 1000, state.duration / 1000);
+      if (this.setTime) {
+        this.setTime(state.position / 1000, state.duration / 1000);
+      }
       this.internalTime = state.position;
       this.totalTime = state.duration;
       // Attempt to detect if the song has ended
@@ -76,7 +150,9 @@ class SpotifyPlayer implements IPlayerComponent {
         if (this.interval) {
           clearInterval(this.interval);
         }
-        this.onSongEnd();
+        if (this.onSongEnd) {
+          this.onSongEnd();
+        }
       }
     });
     // Ready
@@ -193,8 +269,65 @@ class SpotifyPlayer implements IPlayerComponent {
 
   private updateTime = () => {
     this.internalTime += 1000;
-    this.setTime(this.internalTime / 1000, this.totalTime / 1000);
+    if (this.setTime) {
+      this.setTime(this.internalTime / 1000, this.totalTime / 1000);
+    }
   };
+
+  public async searchAll(query: string) {
+    if (!this.accessToken) {
+      return { tracks: [], albums: [], artists: [] };
+    }
+    const url = `${this.apiUrl}/search?q=${encodeURIComponent(
+      query,
+    )}&type=album,artist,track`;
+    const results = await axios.get<ISpotifyResult>(url, {
+      headers: {
+        Authorization: `Bearer ${this.accessToken}`,
+      },
+    });
+    const data = results.data;
+    const tracks = trackResultToSong(data.tracks.items);
+    const albums = albumResultToAlbum(data.albums.items);
+    const artists = artistResultToArtist(data.artists.items);
+    return { tracks, albums, artists };
+  }
+
+  public async getAlbumTracks(album: IAlbum) {
+    if (!this.accessToken) {
+      return [];
+    }
+    const id = album.apiId.split(":").pop();
+    const url = `${this.apiUrl}/albums/${id}/tracks?limit=50`;
+    const results = await axios.get<ISpotifyTrackResult>(url, {
+      headers: {
+        Authorization: `Bearer ${this.accessToken}`,
+      },
+    });
+    const tracks = trackResultToSong(results.data.items);
+    tracks.forEach(t => {
+      t.albumId = album.apiId;
+    })
+    return tracks;
+  }
+
+  public async getArtistAlbums(artist: IArtist) {
+    if (!this.accessToken) {
+      return [];
+    }
+    const id = artist.apiId.split(":").pop();
+    const url = `${this.apiUrl}/artists/${id}/albums`;
+    const results = await axios.get<ISpotifyAlbumResult>(url, {
+      headers: {
+        Authorization: `Bearer ${this.accessToken}`,
+      },
+    });
+    return albumResultToAlbum(results.data.items);
+  }
+
+  public async getPlaylistTracks(_playlist: IPlaylist) {
+    return [];
+  }
 }
 
-export default SpotifyPlayer;
+export default new SpotifyPlayer();

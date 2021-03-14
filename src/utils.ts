@@ -1,10 +1,10 @@
 import { IImage } from "./models";
 import { ISearchApi } from "./services/apis/ISearchApi";
 import SoundCloud from "./services/apis/SoundCloud";
-import Napster from "./services/apis/Napster";
-import Spotify from "./services/apis/Spotify";
 import Youtube from "./services/apis/Youtube";
 import thumbnail from "./thumbnail.png";
+import Spotify from "./players/spotify";
+import Napster from "./players/napster";
 
 export function formatSeconds(seconds?: number) {
   if (!seconds) {

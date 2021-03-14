@@ -21,14 +21,16 @@ interface IState {
 }
 
 class AudioComponent extends React.Component<IProps, IState> {
-  private readonly local: Local;
-  private readonly spotifyPlayer: SpotifyPlayer;
-
   private songLoaded = false;
   constructor(props: IProps) {
     super(props);
-    this.local = new Local(this.setTrackTimes, this.onSongEnd);
-    this.spotifyPlayer = new SpotifyPlayer(this.setTrackTimes, this.onSongEnd);
+
+    //this.local = new Local(this.setTrackTimes, this.onSongEnd);
+    //this.spotifyPlayer = new SpotifyPlayer(this.setTrackTimes, this.onSongEnd);
+    Local.onSongEnd = this.onSongEnd;
+    Local.setTime = this.setTrackTimes;
+    SpotifyPlayer.onSongEnd = this.onSongEnd;
+    SpotifyPlayer.setTime = this.setTrackTimes;
     this.state = {
       errorCount: 0,
     };
@@ -65,9 +67,9 @@ class AudioComponent extends React.Component<IProps, IState> {
   private getPlayerFromName(name: string): IPlayerComponent {
      switch (name) {
        case "spotify":
-         return this.spotifyPlayer;
+         return SpotifyPlayer;
     }
-    return this.local;
+    return Local;
   }
 
   private async onCurrentSongUpdate(prevProps: IProps, newProps: IProps) {
@@ -147,13 +149,7 @@ class AudioComponent extends React.Component<IProps, IState> {
   private async playSong(song: ISong, time?: number) {
     if (song.from) {
       const player = this.getPlayerFromName(song.from || "");
-      if (player.setAuth) {
-        const plugin = this.props.plugins.find((p) => p.name === "spotify");
-        if (plugin && plugin.data["access_token"]) {
-          player.setAuth(plugin.data["access_token"]);
-        }
-      }
-      this.local.pause();
+      Local.pause();
       await player.pause();
       try {
         await player.play(song);

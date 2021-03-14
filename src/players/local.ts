@@ -6,15 +6,21 @@ import { IPlayerComponent } from "./IPlayerComponent";
 
 class Local implements IPlayerComponent {
   private audio: HTMLAudioElement;
+  public setTime?: (elapsed: number, total: number) => void;
+  public onSongEnd?: () => void;
   constructor(
-    setTime: (currentTime: number, duration: number) => void,
-    onSongEnd: () => void,
   ) {
     this.audio = new Audio();
     this.audio.ontimeupdate = () => {
-      setTime(this.audio.currentTime, this.audio.duration);
+      if (this.setTime) {
+        this.setTime(this.audio.currentTime, this.audio.duration);
+      }
     };
-    this.audio.onended = onSongEnd;
+    this.audio.onended = () =>{
+      if (this.onSongEnd) {
+        this.onSongEnd();
+      }
+    }
   }
 
   public init() {}
@@ -24,7 +30,6 @@ class Local implements IPlayerComponent {
   }
 
   public setPlaybackRate(rate: number) {
-    console.log("why");
     this.audio.playbackRate = rate;
   }
 
@@ -69,4 +74,4 @@ class Local implements IPlayerComponent {
   }
 }
 
-export default Local;
+export default new Local();
