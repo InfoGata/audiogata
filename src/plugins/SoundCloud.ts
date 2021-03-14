@@ -1,5 +1,5 @@
 import axios from "axios";
-import { IAlbum, IArtist, IImage, ISong } from "../../models";
+import { IAlbum, IArtist, IImage, ISong } from "../models";
 import { IFormatTrackApi } from "./IFormatTrackApi";
 import { ISearchApi } from "./ISearchApi";
 

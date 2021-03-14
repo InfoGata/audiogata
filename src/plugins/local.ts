@@ -1,7 +1,7 @@
 import { ISong } from "../models";
-import { IFormatTrackApi } from "../services/apis/IFormatTrackApi";
-import SoundCloud from "../services/apis/SoundCloud";
-import Youtube from "../services/apis/Youtube";
+import { IFormatTrackApi } from "../plugins/IFormatTrackApi";
+import SoundCloud from "../plugins/SoundCloud";
+import Youtube from "../plugins/Youtube";
 import { IPlayerComponent } from "./IPlayerComponent";
 
 class Local implements IPlayerComponent {

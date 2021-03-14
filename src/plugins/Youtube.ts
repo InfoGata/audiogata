@@ -1,7 +1,7 @@
 import axios from "axios";
 import { parse, toSeconds } from "iso8601-duration";
 import ytdl from "ytdl-core";
-import { IAlbum, IArtist, IImage, IPlaylist, ISong } from "../../models";
+import { IAlbum, IArtist, IImage, IPlaylist, ISong } from "../models";
 import { IFormatTrackApi } from "./IFormatTrackApi";
 import { ISearchApi } from "./ISearchApi";
 

@@ -1,6 +1,6 @@
 import axios from "axios";
 import { IAlbum, IArtist, IImage, IPlaylist, ISong } from "../models";
-import { ISearchApi } from "../services/apis/ISearchApi";
+import { ISearchApi } from "../plugins/ISearchApi";
 import { IPlayerComponent } from "./IPlayerComponent";
 
 declare var Napster: any;

@@ -3,9 +3,9 @@ import { connect } from "react-redux";
 import { toast } from "react-toastify";
 import { bindActionCreators, Dispatch } from "redux";
 import { ISong } from "../models";
-import { IPlayerComponent } from "../players/IPlayerComponent";
-import Local from "../players/local";
-import SpotifyPlayer from "../players/spotify";
+import { IPlayerComponent } from "../plugins/IPlayerComponent";
+import Local from "../plugins/local";
+import SpotifyPlayer from "../plugins/spotify";
 import {
   nextTrack,
   prevTrack,
