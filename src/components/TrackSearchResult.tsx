@@ -10,7 +10,7 @@ import {
 import React from "react";
 import { useDispatch } from "react-redux";
 import { ISong } from "../models";
-import { addTrack } from "../store/reducers/songReducer";
+import { addTrack, setTrack } from "../store/reducers/songReducer";
 import { AppDispatch } from "../store/store";
 import { getThumbnailImage, searchThumbnailSize } from "../utils";
 import { MoreHoriz } from "@material-ui/icons";
@@ -28,6 +28,7 @@ const TrackSearchResult: React.FC<ITrackResultProps> = props => {
 
   const onClickSong = () => {
     dispatch(addTrack(props.track));
+    dispatch(setTrack(props.track));
   };
 
   const image = getThumbnailImage(track.images, searchThumbnailSize);

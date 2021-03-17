@@ -15,7 +15,16 @@ import { deleteTrack, setTracks } from "../store/reducers/songReducer";
 import AddPlaylistDialog from "./AddPlaylistDialog";
 import PlaylistMenuItem from "./PlaylistMenuItem";
 import { Link } from "react-router-dom";
-import { Droppable, DragDropContext, DropResult, DroppableProvided, DraggableStateSnapshot, DraggableProvided, DraggableRubric, Draggable } from "react-beautiful-dnd";
+import {
+  Droppable,
+  DragDropContext,
+  DropResult,
+  DroppableProvided,
+  DraggableStateSnapshot,
+  DraggableProvided,
+  DraggableRubric,
+  Draggable,
+} from "react-beautiful-dnd";
 import ReactDOM from "react-dom";
 
 const rowRenderer = (songs: ISong[], openMenu: (event: React.MouseEvent<HTMLButtonElement>, song: ISong) => void) =>

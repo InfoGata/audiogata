@@ -7,10 +7,12 @@ import AlbumSearchResult from "./AlbumSearchResult";
 import ArtistSearchResult from "./ArtistSearchResult";
 import PlaylistSearchResult from "./PlaylistSearchResult";
 import TrackSearchResult from "./TrackSearchResult";
-import { Delete } from "@material-ui/icons";
+import { PlaylistPlay } from "@material-ui/icons";
 import PlaylistMenuItem from "./PlaylistMenuItem";
 import { useSelector } from "react-redux";
-import { AppState } from "../store/store";
+import { AppDispatch, AppState } from "../store/store";
+import { useDispatch } from "react-redux";
+import { addTrack } from "../store/reducers/songReducer";
 
 interface ITabPanelProps {
   children?: React.ReactNode;
@@ -49,6 +51,7 @@ const Search: React.FC<RouteComponentProps> = props => {
   const onSearchTypeChange = (e: React.FormEvent<HTMLSelectElement>) => {
     setSearchType(e.currentTarget.value);
   };
+  const dispatch = useDispatch<AppDispatch>();
 
   const onClearSearch = () => {
     setTrackResults([]);
@@ -91,6 +94,9 @@ const Search: React.FC<RouteComponentProps> = props => {
     setMenuSong(song);
   };
   const closeMenu = () => setAnchorEl(null);
+  const addSongToQueue = () => {
+    dispatch(addTrack(menuSong));
+  };
   const trackList = trackResults.map(track => (
     <TrackSearchResult key={track.apiId} track={track} openMenu={openMenu} />
   ));
@@ -118,7 +124,7 @@ const Search: React.FC<RouteComponentProps> = props => {
       setTrackResults={setTrackResults}
     />
   ));
-  const handleChange = (event: React.ChangeEvent<{}>, newValue: string) => {
+  const handleChange = (_event: React.ChangeEvent<{}>, newValue: string) => {
     setTabValue(newValue);
   };
   return (
@@ -160,9 +166,9 @@ const Search: React.FC<RouteComponentProps> = props => {
         <List dense={true}>{playlistList}</List>
       </TabPanel>
       <Menu open={Boolean(anchorEl)} onClose={closeMenu} anchorEl={anchorEl}>
-        <MenuItem>
+        <MenuItem onClick={addSongToQueue}>
           <ListItemIcon>
-            <Delete />
+            <PlaylistPlay />
           </ListItemIcon>
           <ListItemText primary="Add To Queue" />
         </MenuItem>
