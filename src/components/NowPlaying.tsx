@@ -9,9 +9,17 @@ import {
 import { ISong } from "../models";
 import { AppState, AppDispatch } from "../store/store";
 import QueueItem from "./QueueItem";
-import { Menu, ListItemText, MenuItem, ListItemIcon, Divider } from "@material-ui/core";
+import {
+  Menu,
+  ListItemText,
+  MenuItem,
+  ListItemIcon,
+  Divider,
+  Typography,
+  IconButton,
+} from "@material-ui/core";
 import { Delete, Info, PlaylistAdd } from "@material-ui/icons";
-import { deleteTrack, setTracks } from "../store/reducers/songReducer";
+import { clearTracks, deleteTrack, setTracks } from "../store/reducers/songReducer";
 import AddPlaylistDialog from "./AddPlaylistDialog";
 import PlaylistMenuItem from "./PlaylistMenuItem";
 import { Link } from "react-router-dom";
@@ -44,7 +52,10 @@ const rowRenderer = (songs: ISong[], openMenu: (event: React.MouseEvent<HTMLButt
 const PlayQueue: React.FC = () => {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [menuSong, setMenuSong] = React.useState<ISong>({} as ISong);
-  const openMenu = (event: React.MouseEvent<HTMLButtonElement>, song: ISong) => {
+  const openMenu = (
+    event: React.MouseEvent<HTMLButtonElement>,
+    song: ISong
+  ) => {
     setAnchorEl(event.currentTarget);
     setMenuSong(song);
   };
@@ -80,7 +91,7 @@ const PlayQueue: React.FC = () => {
     }
 
     const tracks = Array.from(songList);
-    const track = tracks.find(s => s.id === draggableId);
+    const track = tracks.find((s) => s.id === draggableId);
     if (track) {
       tracks.splice(source.index, 1);
       tracks.splice(destination.index, 0, track);
@@ -88,47 +99,66 @@ const PlayQueue: React.FC = () => {
     }
   };
 
+  const clearQueue = () => {
+    dispatch(clearTracks())
+  };
+
   return (
     <>
-    <DragDropContext onDragEnd={onDragEnd}>
-      <Droppable
-        droppableId="droppable"
-        mode="virtual"
-        renderClone={(provided: DraggableProvided, snapshot: DraggableStateSnapshot, rubric: DraggableRubric) => (
-          <QueueItem song={songList[rubric.source.index]} openMenu={openMenu} style={{ margin: 0}} provided={provided} />
-        )}
+      <Typography variant="h5" gutterBottom>
+        Now Playing
+      </Typography>
+      <IconButton aria-label="clear" onClick={clearQueue}>
+        <Delete fontSize="large" />
+      </IconButton>
+      <DragDropContext onDragEnd={onDragEnd}>
+        <Droppable
+          droppableId="droppable"
+          mode="virtual"
+          renderClone={(
+            provided: DraggableProvided,
+            snapshot: DraggableStateSnapshot,
+            rubric: DraggableRubric
+          ) => (
+            <QueueItem
+              song={songList[rubric.source.index]}
+              openMenu={openMenu}
+              style={{ margin: 0 }}
+              provided={provided}
+            />
+          )}
         >
-        {(droppableProvided: DroppableProvided) => (
-          <WindowScroller>
-            {({ height, isScrolling, onChildScroll, scrollTop }) => (
-              <AutoSizer disableHeight={true}>
-                {({ width }) => (
-                  <List
-                    autoHeight={true}
-                    height={height}
-                    width={width}
-                    rowCount={songList.length}
-                    rowHeight={50}
-                    rowRenderer={rowRenderer(songList, openMenu)}
-                    isScrolling={isScrolling}
-                    onScroll={onChildScroll}
-                    scrollTop={scrollTop}
-                    ref={ref => {
-                      if (ref) {
-                        const r = ReactDOM.findDOMNode(ref);
-                        if (r instanceof HTMLElement) {
-                          droppableProvided.innerRef(r);
+          {(droppableProvided: DroppableProvided) => (
+            <WindowScroller>
+              {({ height, isScrolling, onChildScroll, scrollTop }) => (
+                <AutoSizer disableHeight={true}>
+                  {({ width }) => (
+                    <List
+                      autoHeight={true}
+                      height={height}
+                      width={width}
+                      rowCount={songList.length}
+                      rowHeight={50}
+                      rowRenderer={rowRenderer(songList, openMenu)}
+                      isScrolling={isScrolling}
+                      onScroll={onChildScroll}
+                      scrollTop={scrollTop}
+                      ref={(ref) => {
+                        if (ref) {
+                          const r = ReactDOM.findDOMNode(ref);
+                          if (r instanceof HTMLElement) {
+                            droppableProvided.innerRef(r);
+                          }
                         }
-                      }
-                    }}
-                  />
-                )}
-              </AutoSizer>
-            )}
-          </WindowScroller>
-        )}
-      </Droppable>
-    </DragDropContext>
+                      }}
+                    />
+                  )}
+                </AutoSizer>
+              )}
+            </WindowScroller>
+          )}
+        </Droppable>
+      </DragDropContext>
       <Menu open={Boolean(anchorEl)} onClose={closeMenu} anchorEl={anchorEl}>
         <MenuItem onClick={deleteClick}>
           <ListItemIcon>
@@ -136,7 +166,7 @@ const PlayQueue: React.FC = () => {
           </ListItemIcon>
           <ListItemText primary="Delete" />
         </MenuItem>
-        <MenuItem component={Link} to={infoPath} >
+        <MenuItem component={Link} to={infoPath}>
           <ListItemIcon>
             <Info />
           </ListItemIcon>
@@ -149,7 +179,7 @@ const PlayQueue: React.FC = () => {
           </ListItemIcon>
           <ListItemText primary="Add To New Playlist" />
         </MenuItem>
-        {playlists.map(p => (
+        {playlists.map((p) => (
           <PlaylistMenuItem
             key={p.id}
             playlist={p}

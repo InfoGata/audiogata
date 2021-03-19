@@ -7,6 +7,7 @@ import {
   MenuItem,
   ListItemIcon,
   IconButton,
+  Typography
 } from "@material-ui/core";
 import React from "react";
 import { useSelector } from "react-redux";
@@ -56,6 +57,9 @@ const Playlists: React.FC = () => {
   };
   return (
     <>
+      <Typography variant="h5" gutterBottom>
+        Playlists
+      </Typography>
       <List>
         {playlists.map(p => (
           <PlaylistsItem key={p.id} playlist={p} openMenu={openMenu} />
