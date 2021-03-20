@@ -44,5 +44,5 @@ export interface IImage {
 
 export interface Plugin {
   name: string;
-  data: {[key: string]: string; }
+  data: Record<string, string>;
 }

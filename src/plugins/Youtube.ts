@@ -65,8 +65,8 @@ interface IInvidiousFormat {
 }
 
 const useInvidiousTracks = false;
-const useInvidiousSearch = true;
-const key = "AIzaSyDryzen_v2kWUhKuZFCnF6e9wtUxdXWhqY";
+const useInvidiousSearch = false;
+const key = "AIzaSyASG5R6Ea6lRT99-GLa2TwbPz5Md7aFL3g";
 const corsProxyUrl = "localhost";
 const invidiousInstance = "https://invidious.tube"
 

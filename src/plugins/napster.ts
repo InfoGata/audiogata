@@ -273,9 +273,11 @@ class NapsterPlayer implements IPlayerComponent, ISearchApi {
         userinfo_endpoint: "https://api.napster.com/v2.2/me/account",
       },
     };
-    const userManager = new UserManager(settings);
-    const user= await userManager.signinPopup();
-    this.initalizePlayer(user.access_token, user.refresh_token);
+    try {
+      const userManager = new UserManager(settings);
+      const user = await userManager.signinPopup();
+      this.initalizePlayer(user.access_token, user.refresh_token);
+    } catch {}
   }
 }
 
