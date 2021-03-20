@@ -56,15 +56,7 @@ interface IInvidiousPlaylistResult {
   title: string;
   playlistId: string;
 }
-interface IInvidiousVideoResponse {
-  adaptiveFormats: IInvidiousFormat[];
-}
-interface IInvidiousFormat {
-  itag: string;
-  url: string;
-}
 
-const useInvidiousTracks = false;
 const useInvidiousSearch = false;
 const key = "AIzaSyASG5R6Ea6lRT99-GLa2TwbPz5Md7aFL3g";
 const corsProxyUrl = "localhost";
@@ -193,14 +185,6 @@ async function searchInvidious(query: string): Promise<ISong[]> {
   return resultToSongInvidous(results.data);
 }
 
-async function getInvidiousTrack(song: ISong): Promise<string> {
-  const url = `${invidiousInstance}/api/v1/videos/${song.apiId}`;
-  const results = await axios.get<IInvidiousVideoResponse>(url);
-  const formats = results.data.adaptiveFormats;
-  const audioFormat = formats.filter(f => f.itag === "140")[0];
-  return audioFormat.url;
-}
-
 async function getYoutubeTrack(song: ISong): Promise<string> {
   const youtubeUrl = `http://www.youtube.com/watch?v=${song.apiId}`;
   console.log(youtubeUrl);
@@ -244,6 +228,6 @@ export default {
     };
   },
   async getTrackUrl(song: ISong): Promise<string> {
-    return useInvidiousTracks ? getInvidiousTrack(song) : getYoutubeTrack(song);
+    return getYoutubeTrack(song);
   }
 } as IFormatTrackApi & ISearchApi
