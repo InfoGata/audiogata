@@ -46,47 +46,8 @@ interface IYoutubePlaylistItemDetails {
   videoId: string;
 }
 
-interface IInvidiousVideoResult {
-  title: string;
-  videoId: string;
-  lengthSeconds: number;
-  videoThumbnails: IImage[];
-}
-interface IInvidiousPlaylistResult {
-  title: string;
-  playlistId: string;
-}
-
-const useInvidiousSearch = false;
 const key = "AIzaSyASG5R6Ea6lRT99-GLa2TwbPz5Md7aFL3g";
 const corsProxyUrl = "localhost";
-const invidiousInstance = "https://invidious.tube"
-
-function resultToSongInvidous(results: IInvidiousVideoResult[]): ISong[] {
-  return results.map(
-    r =>
-      ({
-        apiId: r.videoId,
-        duration: r.lengthSeconds,
-        from: "youtube",
-        images: r.videoThumbnails.map(v => ({
-          height: v.height,
-          url: v.url,
-          width: v.width,
-        })),
-        name: r.title,
-      } as ISong),
-  );
-}
-
-function playlistResultToPlaylistInvidious(results: IInvidiousPlaylistResult[]): IPlaylist[] {
-  return results.map(r => ({
-    apiId: r.playlistId,
-    from: "youtube",
-    name: r.title,
-    songs: [],
-  }));
-}
 
 function playlistResultToPlaylistYoutube(result: IYoutubeSearchResult): IPlaylist[] {
   return result.items.map(r => ({
@@ -116,15 +77,11 @@ function resultToSongYoutube(result: IYoutubeResult): ISong[] {
 }
 
 async function searchTracks(query: string): Promise<ISong[]> {
-  return useInvidiousSearch ?
-    searchInvidious(query) :
-    searchYoutube(query);
+  return searchYoutube(query);
 }
 
 async function getPlaylistTracks(playlist: IPlaylist): Promise<ISong[]> {
-  return useInvidiousSearch ?
-    getInvidiousPlaylistTracks(playlist) :
-    getYoutubePlaylistTracks(playlist);
+  return getYoutubePlaylistTracks(playlist);
 }
 
 async function getYoutubePlaylistTracks(playlist: IPlaylist): Promise<ISong[]> {
@@ -138,17 +95,8 @@ async function getYoutubePlaylistTracks(playlist: IPlaylist): Promise<ISong[]> {
   return resultToSongYoutube(detailsResults.data);
 }
 
-async function getInvidiousPlaylistTracks(playlist: IPlaylist): Promise<ISong[]> {
-  const url = `${invidiousInstance}/api/v1/playlists/${playlist.apiId}`;
-  const results = await axios.get(url);
-  console.log(results);
-  return [];
-}
-
 async function searchPlaylists(query: string): Promise<IPlaylist[]> {
-  return useInvidiousSearch ?
-    searchInvidiousPlaylists(query) :
-    searchYoutubePlaylists(query);
+  return searchYoutubePlaylists(query);
 }
 
 async function searchYoutubePlaylists(query: string): Promise<IPlaylist[]> {
@@ -160,11 +108,6 @@ async function searchYoutubePlaylists(query: string): Promise<IPlaylist[]> {
   return playlistResultToPlaylistYoutube(result.data);
 }
 
-async function searchInvidiousPlaylists(query: string): Promise<IPlaylist[]> {
-  const url = `${invidiousInstance}/api/v1/search?q=${encodeURIComponent(query)}&type=playlist`;
-  const results = await axios.get<IInvidiousPlaylistResult[]>(url);
-  return playlistResultToPlaylistInvidious(results.data);
-}
 
 async function searchYoutube(query: string): Promise<ISong[]> {
   const url = "https://www.googleapis.com/youtube/v3/search";
@@ -179,11 +122,6 @@ async function searchYoutube(query: string): Promise<ISong[]> {
   return resultToSongYoutube(detailsResults.data);
 }
 
-async function searchInvidious(query: string): Promise<ISong[]> {
-  const url = `${invidiousInstance}/api/v1/search?q=${encodeURIComponent(query)}`;
-  const results = await axios.get<IInvidiousVideoResult[]>(url);
-  return resultToSongInvidous(results.data);
-}
 
 async function getYoutubeTrack(song: ISong): Promise<string> {
   const youtubeUrl = `http://www.youtube.com/watch?v=${song.apiId}`;
@@ -210,10 +148,10 @@ async function getYoutubeTrack(song: ISong): Promise<string> {
 
 export default {
   name: "youtube",
-  async getAlbumTracks(album: IAlbum) {
+  async getAlbumTracks(_album: IAlbum) {
     return [];
   },
-  async getArtistAlbums(artist: IArtist) {
+  async getArtistAlbums(_artist: IArtist) {
     return [];
   },
   async getPlaylistTracks(playlist: IPlaylist) {
