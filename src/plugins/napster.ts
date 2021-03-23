@@ -143,17 +143,14 @@ class NapsterPlayer implements IPlayerComponent, ISearchApi {
   public setTime?: (elapsed: number, total: number) => void;
   public onSongEnd?: () => void;
 
-  constructor() {
-    this.loadScripts();
-  }
-
   private loadScripts() {
     const scripts = [
       "//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js",
+      "https://api.napster.com/v2/streaming-player.js",
       "https://cdn.jsdelivr.net/gh/Napster/napster.js@master/napster.min.js",
     ];
 
-    scripts.forEach((url, index) => {
+    scripts.forEach((url) => {
       const script = document.createElement('script');
       script.type = "text/javascript";
       script.async = false;
@@ -167,11 +164,14 @@ class NapsterPlayer implements IPlayerComponent, ISearchApi {
   }
 
   public initalizePlayer(accessToken: string, refreshToken?: string) {
+    //this.loadScripts();
+    console.log(Napster);
     Napster.init({
       consumerKey: this.apiKey,
       isHTML5Compatible: true,
     });
     Napster.player.on("ready", () => {
+      console.log("ready");
       Napster.member.set({
         accessToken: accessToken,
         refreshToken: refreshToken,
@@ -201,9 +201,10 @@ class NapsterPlayer implements IPlayerComponent, ISearchApi {
   }
 
   public pause() {
-    if (Napster.player) {
+    try {
       Napster.player.pause();
-    }
+
+    } catch {}
   }
 
   public resume() {

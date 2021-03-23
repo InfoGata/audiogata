@@ -5,8 +5,8 @@ import { bindActionCreators, Dispatch } from "redux";
 import { ISong } from "../models";
 import { IPlayerComponent } from "../plugins/IPlayerComponent";
 import Local from "../plugins/local";
-import napster from "../plugins/napster";
 import SpotifyPlayer from "../plugins/spotify";
+import NapsterPlayer from "../plugins/napster";
 import {
   nextTrack,
   prevTrack,
@@ -29,7 +29,7 @@ class AudioComponent extends React.Component<IProps, IState> {
     Local.onSongEnd = this.onSongEnd;
     Local.setTime = this.setTrackTimes;
     SpotifyPlayer.onSongEnd = this.onSongEnd;
-    SpotifyPlayer.setTime = this.setTrackTimes;
+    NapsterPlayer.setTime = this.setTrackTimes;
     this.state = {
       errorCount: 0,
     };
@@ -68,7 +68,7 @@ class AudioComponent extends React.Component<IProps, IState> {
        case "spotify":
          return SpotifyPlayer;
        case "napster":
-         return napster;
+         return NapsterPlayer;
     }
     return Local;
   }
