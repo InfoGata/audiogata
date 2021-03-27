@@ -143,11 +143,14 @@ class NapsterPlayer implements IPlayerComponent, ISearchApi {
   public setTime?: (elapsed: number, total: number) => void;
   public onSongEnd?: () => void;
 
+  constructor() {
+    this.loadScripts();
+  }
+
   private loadScripts() {
     const scripts = [
       "//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js",
-      "https://api.napster.com/v2/streaming-player.js",
-      "https://cdn.jsdelivr.net/gh/Napster/napster.js@master/napster.min.js",
+      "https://cdn.jsdelivr.net/gh/Napster/napster.js@323e1d96850c5d8bb6976994b5bb93c1b0620736/napster.min.js",
     ];
 
     scripts.forEach((url) => {
