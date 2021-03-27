@@ -23,6 +23,7 @@ interface IState {
 
 class AudioComponent extends React.Component<IProps, IState> {
   private songLoaded = false;
+  private lastPlayer: IPlayerComponent | undefined;
   constructor(props: IProps) {
     super(props);
 
@@ -159,10 +160,10 @@ class AudioComponent extends React.Component<IProps, IState> {
           );
         }
       }
-      Local.pause();
-      await player.pause();
+      this.lastPlayer?.pause();
       try {
         await player.play(song);
+        this.lastPlayer = player;
         this.songLoaded = true;
         this.setState({
           errorCount: 0,
