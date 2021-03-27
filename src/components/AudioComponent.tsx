@@ -151,15 +151,6 @@ class AudioComponent extends React.Component<IProps, IState> {
   private async playSong(song: ISong, time?: number) {
     if (song.from) {
       const player = this.getPlayerFromName(song.from || "");
-      if (player.setAuth) {
-        const plugin = this.props.plugins.find((p) => p.name === player.name);
-        if (plugin && plugin.data["access_token"]) {
-          player.setAuth(
-            plugin.data["access_token"],
-            plugin.data["refresh_token"]
-          );
-        }
-      }
       this.lastPlayer?.pause();
       try {
         await player.play(song);

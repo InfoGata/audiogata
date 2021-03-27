@@ -67,13 +67,6 @@ const Search: React.FC<RouteComponentProps> = props => {
       let artists: IArtist[] | undefined = [];
       let playlists: IPlaylist[] | undefined = [];
       const api = getApiByName(searchType);
-      if (api?.setAuth) {
-        const plugin = plugins.find(p => p.name === api.name);
-        if (plugin && plugin.data["access_token"]) {
-          api.setAuth(plugin.data["access_token"]);
-          api.setAuth(plugin.data["refresh_token"]);
-        }
-      }
       if (api) {
         ({ tracks, albums, artists, playlists } = await api.searchAll(search));
       }

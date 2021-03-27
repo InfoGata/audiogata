@@ -13,5 +13,4 @@ export interface ISearchApi {
   getAlbumTracks: (album: IAlbum) => Promise<ISong[]>;
   getPlaylistTracks: (playlist: IPlaylist) => Promise<ISong[]>;
   getArtistAlbums: (artist: IArtist) => Promise<IAlbum[]>;
-  setAuth?: (accessToken: string, refreshToken?: string) => void;
 }
