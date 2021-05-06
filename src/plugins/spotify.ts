@@ -2,7 +2,6 @@ import axios from "axios";
 import { IAlbum, IArtist, IImage, IPlaylist, ISong } from "../models";
 import { ISearchApi } from "./ISearchApi";
 import { IPlayerComponent } from "./IPlayerComponent";
-import { UserManager, UserManagerSettings } from 'oidc-client';
 
 interface ISpotifyResult {
   albums: ISpotifyAlbumResult;
@@ -91,6 +90,37 @@ function albumResultToAlbum(results: ISpotifyAlbum[]): IAlbum[] {
       } as IAlbum),
   );
 }
+
+
+function generateRandomString() {
+    var array = new Uint32Array(28);
+    window.crypto.getRandomValues(array);
+    return Array.from(array, dec => ('0' + dec.toString(16)).substr(-2)).join('');
+}
+
+function sha256(plain: string) {
+    const encoder = new TextEncoder();
+    const data = encoder.encode(plain);
+    return window.crypto.subtle.digest('SHA-256', data);
+}
+
+// Base64-urlencodes the input string
+function base64urlencode(str: ArrayBuffer) {
+    // Convert the ArrayBuffer to string using Uint8 array to convert to what btoa accepts.
+    // btoa accepts chars only within ascii 0-255 and base64 encodes them.
+    // Then convert the base64 encoded to base64url encoded
+    //   (replace + with -, replace / with _, trim trailing =)
+    return btoa(String.fromCharCode.apply(null, Array.from(new Uint8Array(str))))
+        .replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+}
+
+async function pkceChallengeFromVerifier(v: string) {
+    const hashed = await sha256(v);
+    return base64urlencode(hashed);
+}
+
+
+
 class SpotifyPlayer implements IPlayerComponent, ISearchApi {
   public name = "spotify";
   private readonly apiUrl = "https://api.spotify.com/v1";
@@ -103,6 +133,8 @@ class SpotifyPlayer implements IPlayerComponent, ISearchApi {
   private interval: NodeJS.Timeout | undefined;
   private authorizeUrl = "https://accounts.spotify.com/authorize";
   private tokenUrl = "https://accounts.spotify.com/api/token";
+  private clientId = "b8f2fce4341b42e580e66a37302b358e";
+  private redirectUri = "http://localhost:3000/audio-pwa/login_popup.html";
   constructor() {
     this.deviceId = "";
     this.accessToken = "";
@@ -112,7 +144,9 @@ class SpotifyPlayer implements IPlayerComponent, ISearchApi {
   }
 
   public init() {
-    (window as any).onSpotifyWebPlaybackSDKReady = this.initializePlayer.bind(this);
+    (window as any).onSpotifyWebPlaybackSDKReady = this.initializePlayer.bind(
+      this
+    );
   }
 
   private initializePlayer = () => {
@@ -163,25 +197,21 @@ class SpotifyPlayer implements IPlayerComponent, ISearchApi {
       this.deviceId = device_id;
     });
     // Not Ready
-    player.addListener(
-      "not_ready",
-      ({ device_id }: { device_id: string }) => {
-        console.log("Device ID has gone offline", device_id);
-      }
-    );
+    player.addListener("not_ready", ({ device_id }: { device_id: string }) => {
+      console.log("Device ID has gone offline", device_id);
+    });
     // Connect to the player!
     player.connect();
   };
 
   private loadScript() {
-      const script = document.createElement('script');
-      script.id = 'spotify-player';
-      script.type = 'text/javascript';
-      script.async = false;
-      script.defer = true;
-      script.src = 'https://sdk.scdn.co/spotify-player.js';
-      document.head.appendChild(script);
-
+    const script = document.createElement("script");
+    script.id = "spotify-player";
+    script.type = "text/javascript";
+    script.async = false;
+    script.defer = true;
+    script.src = "https://sdk.scdn.co/spotify-player.js";
+    document.head.appendChild(script);
   }
 
   public async play(song: ISong) {
@@ -201,7 +231,7 @@ class SpotifyPlayer implements IPlayerComponent, ISearchApi {
           Authorization: `Bearer ${this.accessToken}`,
           "Content-Type": "application/json",
         },
-      },
+      }
     );
     this.interval = setInterval(this.updateTime, 1000);
   }
@@ -214,9 +244,9 @@ class SpotifyPlayer implements IPlayerComponent, ISearchApi {
     await fetch(`https://api.spotify.com/v1/me/player/pause`, {
       headers: {
         Authorization: `Bearer ${this.accessToken}`,
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
-      method: 'PUT',
+      method: "PUT",
     });
     if (this.interval) {
       clearInterval(this.interval);
@@ -246,23 +276,33 @@ class SpotifyPlayer implements IPlayerComponent, ISearchApi {
       return;
     }
 
-    await fetch(`https://api.spotify.com/v1/me/player/seek?position_ms=${timeInSeconds * 1000}`, {
-      headers: {
-        Authorization: `Bearer ${this.accessToken}`,
-        'Content-Type': 'application/json',
-      },
-      method: 'PUT',
-    });
+    await fetch(
+      `https://api.spotify.com/v1/me/player/seek?position_ms=${
+        timeInSeconds * 1000
+      }`,
+      {
+        headers: {
+          Authorization: `Bearer ${this.accessToken}`,
+          "Content-Type": "application/json",
+        },
+        method: "PUT",
+      }
+    );
   }
 
   public async setVolume(volume: number) {
-    await fetch(`https://api.spotify.com/v1/me/player/volume?volume_percent=${volume * 100}`, {
-      headers: {
-        Authorization: `Bearer ${this.accessToken}`,
-        'Content-Type': 'application/json',
-      },
-      method: 'PUT',
-    });
+    await fetch(
+      `https://api.spotify.com/v1/me/player/volume?volume_percent=${
+        volume * 100
+      }`,
+      {
+        headers: {
+          Authorization: `Bearer ${this.accessToken}`,
+          "Content-Type": "application/json",
+        },
+        method: "PUT",
+      }
+    );
   }
 
   private updateTime = () => {
@@ -277,7 +317,7 @@ class SpotifyPlayer implements IPlayerComponent, ISearchApi {
       return { tracks: [], albums: [], artists: [] };
     }
     const url = `${this.apiUrl}/search?q=${encodeURIComponent(
-      query,
+      query
     )}&type=album,artist,track`;
     const results = await axios.get<ISpotifyResult>(url, {
       headers: {
@@ -303,9 +343,9 @@ class SpotifyPlayer implements IPlayerComponent, ISearchApi {
       },
     });
     const tracks = trackResultToSong(results.data.items);
-    tracks.forEach(t => {
+    tracks.forEach((t) => {
       t.albumId = album.apiId;
-    })
+    });
     return tracks;
   }
 
@@ -327,23 +367,58 @@ class SpotifyPlayer implements IPlayerComponent, ISearchApi {
     return [];
   }
 
-  public async login() {
-    const settings: UserManagerSettings = {
-      authority: "https://accounts.spotify.com",
-      client_id: "b8f2fce4341b42e580e66a37302b358e",
-      response_type: "code",
-      redirect_uri: "http://localhost:3000",
-      scope: "streaming user-read-email user-read-private",
-      popup_redirect_uri: window.origin + "/audio-pwa/login_popup.html",
-      metadata: {
-        authorization_endpoint: this.authorizeUrl,
-        token_endpoint: this.tokenUrl
+  async getToken(url: URL, savedState: string, codeVerifier: string) {
+    const code = url.searchParams.get("code") || "";
+    const state = url.searchParams.get("state");
+    if (savedState !== state) {
+      return;
+    }
+
+    const params = new URLSearchParams();
+    params.append("grant_type", "authorization_code");
+    params.append("code", code);
+    params.append("client_id", this.clientId);
+    params.append("redirect_uri", this.redirectUri);
+    params.append("code_verifier", codeVerifier);
+    const result = await axios.post(this.tokenUrl, params, {
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+    });
+    return result.data;
+  }
+
+  async getPkce() {
+    const newWindow = window.open();
+    const state = generateRandomString();
+    const codeVerifier = generateRandomString();
+    const codeChallenge = await pkceChallengeFromVerifier(codeVerifier);
+    window.onmessage = async (event: MessageEvent) => {
+      if (event.source === newWindow) {
+        const url = new URL(event.data.url);
+        newWindow?.close();
+        const result = await this.getToken(url, state, codeVerifier);
+        this.accessToken = result.access_token;
+        this.loadScript();
       }
     };
-    const userManager = new UserManager(settings);
-    const user = await userManager.signinPopup();
-    this.accessToken = user.access_token;
-    this.loadScript();
+    const scopes = "streaming user-read-email user-read-private";
+    const url = `${this.authorizeUrl}?response_type=code&client_id=${encodeURIComponent(
+      this.clientId
+    )}&state=${encodeURIComponent(state)}&scope=${encodeURIComponent(
+      scopes
+    )}&redirect_uri=${encodeURIComponent(
+      this.redirectUri
+    )}&code_challenge=${encodeURIComponent(
+      codeChallenge
+    )}&code_challenge_method=S256`;
+    if (newWindow) {
+      newWindow.location.href = url;
+    }
+  }
+
+  public async login() {
+    await this.getPkce();
   }
 }
 

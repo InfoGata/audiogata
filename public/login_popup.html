@@ -10,14 +10,15 @@
         You need to enable JavaScript to run this app.
     </noscript>
 
-    <h1>Authentification callback processing...</h1>
+    <h1>Authentificating...</h1>
 
-    <script src="oidc-client.min.js"></script>
     <script>
-        new Oidc.UserManager().signinPopupCallback().then(function () {
-        }).catch(function (e) {
-            console.error(e);
-        });
+        if (window.opener) {
+            const data = {
+                url: window.location.href,
+            };
+            window.opener.postMessage(data, "*");
+        }
     </script>
 
 </body>
