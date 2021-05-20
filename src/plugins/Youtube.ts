@@ -124,16 +124,16 @@ async function searchYoutube(query: string): Promise<ISong[]> {
 
 
 async function getYoutubeTrack(song: ISong): Promise<string> {
-  const youtubeUrl = `http://www.youtube.com/watch?v=${song.apiId}`;
-  console.log(youtubeUrl);
-  const info = await ytdl.getInfo(youtubeUrl, {
+  //const youtubeUrl = `http://www.youtube.com/watch?v=${song.apiId}`;
+  //console.log(youtubeUrl);
+  const info = await ytdl.getInfo(song.apiId || "", {
     requestOptions: {
       transform: (parsed: any) => {
         parsed.protocol = "http:";
         return {
           headers: { Host: parsed.host },
           host: corsProxyUrl,
-          path: "/" + parsed.href,
+          path: "/http://youtube.com" + parsed.path,
           maxRedirects: 10,
           port: 8085,
           protocol: "http:",
@@ -142,7 +142,8 @@ async function getYoutubeTrack(song: ISong): Promise<string> {
     },
   });
   console.log(info);
-  const formatInfo = info.formats.filter(f => f.itag === 140)[0];
+  //const formatInfo = info.formats.filter(f => f.itag === 140)[0];
+  const formatInfo = ytdl.chooseFormat(info.formats, { quality: 'highestaudio' });
   return formatInfo.url;
 }
 
