@@ -124,8 +124,6 @@ async function searchYoutube(query: string): Promise<ISong[]> {
 
 
 async function getYoutubeTrack(song: ISong): Promise<string> {
-  //const youtubeUrl = `http://www.youtube.com/watch?v=${song.apiId}`;
-  //console.log(youtubeUrl);
   const info = await ytdl.getInfo(song.apiId || "", {
     requestOptions: {
       transform: (parsed: any) => {
@@ -141,7 +139,6 @@ async function getYoutubeTrack(song: ISong): Promise<string> {
       },
     },
   });
-  console.log(info);
   //const formatInfo = info.formats.filter(f => f.itag === 140)[0];
   const formatInfo = ytdl.chooseFormat(info.formats, { quality: 'highestaudio' });
   return formatInfo.url;

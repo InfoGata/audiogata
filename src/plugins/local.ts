@@ -57,6 +57,7 @@ class Local implements IPlayerComponent {
 
       this.audio.src = source;
       this.audio.load();
+      console.log("Ready State:", this.audio.readyState);
       await this.audio.play();
     }
   }
