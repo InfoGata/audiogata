@@ -46,7 +46,7 @@
     "typescript": "^4.1.2",
     "uuid": "^8.3.2",
     "web-vitals": "^1.0.1",
-    "ytdl-core": "github:TimeForANinja/node-ytdl-core#test-remove-url"
+    "ytdl-core": "^4.8.3"
   },
   "scripts": {
     "analyze": "source-map-explorer 'build/static/js/*.js'",
