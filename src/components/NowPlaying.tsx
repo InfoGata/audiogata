@@ -19,7 +19,11 @@ import {
   IconButton,
 } from "@material-ui/core";
 import { Delete, Info, PlaylistAdd } from "@material-ui/icons";
-import { clearTracks, deleteTrack, setTracks } from "../store/reducers/songReducer";
+import {
+  clearTracks,
+  deleteTrack,
+  setTracks,
+} from "../store/reducers/songReducer";
 import AddPlaylistDialog from "./AddPlaylistDialog";
 import PlaylistMenuItem from "./PlaylistMenuItem";
 import { Link } from "react-router-dom";
@@ -34,34 +38,61 @@ import {
   Draggable,
 } from "react-beautiful-dnd";
 import ReactDOM from "react-dom";
+import { db } from "../database";
 
-const rowRenderer = (songs: ISong[], openMenu: (event: React.MouseEvent<HTMLButtonElement>, song: ISong) => void) =>
+const rowRenderer =
+  (
+    songs: ISong[],
+    openMenu: (event: React.MouseEvent<HTMLButtonElement>, song: ISong) => void
+  ) =>
   (props: ListRowProps) => {
-
-  const { index, style } = props;
-  const song = songs[index];
-  return (
-    <Draggable draggableId={song.id || ""} index={index} key={song.id}>
-      {(provided: DraggableProvided) => (
-        <QueueItem song={song} style={style} openMenu={openMenu} provided={provided} />
-      )}
-    </Draggable>
-  );
-};
+    const { index, style } = props;
+    const song = songs[index];
+    return (
+      <Draggable draggableId={song.id || ""} index={index} key={song.id}>
+        {(provided: DraggableProvided) => (
+          <QueueItem
+            song={song}
+            style={style}
+            openMenu={openMenu}
+            provided={provided}
+          />
+        )}
+      </Draggable>
+    );
+  };
 
 const PlayQueue: React.FC = () => {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [menuSong, setMenuSong] = React.useState<ISong>({} as ISong);
-  const openMenu = (
+  //const [canOffline, setCanOffline] = React.useState(false);
+  //const [hasBlob, setHasBlob] = React.useState(false)
+  const openMenu = async (
     event: React.MouseEvent<HTMLButtonElement>,
     song: ISong
   ) => {
     setAnchorEl(event.currentTarget);
     setMenuSong(song);
+    // Check whether song can be played offline
+    // if (song.id && song.from) {
+    //   // Check if this needs it's own player
+    //   // Intead of being able to play locally
+    //   const playerApi = getPlayerFromName(song.from);
+    //   setCanOffline(!playerApi);
+
+    //   const primaryCount = await db.audioBlobs
+    //     .where(":id")
+    //     .equals(song.id)
+    //     .count();
+    //   setHasBlob(primaryCount > 0);
+    // }
   };
   const closeMenu = () => setAnchorEl(null);
   const songList = useSelector((state: AppState) => state.song.songs);
-  const deleteClick = () => {
+  const deleteClick = async () => {
+    if (menuSong.id) {
+      await db.audioBlobs.delete(menuSong.id);
+    }
     dispatch(deleteTrack(menuSong));
     closeMenu();
   };
@@ -102,6 +133,41 @@ const PlayQueue: React.FC = () => {
   const clearQueue = () => {
     dispatch(clearTracks())
   };
+
+  // const enablePlayingOffline = async () => {
+  //   try {
+  //     if (menuSong.from) {
+  //       const api = getFormatTrackApiFromName(menuSong.from);
+  //       const source = await api?.getTrackUrl(menuSong);
+  //       if (source) {
+  //         const data = await fetch(`${source}`);
+  //         console.log(data);
+  //       }
+  //     }
+  //   } catch(e) {
+  //     console.log(e);
+  //   }
+  //   closeMenu();
+  // }
+
+  // const disablePlayingOffline = async () => {
+  //   if (menuSong.id) {
+  //     await db.audioBlobs.delete(menuSong.id);
+  //   }
+  //   closeMenu();
+  // }
+
+  //const offlineMenuItem = canOffline ? (
+  //  hasBlob ? (
+  //    <MenuItem onClick={disablePlayingOffline}>
+  //      <ListItemText primary="Disable Playing Offline"></ListItemText>
+  //    </MenuItem>
+  //  ) : (
+  //    <MenuItem onClick={enablePlayingOffline}>
+  //      <ListItemText primary="Enable Playing Offline"></ListItemText>
+  //    </MenuItem>
+  //  )
+  //) : null;
 
   return (
     <>

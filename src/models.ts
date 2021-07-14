@@ -8,6 +8,7 @@ export interface ISong {
   albumId?: string;
   artistId?: string;
   artistName?: string;
+  hasBlob?: string;
   images: IImage[];
 }
 

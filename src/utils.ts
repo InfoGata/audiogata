@@ -5,6 +5,10 @@ import Youtube from "./plugins/Youtube";
 import thumbnail from "./thumbnail.png";
 import Spotify from "./plugins/spotify";
 import Napster from "./plugins/napster";
+import { IFormatTrackApi } from "./plugins/IFormatTrackApi";
+import SpotifyPlayer from "./plugins/spotify";
+import NapsterPlayer from "./plugins/napster";
+import { IPlayerComponent } from "./plugins/IPlayerComponent";
 
 export function formatSeconds(seconds?: number) {
   if (!seconds) {
@@ -54,6 +58,25 @@ export const getApiByName = (name: string): ISearchApi | undefined => {
       return Napster;
   }
 };
+
+export const getFormatTrackApiFromName = (name: string): IFormatTrackApi | undefined => {
+  switch (name) {
+    case "youtube":
+      return Youtube;
+    case "soundcloud":
+      return SoundCloud;
+  }
+}
+
+export const getPlayerFromName = (name: string): IPlayerComponent | undefined => {
+    switch (name) {
+      case "spotify":
+        return SpotifyPlayer;
+      case "napster":
+        return NapsterPlayer;
+  }
+  return undefined;
+}
 
 export const navbarWidth = 200;
 

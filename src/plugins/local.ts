@@ -1,7 +1,5 @@
 import { ISong } from "../models";
-import { IFormatTrackApi } from "../plugins/IFormatTrackApi";
-import SoundCloud from "../plugins/SoundCloud";
-import Youtube from "../plugins/Youtube";
+import { getFormatTrackApiFromName } from "../utils";
 import { IPlayerComponent } from "./IPlayerComponent";
 
 class Local implements IPlayerComponent {
@@ -48,7 +46,7 @@ class Local implements IPlayerComponent {
 
   public async play(song: ISong) {
     if (song.from) {
-      const formatApi = this.getFormatTrackApiFromName(song.from);
+      const formatApi = getFormatTrackApiFromName(song.from);
       let source = song.source;
 
       if (formatApi) {
@@ -57,7 +55,6 @@ class Local implements IPlayerComponent {
 
       this.audio.src = source;
       this.audio.load();
-      console.log("Ready State:", this.audio.readyState);
       await this.audio.play();
     }
   }
@@ -66,14 +63,6 @@ class Local implements IPlayerComponent {
     this.audio.currentTime = time;
   }
 
-  private getFormatTrackApiFromName(name: string): IFormatTrackApi | undefined {
-    switch (name) {
-      case "youtube":
-        return Youtube;
-      case "soundcloud":
-        return SoundCloud;
-    }
-  }
 }
 
 export default new Local();

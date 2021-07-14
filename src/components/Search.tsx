@@ -89,6 +89,7 @@ const Search: React.FC<RouteComponentProps> = props => {
   const closeMenu = () => setAnchorEl(null);
   const addSongToQueue = () => {
     dispatch(addTrack(menuSong));
+    closeMenu();
   };
   const trackList = trackResults.map(track => (
     <TrackSearchResult key={track.apiId} track={track} openMenu={openMenu} />

@@ -5058,6 +5058,11 @@
     "address" "^1.0.1"
     "debug" "^2.6.0"
 
+"dexie@^3.0.3":
+  "integrity" "sha512-BSFhGpngnCl1DOr+8YNwBDobRMH0ziJs2vts69VilwetHYOtEDcLqo7d/XiIphM0tJZ2rPPyAGd31lgH2Ln3nw=="
+  "resolved" "https://registry.npmjs.org/dexie/-/dexie-3.0.3.tgz"
+  "version" "3.0.3"
+
 "diff-sequences@^26.6.2":
   "integrity" "sha512-Mv/TDa3nZ9sbc5soK+OoA74BsS3mL37yixCvUAQkiuA4Wz6YtwP/K47n2rv2ovzHZvoiQeA5FTQOschKkEwB0Q=="
   "resolved" "https://registry.yarnpkg.com/diff-sequences/-/diff-sequences-26.6.2.tgz"
