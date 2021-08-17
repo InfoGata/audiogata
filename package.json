@@ -1,8 +1,8 @@
 {
-  "name": "audio-pwa",
+  "name": "AudioGata",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://elijahgreen.gitlab.io/audio-pwa",
+  "homepage": "https://elijahgreen.gitlab.io/audiogata",
   "dependencies": {
     "@fontsource/roboto": "^4.2.1",
     "@material-ui/core": "^4.11.3",
