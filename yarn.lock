@@ -8925,10 +8925,10 @@
     "schema-utils" "^1.0.0"
     "webpack-sources" "^1.1.0"
 
-"miniget@^4.0.0":
-  "integrity" "sha512-IzTOaNgBw/qEpzkPTE7X2cUVXQfSKbG8w52Emi93zb+Zya2ZFrbmavpixzebuDJD9Ku4ecbaFlC7Y1cEESzQtQ=="
-  "resolved" "https://registry.npmjs.org/miniget/-/miniget-4.2.0.tgz"
-  "version" "4.2.0"
+"miniget@^4.0.0", "miniget@^4.2.1":
+  "integrity" "sha512-O/DduzDR6f+oDtVype9S/Qu5hhnx73EDYGyZKwU/qN82lehFZdfhoa4DT51SpsO+8epYrB3gcRmws56ROfTIoQ=="
+  "resolved" "https://registry.npmjs.org/miniget/-/miniget-4.2.1.tgz"
+  "version" "4.2.1"
 
 "minimalistic-assert@^1.0.0", "minimalistic-assert@^1.0.1":
   "integrity" "sha512-UtJcAD4yEaGtjPezWuO9wC4nwUnVH/8/Im3yEHQP4b67cXlD/Qr9hdITCU1xDbSEXg2XKNaP8jsReV7vQd00/A=="
@@ -14064,10 +14064,10 @@
   "resolved" "https://registry.yarnpkg.com/yocto-queue/-/yocto-queue-0.1.0.tgz"
   "version" "0.1.0"
 
-"ytdl-core@^4.8.3":
-  "integrity" "sha512-cWCBeX4FCgjcKmuVK384MT582RIAakpUSeMF/NPVmhO8cWiG+LeQLnBordvLolb0iXYzfUvalgmycYAE5Sy6Xw=="
-  "resolved" "https://registry.npmjs.org/ytdl-core/-/ytdl-core-4.8.3.tgz"
-  "version" "4.8.3"
+"ytdl-core@^4.9.1":
+  "integrity" "sha512-6Jbp5RDhUEozlaJQAR+l8oV8AHsx3WUXxSyPxzE6wOIAaLql7Hjiy0ZM58wZoyj1YEenlEPjEqcJIjKYKxvHtQ=="
+  "resolved" "https://registry.npmjs.org/ytdl-core/-/ytdl-core-4.9.1.tgz"
+  "version" "4.9.1"
   dependencies:
     "m3u8stream" "^0.8.3"
     "miniget" "^4.0.0"
