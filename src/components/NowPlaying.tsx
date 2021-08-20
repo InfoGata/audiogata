@@ -38,7 +38,8 @@ import {
   Draggable,
 } from "react-beautiful-dnd";
 import ReactDOM from "react-dom";
-import { db } from "../database";
+import { AudioBlob, db } from "../database";
+import { getFormatTrackApiFromName, getPlayerFromName } from "../utils";
 
 const rowRenderer =
   (
@@ -65,8 +66,8 @@ const rowRenderer =
 const PlayQueue: React.FC = () => {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [menuSong, setMenuSong] = React.useState<ISong>({} as ISong);
-  //const [canOffline, setCanOffline] = React.useState(false);
-  //const [hasBlob, setHasBlob] = React.useState(false)
+  const [canOffline, setCanOffline] = React.useState(false);
+  const [hasBlob, setHasBlob] = React.useState(false)
   const openMenu = async (
     event: React.MouseEvent<HTMLButtonElement>,
     song: ISong
@@ -74,18 +75,19 @@ const PlayQueue: React.FC = () => {
     setAnchorEl(event.currentTarget);
     setMenuSong(song);
     // Check whether song can be played offline
-    // if (song.id && song.from) {
-    //   // Check if this needs it's own player
-    //   // Intead of being able to play locally
-    //   const playerApi = getPlayerFromName(song.from);
-    //   setCanOffline(!playerApi);
+    if (song.id && song.from) {
+      // Check if this needs it's own player
+      // Intead of being able to play locally
+      const playerApi = getPlayerFromName(song.from);
+      setCanOffline(!playerApi);
 
-    //   const primaryCount = await db.audioBlobs
-    //     .where(":id")
-    //     .equals(song.id)
-    //     .count();
-    //   setHasBlob(primaryCount > 0);
-    // }
+      const primaryCount = await db.audioBlobs
+        .where(":id")
+        .equals(song.id)
+        .count();
+      console.log(song.id);
+      setHasBlob(primaryCount > 0);
+    }
   };
   const closeMenu = () => setAnchorEl(null);
   const songList = useSelector((state: AppState) => state.song.songs);
@@ -134,40 +136,44 @@ const PlayQueue: React.FC = () => {
     dispatch(clearTracks())
   };
 
-  // const enablePlayingOffline = async () => {
-  //   try {
-  //     if (menuSong.from) {
-  //       const api = getFormatTrackApiFromName(menuSong.from);
-  //       const source = await api?.getTrackUrl(menuSong);
-  //       if (source) {
-  //         const data = await fetch(`${source}`);
-  //         console.log(data);
-  //       }
-  //     }
-  //   } catch(e) {
-  //     console.log(e);
-  //   }
-  //   closeMenu();
-  // }
+  const enablePlayingOffline = async () => {
+    try {
+      if (menuSong.from) {
+        const api = getFormatTrackApiFromName(menuSong.from);
+        const source = await api?.getTrackUrl(menuSong);
+        if (source && menuSong.id) {
+          const data = await fetch(`http://localhost:8085/${source}`);
+          const blob: AudioBlob = {
+            id: menuSong.id,
+            blob: await data.blob()
+          }
+          await db.audioBlobs.add(blob);
+        }
+      }
+    } catch(e) {
+      console.log(e);
+    }
+    closeMenu();
+  }
 
-  // const disablePlayingOffline = async () => {
-  //   if (menuSong.id) {
-  //     await db.audioBlobs.delete(menuSong.id);
-  //   }
-  //   closeMenu();
-  // }
+  const disablePlayingOffline = async () => {
+    if (menuSong.id) {
+      await db.audioBlobs.delete(menuSong.id);
+    }
+    closeMenu();
+  }
 
-  //const offlineMenuItem = canOffline ? (
-  //  hasBlob ? (
-  //    <MenuItem onClick={disablePlayingOffline}>
-  //      <ListItemText primary="Disable Playing Offline"></ListItemText>
-  //    </MenuItem>
-  //  ) : (
-  //    <MenuItem onClick={enablePlayingOffline}>
-  //      <ListItemText primary="Enable Playing Offline"></ListItemText>
-  //    </MenuItem>
-  //  )
-  //) : null;
+  const offlineMenuItem = canOffline ? (
+    hasBlob ? (
+      <MenuItem onClick={disablePlayingOffline}>
+        <ListItemText primary="Disable Playing Offline"></ListItemText>
+      </MenuItem>
+    ) : (
+      <MenuItem onClick={enablePlayingOffline}>
+        <ListItemText primary="Enable Playing Offline"></ListItemText>
+      </MenuItem>
+    )
+  ) : null;
 
   return (
     <>
@@ -238,6 +244,7 @@ const PlayQueue: React.FC = () => {
           </ListItemIcon>
           <ListItemText primary="Info" />
         </MenuItem>
+        {offlineMenuItem}
         <Divider />
         <MenuItem onClick={addToNewPlaylist}>
           <ListItemIcon>

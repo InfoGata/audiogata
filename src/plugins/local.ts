@@ -1,6 +1,7 @@
 import { ISong } from "../models";
 import { getFormatTrackApiFromName } from "../utils";
 import { IPlayerComponent } from "./IPlayerComponent";
+import { db } from "../database";
 
 class Local implements IPlayerComponent {
   public name = "local";
@@ -45,11 +46,18 @@ class Local implements IPlayerComponent {
   }
 
   public async play(song: ISong) {
-    if (song.from) {
+    if (song.from && song.id) {
       const formatApi = getFormatTrackApiFromName(song.from);
       let source = song.source;
 
-      if (formatApi) {
+      const audioBlob = await db.audioBlobs
+        .where(":id")
+        .equals(song.id)
+        .first();
+
+      if (audioBlob) {
+        source = URL.createObjectURL(audioBlob.blob);
+      } else if (formatApi) {
         source = await formatApi.getTrackUrl(song);
       }
 
