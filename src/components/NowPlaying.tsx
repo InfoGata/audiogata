@@ -1,11 +1,5 @@
 import React from "react";
 import { useSelector, useDispatch } from "react-redux";
-import {
-  AutoSizer,
-  List,
-  ListRowProps,
-  WindowScroller,
-} from "react-virtualized";
 import { ISong } from "../models";
 import { AppState, AppDispatch } from "../store/store";
 import QueueItem from "./QueueItem";
@@ -17,57 +11,21 @@ import {
   Divider,
   Typography,
   IconButton,
+  List,
 } from "@material-ui/core";
 import { Delete, Info, PlaylistAdd } from "@material-ui/icons";
-import {
-  clearTracks,
-  deleteTrack,
-  setTracks,
-} from "../store/reducers/songReducer";
+import { clearTracks, deleteTrack } from "../store/reducers/songReducer";
 import AddPlaylistDialog from "./AddPlaylistDialog";
 import PlaylistMenuItem from "./PlaylistMenuItem";
 import { Link } from "react-router-dom";
-import {
-  Droppable,
-  DragDropContext,
-  DropResult,
-  DroppableProvided,
-  DraggableStateSnapshot,
-  DraggableProvided,
-  DraggableRubric,
-  Draggable,
-} from "react-beautiful-dnd";
-import ReactDOM from "react-dom";
 import { AudioBlob, db } from "../database";
 import { getFormatTrackApiFromName, getPlayerFromName } from "../utils";
-
-const rowRenderer =
-  (
-    songs: ISong[],
-    openMenu: (event: React.MouseEvent<HTMLButtonElement>, song: ISong) => void
-  ) =>
-  (props: ListRowProps) => {
-    const { index, style } = props;
-    const song = songs[index];
-    return (
-      <Draggable draggableId={song.id || ""} index={index} key={song.id}>
-        {(provided: DraggableProvided) => (
-          <QueueItem
-            song={song}
-            style={style}
-            openMenu={openMenu}
-            provided={provided}
-          />
-        )}
-      </Draggable>
-    );
-  };
 
 const PlayQueue: React.FC = () => {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [menuSong, setMenuSong] = React.useState<ISong>({} as ISong);
   const [canOffline, setCanOffline] = React.useState(false);
-  const [hasBlob, setHasBlob] = React.useState(false)
+  const [hasBlob, setHasBlob] = React.useState(false);
   const openMenu = async (
     event: React.MouseEvent<HTMLButtonElement>,
     song: ISong
@@ -109,31 +67,31 @@ const PlayQueue: React.FC = () => {
   const playlists = useSelector((state: AppState) => state.playlist.playlists);
   const infoPath = `/track/${menuSong.id}`;
 
-  const onDragEnd = (result: DropResult) => {
-    const { destination, source, draggableId } = result;
+  //const onDragEnd = (result: DropResult) => {
+  //  const { destination, source, draggableId } = result;
 
-    if (!destination) {
-      return;
-    }
+  //  if (!destination) {
+  //    return;
+  //  }
 
-    if (
-      destination.droppableId === source.droppableId &&
-      destination.index === source.index
-    ) {
-      return;
-    }
+  //  if (
+  //    destination.droppableId === source.droppableId &&
+  //    destination.index === source.index
+  //  ) {
+  //    return;
+  //  }
 
-    const tracks = Array.from(songList);
-    const track = tracks.find((s) => s.id === draggableId);
-    if (track) {
-      tracks.splice(source.index, 1);
-      tracks.splice(destination.index, 0, track);
-      dispatch(setTracks(tracks));
-    }
-  };
+  //  const tracks = Array.from(songList);
+  //  const track = tracks.find((s) => s.id === draggableId);
+  //  if (track) {
+  //    tracks.splice(source.index, 1);
+  //    tracks.splice(destination.index, 0, track);
+  //    dispatch(setTracks(tracks));
+  //  }
+  //};
 
   const clearQueue = () => {
-    dispatch(clearTracks())
+    dispatch(clearTracks());
   };
 
   const enablePlayingOffline = async () => {
@@ -145,23 +103,23 @@ const PlayQueue: React.FC = () => {
           const data = await fetch(`http://localhost:8085/${source}`);
           const blob: AudioBlob = {
             id: menuSong.id,
-            blob: await data.blob()
-          }
+            blob: await data.blob(),
+          };
           await db.audioBlobs.add(blob);
         }
       }
-    } catch(e) {
+    } catch (e) {
       console.log(e);
     }
     closeMenu();
-  }
+  };
 
   const disablePlayingOffline = async () => {
     if (menuSong.id) {
       await db.audioBlobs.delete(menuSong.id);
     }
     closeMenu();
-  }
+  };
 
   const offlineMenuItem = canOffline ? (
     hasBlob ? (
@@ -183,54 +141,11 @@ const PlayQueue: React.FC = () => {
       <IconButton aria-label="clear" onClick={clearQueue}>
         <Delete fontSize="large" />
       </IconButton>
-      <DragDropContext onDragEnd={onDragEnd}>
-        <Droppable
-          droppableId="droppable"
-          mode="virtual"
-          renderClone={(
-            provided: DraggableProvided,
-            snapshot: DraggableStateSnapshot,
-            rubric: DraggableRubric
-          ) => (
-            <QueueItem
-              song={songList[rubric.source.index]}
-              openMenu={openMenu}
-              style={{ margin: 0 }}
-              provided={provided}
-            />
-          )}
-        >
-          {(droppableProvided: DroppableProvided) => (
-            <WindowScroller>
-              {({ height, isScrolling, onChildScroll, scrollTop }) => (
-                <AutoSizer disableHeight={true}>
-                  {({ width }) => (
-                    <List
-                      autoHeight={true}
-                      height={height}
-                      width={width}
-                      rowCount={songList.length}
-                      rowHeight={50}
-                      rowRenderer={rowRenderer(songList, openMenu)}
-                      isScrolling={isScrolling}
-                      onScroll={onChildScroll}
-                      scrollTop={scrollTop}
-                      ref={(ref) => {
-                        if (ref) {
-                          const r = ReactDOM.findDOMNode(ref);
-                          if (r instanceof HTMLElement) {
-                            droppableProvided.innerRef(r);
-                          }
-                        }
-                      }}
-                    />
-                  )}
-                </AutoSizer>
-              )}
-            </WindowScroller>
-          )}
-        </Droppable>
-      </DragDropContext>
+      <List dense={true}>
+        {songList.map((songInfo) => (
+          <QueueItem key={songInfo.id} song={songInfo} openMenu={openMenu} />
+        ))}
+      </List>
       <Menu open={Boolean(anchorEl)} onClose={closeMenu} anchorEl={anchorEl}>
         <MenuItem onClick={deleteClick}>
           <ListItemIcon>
