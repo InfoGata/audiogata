@@ -6,14 +6,14 @@ import {
   Typography,
   ListItemSecondaryAction,
   IconButton,
-} from "@material-ui/core";
+} from "@mui/material";
 import React from "react";
 import { useDispatch } from "react-redux";
 import { ISong } from "../models";
 import { addTrack, setTrack } from "../store/reducers/songReducer";
 import { AppDispatch } from "../store/store";
 import { getThumbnailImage, searchThumbnailSize } from "../utils";
-import { MoreHoriz } from "@material-ui/icons";
+import { MoreHoriz } from "@mui/icons-material";
 
 interface ITrackResultProps {
   track: ISong;
@@ -47,7 +47,7 @@ const TrackSearchResult: React.FC<ITrackResultProps> = props => {
         }
       />
       <ListItemSecondaryAction>
-        <IconButton onClick={openSongMenu}>
+        <IconButton onClick={openSongMenu} size="large">
           <MoreHoriz />
         </IconButton>
       </ListItemSecondaryAction>

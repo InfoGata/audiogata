@@ -1,4 +1,4 @@
-import { Button, List, RootRef } from "@material-ui/core";
+import { Button, List,  } from "@mui/material";
 import React from "react";
 import { DragDropContext, Droppable, DropResult } from "react-beautiful-dnd";
 import { useDispatch, useSelector } from "react-redux";
@@ -61,7 +61,7 @@ const Playlist: React.FC<IProps> = props => {
       <DragDropContext onDragEnd={onDragEnd}>
         <Droppable droppableId="playlist">
           {provided => (
-            <RootRef rootRef={provided.innerRef}>
+            <>
               <List>
                 {playlist.songs.map((song, index) => (
                   <PlaylistItem
@@ -73,7 +73,7 @@ const Playlist: React.FC<IProps> = props => {
                   />
                 ))}
               </List>
-            </RootRef>
+            </>
           )}
         </Droppable>
       </DragDropContext>

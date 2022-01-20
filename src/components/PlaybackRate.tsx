@@ -1,12 +1,12 @@
-import { IconButton, Popover, Slider } from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
-import { SlowMotionVideo } from "@material-ui/icons";
+import { IconButton, Popover, Slider } from "@mui/material";
+import makeStyles from "@mui/styles/makeStyles";
+import { SlowMotionVideo } from "@mui/icons-material";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setPlaybackRate } from "../store/reducers/songReducer";
 import { AppDispatch, AppState } from "../store/store";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   rateBar: {
     height: "100px",
     padding: theme.spacing(1),
@@ -17,16 +17,13 @@ const PlaybackRate: React.FC = () => {
   const classes = useStyles();
   const dispatch = useDispatch<AppDispatch>();
   const playbackRate = useSelector(
-    (state: AppState) => state.song.playbackRate,
+    (state: AppState) => state.song.playbackRate
   );
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(
-    null,
+    null
   );
 
-  const onPlaybackRate = (
-    _: React.ChangeEvent<{}>,
-    newRate: number | number[],
-  ) => {
+  const onPlaybackRate = (_: Event, newRate: number | number[]) => {
     const actualRate = (newRate as number) / 100;
     dispatch(setPlaybackRate(actualRate));
   };

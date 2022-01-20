@@ -8,13 +8,13 @@ import {
   ListItemIcon,
   IconButton,
   Typography
-} from "@material-ui/core";
+} from "@mui/material";
 import React from "react";
 import { useSelector } from "react-redux";
 import { IPlaylist } from "../models";
 import { AppState, AppDispatch } from "../store/store";
 import { Link } from "react-router-dom";
-import { Delete, MoreHoriz } from "@material-ui/icons";
+import { Delete, MoreHoriz } from "@mui/icons-material";
 import { deletePlaylist } from "../store/reducers/playlistReducer";
 import { useDispatch } from "react-redux";
 
@@ -33,7 +33,7 @@ const PlaylistsItem: React.FC<IPlaylistsItemProps> = props => {
     <ListItem button={true} component={Link} to={playlistPath}>
       <ListItemText>{props.playlist.name}</ListItemText>
       <ListItemSecondaryAction>
-        <IconButton onClick={openPlaylistMenu}>
+        <IconButton onClick={openPlaylistMenu} size="large">
           <MoreHoriz />
         </IconButton>
       </ListItemSecondaryAction>

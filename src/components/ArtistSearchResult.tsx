@@ -3,7 +3,7 @@ import {
   ListItem,
   ListItemAvatar,
   ListItemText,
-} from "@material-ui/core";
+} from "@mui/material";
 import React from "react";
 import { IAlbum, IArtist } from "../models";
 import { getApiByName, getThumbnailImage, searchThumbnailSize } from "../utils";

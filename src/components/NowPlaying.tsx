@@ -12,8 +12,8 @@ import {
   Typography,
   IconButton,
   List,
-} from "@material-ui/core";
-import { Delete, Info, PlaylistAdd } from "@material-ui/icons";
+} from "@mui/material";
+import { Delete, Info, PlaylistAdd } from "@mui/icons-material";
 import { clearTracks, deleteTrack } from "../store/reducers/songReducer";
 import AddPlaylistDialog from "./AddPlaylistDialog";
 import PlaylistMenuItem from "./PlaylistMenuItem";
@@ -133,55 +133,53 @@ const PlayQueue: React.FC = () => {
     )
   ) : null;
 
-  return (
-    <>
-      <Typography variant="h5" gutterBottom>
-        Now Playing
-      </Typography>
-      <IconButton aria-label="clear" onClick={clearQueue}>
-        <Delete fontSize="large" />
-      </IconButton>
-      <List dense={true}>
-        {songList.map((songInfo) => (
-          <QueueItem key={songInfo.id} song={songInfo} openMenu={openMenu} />
-        ))}
-      </List>
-      <Menu open={Boolean(anchorEl)} onClose={closeMenu} anchorEl={anchorEl}>
-        <MenuItem onClick={deleteClick}>
-          <ListItemIcon>
-            <Delete />
-          </ListItemIcon>
-          <ListItemText primary="Delete" />
-        </MenuItem>
-        <MenuItem component={Link} to={infoPath}>
-          <ListItemIcon>
-            <Info />
-          </ListItemIcon>
-          <ListItemText primary="Info" />
-        </MenuItem>
-        {offlineMenuItem}
-        <Divider />
-        <MenuItem onClick={addToNewPlaylist}>
-          <ListItemIcon>
-            <PlaylistAdd />
-          </ListItemIcon>
-          <ListItemText primary="Add To New Playlist" />
-        </MenuItem>
-        {playlists.map((p) => (
-          <PlaylistMenuItem
-            key={p.id}
-            playlist={p}
-            songs={[menuSong]}
-            closeMenu={closeMenu}
-          />
-        ))}
-      </Menu>
-      <AddPlaylistDialog
-        songs={[menuSong]}
-        open={dialogOpen}
-        handleClose={closeDialog}
-      />
-    </>
-  );
+  return <>
+    <Typography variant="h5" gutterBottom>
+      Now Playing
+    </Typography>
+    <IconButton aria-label="clear" onClick={clearQueue} size="large">
+      <Delete fontSize="large" />
+    </IconButton>
+    <List dense={true}>
+      {songList.map((songInfo) => (
+        <QueueItem key={songInfo.id} song={songInfo} openMenu={openMenu} />
+      ))}
+    </List>
+    <Menu open={Boolean(anchorEl)} onClose={closeMenu} anchorEl={anchorEl}>
+      <MenuItem onClick={deleteClick}>
+        <ListItemIcon>
+          <Delete />
+        </ListItemIcon>
+        <ListItemText primary="Delete" />
+      </MenuItem>
+      <MenuItem component={Link} to={infoPath}>
+        <ListItemIcon>
+          <Info />
+        </ListItemIcon>
+        <ListItemText primary="Info" />
+      </MenuItem>
+      {offlineMenuItem}
+      <Divider />
+      <MenuItem onClick={addToNewPlaylist}>
+        <ListItemIcon>
+          <PlaylistAdd />
+        </ListItemIcon>
+        <ListItemText primary="Add To New Playlist" />
+      </MenuItem>
+      {playlists.map((p) => (
+        <PlaylistMenuItem
+          key={p.id}
+          playlist={p}
+          songs={[menuSong]}
+          closeMenu={closeMenu}
+        />
+      ))}
+    </Menu>
+    <AddPlaylistDialog
+      songs={[menuSong]}
+      open={dialogOpen}
+      handleClose={closeDialog}
+    />
+  </>;
 };
 export default React.memo(PlayQueue);

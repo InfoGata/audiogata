@@ -1,5 +1,5 @@
-import { ListItemIcon, ListItemText, MenuItem } from "@material-ui/core";
-import { PlaylistAdd } from "@material-ui/icons";
+import { ListItemIcon, ListItemText, MenuItem } from "@mui/material";
+import { PlaylistAdd } from "@mui/icons-material";
 import React from "react";
 import { useDispatch } from "react-redux";
 import { IPlaylist, ISong } from "../models";

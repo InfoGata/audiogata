@@ -1,5 +1,7 @@
-import Drawer from "@material-ui/core/Drawer";
-import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
+import Drawer from "@mui/material/Drawer";
+import { Theme } from "@mui/material/styles";
+import createStyles from '@mui/styles/createStyles';
+import makeStyles from '@mui/styles/makeStyles';
 import clsx from "clsx";
 import React from "react";
 import { useSelector } from "react-redux";

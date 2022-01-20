@@ -1,4 +1,4 @@
-import { ListItem, ListItemText, Typography } from "@material-ui/core";
+import { ListItem, ListItemText, Typography } from "@mui/material";
 import React from "react";
 import { Draggable } from "react-beautiful-dnd";
 import { useDispatch } from "react-redux";

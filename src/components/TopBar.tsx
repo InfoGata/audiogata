@@ -5,15 +5,12 @@ import {
   InputBase,
   Toolbar,
   Typography,
-} from "@material-ui/core";
-import {
-  createStyles,
-  fade,
-  makeStyles,
-  Theme,
-} from "@material-ui/core/styles";
-import { Menu, Search } from "@material-ui/icons";
-import { Clear } from "@material-ui/icons";
+} from "@mui/material";
+import { alpha, Theme } from "@mui/material/styles";
+import createStyles from "@mui/styles/createStyles";
+import makeStyles from "@mui/styles/makeStyles";
+import { Menu, Search } from "@mui/icons-material";
+import { Clear } from "@mui/icons-material";
 import React from "react";
 import { useDispatch } from "react-redux";
 import { RouteComponentProps, withRouter } from "react-router";
@@ -41,9 +38,9 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     search: {
       "&:hover": {
-        backgroundColor: fade(theme.palette.common.white, 0.25),
+        backgroundColor: alpha(theme.palette.common.white, 0.25),
       },
-      backgroundColor: fade(theme.palette.common.white, 0.15),
+      backgroundColor: alpha(theme.palette.common.white, 0.15),
       borderRadius: theme.shape.borderRadius,
       marginLeft: 0,
       marginRight: theme.spacing(2),
@@ -68,10 +65,10 @@ const useStyles = makeStyles((theme: Theme) =>
         display: "block",
       },
     },
-  }),
+  })
 );
 
-const TopBar: React.FC<RouteComponentProps> = props => {
+const TopBar: React.FC<RouteComponentProps> = (props) => {
   const classes = useStyles();
   const dispatch = useDispatch<AppDispatch>();
   const onToggleNavbar = () => dispatch(toggleNavbar());
@@ -89,14 +86,14 @@ const TopBar: React.FC<RouteComponentProps> = props => {
   };
 
   return (
-    <AppBar position="fixed" color="default" className={classes.appBar}>
+    <AppBar position="fixed" className={classes.appBar}>
       <Toolbar>
         <IconButton
           edge="start"
           className={classes.menuButton}
-          color="inherit"
           aria-label="open drawer"
           onClick={onToggleNavbar}
+          size="large"
         >
           <Menu />
         </IconButton>

@@ -1,4 +1,4 @@
-import { IconButton } from "@material-ui/core";
+import { IconButton } from "@mui/material";
 import {
   Pause,
   PlayArrow,
@@ -6,7 +6,7 @@ import {
   Shuffle,
   SkipNext,
   SkipPrevious,
-} from "@material-ui/icons";
+} from "@mui/icons-material";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {

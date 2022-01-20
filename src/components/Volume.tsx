@@ -1,12 +1,12 @@
-import { IconButton, Popover, Slider } from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
-import { VolumeOff, VolumeUp } from "@material-ui/icons";
+import { IconButton, Popover, Slider } from "@mui/material";
+import makeStyles from "@mui/styles/makeStyles";
+import { VolumeOff, VolumeUp } from "@mui/icons-material";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setVolume } from "../store/reducers/songReducer";
 import { AppDispatch, AppState } from "../store/store";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   volumeBar: {
     height: "100px",
     padding: theme.spacing(1),
@@ -19,14 +19,11 @@ const Volume: React.FC = () => {
   const muted = useSelector((state: AppState) => state.song.mute);
   const volume = useSelector((state: AppState) => state.song.volume);
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(
-    null,
+    null
   );
 
   // const onToggleMute = () => dispatch(toggleMute());
-  const onVolumeChange = (
-    _: React.ChangeEvent<{}>,
-    newVolume: number | number[],
-  ) => {
+  const onVolumeChange = (_: Event, newVolume: number | number[]) => {
     const actualVolume = (newVolume as number) / 100;
     dispatch(setVolume(actualVolume));
   };

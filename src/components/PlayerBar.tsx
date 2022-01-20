@@ -1,5 +1,5 @@
-import { AppBar, Grid, Toolbar, Typography } from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
+import { AppBar, Grid, Toolbar, Typography } from "@mui/material";
+import makeStyles from "@mui/styles/makeStyles";
 import React from "react";
 import { useSelector } from "react-redux";
 import { AppState } from "../store/store";
@@ -9,7 +9,7 @@ import Progress from "./Progress";
 
 const thumbnailSize = 75;
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   bottomAppBar: {
     bottom: 0,
     top: "auto",
@@ -52,11 +52,11 @@ const PlayerBar: React.FC = () => {
 
   const image = getThumbnailImage(
     currentSong && currentSong.images,
-    thumbnailSize,
+    thumbnailSize
   );
 
   return (
-    <AppBar position="fixed" color="default" className={classes.bottomAppBar}>
+    <AppBar position="fixed" className={classes.bottomAppBar}>
       <Toolbar className={classes.toolbar} disableGutters={true}>
         <Grid container={true} spacing={1}>
           <Grid item={true} sm={2} xs={3}>

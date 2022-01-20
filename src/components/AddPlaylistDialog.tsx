@@ -6,7 +6,7 @@ import {
   DialogContentText,
   DialogTitle,
   TextField,
-} from "@material-ui/core";
+} from "@mui/material";
 import React from "react";
 import { useDispatch } from "react-redux";
 import { IPlaylist, ISong } from "../models";
@@ -19,7 +19,7 @@ interface IProps {
   handleClose: () => void;
 }
 
-const AddPlaylistDialog: React.FC<IProps> = props => {
+const AddPlaylistDialog: React.FC<IProps> = (props) => {
   const { open, handleClose } = props;
   const [name, setName] = React.useState("");
   const dispatch = useDispatch<AppDispatch>();
@@ -60,12 +60,8 @@ const AddPlaylistDialog: React.FC<IProps> = props => {
           />
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose} color="primary">
-            Cancel
-          </Button>
-          <Button  color="primary">
-            Add Playlist
-          </Button>
+          <Button onClick={handleClose}>Cancel</Button>
+          <Button>Add Playlist</Button>
         </DialogActions>
       </Dialog>
     </form>

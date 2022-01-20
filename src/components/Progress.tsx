@@ -1,4 +1,4 @@
-import { Grid, Slider, Typography } from "@material-ui/core";
+import { Grid, Slider, Typography } from "@mui/material";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { seek } from "../store/reducers/songReducer";
@@ -13,7 +13,7 @@ const Progress: React.FC = () => {
   const seekTime = useSelector((state: AppState) => state.song.seekTime);
   const dispatch = useDispatch<AppDispatch>();
 
-  const onChange = (_: React.ChangeEvent<{}>, value: number | number[]) => {
+  const onChange = (_: Event, value: number | number[]) => {
     setIsDragging(true);
     setNewElapsed(value as number);
   };

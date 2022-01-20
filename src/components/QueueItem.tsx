@@ -4,42 +4,34 @@ import {
   ListItemSecondaryAction,
   ListItemText,
   Typography,
-} from "@material-ui/core";
-import { MoreHoriz } from "@material-ui/icons";
+} from "@mui/material";
+import { MoreHoriz } from "@mui/icons-material";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { ISong } from "../models";
 import { setTrack } from "../store/reducers/songReducer";
 import { AppDispatch, AppState } from "../store/store";
-import { DraggableProvided } from "react-beautiful-dnd";
 
 interface IProps {
   song: ISong;
-  style: object;
-  provided: DraggableProvided,
   openMenu: (event: React.MouseEvent<HTMLButtonElement>, song: ISong) => void;
 }
 
-const QueueItem: React.FC<IProps> = props => {
-  const { song, style, openMenu, provided } = props;
+const QueueItem: React.FC<IProps> = (props) => {
+  const { song, openMenu } = props;
   const currentSong = useSelector((state: AppState) => state.song.currentSong);
   const dispatch = useDispatch<AppDispatch>();
   const playListClick = () => dispatch(setTrack(song));
   const openSongMenu = (event: React.MouseEvent<HTMLButtonElement>) => {
     openMenu(event, song);
-  }
+  };
 
   return (
     <ListItem
-    ref={provided.innerRef}
-    {...provided.draggableProps}
-    {...provided.dragHandleProps}
       button={true}
       key={song.id}
-      ContainerProps={{ style: style }}
       selected={currentSong && currentSong.id === song.id}
       onClick={playListClick}
-      ContainerComponent="div"
     >
       <ListItemText
         disableTypography={true}
@@ -51,7 +43,7 @@ const QueueItem: React.FC<IProps> = props => {
         }
       />
       <ListItemSecondaryAction>
-        <IconButton onClick={openSongMenu}>
+        <IconButton onClick={openSongMenu} size="large">
           <MoreHoriz />
         </IconButton>
       </ListItemSecondaryAction>

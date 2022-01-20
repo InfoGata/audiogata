@@ -1,4 +1,4 @@
-import { List, ListItem, ListItemIcon, ListItemText } from "@material-ui/core";
+import { List, ListItem, ListItemIcon, ListItemText } from "@mui/material";
 import {
   Extension,
   Home,
@@ -7,7 +7,7 @@ import {
   PlaylistPlay,
   SettingsApplications,
   Sync,
-} from "@material-ui/icons";
+} from "@mui/icons-material";
 import React from "react";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";

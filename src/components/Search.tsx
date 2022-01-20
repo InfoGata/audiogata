@@ -1,4 +1,15 @@
-import { AppBar, Box, List, Tab, Tabs, Typography, Menu, MenuItem, ListItemIcon, ListItemText } from "@material-ui/core";
+import {
+  AppBar,
+  Box,
+  List,
+  Tab,
+  Tabs,
+  Typography,
+  Menu,
+  MenuItem,
+  ListItemIcon,
+  ListItemText,
+} from "@mui/material";
 import React, { useEffect } from "react";
 import { RouteComponentProps } from "react-router";
 import { IAlbum, IArtist, IPlaylist, ISong } from "../models";
@@ -7,7 +18,7 @@ import AlbumSearchResult from "./AlbumSearchResult";
 import ArtistSearchResult from "./ArtistSearchResult";
 import PlaylistSearchResult from "./PlaylistSearchResult";
 import TrackSearchResult from "./TrackSearchResult";
-import { PlaylistPlay } from "@material-ui/icons";
+import { PlaylistPlay } from "@mui/icons-material";
 import PlaylistMenuItem from "./PlaylistMenuItem";
 import { useSelector } from "react-redux";
 import { AppDispatch, AppState } from "../store/store";
@@ -37,7 +48,7 @@ function TabPanel(props: ITabPanelProps) {
   );
 }
 
-const Search: React.FC<RouteComponentProps> = props => {
+const Search: React.FC<RouteComponentProps> = (props) => {
   const [searchType, setSearchType] = React.useState("youtube");
   const [trackResults, setTrackResults] = React.useState<ISong[]>([]);
   const [albumResults, setAlbumResults] = React.useState<IAlbum[]>([]);
@@ -82,7 +93,10 @@ const Search: React.FC<RouteComponentProps> = props => {
     }
   }, [props.location.search, searchType, plugins]);
 
-  const openMenu = (event: React.MouseEvent<HTMLButtonElement>, song: ISong) => {
+  const openMenu = (
+    event: React.MouseEvent<HTMLButtonElement>,
+    song: ISong
+  ) => {
     setAnchorEl(event.currentTarget);
     setMenuSong(song);
   };
@@ -91,10 +105,10 @@ const Search: React.FC<RouteComponentProps> = props => {
     dispatch(addTrack(menuSong));
     closeMenu();
   };
-  const trackList = trackResults.map(track => (
+  const trackList = trackResults.map((track) => (
     <TrackSearchResult key={track.apiId} track={track} openMenu={openMenu} />
   ));
-  const albumList = albumResults.map(album => (
+  const albumList = albumResults.map((album) => (
     <AlbumSearchResult
       key={album.apiId}
       album={album}
@@ -102,7 +116,7 @@ const Search: React.FC<RouteComponentProps> = props => {
       setTrackResults={setTrackResults}
     />
   ));
-  const artistList = artistResults.map(artist => (
+  const artistList = artistResults.map((artist) => (
     <ArtistSearchResult
       key={artist.apiId}
       artist={artist}
@@ -110,7 +124,7 @@ const Search: React.FC<RouteComponentProps> = props => {
       setAlbumResults={setAlbumResults}
     />
   ));
-  const playlistList = playlistResults.map(playlist => (
+  const playlistList = playlistResults.map((playlist) => (
     <PlaylistSearchResult
       key={playlist.apiId}
       playlist={playlist}
@@ -129,7 +143,7 @@ const Search: React.FC<RouteComponentProps> = props => {
         <option value="spotify">Spotify</option>
         <option value="napster">Napster</option>
       </select>
-      <AppBar position="static" color="default">
+      <AppBar position="static">
         <Tabs
           value={tabValue}
           onChange={handleChange}
@@ -166,7 +180,7 @@ const Search: React.FC<RouteComponentProps> = props => {
           </ListItemIcon>
           <ListItemText primary="Add To Queue" />
         </MenuItem>
-        {playlists.map(p => (
+        {playlists.map((p) => (
           <PlaylistMenuItem
             key={p.id}
             playlist={p}
