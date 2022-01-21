@@ -1,15 +1,15 @@
 import { AppBar, Grid, Toolbar, Typography } from "@mui/material";
-import makeStyles from "@mui/styles/makeStyles";
 import React from "react";
 import { useSelector } from "react-redux";
 import { AppState } from "../store/store";
 import { getThumbnailImage } from "../utils";
 import Controls from "./Controls";
 import Progress from "./Progress";
+import { makeStyles } from "tss-react/mui";
 
 const thumbnailSize = 75;
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles()((theme) => ({
   bottomAppBar: {
     bottom: 0,
     top: "auto",
@@ -47,7 +47,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const PlayerBar: React.FC = () => {
-  const classes = useStyles();
+  const { classes } = useStyles();
   const currentSong = useSelector((state: AppState) => state.song.currentSong);
 
   const image = getThumbnailImage(

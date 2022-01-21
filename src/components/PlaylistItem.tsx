@@ -13,7 +13,7 @@ interface IProps {
   playlist: IPlaylist;
 }
 
-const PlaylistItem: React.FC<IProps> = props => {
+const PlaylistItem: React.FC<IProps> = (props) => {
   const { song, index, currentSong, playlist } = props;
   const dispatch = useDispatch<AppDispatch>();
   const playSong = () => {
@@ -22,7 +22,7 @@ const PlaylistItem: React.FC<IProps> = props => {
   };
   return (
     <Draggable key={song.id} draggableId={song.id || ""} index={index}>
-      {provided => (
+      {(provided) => (
         <div
           ref={provided.innerRef}
           {...provided.draggableProps}

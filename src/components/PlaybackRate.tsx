@@ -1,12 +1,12 @@
 import { IconButton, Popover, Slider } from "@mui/material";
-import makeStyles from "@mui/styles/makeStyles";
 import { SlowMotionVideo } from "@mui/icons-material";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setPlaybackRate } from "../store/reducers/songReducer";
 import { AppDispatch, AppState } from "../store/store";
+import { makeStyles } from "tss-react/mui";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles()((theme) => ({
   rateBar: {
     height: "100px",
     padding: theme.spacing(1),
@@ -14,7 +14,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const PlaybackRate: React.FC = () => {
-  const classes = useStyles();
+  const { classes } = useStyles();
   const dispatch = useDispatch<AppDispatch>();
   const playbackRate = useSelector(
     (state: AppState) => state.song.playbackRate

@@ -1,4 +1,4 @@
-import { Button, List,  } from "@mui/material";
+import { Button, List } from "@mui/material";
 import React from "react";
 import { DragDropContext, Droppable, DropResult } from "react-beautiful-dnd";
 import { useDispatch, useSelector } from "react-redux";
@@ -14,10 +14,10 @@ interface IParams {
 
 interface IProps extends RouteComponentProps<IParams> {}
 
-const Playlist: React.FC<IProps> = props => {
+const Playlist: React.FC<IProps> = (props) => {
   const dispatch = useDispatch<AppDispatch>();
   const playlist = useSelector((state: AppState) =>
-    state.playlist.playlists.find(p => p.id === props.match.params.id),
+    state.playlist.playlists.find((p) => p.id === props.match.params.id)
   );
   const currentSong = useSelector((state: AppState) => state.song.currentSong);
 
@@ -46,7 +46,7 @@ const Playlist: React.FC<IProps> = props => {
 
     if (playlist) {
       const tracks = Array.from(playlist.songs);
-      const track = tracks.find(s => s.id === draggableId);
+      const track = tracks.find((s) => s.id === draggableId);
       if (track) {
         tracks.splice(source.index, 1);
         tracks.splice(destination.index, 0, track);
@@ -60,7 +60,7 @@ const Playlist: React.FC<IProps> = props => {
       <Button onClick={playPlaylist}>Play</Button>
       <DragDropContext onDragEnd={onDragEnd}>
         <Droppable droppableId="playlist">
-          {provided => (
+          {(provided) => (
             <>
               <List>
                 {playlist.songs.map((song, index) => (

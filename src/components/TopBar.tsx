@@ -7,8 +7,6 @@ import {
   Typography,
 } from "@mui/material";
 import { alpha, Theme } from "@mui/material/styles";
-import createStyles from "@mui/styles/createStyles";
-import makeStyles from "@mui/styles/makeStyles";
 import { Menu, Search } from "@mui/icons-material";
 import { Clear } from "@mui/icons-material";
 import React from "react";
@@ -16,60 +14,59 @@ import { useDispatch } from "react-redux";
 import { RouteComponentProps, withRouter } from "react-router";
 import { toggleNavbar } from "../store/reducers/uiReducer";
 import { AppDispatch } from "../store/store";
+import { makeStyles } from "tss-react/mui";
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    appBar: {
-      zIndex: theme.zIndex.drawer + 1,
+const useStyles = makeStyles()((theme: Theme) => ({
+  appBar: {
+    zIndex: theme.zIndex.drawer + 1,
+  },
+  inputInput: {
+    padding: theme.spacing(1, 1, 1, 7),
+    transition: theme.transitions.create("width"),
+    width: "100%",
+    [theme.breakpoints.up("md")]: {
+      width: 200,
     },
-    inputInput: {
-      padding: theme.spacing(1, 1, 1, 7),
-      transition: theme.transitions.create("width"),
-      width: "100%",
-      [theme.breakpoints.up("md")]: {
-        width: 200,
-      },
+  },
+  inputRoot: {
+    color: "inherit",
+  },
+  menuButton: {
+    marginRight: theme.spacing(2),
+  },
+  search: {
+    "&:hover": {
+      backgroundColor: alpha(theme.palette.common.white, 0.25),
     },
-    inputRoot: {
-      color: "inherit",
+    backgroundColor: alpha(theme.palette.common.white, 0.15),
+    borderRadius: theme.shape.borderRadius,
+    marginLeft: 0,
+    marginRight: theme.spacing(2),
+    position: "relative",
+    [theme.breakpoints.up("sm")]: {
+      marginLeft: theme.spacing(3),
+      width: "auto",
     },
-    menuButton: {
-      marginRight: theme.spacing(2),
+  },
+  searchIcon: {
+    alignItems: "center",
+    display: "flex",
+    height: "100%",
+    justifyContent: "center",
+    pointerEvents: "none",
+    position: "absolute",
+    width: theme.spacing(7),
+  },
+  title: {
+    display: "none",
+    [theme.breakpoints.up("sm")]: {
+      display: "block",
     },
-    search: {
-      "&:hover": {
-        backgroundColor: alpha(theme.palette.common.white, 0.25),
-      },
-      backgroundColor: alpha(theme.palette.common.white, 0.15),
-      borderRadius: theme.shape.borderRadius,
-      marginLeft: 0,
-      marginRight: theme.spacing(2),
-      position: "relative",
-      [theme.breakpoints.up("sm")]: {
-        marginLeft: theme.spacing(3),
-        width: "auto",
-      },
-    },
-    searchIcon: {
-      alignItems: "center",
-      display: "flex",
-      height: "100%",
-      justifyContent: "center",
-      pointerEvents: "none",
-      position: "absolute",
-      width: theme.spacing(7),
-    },
-    title: {
-      display: "none",
-      [theme.breakpoints.up("sm")]: {
-        display: "block",
-      },
-    },
-  })
-);
+  },
+}));
 
 const TopBar: React.FC<RouteComponentProps> = (props) => {
-  const classes = useStyles();
+  const { classes } = useStyles();
   const dispatch = useDispatch<AppDispatch>();
   const onToggleNavbar = () => dispatch(toggleNavbar());
   const [search, setSearch] = React.useState("");

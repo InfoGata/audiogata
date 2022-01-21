@@ -1,4 +1,4 @@
-import { createTheme, ThemeProvider, Theme, StyledEngineProvider, adaptV4Theme } from "@mui/material/styles";
+import { createTheme, ThemeProvider, Theme } from "@mui/material/styles";
 import React from "react";
 import ReactDOM from "react-dom";
 import { Provider } from "react-redux";
@@ -8,29 +8,35 @@ import App from "./App";
 import "./index.css";
 import store, { persistor } from "./store/store";
 import reportWebVitals from "./reportWebVitals";
+import { CacheProvider } from "@emotion/react";
+import createCache from "@emotion/cache";
+import "@mui/styles";
 
+export const muiCache = createCache({
+  key: "mui",
+  prepend: true,
+});
 
-declare module '@mui/styles/defaultTheme' {
+declare module "@mui/styles" {
   // eslint-disable-next-line @typescript-eslint/no-empty-interface
   interface DefaultTheme extends Theme {}
 }
 
-
-const theme = createTheme(adaptV4Theme({
+const theme = createTheme({
   palette: {
     mode: "dark",
   },
-}));
+});
 
 ReactDOM.render(
   <React.StrictMode>
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
-        <StyledEngineProvider injectFirst>
+        <CacheProvider value={muiCache}>
           <ThemeProvider theme={theme}>
             <App />
           </ThemeProvider>
-        </StyledEngineProvider>
+        </CacheProvider>
       </PersistGate>
     </Provider>
   </React.StrictMode>,
