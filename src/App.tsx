@@ -1,5 +1,4 @@
-import { CssBaseline } from "@mui/material";
-import { makeStyles } from "tss-react/mui";
+import { Box, CssBaseline } from "@mui/material";
 import React from "react";
 import { BrowserRouter as Router } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
@@ -10,26 +9,18 @@ import Routes from "./components/Routes";
 import SideBar from "./components/SideBar";
 import TopBar from "./components/TopBar";
 
-const useStyles = makeStyles()({
-  root: {
-    display: "flex",
-    minHeight: "100vh",
-  },
-});
-
 const App: React.FC = () => {
-  const { classes } = useStyles();
   return (
     <Router basename="/audio-pwa">
       <ToastContainer position={toast.POSITION.BOTTOM_LEFT} />
-      <div className={classes.root}>
+      <Box sx={{ display: "flex" }}>
         <CssBaseline />
         <TopBar />
         <SideBar />
         <Routes />
         <PlayerBar />
         <AudioComponent />
-      </div>
+      </Box>
     </Router>
   );
 };

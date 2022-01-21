@@ -1,7 +1,5 @@
 import React from "react";
-import { useSelector } from "react-redux";
 import { Route } from "react-router-dom";
-import { AppState } from "../store/store";
 import Home from "./Home";
 import NowPlaying from "./NowPlaying";
 import Playlist from "./Playlist";
@@ -11,23 +9,8 @@ import Search from "./Search";
 import Settings from "./Settings";
 import Sync from "./Sync";
 import QueueTrackInfo from "./QueueTrackInfo";
-import { makeStyles } from "tss-react/mui";
 import { styled } from "@mui/material/styles";
-
-const useStyles = makeStyles()((theme) => ({
-  content: {
-    flexGrow: 1,
-    padding: theme.spacing(1),
-    width: "100%",
-  },
-  contentShift: {
-    marginLeft: 0,
-    transition: theme.transitions.create("margin", {
-      duration: theme.transitions.duration.enteringScreen,
-      easing: theme.transitions.easing.easeOut,
-    }),
-  },
-}));
+import { Box } from "@mui/material";
 
 const DrawerHeader = styled("div")(({ theme }) => ({
   display: "flex",
@@ -39,14 +22,8 @@ const DrawerHeader = styled("div")(({ theme }) => ({
 }));
 
 const Routes: React.FC = () => {
-  const { classes, cx } = useStyles();
-  const navbarOpen = useSelector((state: AppState) => state.ui.navbarOpen);
   return (
-    <main
-      className={cx(classes.content, {
-        [classes.contentShift]: navbarOpen,
-      })}
-    >
+    <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
       <DrawerHeader />
       <Route exact={true} path="/" component={Home} />
       <Route path="/nowplaying" component={NowPlaying} />
@@ -58,7 +35,7 @@ const Routes: React.FC = () => {
       <Route path="/search" component={Search} />
       <Route path="/track/:id" component={QueueTrackInfo} />
       <DrawerHeader />
-    </main>
+    </Box>
   );
 };
 
