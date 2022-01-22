@@ -1,20 +1,12 @@
-import { IconButton, Popover, Slider } from "@mui/material";
+import { IconButton, Popover, Slider, Box, useTheme } from "@mui/material";
 import { SlowMotionVideo } from "@mui/icons-material";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setPlaybackRate } from "../store/reducers/songReducer";
 import { AppDispatch, AppState } from "../store/store";
-import { makeStyles } from "tss-react/mui";
-
-const useStyles = makeStyles()((theme) => ({
-  rateBar: {
-    height: "100px",
-    padding: theme.spacing(1),
-  },
-}));
 
 const PlaybackRate: React.FC = () => {
-  const { classes } = useStyles();
+  const theme = useTheme();
   const dispatch = useDispatch<AppDispatch>();
   const playbackRate = useSelector(
     (state: AppState) => state.song.playbackRate
@@ -57,7 +49,7 @@ const PlaybackRate: React.FC = () => {
           vertical: "bottom",
         }}
       >
-        <div className={classes.rateBar}>
+        <Box sx={{ height: "100px", padding: theme.spacing(1) }}>
           <Slider
             orientation="vertical"
             aria-labelledby="vertical-slider"
@@ -67,7 +59,7 @@ const PlaybackRate: React.FC = () => {
             onChange={onPlaybackRate}
           />
           {currentRate} %
-        </div>
+        </Box>
       </Popover>
     </>
   );

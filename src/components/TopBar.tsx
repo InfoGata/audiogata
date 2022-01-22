@@ -6,7 +6,7 @@ import {
   Toolbar,
   Typography,
 } from "@mui/material";
-import { alpha, Theme } from "@mui/material/styles";
+import { alpha, styled, useTheme } from "@mui/material/styles";
 import { Menu, Search } from "@mui/icons-material";
 import { Clear } from "@mui/icons-material";
 import React from "react";
@@ -14,59 +14,49 @@ import { useDispatch } from "react-redux";
 import { RouteComponentProps, withRouter } from "react-router";
 import { toggleNavbar } from "../store/reducers/uiReducer";
 import { AppDispatch } from "../store/store";
-import { makeStyles } from "tss-react/mui";
 
-const useStyles = makeStyles()((theme: Theme) => ({
-  appBar: {
-    zIndex: theme.zIndex.drawer + 1,
+const SearchBar = styled("div")(({ theme }) => ({
+  position: "relative",
+  borderRadius: theme.shape.borderRadius,
+  backgroundColor: alpha(theme.palette.common.white, 0.15),
+  "&:hover": {
+    backgroundColor: alpha(theme.palette.common.white, 0.25),
   },
-  inputInput: {
-    padding: theme.spacing(1, 1, 1, 7),
+  marginRight: theme.spacing(2),
+  marginLeft: 0,
+  width: "100%",
+  [theme.breakpoints.up("sm")]: {
+    marginLeft: theme.spacing(3),
+    width: "auto",
+  },
+}));
+
+const SearchIconWrapper = styled("div")(({ theme }) => ({
+  padding: theme.spacing(0, 2),
+  height: "100%",
+  position: "absolute",
+  pointerEvents: "none",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+}));
+
+const StyledInputBase = styled(InputBase)(({ theme }) => ({
+  color: "inherit",
+  "& .MuiInputBase-input": {
+    padding: theme.spacing(1, 1, 1, 0),
+    // vertical padding + font size from searchIcon
+    paddingLeft: `calc(1em + ${theme.spacing(4)})`,
     transition: theme.transitions.create("width"),
     width: "100%",
     [theme.breakpoints.up("md")]: {
-      width: 200,
-    },
-  },
-  inputRoot: {
-    color: "inherit",
-  },
-  menuButton: {
-    marginRight: theme.spacing(2),
-  },
-  search: {
-    "&:hover": {
-      backgroundColor: alpha(theme.palette.common.white, 0.25),
-    },
-    backgroundColor: alpha(theme.palette.common.white, 0.15),
-    borderRadius: theme.shape.borderRadius,
-    marginLeft: 0,
-    marginRight: theme.spacing(2),
-    position: "relative",
-    [theme.breakpoints.up("sm")]: {
-      marginLeft: theme.spacing(3),
-      width: "auto",
-    },
-  },
-  searchIcon: {
-    alignItems: "center",
-    display: "flex",
-    height: "100%",
-    justifyContent: "center",
-    pointerEvents: "none",
-    position: "absolute",
-    width: theme.spacing(7),
-  },
-  title: {
-    display: "none",
-    [theme.breakpoints.up("sm")]: {
-      display: "block",
+      width: "20ch",
     },
   },
 }));
 
 const TopBar: React.FC<RouteComponentProps> = (props) => {
-  const { classes } = useStyles();
+  const theme = useTheme();
   const dispatch = useDispatch<AppDispatch>();
   const onToggleNavbar = () => dispatch(toggleNavbar());
   const [search, setSearch] = React.useState("");
@@ -78,36 +68,36 @@ const TopBar: React.FC<RouteComponentProps> = (props) => {
     props.history.push(`/search?q=${search}`);
     event.preventDefault();
   };
-  const onClearSearch = (event: React.ChangeEvent<{}>) => {
+  const onClearSearch = (_: React.ChangeEvent<{}>) => {
     setSearch("");
   };
 
   return (
-    <AppBar position="fixed" className={classes.appBar}>
+    <AppBar position="fixed" sx={{ zIndex: theme.zIndex.drawer + 1 }}>
       <Toolbar>
         <IconButton
           edge="start"
-          className={classes.menuButton}
           aria-label="open drawer"
           onClick={onToggleNavbar}
           size="large"
+          sx={{ mr: 2 }}
         >
           <Menu />
         </IconButton>
-        <Typography className={classes.title} variant="h6" noWrap={true}>
+        <Typography
+          variant="h6"
+          noWrap={true}
+          sx={{ display: { xs: "none", sm: "block" } }}
+        >
           Audio PWA
         </Typography>
         <form onSubmit={handleSubmit}>
-          <div className={classes.search}>
-            <div className={classes.searchIcon}>
+          <SearchBar>
+            <SearchIconWrapper>
               <Search />
-            </div>
-            <InputBase
+            </SearchIconWrapper>
+            <StyledInputBase
               placeholder="Search…"
-              classes={{
-                input: classes.inputInput,
-                root: classes.inputRoot,
-              }}
               inputProps={{ "aria-label": "search" }}
               onChange={onSearchChange}
               value={search}
@@ -120,7 +110,7 @@ const TopBar: React.FC<RouteComponentProps> = (props) => {
                 </InputAdornment>
               }
             />
-          </div>
+          </SearchBar>
         </form>
       </Toolbar>
     </AppBar>

@@ -1,20 +1,12 @@
-import { IconButton, Popover, Slider } from "@mui/material";
+import { IconButton, Popover, Slider, Box, useTheme } from "@mui/material";
 import { VolumeOff, VolumeUp } from "@mui/icons-material";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setVolume } from "../store/reducers/songReducer";
 import { AppDispatch, AppState } from "../store/store";
-import { makeStyles } from "tss-react/mui";
-
-const useStyles = makeStyles()((theme) => ({
-  volumeBar: {
-    height: "100px",
-    padding: theme.spacing(1),
-  },
-}));
 
 const Volume: React.FC = () => {
-  const { classes } = useStyles();
+  const theme = useTheme();
   const dispatch = useDispatch<AppDispatch>();
   const muted = useSelector((state: AppState) => state.song.mute);
   const volume = useSelector((state: AppState) => state.song.volume);
@@ -22,7 +14,6 @@ const Volume: React.FC = () => {
     null
   );
 
-  // const onToggleMute = () => dispatch(toggleMute());
   const onVolumeChange = (_: Event, newVolume: number | number[]) => {
     const actualVolume = (newVolume as number) / 100;
     dispatch(setVolume(actualVolume));
@@ -57,7 +48,7 @@ const Volume: React.FC = () => {
           vertical: "bottom",
         }}
       >
-        <div className={classes.volumeBar}>
+        <Box sx={{ height: "100px", padding: theme.spacing(1) }}>
           <Slider
             orientation="vertical"
             aria-labelledby="vertical-slider"
@@ -66,7 +57,7 @@ const Volume: React.FC = () => {
             value={volume * 100}
             onChange={onVolumeChange}
           />
-        </div>
+        </Box>
       </Popover>
     </>
   );

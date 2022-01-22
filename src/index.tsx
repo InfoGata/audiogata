@@ -8,14 +8,7 @@ import App from "./App";
 import "./index.css";
 import store, { persistor } from "./store/store";
 import reportWebVitals from "./reportWebVitals";
-import { CacheProvider } from "@emotion/react";
-import createCache from "@emotion/cache";
 import "@mui/styles";
-
-export const muiCache = createCache({
-  key: "mui",
-  prepend: true,
-});
 
 declare module "@mui/styles" {
   // eslint-disable-next-line @typescript-eslint/no-empty-interface
@@ -32,11 +25,9 @@ ReactDOM.render(
   <React.StrictMode>
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
-        <CacheProvider value={muiCache}>
-          <ThemeProvider theme={theme}>
-            <App />
-          </ThemeProvider>
-        </CacheProvider>
+        <ThemeProvider theme={theme}>
+          <App />
+        </ThemeProvider>
       </PersistGate>
     </Provider>
   </React.StrictMode>,
