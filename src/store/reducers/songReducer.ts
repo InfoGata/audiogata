@@ -1,5 +1,4 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { v4 as uuid } from "uuid";
+import { createSlice, nanoid, PayloadAction } from "@reduxjs/toolkit";
 import { ISong } from "../../models";
 
 interface ISongState {
@@ -44,7 +43,7 @@ const songSlice = createSlice({
   initialState,
   reducers: {
     addTrack(state, action: PayloadAction<ISong>): ISongState {
-      const id = uuid();
+      const id = nanoid();
       action.payload.id = id;
       return {
         ...state,
@@ -59,7 +58,7 @@ const songSlice = createSlice({
       };
     },
     deleteTrack(state, action: PayloadAction<ISong>): ISongState {
-      const newPlaylist = state.songs.filter(s => s.id !== action.payload.id);
+      const newPlaylist = state.songs.filter((s) => s.id !== action.payload.id);
       let currentSong = state.currentSong;
       if (currentSong && currentSong.id === action.payload.id) {
         currentSong = undefined;
@@ -76,7 +75,7 @@ const songSlice = createSlice({
       let index = -1;
       if (state.currentSong) {
         const prevSong = state.currentSong;
-        index = state.songs.findIndex(s => s.id === prevSong.id);
+        index = state.songs.findIndex((s) => s.id === prevSong.id);
       }
       let newIndex = index + 1;
       if (state.shuffle) {
@@ -120,7 +119,7 @@ const songSlice = createSlice({
       let index = -1;
       if (state.currentSong) {
         const prevSong = state.currentSong;
-        index = state.songs.findIndex(s => s.id === prevSong.id);
+        index = state.songs.findIndex((s) => s.id === prevSong.id);
       }
       let newIndex = index - 1;
       if (newIndex < 0) {
@@ -211,7 +210,7 @@ const songSlice = createSlice({
         shuffleList: [],
       };
     },
-  }
+  },
 });
 
 export const {
