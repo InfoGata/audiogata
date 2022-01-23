@@ -2390,11 +2390,6 @@
   dependencies:
     "source-map" "^0.6.1"
 
-"@types/uuid@^8.3.0":
-  "integrity" "sha512-eQ9qFW/fhfGJF8WKHGEHZEyVWfZxrT+6CLIJGBcZPfxUh/+BnEj+UCGYMlr9qZuX/2AltsvwrGqp0LhEW8D0zQ=="
-  "resolved" "https://registry.npmjs.org/@types/uuid/-/uuid-8.3.0.tgz"
-  "version" "8.3.0"
-
 "@types/webpack-env@^1.16.0":
   "integrity" "sha512-Fx+NpfOO0CpeYX2g9bkvX8O5qh9wrU1sOF4g8sft4Mu7z+qfe387YlyY8w8daDyDsKY5vUxM0yxkAYnbkRbZEw=="
   "resolved" "https://registry.npmjs.org/@types/webpack-env/-/webpack-env-1.16.0.tgz"
@@ -2757,7 +2752,7 @@
   "resolved" "https://registry.npmjs.org/acorn-walk/-/acorn-walk-7.2.0.tgz"
   "version" "7.2.0"
 
-"acorn@^6.0.0 || ^7.0.0 || ^8.0.0", "acorn@^7.1.0", "acorn@^7.1.1", "acorn@^7.4.0", "acorn@^7.4.1":
+"acorn@^6.0.0 || ^7.0.0 || ^8.0.0", "acorn@^7.1.0", "acorn@^7.1.1", "acorn@^7.4.0":
   "integrity" "sha512-nQyp0o1/mNdbTO1PO6kHkwSrmgZ0MT/jCCpNiwbUjGoRN4dlBhqJtoQuCnEOKzgTVwg0ZWiCoQy6SxMebQVh8A=="
   "resolved" "https://registry.yarnpkg.com/acorn/-/acorn-7.4.1.tgz"
   "version" "7.4.1"
@@ -4454,7 +4449,7 @@
   "resolved" "https://registry.npmjs.org/core-js/-/core-js-2.6.12.tgz"
   "version" "2.6.12"
 
-"core-js@^3.6.5", "core-js@^3.8.3":
+"core-js@^3.6.5":
   "integrity" "sha512-vVl8j8ph6tRS3B8qir40H7yw7voy17xL0piAjlbBUsH7WIfzoedL/ZOr1OV9FyZQLWXsayOJyV4tnRyXR85/ag=="
   "resolved" "https://registry.npmjs.org/core-js/-/core-js-3.20.3.tgz"
   "version" "3.20.3"
@@ -4563,11 +4558,6 @@
     "public-encrypt" "^4.0.0"
     "randombytes" "^2.0.0"
     "randomfill" "^1.0.3"
-
-"crypto-js@^4.0.0":
-  "integrity" "sha512-bzHZN8Pn+gS7DQA6n+iUmBfl0hO5DJq++QP3U6uTucDtk/0iGpXd/Gg7CGR0p8tJhofJyaKoWBuJI4eAO00BBg=="
-  "resolved" "https://registry.npmjs.org/crypto-js/-/crypto-js-4.0.0.tgz"
-  "version" "4.0.0"
 
 "crypto-random-string@^1.0.0":
   "integrity" "sha1-ojD2T1aDEOFJgAmUB5DsmVRbyn4="
@@ -9461,17 +9451,6 @@
   "resolved" "https://registry.npmjs.org/obuf/-/obuf-1.1.2.tgz"
   "version" "1.1.2"
 
-"oidc-client@^1.11.5":
-  "integrity" "sha512-LcKrKC8Av0m/KD/4EFmo9Sg8fSQ+WFJWBrmtWd+tZkNn3WT/sQG3REmPANE9tzzhbjW6VkTNy4xhAXCfPApAOg=="
-  "resolved" "https://registry.npmjs.org/oidc-client/-/oidc-client-1.11.5.tgz"
-  "version" "1.11.5"
-  dependencies:
-    "acorn" "^7.4.1"
-    "base64-js" "^1.5.1"
-    "core-js" "^3.8.3"
-    "crypto-js" "^4.0.0"
-    "serialize-javascript" "^4.0.0"
-
 "on-finished@~2.3.0":
   "integrity" "sha1-IPEzZIGwg811M3mSoWlxqi2QaUc="
   "resolved" "https://registry.yarnpkg.com/on-finished/-/on-finished-2.3.0.tgz"
@@ -13299,7 +13278,7 @@
   "resolved" "https://registry.npmjs.org/uuid/-/uuid-3.4.0.tgz"
   "version" "3.4.0"
 
-"uuid@^8.3.0", "uuid@^8.3.2":
+"uuid@^8.3.0":
   "integrity" "sha512-+NYs2QeMWy+GWFOEm9xnn6HCDp0l7QBD7ml8zLUmJ+93Q5NF0NocErnwkTkXVFNiX3/fpC6afS8Dhb/gz7R7eg=="
   "resolved" "https://registry.npmjs.org/uuid/-/uuid-8.3.2.tgz"
   "version" "8.3.2"

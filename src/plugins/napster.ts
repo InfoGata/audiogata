@@ -2,7 +2,6 @@ import axios from "axios";
 import { IAlbum, IArtist, IImage, IPlaylist, ISong } from "../models";
 import { ISearchApi } from "../plugins/ISearchApi";
 import { IPlayerComponent } from "./IPlayerComponent";
-import { UserManager, UserManagerSettings } from 'oidc-client';
 
 declare var Napster: any;
 
@@ -47,12 +46,12 @@ interface INapsterTrack {
 
 const apiKey = "N2Q4YzVkYzctNjBiMi00YjBhLTkxNTAtOWRiNGM5YWE3OWRj";
 const path = "https://api.napster.com/v2.2";
-const napsterOauthUrl = `https://api.napster.com/oauth/authorize`;
+//const napsterOauthUrl = `https://api.napster.com/oauth/authorize`;
 
 async function searchTracks(query: string) {
-  const url = `${path}/search?apikey=${
-    apiKey
-    }&query=${encodeURIComponent(query)}&type=track`;
+  const url = `${path}/search?apikey=${apiKey}&query=${encodeURIComponent(
+    query
+  )}&type=track`;
   try {
     const results = await axios.get<INapsterResult>(url);
     const tracks = results.data.search.data.tracks;
@@ -63,9 +62,9 @@ async function searchTracks(query: string) {
 }
 
 async function searchArtists(query: string) {
-  const url = `${path}/search?apikey=${
-    apiKey
-    }&query=${encodeURIComponent(query)}&type=artist`;
+  const url = `${path}/search?apikey=${apiKey}&query=${encodeURIComponent(
+    query
+  )}&type=artist`;
   try {
     const results = await axios.get<INapsterResult>(url);
     const artists = results.data.search.data.artists;
@@ -76,9 +75,9 @@ async function searchArtists(query: string) {
 }
 
 async function searchAlbums(query: string) {
-  const url = `${path}/search?apikey=${
-    apiKey
-    }&query=${encodeURIComponent(query)}&type=album`;
+  const url = `${path}/search?apikey=${apiKey}&query=${encodeURIComponent(
+    query
+  )}&type=album`;
   try {
     const results = await axios.get<INapsterResult>(url);
     const albums = results.data.search.data.albums;
@@ -90,40 +89,40 @@ async function searchAlbums(query: string) {
 
 function albumResultToAlbum(results: INapsterAlbum[]): IAlbum[] {
   return results.map(
-    r =>
+    (r) =>
       ({
         apiId: r.id.toString(),
         artistId: r.contributingArtists.primaryArtist,
         artistName: r.artistName,
         from: "napster",
         name: r.name,
-      } as IAlbum),
+      } as IAlbum)
   );
 }
 
 function aristResultToArtist(results: INapsterArtist[]): IArtist[] {
   return results.map(
-    r =>
+    (r) =>
       ({
         apiId: r.id.toString(),
         from: "napster",
         name: r.name,
-      } as IArtist),
+      } as IArtist)
   );
 }
 
 function getImages(albumId: string): IImage[] {
   const sizes = [70, 170, 200, 300, 500];
-  return sizes.map(s => ({
+  return sizes.map((s) => ({
     height: s,
     url: `https://api.napster.com/imageserver/v2/albums/${albumId}/images/${s}x${s}.jpg`,
-    width: s
+    width: s,
   }));
 }
 
 function trackResultToSong(results: INapsterTrack[]): ISong[] {
   return results.map(
-    r =>
+    (r) =>
       ({
         albumId: r.albumId,
         apiId: r.id,
@@ -133,7 +132,7 @@ function trackResultToSong(results: INapsterTrack[]): ISong[] {
         from: "napster",
         images: getImages(r.albumId),
         name: r.name,
-      } as ISong),
+      } as ISong)
   );
 }
 
@@ -154,7 +153,7 @@ class NapsterPlayer implements IPlayerComponent, ISearchApi {
     ];
 
     scripts.forEach((url) => {
-      const script = document.createElement('script');
+      const script = document.createElement("script");
       script.type = "text/javascript";
       script.async = false;
       script.defer = true;
@@ -163,8 +162,7 @@ class NapsterPlayer implements IPlayerComponent, ISearchApi {
     });
   }
 
-  public init() {
-  }
+  public init() {}
 
   public initalizePlayer(accessToken: string, refreshToken?: string) {
     //this.loadScripts();
@@ -195,7 +193,6 @@ class NapsterPlayer implements IPlayerComponent, ISearchApi {
         }
       });
     });
-
   }
 
   public async play(song: ISong) {
@@ -206,7 +203,6 @@ class NapsterPlayer implements IPlayerComponent, ISearchApi {
   public pause() {
     try {
       Napster.player.pause();
-
     } catch {}
   }
 
@@ -223,7 +219,7 @@ class NapsterPlayer implements IPlayerComponent, ISearchApi {
       Napster.player.setVolume(volume);
     }
   }
-  
+
   public async searchAll(query: string) {
     const [tracks, albums, artists] = await Promise.all([
       searchTracks(query),
@@ -231,12 +227,10 @@ class NapsterPlayer implements IPlayerComponent, ISearchApi {
       searchArtists(query),
     ]);
     return { tracks, albums, artists };
-  };
+  }
 
   public async getAlbumTracks(album: IAlbum) {
-    const url = `${path}/albums/${album.apiId}/tracks?apikey=${
-      apiKey
-      }`;
+    const url = `${path}/albums/${album.apiId}/tracks?apikey=${apiKey}`;
     try {
       const results = await axios.get<INapsterData>(url);
       const tracks = results.data.tracks;
@@ -244,12 +238,10 @@ class NapsterPlayer implements IPlayerComponent, ISearchApi {
     } catch {
       return [];
     }
-  };
+  }
 
   public async getArtistAlbums(artist: IArtist) {
-    const url = `${path}/artists/${artist.apiId}/albums/top?apikey=${
-      apiKey
-      }`;
+    const url = `${path}/artists/${artist.apiId}/albums/top?apikey=${apiKey}`;
     try {
       const results = await axios.get<INapsterData>(url);
       const albums = results.data.albums;
@@ -260,28 +252,28 @@ class NapsterPlayer implements IPlayerComponent, ISearchApi {
   }
 
   public async getPlaylistTracks(_playlist: IPlaylist) {
-    return []
+    return [];
   }
 
   public async login(clientId: string, secretKey: string) {
-    const settings: UserManagerSettings = {
-      authority: "https://api.napster.com",
-      client_id: clientId,
-      client_secret: secretKey,
-      response_type: "code",
-      redirect_uri: "http://localhost:3000",
-      popup_redirect_uri: window.origin + "/audio-pwa/login_popup.html",
-      metadata: {
-        authorization_endpoint: napsterOauthUrl,
-        token_endpoint: "https://api.napster.com/oauth/access_token",
-        userinfo_endpoint: "https://api.napster.com/v2.2/me/account",
-      },
-    };
-    try {
-      const userManager = new UserManager(settings);
-      const user = await userManager.signinPopup();
-      this.initalizePlayer(user.access_token, user.refresh_token);
-    } catch {}
+    //const settings: UserManagerSettings = {
+    //  authority: "https://api.napster.com",
+    //  client_id: clientId,
+    //  client_secret: secretKey,
+    //  response_type: "code",
+    //  redirect_uri: "http://localhost:3000",
+    //  popup_redirect_uri: window.origin + "/audio-pwa/login_popup.html",
+    //  metadata: {
+    //    authorization_endpoint: napsterOauthUrl,
+    //    token_endpoint: "https://api.napster.com/oauth/access_token",
+    //    userinfo_endpoint: "https://api.napster.com/v2.2/me/account",
+    //  },
+    //};
+    //try {
+    //  const userManager = new UserManager(settings);
+    //  const user = await userManager.signinPopup();
+    //  this.initalizePlayer(user.access_token, user.refresh_token);
+    //} catch {}
   }
 }
 
