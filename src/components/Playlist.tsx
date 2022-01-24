@@ -1,9 +1,7 @@
 import { Button, List } from "@mui/material";
 import React from "react";
-import { DragDropContext, Droppable, DropResult } from "react-beautiful-dnd";
 import { useDispatch, useSelector } from "react-redux";
 import { RouteComponentProps } from "react-router";
-import { setSongs } from "../store/reducers/playlistReducer";
 import { setTrack, setTracks } from "../store/reducers/songReducer";
 import { AppDispatch, AppState } from "../store/store";
 import PlaylistItem from "./PlaylistItem";
@@ -31,52 +29,44 @@ const Playlist: React.FC<IProps> = (props) => {
     dispatch(setTracks(playlist.songs));
   };
 
-  const onDragEnd = (result: DropResult) => {
-    const { destination, source, draggableId } = result;
-    if (!destination) {
-      return;
-    }
+  //const onDragEnd = (result: DropResult) => {
+  //  const { destination, source, draggableId } = result;
+  //  if (!destination) {
+  //    return;
+  //  }
 
-    if (
-      destination.droppableId === source.droppableId &&
-      destination.index === source.index
-    ) {
-      return;
-    }
+  //  if (
+  //    destination.droppableId === source.droppableId &&
+  //    destination.index === source.index
+  //  ) {
+  //    return;
+  //  }
 
-    if (playlist) {
-      const tracks = Array.from(playlist.songs);
-      const track = tracks.find((s) => s.id === draggableId);
-      if (track) {
-        tracks.splice(source.index, 1);
-        tracks.splice(destination.index, 0, track);
-        dispatch(setSongs(props.match.params.id, tracks));
-      }
-    }
-  };
+  //  if (playlist) {
+  //    const tracks = Array.from(playlist.songs);
+  //    const track = tracks.find((s) => s.id === draggableId);
+  //    if (track) {
+  //      tracks.splice(source.index, 1);
+  //      tracks.splice(destination.index, 0, track);
+  //      dispatch(setSongs(props.match.params.id, tracks));
+  //    }
+  //  }
+  //};
   return playlist ? (
     <>
       <div>{playlist.name}</div>
       <Button onClick={playPlaylist}>Play</Button>
-      <DragDropContext onDragEnd={onDragEnd}>
-        <Droppable droppableId="playlist">
-          {(provided) => (
-            <>
-              <List>
-                {playlist.songs.map((song, index) => (
-                  <PlaylistItem
-                    key={song.id}
-                    index={index}
-                    song={song}
-                    currentSong={currentSong}
-                    playlist={playlist}
-                  />
-                ))}
-              </List>
-            </>
-          )}
-        </Droppable>
-      </DragDropContext>
+      <List>
+        {playlist.songs.map((song, index) => (
+          <PlaylistItem
+            key={song.id}
+            index={index}
+            song={song}
+            currentSong={currentSong}
+            playlist={playlist}
+          />
+        ))}
+      </List>
     </>
   ) : (
     <>Not Found</>
