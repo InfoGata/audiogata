@@ -61,7 +61,7 @@ const AddPlaylistDialog: React.FC<IProps> = (props) => {
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>Cancel</Button>
-          <Button>Add Playlist</Button>
+          <Button onClick={confirm}>Add Playlist</Button>
         </DialogActions>
       </Dialog>
     </form>
