@@ -1152,6 +1152,37 @@
   "resolved" "https://registry.npmjs.org/@csstools/normalize.css/-/normalize.css-10.1.0.tgz"
   "version" "10.1.0"
 
+"@dnd-kit/accessibility@^3.0.0":
+  "integrity" "sha512-QwaQ1IJHQHMMuAGOOYHQSx7h7vMZPfO97aDts8t5N/MY7n2QTDSnW+kF7uRQ1tVBkr6vJ+BqHWG5dlgGvwVjow=="
+  "resolved" "https://registry.npmjs.org/@dnd-kit/accessibility/-/accessibility-3.0.0.tgz"
+  "version" "3.0.0"
+  dependencies:
+    "tslib" "^2.0.0"
+
+"@dnd-kit/core@^5.0.0", "@dnd-kit/core@^5.0.1":
+  "integrity" "sha512-h02GyHb2KqbpqbELA9QW5WVLdnAQODgZs8Nv15PTg/VpEpQxEkLPn0QHqiMSSOOFBx0qJOowwYh6ggfL1ZIJPQ=="
+  "resolved" "https://registry.npmjs.org/@dnd-kit/core/-/core-5.0.1.tgz"
+  "version" "5.0.1"
+  dependencies:
+    "@dnd-kit/accessibility" "^3.0.0"
+    "@dnd-kit/utilities" "^3.1.0"
+    "tslib" "^2.0.0"
+
+"@dnd-kit/sortable@^6.0.0":
+  "integrity" "sha512-Kf0HO/rbFpd7HxXGEvxXtxBgPI6+IQuxRXDdFz6XKLhylxuDMEomi1netrhS+253KrOZ68V+sjqOmfE2RreLeQ=="
+  "resolved" "https://registry.npmjs.org/@dnd-kit/sortable/-/sortable-6.0.0.tgz"
+  "version" "6.0.0"
+  dependencies:
+    "@dnd-kit/utilities" "^3.1.0"
+    "tslib" "^2.0.0"
+
+"@dnd-kit/utilities@^3.1.0":
+  "integrity" "sha512-2JBdIgjJ7xjMRpKagdMuYKWJdDoVVw9Wc6lfMrLjrq8t4QlMEjtsab5JVUlzWvHgANn7w3Y3VhalFfbp4dQrKg=="
+  "resolved" "https://registry.npmjs.org/@dnd-kit/utilities/-/utilities-3.1.0.tgz"
+  "version" "3.1.0"
+  dependencies:
+    "tslib" "^2.0.0"
+
 "@emotion/babel-plugin@^11.3.0":
   "integrity" "sha512-6mGSCWi9UzXut/ZAN6lGFu33wGR3SJisNl3c0tvlmb8XChH1b2SUvxvnOh7hvLpqyRdHHU9AiazV3Cwbk5SXKQ=="
   "resolved" "https://registry.npmjs.org/@emotion/babel-plugin/-/babel-plugin-11.7.2.tgz"
@@ -10882,7 +10913,7 @@
     "shell-quote" "^1.6.1"
     "ws" "^7"
 
-"react-dom@*", "react-dom@^17.0.0", "react-dom@^17.0.1", "react-dom@>=16", "react-dom@>=16.6.0":
+"react-dom@*", "react-dom@^17.0.0", "react-dom@^17.0.1", "react-dom@>=16", "react-dom@>=16.6.0", "react-dom@>=16.8.0":
   "integrity" "sha512-6eV150oJZ9U2t9svnsspTMrWNyHc6chX0KzDeAOXftRa8bNeOKTTfCJ7KorIwenkHd2xqVTBTCZd79yk/lx/Ug=="
   "resolved" "https://registry.yarnpkg.com/react-dom/-/react-dom-17.0.1.tgz"
   "version" "17.0.1"

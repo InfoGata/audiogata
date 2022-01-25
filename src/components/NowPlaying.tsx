@@ -12,14 +12,33 @@ import {
   Typography,
   IconButton,
   List,
+  ListItem,
 } from "@mui/material";
 import { Delete, Info, PlaylistAdd } from "@mui/icons-material";
-import { clearTracks, deleteTrack } from "../store/reducers/songReducer";
+import {
+  clearTracks,
+  deleteTrack,
+  setTracks,
+} from "../store/reducers/songReducer";
 import AddPlaylistDialog from "./AddPlaylistDialog";
 import PlaylistMenuItem from "./PlaylistMenuItem";
 import { Link } from "react-router-dom";
 import { AudioBlob, db } from "../database";
 import { getFormatTrackApiFromName, getPlayerFromName } from "../utils";
+import {
+  DndContext,
+  DragEndEvent,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+} from "@dnd-kit/core";
+import {
+  sortableKeyboardCoordinates,
+  SortableContext,
+  arrayMove,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
 
 const PlayQueue: React.FC = () => {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -67,29 +86,6 @@ const PlayQueue: React.FC = () => {
   const playlists = useSelector((state: AppState) => state.playlist.playlists);
   const infoPath = `/track/${menuSong.id}`;
 
-  //const onDragEnd = (result: DropResult) => {
-  //  const { destination, source, draggableId } = result;
-
-  //  if (!destination) {
-  //    return;
-  //  }
-
-  //  if (
-  //    destination.droppableId === source.droppableId &&
-  //    destination.index === source.index
-  //  ) {
-  //    return;
-  //  }
-
-  //  const tracks = Array.from(songList);
-  //  const track = tracks.find((s) => s.id === draggableId);
-  //  if (track) {
-  //    tracks.splice(source.index, 1);
-  //    tracks.splice(destination.index, 0, track);
-  //    dispatch(setTracks(tracks));
-  //  }
-  //};
-
   const clearQueue = () => {
     dispatch(clearTracks());
   };
@@ -133,53 +129,81 @@ const PlayQueue: React.FC = () => {
     )
   ) : null;
 
-  return <>
-    <Typography variant="h5" gutterBottom>
-      Now Playing
-    </Typography>
-    <IconButton aria-label="clear" onClick={clearQueue} size="large">
-      <Delete fontSize="large" />
-    </IconButton>
-    <List dense={true}>
-      {songList.map((songInfo) => (
-        <QueueItem key={songInfo.id} song={songInfo} openMenu={openMenu} />
-      ))}
-    </List>
-    <Menu open={Boolean(anchorEl)} onClose={closeMenu} anchorEl={anchorEl}>
-      <MenuItem onClick={deleteClick}>
-        <ListItemIcon>
-          <Delete />
-        </ListItemIcon>
-        <ListItemText primary="Delete" />
-      </MenuItem>
-      <MenuItem component={Link} to={infoPath}>
-        <ListItemIcon>
-          <Info />
-        </ListItemIcon>
-        <ListItemText primary="Info" />
-      </MenuItem>
-      {offlineMenuItem}
-      <Divider />
-      <MenuItem onClick={addToNewPlaylist}>
-        <ListItemIcon>
-          <PlaylistAdd />
-        </ListItemIcon>
-        <ListItemText primary="Add To New Playlist" />
-      </MenuItem>
-      {playlists.map((p) => (
-        <PlaylistMenuItem
-          key={p.id}
-          playlist={p}
-          songs={[menuSong]}
-          closeMenu={closeMenu}
-        />
-      ))}
-    </Menu>
-    <AddPlaylistDialog
-      songs={[menuSong]}
-      open={dialogOpen}
-      handleClose={closeDialog}
-    />
-  </>;
+  const handleDragOver = (event: DragEndEvent) => {
+    const { active, over } = event;
+    const oldIndex = songList.findIndex((item) => item.id === active.id);
+    const newIndex = songList.findIndex((item) => item.id === over?.id);
+    const newList = arrayMove(songList, oldIndex, newIndex);
+    dispatch(setTracks(newList));
+  };
+
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
+
+  return (
+    <>
+      <Typography variant="h5" gutterBottom>
+        Now Playing
+      </Typography>
+      <IconButton aria-label="clear" onClick={clearQueue} size="large">
+        <Delete fontSize="large" />
+      </IconButton>
+      <DndContext sensors={sensors} onDragEnd={handleDragOver}>
+        <List>
+          <SortableContext
+            items={songList.map((s) => s.id || "")}
+            strategy={verticalListSortingStrategy}
+          >
+            {songList.map((songInfo) => (
+              <QueueItem
+                key={songInfo.id}
+                song={songInfo}
+                openMenu={openMenu}
+              />
+            ))}
+          </SortableContext>
+        </List>
+      </DndContext>
+      <Menu open={Boolean(anchorEl)} onClose={closeMenu} anchorEl={anchorEl}>
+        <MenuItem onClick={deleteClick}>
+          <ListItemIcon>
+            <Delete />
+          </ListItemIcon>
+          <ListItemText primary="Delete" />
+        </MenuItem>
+        <MenuItem component={Link} to={infoPath}>
+          <ListItemIcon>
+            <Info />
+          </ListItemIcon>
+          <ListItemText primary="Info" />
+        </MenuItem>
+        {offlineMenuItem}
+        <Divider />
+        <MenuItem onClick={addToNewPlaylist}>
+          <ListItemIcon>
+            <PlaylistAdd />
+          </ListItemIcon>
+          <ListItemText primary="Add To New Playlist" />
+        </MenuItem>
+        {playlists.map((p) => (
+          <PlaylistMenuItem
+            key={p.id}
+            playlist={p}
+            songs={[menuSong]}
+            closeMenu={closeMenu}
+          />
+        ))}
+      </Menu>
+      <AddPlaylistDialog
+        songs={[menuSong]}
+        open={dialogOpen}
+        handleClose={closeDialog}
+      />
+    </>
+  );
 };
 export default React.memo(PlayQueue);

@@ -5,6 +5,20 @@ import { RouteComponentProps } from "react-router";
 import { setTrack, setTracks } from "../store/reducers/songReducer";
 import { AppDispatch, AppState } from "../store/store";
 import PlaylistItem from "./PlaylistItem";
+import {
+  DndContext,
+  DragEndEvent,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+} from "@dnd-kit/core";
+import {
+  sortableKeyboardCoordinates,
+  SortableContext,
+  arrayMove,
+} from "@dnd-kit/sortable";
+import { setSongs } from "../store/reducers/playlistReducer";
 
 interface IParams {
   id: string;
@@ -18,6 +32,12 @@ const Playlist: React.FC<IProps> = (props) => {
     state.playlist.playlists.find((p) => p.id === props.match.params.id)
   );
   const currentSong = useSelector((state: AppState) => state.song.currentSong);
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
 
   const playPlaylist = () => {
     if (!playlist) {
@@ -29,45 +49,34 @@ const Playlist: React.FC<IProps> = (props) => {
     dispatch(setTracks(playlist.songs));
   };
 
-  //const onDragEnd = (result: DropResult) => {
-  //  const { destination, source, draggableId } = result;
-  //  if (!destination) {
-  //    return;
-  //  }
-
-  //  if (
-  //    destination.droppableId === source.droppableId &&
-  //    destination.index === source.index
-  //  ) {
-  //    return;
-  //  }
-
-  //  if (playlist) {
-  //    const tracks = Array.from(playlist.songs);
-  //    const track = tracks.find((s) => s.id === draggableId);
-  //    if (track) {
-  //      tracks.splice(source.index, 1);
-  //      tracks.splice(destination.index, 0, track);
-  //      dispatch(setSongs(props.match.params.id, tracks));
-  //    }
-  //  }
-  //};
+  const handleDragOver = (event: DragEndEvent) => {
+    const { active, over } = event;
+    if (playlist && active.id !== over?.id) {
+      const oldIndex = playlist.songs.findIndex(
+        (item) => item.id === active.id
+      );
+      const newIndex = playlist.songs.findIndex((item) => item.id === over?.id);
+      const newList = arrayMove(playlist.songs, oldIndex, newIndex);
+      dispatch(setSongs(props.match.params.id, newList));
+    }
+  };
   return playlist ? (
-    <>
+    <DndContext sensors={sensors} onDragEnd={handleDragOver}>
       <div>{playlist.name}</div>
       <Button onClick={playPlaylist}>Play</Button>
       <List>
-        {playlist.songs.map((song, index) => (
-          <PlaylistItem
-            key={song.id}
-            index={index}
-            song={song}
-            currentSong={currentSong}
-            playlist={playlist}
-          />
-        ))}
+        <SortableContext items={playlist.songs.map((s) => s.id || "")}>
+          {playlist.songs.map((s) => (
+            <PlaylistItem
+              key={s.id}
+              song={s}
+              currentSong={currentSong}
+              playlist={playlist}
+            />
+          ))}
+        </SortableContext>
       </List>
-    </>
+    </DndContext>
   ) : (
     <>Not Found</>
   );
