@@ -11,8 +11,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { ISong } from "../models";
 import { setTrack } from "../store/reducers/songReducer";
 import { AppDispatch, AppState } from "../store/store";
-import { useSortable } from "@dnd-kit/sortable";
-import { CSS } from "@dnd-kit/utilities";
 
 interface IProps {
   song: ISong;
@@ -24,34 +22,18 @@ const QueueItem: React.FC<IProps> = (props) => {
   const currentSong = useSelector((state: AppState) => state.song.currentSong);
   const dispatch = useDispatch<AppDispatch>();
   const playListClick = () => dispatch(setTrack(song));
+  const buttonRef = React.useRef<HTMLButtonElement>(null);
   const openSongMenu = (event: React.MouseEvent<HTMLButtonElement>) => {
     openMenu(event, song);
   };
 
-  const {
-    isDragging,
-    attributes,
-    listeners,
-    setNodeRef,
-    transform,
-    transition,
-  } = useSortable({ id: song.id || "" });
-
   return (
     <ListItem
+      button={true}
+      component="div"
       key={song.id}
       selected={currentSong && currentSong.id === song.id}
       onClick={playListClick}
-      ref={setNodeRef}
-      {...listeners}
-      {...attributes}
-      sx={{
-        position: "relative",
-        zIndex: isDragging ? 1 : undefined,
-        transform: CSS.Translate.toString(transform),
-        transition,
-        touchAction: "none",
-      }}
     >
       <ListItemText
         disableTypography={true}
@@ -62,13 +44,11 @@ const QueueItem: React.FC<IProps> = (props) => {
           />
         }
       />
-      {isDragging ? null : (
-        <ListItemSecondaryAction>
-          <IconButton onClick={openSongMenu} size="large">
-            <MoreHoriz />
-          </IconButton>
-        </ListItemSecondaryAction>
-      )}
+      <ListItemSecondaryAction>
+        <IconButton ref={buttonRef} onClick={openSongMenu} size="large">
+          <MoreHoriz />
+        </IconButton>
+      </ListItemSecondaryAction>
     </ListItem>
   );
 };
