@@ -29,7 +29,6 @@ const QueueItem: React.FC<IProps> = (props) => {
 
   return (
     <ListItem
-      button={true}
       component="div"
       key={song.id}
       selected={currentSong && currentSong.id === song.id}

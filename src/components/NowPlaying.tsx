@@ -28,6 +28,8 @@ import { getFormatTrackApiFromName, getPlayerFromName } from "../utils";
 import {
   DndContext,
   DragEndEvent,
+  DragOverlay,
+  DragStartEvent,
   KeyboardSensor,
   PointerSensor,
   useSensor,
@@ -41,7 +43,6 @@ import {
   useSortable,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { Virtuoso } from "react-virtuoso";
 
 interface SortableItemProps {
   song: ISong;
@@ -64,11 +65,11 @@ const SortableItem: React.FC<SortableItemProps> = (props) => {
         transform: CSS.Translate.toString(transform),
         transition,
         touchAction: "none",
+        opacity: isDragging ? 0.3 : 1,
       }}
       ref={setNodeRef}
       {...listeners}
       {...attributes}
-      {...props}
     >
       {props.children}
     </Grid>
@@ -76,6 +77,7 @@ const SortableItem: React.FC<SortableItemProps> = (props) => {
 };
 
 const PlayQueue: React.FC = () => {
+  const [activeId, setActiveId] = React.useState<string | null>(null);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [menuSong, setMenuSong] = React.useState<ISong>({} as ISong);
   const [canOffline, setCanOffline] = React.useState(false);
@@ -183,6 +185,14 @@ const PlayQueue: React.FC = () => {
     })
   );
 
+  const handleDragStart = (event: DragStartEvent) => {
+    setActiveId(event.active.id);
+  };
+
+  const handleDragEnd = () => {
+    setActiveId(null);
+  };
+
   return (
     <>
       <Typography variant="h5" gutterBottom>
@@ -191,40 +201,43 @@ const PlayQueue: React.FC = () => {
       <IconButton aria-label="clear" onClick={clearQueue} size="large">
         <Delete fontSize="large" />
       </IconButton>
-      <DndContext sensors={sensors} onDragEnd={handleDragOver}>
+      <DndContext
+        sensors={sensors}
+        onDragOver={handleDragOver}
+        onDragStart={handleDragStart}
+        onDragEnd={handleDragEnd}
+      >
         <SortableContext
           items={songList.map((s) => s.id || "")}
           strategy={verticalListSortingStrategy}
         >
-          <Virtuoso
-            data={songList}
-            useWindowScroll={true}
-            components={{
-              List: React.forwardRef((props, listref) => {
-                return (
-                  <List
-                    component="div"
-                    ref={listref}
-                    style={{ ...props.style }}
-                  >
-                    {props.children}
-                  </List>
-                );
-              }),
-              Item: ({ children, ...props }) => {
-                const { "data-index": index } = props;
-                const song = songList[index];
-                return (
-                  <SortableItem song={song} {...props}>
-                    {children}
-                  </SortableItem>
-                );
-              },
-            }}
-            itemContent={(index, song) => {
-              return <QueueItem song={song} openMenu={openMenu} />;
-            }}
-          />
+          <List component="div">
+            <SortableContext
+              items={songList.map((s) => s.id || "")}
+              strategy={verticalListSortingStrategy}
+            >
+              {songList.map((songInfo) => (
+                <SortableItem song={songInfo} key={songInfo.id}>
+                  <QueueItem
+                    key={songInfo.id}
+                    song={songInfo}
+                    openMenu={openMenu}
+                  />
+                </SortableItem>
+              ))}
+            </SortableContext>
+            <DragOverlay>
+              {activeId ? (
+                <QueueItem
+                  key={activeId}
+                  song={
+                    songList.find((s) => s.id === activeId) || ({} as ISong)
+                  }
+                  openMenu={openMenu}
+                />
+              ) : null}
+            </DragOverlay>
+          </List>
         </SortableContext>
       </DndContext>
       <Menu open={Boolean(anchorEl)} onClose={closeMenu} anchorEl={anchorEl}>

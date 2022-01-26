@@ -40,7 +40,6 @@
     "react-router-dom": "^5.2.0",
     "react-scripts": "4.0.2",
     "react-toastify": "^7.0.3",
-    "react-virtuoso": "^2.5.0",
     "redux": "^4.0.5",
     "redux-persist": "^6.0.0",
     "solid-auth-client": "^2.5.6",
