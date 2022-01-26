@@ -12,7 +12,6 @@ import {
   Typography,
   IconButton,
   List,
-  Grid,
 } from "@mui/material";
 import { Delete, Info, PlaylistAdd } from "@mui/icons-material";
 import {
@@ -40,41 +39,8 @@ import {
   SortableContext,
   arrayMove,
   verticalListSortingStrategy,
-  useSortable,
 } from "@dnd-kit/sortable";
-import { CSS } from "@dnd-kit/utilities";
-
-interface SortableItemProps {
-  song: ISong;
-}
-const SortableItem: React.FC<SortableItemProps> = (props) => {
-  const { song } = props;
-  const {
-    isDragging,
-    attributes,
-    listeners,
-    setNodeRef,
-    transform,
-    transition,
-  } = useSortable({ id: song.id || "" });
-  return (
-    <Grid
-      sx={{
-        position: "relative",
-        zIndex: isDragging ? 1 : undefined,
-        transform: CSS.Translate.toString(transform),
-        transition,
-        touchAction: "none",
-        opacity: isDragging ? 0.3 : 1,
-      }}
-      ref={setNodeRef}
-      {...listeners}
-      {...attributes}
-    >
-      {props.children}
-    </Grid>
-  );
-};
+import SortableItem from "./SortableItem";
 
 const PlayQueue: React.FC = () => {
   const [activeId, setActiveId] = React.useState<string | null>(null);
@@ -212,20 +178,15 @@ const PlayQueue: React.FC = () => {
           strategy={verticalListSortingStrategy}
         >
           <List component="div">
-            <SortableContext
-              items={songList.map((s) => s.id || "")}
-              strategy={verticalListSortingStrategy}
-            >
-              {songList.map((songInfo) => (
-                <SortableItem song={songInfo} key={songInfo.id}>
-                  <QueueItem
-                    key={songInfo.id}
-                    song={songInfo}
-                    openMenu={openMenu}
-                  />
-                </SortableItem>
-              ))}
-            </SortableContext>
+            {songList.map((songInfo) => (
+              <SortableItem id={songInfo.id || ""} key={songInfo.id}>
+                <QueueItem
+                  key={songInfo.id}
+                  song={songInfo}
+                  openMenu={openMenu}
+                />
+              </SortableItem>
+            ))}
             <DragOverlay>
               {activeId ? (
                 <QueueItem
