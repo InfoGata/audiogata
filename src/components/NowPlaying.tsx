@@ -21,25 +21,12 @@ import {
 } from "../store/reducers/songReducer";
 import AddPlaylistDialog from "./AddPlaylistDialog";
 import PlaylistMenuItem from "./PlaylistMenuItem";
+import Sortable from "./Sortable";
 import { Link } from "react-router-dom";
 import { AudioBlob, db } from "../database";
 import { getFormatTrackApiFromName, getPlayerFromName } from "../utils";
-import {
-  DndContext,
-  DragEndEvent,
-  DragOverlay,
-  DragStartEvent,
-  KeyboardSensor,
-  PointerSensor,
-  useSensor,
-  useSensors,
-} from "@dnd-kit/core";
-import {
-  sortableKeyboardCoordinates,
-  SortableContext,
-  arrayMove,
-  verticalListSortingStrategy,
-} from "@dnd-kit/sortable";
+import { DragEndEvent, DragOverlay, DragStartEvent } from "@dnd-kit/core";
+import { arrayMove } from "@dnd-kit/sortable";
 import SortableItem from "./SortableItem";
 
 const PlayQueue: React.FC = () => {
@@ -140,17 +127,6 @@ const PlayQueue: React.FC = () => {
     dispatch(setTracks(newList));
   };
 
-  const sensors = useSensors(
-    useSensor(PointerSensor, {
-      activationConstraint: {
-        distance: 3,
-      },
-    }),
-    useSensor(KeyboardSensor, {
-      coordinateGetter: sortableKeyboardCoordinates,
-    })
-  );
-
   const handleDragStart = (event: DragStartEvent) => {
     setActiveId(event.active.id);
   };
@@ -167,40 +143,33 @@ const PlayQueue: React.FC = () => {
       <IconButton aria-label="clear" onClick={clearQueue} size="large">
         <Delete fontSize="large" />
       </IconButton>
-      <DndContext
-        sensors={sensors}
+      <Sortable
+        ids={songList.map((s) => s.id || "")}
         onDragOver={handleDragOver}
         onDragStart={handleDragStart}
         onDragEnd={handleDragEnd}
       >
-        <SortableContext
-          items={songList.map((s) => s.id || "")}
-          strategy={verticalListSortingStrategy}
-        >
-          <List component="div">
-            {songList.map((songInfo) => (
-              <SortableItem id={songInfo.id || ""} key={songInfo.id}>
-                <QueueItem
-                  key={songInfo.id}
-                  song={songInfo}
-                  openMenu={openMenu}
-                />
-              </SortableItem>
-            ))}
-            <DragOverlay>
-              {activeId ? (
-                <QueueItem
-                  key={activeId}
-                  song={
-                    songList.find((s) => s.id === activeId) || ({} as ISong)
-                  }
-                  openMenu={openMenu}
-                />
-              ) : null}
-            </DragOverlay>
-          </List>
-        </SortableContext>
-      </DndContext>
+        <List component="div">
+          {songList.map((songInfo) => (
+            <SortableItem id={songInfo.id || ""} key={songInfo.id}>
+              <QueueItem
+                key={songInfo.id}
+                song={songInfo}
+                openMenu={openMenu}
+              />
+            </SortableItem>
+          ))}
+          <DragOverlay>
+            {activeId ? (
+              <QueueItem
+                key={activeId}
+                song={songList.find((s) => s.id === activeId) || ({} as ISong)}
+                openMenu={openMenu}
+              />
+            ) : null}
+          </DragOverlay>
+        </List>
+      </Sortable>
       <Menu open={Boolean(anchorEl)} onClose={closeMenu} anchorEl={anchorEl}>
         <MenuItem onClick={deleteClick}>
           <ListItemIcon>
