@@ -1,6 +1,6 @@
 import { Box, CssBaseline } from "@mui/material";
 import React from "react";
-import { BrowserRouter as Router } from "react-router-dom";
+import { BrowserRouter } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import AudioComponent from "./components/AudioComponent";
@@ -11,7 +11,7 @@ import TopBar from "./components/TopBar";
 
 const App: React.FC = () => {
   return (
-    <Router basename="/audio-pwa">
+    <BrowserRouter>
       <ToastContainer position={toast.POSITION.BOTTOM_LEFT} />
       <Box sx={{ display: "flex" }}>
         <CssBaseline />
@@ -21,7 +21,7 @@ const App: React.FC = () => {
         <PlayerBar />
         <AudioComponent />
       </Box>
-    </Router>
+    </BrowserRouter>
   );
 };
 

@@ -1,5 +1,5 @@
 import React from "react";
-import { Route } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 import Home from "./Home";
 import NowPlaying from "./NowPlaying";
 import Playlist from "./Playlist";
@@ -21,40 +21,24 @@ const DrawerHeader = styled("div")(({ theme }) => ({
   justifyContent: "flex-end",
 }));
 
-const Routes: React.FC = () => {
+const Routing: React.FC = () => {
   return (
     <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
       <DrawerHeader />
-      <Route exact={true} path="/">
-        <Home />
-      </Route>
-      <Route path="/nowplaying">
-        <NowPlaying />
-      </Route>
-      <Route path="/plugins">
-        <Plugins />
-      </Route>
-      <Route path="/sync">
-        <Sync />
-      </Route>
-      <Route exact={true} path="/playlists">
-        <Playlists />
-      </Route>
-      <Route path="/playlists/:id">
-        <Playlist />
-      </Route>
-      <Route path="/settings">
-        <Settings />
-      </Route>
-      <Route path="/search">
-        <Search />
-      </Route>
-      <Route path="/track/:id">
-        <QueueTrackInfo />
-      </Route>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/nowplaying" element={<NowPlaying />} />
+        <Route path="/plugins" element={<Plugins />} />
+        <Route path="/sync" element={<Sync />} />
+        <Route path="/playlists" element={<Playlists />} />
+        <Route path="/playlists/:id" element={<Playlist />} />
+        <Route path="/settings" element={<Settings />} />
+        <Route path="/search" element={<Search />} />
+        <Route path="/track/:id" element={<QueueTrackInfo />} />
+      </Routes>
       <DrawerHeader />
     </Box>
   );
 };
 
-export default Routes;
+export default Routing;

@@ -4,12 +4,8 @@ import { useSelector } from "react-redux";
 import { AppState } from "../store/store";
 import TrackInfo from "./TrackInfo";
 
-interface IParams {
-  id: string;
-}
-
 const QueueTrackInfo: React.FC = () => {
-  const { id } = useParams<IParams>();
+  const { id } = useParams<"id">();
   const track = useSelector((state: AppState) =>
     state.song.songs.find((p) => p.id === id)
   );

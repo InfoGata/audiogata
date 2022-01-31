@@ -11,7 +11,7 @@ import { Menu, Search } from "@mui/icons-material";
 import { Clear } from "@mui/icons-material";
 import React from "react";
 import { useDispatch } from "react-redux";
-import { useHistory } from "react-router";
+import { useNavigate } from "react-router";
 import { toggleNavbar } from "../store/reducers/uiReducer";
 import { AppDispatch } from "../store/store";
 
@@ -57,7 +57,7 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 
 const TopBar: React.FC = () => {
   const theme = useTheme();
-  const history = useHistory();
+  const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
   const onToggleNavbar = () => dispatch(toggleNavbar());
   const [search, setSearch] = React.useState("");
@@ -66,7 +66,7 @@ const TopBar: React.FC = () => {
     setSearch(event.currentTarget.value);
   };
   const handleSubmit = (event: React.FormEvent<{}>) => {
-    history.push(`/search?q=${search}`);
+    navigate(`/search?q=${search}`);
     event.preventDefault();
   };
   const onClearSearch = (_: React.ChangeEvent<{}>) => {

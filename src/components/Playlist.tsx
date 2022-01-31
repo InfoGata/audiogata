@@ -11,12 +11,8 @@ import { setSongs } from "../store/reducers/playlistReducer";
 import Sortable from "./Sortable";
 import { ISong } from "../models";
 
-interface IParams {
-  id: string;
-}
-
 const Playlist: React.FC = () => {
-  const { id } = useParams<IParams>();
+  const { id } = useParams<"id">();
   const dispatch = useDispatch<AppDispatch>();
   const [activeId, setActiveId] = React.useState<string | null>(null);
   const playlist = useSelector((state: AppState) =>
@@ -41,7 +37,9 @@ const Playlist: React.FC = () => {
       );
       const newIndex = playlist.songs.findIndex((item) => item.id === over?.id);
       const newList = arrayMove(playlist.songs, oldIndex, newIndex);
-      dispatch(setSongs(id, newList));
+      if (id) {
+        dispatch(setSongs(id, newList));
+      }
     }
   };
 
