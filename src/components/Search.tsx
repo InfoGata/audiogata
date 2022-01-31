@@ -11,7 +11,7 @@ import {
   ListItemText,
 } from "@mui/material";
 import React, { useEffect } from "react";
-import { RouteComponentProps } from "react-router";
+import { useLocation } from "react-router";
 import { IAlbum, IArtist, IPlaylist, ISong } from "../models";
 import { getApiByName } from "../utils";
 import AlbumSearchResult from "./AlbumSearchResult";
@@ -48,7 +48,7 @@ function TabPanel(props: ITabPanelProps) {
   );
 }
 
-const Search: React.FC<RouteComponentProps> = (props) => {
+const Search: React.FC = () => {
   const [searchType, setSearchType] = React.useState("youtube");
   const [trackResults, setTrackResults] = React.useState<ISong[]>([]);
   const [albumResults, setAlbumResults] = React.useState<IAlbum[]>([]);
@@ -57,6 +57,7 @@ const Search: React.FC<RouteComponentProps> = (props) => {
   const [tabValue, setTabValue] = React.useState("tracks");
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [menuSong, setMenuSong] = React.useState<ISong>({} as ISong);
+  const location = useLocation();
   const playlists = useSelector((state: AppState) => state.playlist.playlists);
   const plugins = useSelector((state: AppState) => state.plugin.plugins);
   const onSearchTypeChange = (e: React.FormEvent<HTMLSelectElement>) => {
@@ -86,12 +87,12 @@ const Search: React.FC<RouteComponentProps> = (props) => {
       setTrackResults(tracks || []);
       setPlaylistResults(playlists || []);
     };
-    const params = new URLSearchParams(props.location.search);
+    const params = new URLSearchParams(location.search);
     const query = params.get("q");
     if (query && query.length > 3) {
       onSearch(query);
     }
-  }, [props.location.search, searchType, plugins]);
+  }, [location.search, searchType, plugins]);
 
   const openMenu = (
     event: React.MouseEvent<HTMLButtonElement>,

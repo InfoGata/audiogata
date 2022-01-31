@@ -1,7 +1,7 @@
 import { Button, List } from "@mui/material";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { RouteComponentProps } from "react-router";
+import { useParams } from "react-router";
 import { setTrack, setTracks } from "../store/reducers/songReducer";
 import { AppDispatch, AppState } from "../store/store";
 import PlaylistItem from "./PlaylistItem";
@@ -15,13 +15,12 @@ interface IParams {
   id: string;
 }
 
-interface IProps extends RouteComponentProps<IParams> {}
-
-const Playlist: React.FC<IProps> = (props) => {
+const Playlist: React.FC = () => {
+  const { id } = useParams<IParams>();
   const dispatch = useDispatch<AppDispatch>();
   const [activeId, setActiveId] = React.useState<string | null>(null);
   const playlist = useSelector((state: AppState) =>
-    state.playlist.playlists.find((p) => p.id === props.match.params.id)
+    state.playlist.playlists.find((p) => p.id === id)
   );
 
   const playPlaylist = () => {
@@ -42,7 +41,7 @@ const Playlist: React.FC<IProps> = (props) => {
       );
       const newIndex = playlist.songs.findIndex((item) => item.id === over?.id);
       const newList = arrayMove(playlist.songs, oldIndex, newIndex);
-      dispatch(setSongs(props.match.params.id, newList));
+      dispatch(setSongs(id, newList));
     }
   };
 

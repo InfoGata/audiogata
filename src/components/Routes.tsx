@@ -25,15 +25,33 @@ const Routes: React.FC = () => {
   return (
     <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
       <DrawerHeader />
-      <Route exact={true} path="/" component={Home} />
-      <Route path="/nowplaying" component={NowPlaying} />
-      <Route path="/plugins" component={Plugins} />
-      <Route path="/sync" component={Sync} />
-      <Route exact={true} path="/playlists" component={Playlists} />
-      <Route path="/playlists/:id" component={Playlist} />
-      <Route path="/settings" component={Settings} />
-      <Route path="/search" component={Search} />
-      <Route path="/track/:id" component={QueueTrackInfo} />
+      <Route exact={true} path="/">
+        <Home />
+      </Route>
+      <Route path="/nowplaying">
+        <NowPlaying />
+      </Route>
+      <Route path="/plugins">
+        <Plugins />
+      </Route>
+      <Route path="/sync">
+        <Sync />
+      </Route>
+      <Route exact={true} path="/playlists">
+        <Playlists />
+      </Route>
+      <Route path="/playlists/:id">
+        <Playlist />
+      </Route>
+      <Route path="/settings">
+        <Settings />
+      </Route>
+      <Route path="/search">
+        <Search />
+      </Route>
+      <Route path="/track/:id">
+        <QueueTrackInfo />
+      </Route>
       <DrawerHeader />
     </Box>
   );
