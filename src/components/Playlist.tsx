@@ -5,20 +5,11 @@ import { RouteComponentProps } from "react-router";
 import { setTrack, setTracks } from "../store/reducers/songReducer";
 import { AppDispatch, AppState } from "../store/store";
 import PlaylistItem from "./PlaylistItem";
-import {
-  DndContext,
-  DragEndEvent,
-  KeyboardSensor,
-  PointerSensor,
-  useSensor,
-  useSensors,
-} from "@dnd-kit/core";
-import {
-  sortableKeyboardCoordinates,
-  SortableContext,
-  arrayMove,
-} from "@dnd-kit/sortable";
+import { DragEndEvent, DragOverlay, DragStartEvent } from "@dnd-kit/core";
+import { arrayMove } from "@dnd-kit/sortable";
 import { setSongs } from "../store/reducers/playlistReducer";
+import Sortable from "./Sortable";
+import { ISong } from "../models";
 
 interface IParams {
   id: string;
@@ -28,15 +19,9 @@ interface IProps extends RouteComponentProps<IParams> {}
 
 const Playlist: React.FC<IProps> = (props) => {
   const dispatch = useDispatch<AppDispatch>();
+  const [activeId, setActiveId] = React.useState<string | null>(null);
   const playlist = useSelector((state: AppState) =>
     state.playlist.playlists.find((p) => p.id === props.match.params.id)
-  );
-  const currentSong = useSelector((state: AppState) => state.song.currentSong);
-  const sensors = useSensors(
-    useSensor(PointerSensor),
-    useSensor(KeyboardSensor, {
-      coordinateGetter: sortableKeyboardCoordinates,
-    })
   );
 
   const playPlaylist = () => {
@@ -60,23 +45,43 @@ const Playlist: React.FC<IProps> = (props) => {
       dispatch(setSongs(props.match.params.id, newList));
     }
   };
+
+  const handleDragStart = (event: DragStartEvent) => {
+    setActiveId(event.active.id);
+  };
+
+  const handleDragEnd = () => {
+    setActiveId(null);
+  };
+
   return playlist ? (
-    <DndContext sensors={sensors} onDragEnd={handleDragOver}>
+    <>
       <div>{playlist.name}</div>
       <Button onClick={playPlaylist}>Play</Button>
-      <List>
-        <SortableContext items={playlist.songs.map((s) => s.id || "")}>
+      <Sortable
+        ids={playlist.songs.map((s) => s.id || "")}
+        onDragOver={handleDragOver}
+        onDragStart={handleDragStart}
+        onDragEnd={handleDragEnd}
+      >
+        <List component="div">
           {playlist.songs.map((s) => (
-            <PlaylistItem
-              key={s.id}
-              song={s}
-              currentSong={currentSong}
-              playlist={playlist}
-            />
+            <PlaylistItem key={s.id} song={s} playlist={playlist} />
           ))}
-        </SortableContext>
-      </List>
-    </DndContext>
+          <DragOverlay>
+            {activeId ? (
+              <PlaylistItem
+                key={activeId}
+                song={
+                  playlist.songs.find((s) => s.id === activeId) || ({} as ISong)
+                }
+                playlist={playlist}
+              />
+            ) : null}
+          </DragOverlay>
+        </List>
+      </Sortable>
+    </>
   ) : (
     <>Not Found</>
   );
