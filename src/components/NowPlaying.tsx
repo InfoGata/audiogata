@@ -189,26 +189,6 @@ const PlayQueue: React.FC = () => {
             </TableBody>
           </Table>
         </TableContainer>
-        {/*<List component="div">
-          {songList.map((songInfo) => (
-            <SortableItem id={songInfo.id || ""} key={songInfo.id}>
-              <QueueItem
-                key={songInfo.id}
-                song={songInfo}
-                openMenu={openMenu}
-              />
-            </SortableItem>
-          ))}
-          <DragOverlay>
-            {activeId ? (
-              <QueueItem
-                key={activeId}
-                song={songList.find((s) => s.id === activeId) || ({} as ISong)}
-                openMenu={openMenu}
-              />
-            ) : null}
-          </DragOverlay>
-            </List>*/}
       </Sortable>
       <Menu open={Boolean(anchorEl)} onClose={closeMenu} anchorEl={anchorEl}>
         <MenuItem onClick={deleteClick}>

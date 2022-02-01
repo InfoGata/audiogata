@@ -1,9 +1,11 @@
-import { ListItem, ListItemText, Typography } from "@mui/material";
+import { MoreHoriz, PlayArrow } from "@mui/icons-material";
+import { IconButton, TableCell } from "@mui/material";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { IPlaylist, ISong } from "../models";
 import { setTrack, setTracks } from "../store/reducers/songReducer";
 import { AppDispatch, AppState } from "../store/store";
+import { formatSeconds } from "../utils";
 
 interface IProps {
   song: ISong;
@@ -20,16 +22,20 @@ const PlaylistItem: React.FC<IProps> = (props) => {
   };
 
   return (
-    <ListItem
-      component="div"
-      key={song.id}
-      selected={currentSong && currentSong.id === song.id}
-      onClick={playSong}
-    >
-      <ListItemText
-        primary={<Typography dangerouslySetInnerHTML={{ __html: song.name }} />}
-      />
-    </ListItem>
+    <>
+      <TableCell>
+        <IconButton aria-label="play" size="small" onClick={playSong}>
+          <PlayArrow />
+        </IconButton>
+      </TableCell>
+      <TableCell>{song.name}</TableCell>
+      <TableCell>{formatSeconds(song.duration)}</TableCell>
+      <TableCell>
+        <IconButton aria-label="options" size="small">
+          <MoreHoriz />
+        </IconButton>
+      </TableCell>
+    </>
   );
 };
 

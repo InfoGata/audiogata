@@ -1,4 +1,13 @@
-import { Button, List } from "@mui/material";
+import {
+  Button,
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+} from "@mui/material";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router";
@@ -10,6 +19,7 @@ import { arrayMove } from "@dnd-kit/sortable";
 import { setSongs } from "../store/reducers/playlistReducer";
 import Sortable from "./Sortable";
 import { ISong } from "../models";
+import SortableItem from "./SortableItem";
 
 const Playlist: React.FC = () => {
   const { id } = useParams<"id">();
@@ -61,22 +71,37 @@ const Playlist: React.FC = () => {
         onDragStart={handleDragStart}
         onDragEnd={handleDragEnd}
       >
-        <List component="div">
-          {playlist.songs.map((s) => (
-            <PlaylistItem key={s.id} song={s} playlist={playlist} />
-          ))}
-          <DragOverlay>
-            {activeId ? (
-              <PlaylistItem
-                key={activeId}
-                song={
-                  playlist.songs.find((s) => s.id === activeId) || ({} as ISong)
-                }
-                playlist={playlist}
-              />
-            ) : null}
-          </DragOverlay>
-        </List>
+        <TableContainer component={Paper}>
+          <Table size="small">
+            <TableHead>
+              <TableRow>
+                <TableCell></TableCell>
+                <TableCell>Title</TableCell>
+                <TableCell>Track Length</TableCell>
+                <TableCell></TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {playlist.songs.map((s) => (
+                <SortableItem as={TableRow} id={s.id || ""} key={s.id}>
+                  <PlaylistItem key={s.id} song={s} playlist={playlist} />
+                </SortableItem>
+              ))}
+              <DragOverlay wrapperElement="tr">
+                {activeId ? (
+                  <PlaylistItem
+                    key={activeId}
+                    song={
+                      playlist.songs.find((s) => s.id === activeId) ||
+                      ({} as ISong)
+                    }
+                    playlist={playlist}
+                  />
+                ) : null}
+              </DragOverlay>
+            </TableBody>
+          </Table>
+        </TableContainer>
       </Sortable>
     </>
   ) : (
