@@ -5,9 +5,10 @@ import { Grid } from "@mui/material";
 
 interface SortableItemProps {
   id: string;
+  as?: React.ComponentType<any>;
 }
 const SortableItem: React.FC<SortableItemProps> = (props) => {
-  const { id } = props;
+  const { id, as } = props;
   const {
     isDragging,
     attributes,
@@ -16,8 +17,9 @@ const SortableItem: React.FC<SortableItemProps> = (props) => {
     transform,
     transition,
   } = useSortable({ id: id || "" });
+  const Component = as || Grid;
   return (
-    <Grid
+    <Component
       sx={{
         position: "relative",
         zIndex: isDragging ? 1 : undefined,
@@ -31,7 +33,7 @@ const SortableItem: React.FC<SortableItemProps> = (props) => {
       {...attributes}
     >
       {props.children}
-    </Grid>
+    </Component>
   );
 };
 

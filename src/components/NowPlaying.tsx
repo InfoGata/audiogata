@@ -11,7 +11,13 @@ import {
   Divider,
   Typography,
   IconButton,
-  List,
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableRow,
+  TableHead,
 } from "@mui/material";
 import { Delete, Info, PlaylistAdd } from "@mui/icons-material";
 import {
@@ -149,7 +155,41 @@ const PlayQueue: React.FC = () => {
         onDragStart={handleDragStart}
         onDragEnd={handleDragEnd}
       >
-        <List component="div">
+        <TableContainer component={Paper}>
+          <Table size="small">
+            <TableHead>
+              <TableRow>
+                <TableCell></TableCell>
+                <TableCell>Title</TableCell>
+                <TableCell>Track Length</TableCell>
+                <TableCell></TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {songList.map((songInfo) => (
+                <SortableItem
+                  as={TableRow}
+                  id={songInfo.id || ""}
+                  key={songInfo.id}
+                >
+                  <QueueItem song={songInfo} openMenu={openMenu} />
+                </SortableItem>
+              ))}
+              <DragOverlay wrapperElement="tr">
+                {activeId ? (
+                  <QueueItem
+                    key={activeId}
+                    song={
+                      songList.find((s) => s.id === activeId) || ({} as ISong)
+                    }
+                    openMenu={openMenu}
+                  />
+                ) : null}
+              </DragOverlay>
+            </TableBody>
+          </Table>
+        </TableContainer>
+        {/*<List component="div">
           {songList.map((songInfo) => (
             <SortableItem id={songInfo.id || ""} key={songInfo.id}>
               <QueueItem
@@ -168,7 +208,7 @@ const PlayQueue: React.FC = () => {
               />
             ) : null}
           </DragOverlay>
-        </List>
+            </List>*/}
       </Sortable>
       <Menu open={Boolean(anchorEl)} onClose={closeMenu} anchorEl={anchorEl}>
         <MenuItem onClick={deleteClick}>
