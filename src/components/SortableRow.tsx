@@ -1,14 +1,14 @@
 import React from "react";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { Grid } from "@mui/material";
+import { TableRow } from "@mui/material";
 
 interface SortableItemProps {
   id: string;
-  as?: React.ComponentType<any>;
+  onClick?: (...args: any) => void;
 }
-const SortableItem: React.FC<SortableItemProps> = (props) => {
-  const { id, as } = props;
+const SortableRow: React.FC<SortableItemProps> = (props) => {
+  const { id, onClick } = props;
   const {
     isDragging,
     attributes,
@@ -17,9 +17,11 @@ const SortableItem: React.FC<SortableItemProps> = (props) => {
     transform,
     transition,
   } = useSortable({ id: id || "" });
-  const Component = as || Grid;
+
   return (
-    <Component
+    <TableRow
+      hover={true}
+      onClick={onClick}
       sx={{
         position: "relative",
         zIndex: isDragging ? 1 : undefined,
@@ -27,14 +29,15 @@ const SortableItem: React.FC<SortableItemProps> = (props) => {
         transition,
         touchAction: "none",
         opacity: isDragging ? 0.3 : 1,
+        cursor: "pointer",
       }}
       ref={setNodeRef}
       {...listeners}
       {...attributes}
     >
       {props.children}
-    </Component>
+    </TableRow>
   );
 };
 
-export default SortableItem;
+export default SortableRow;

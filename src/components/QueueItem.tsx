@@ -23,20 +23,20 @@ export interface QueueItemProps {
 const QueueItem: React.FC<QueueItemProps> = (props) => {
   const { song, openMenu } = props;
   const currentSong = useSelector((state: AppState) => state.song.currentSong);
-  const dispatch = useDispatch<AppDispatch>();
-  const playListClick = () => dispatch(setTrack(song));
   const openSongMenu = (event: React.MouseEvent<HTMLButtonElement>) => {
     openMenu(event, song);
   };
 
   return (
     <>
+      <TableCell></TableCell>
       <TableCell>
-        <IconButton aria-label="play" size="small" onClick={playListClick}>
-          <PlayArrow />
-        </IconButton>
+        <Typography
+          color={currentSong?.id === song.id ? "primary.main" : undefined}
+          noWrap={true}
+          dangerouslySetInnerHTML={{ __html: song.name }}
+        />
       </TableCell>
-      <TableCell>{song.name}</TableCell>
       <TableCell>{formatSeconds(song.duration)}</TableCell>
       <TableCell>
         <IconButton aria-label="options" size="small" onClick={openSongMenu}>

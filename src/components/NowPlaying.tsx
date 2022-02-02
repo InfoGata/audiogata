@@ -23,6 +23,7 @@ import { Delete, Info, PlaylistAdd } from "@mui/icons-material";
 import {
   clearTracks,
   deleteTrack,
+  setTrack,
   setTracks,
 } from "../store/reducers/songReducer";
 import AddPlaylistDialog from "./AddPlaylistDialog";
@@ -33,7 +34,7 @@ import { AudioBlob, db } from "../database";
 import { getFormatTrackApiFromName, getPlayerFromName } from "../utils";
 import { DragEndEvent, DragOverlay, DragStartEvent } from "@dnd-kit/core";
 import { arrayMove } from "@dnd-kit/sortable";
-import SortableItem from "./SortableItem";
+import SortableRow from "./SortableRow";
 
 const PlayQueue: React.FC = () => {
   const [activeId, setActiveId] = React.useState<string | null>(null);
@@ -45,6 +46,8 @@ const PlayQueue: React.FC = () => {
     event: React.MouseEvent<HTMLButtonElement>,
     song: ISong
   ) => {
+    event.stopPropagation();
+    event.preventDefault();
     setAnchorEl(event.currentTarget);
     setMenuSong(song);
     // Check whether song can be played offline
@@ -141,6 +144,10 @@ const PlayQueue: React.FC = () => {
     setActiveId(null);
   };
 
+  const playSong = (song: ISong) => {
+    dispatch(setTrack(song));
+  };
+
   return (
     <>
       <Typography variant="h5" gutterBottom>
@@ -167,13 +174,13 @@ const PlayQueue: React.FC = () => {
             </TableHead>
             <TableBody>
               {songList.map((songInfo) => (
-                <SortableItem
-                  as={TableRow}
+                <SortableRow
                   id={songInfo.id || ""}
                   key={songInfo.id}
+                  onClick={() => playSong(songInfo)}
                 >
                   <QueueItem song={songInfo} openMenu={openMenu} />
-                </SortableItem>
+                </SortableRow>
               ))}
               <DragOverlay wrapperElement="tr">
                 {activeId ? (

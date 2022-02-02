@@ -19,7 +19,7 @@ import { arrayMove } from "@dnd-kit/sortable";
 import { setSongs } from "../store/reducers/playlistReducer";
 import Sortable from "./Sortable";
 import { ISong } from "../models";
-import SortableItem from "./SortableItem";
+import SortableRow from "./SortableRow";
 
 const Playlist: React.FC = () => {
   const { id } = useParams<"id">();
@@ -61,6 +61,11 @@ const Playlist: React.FC = () => {
     setActiveId(null);
   };
 
+  const playSong = (song: ISong) => {
+    dispatch(setTrack(song));
+    dispatch(setTracks(playlist?.songs || []));
+  };
+
   return playlist ? (
     <>
       <div>{playlist.name}</div>
@@ -83,9 +88,13 @@ const Playlist: React.FC = () => {
             </TableHead>
             <TableBody>
               {playlist.songs.map((s) => (
-                <SortableItem as={TableRow} id={s.id || ""} key={s.id}>
+                <SortableRow
+                  id={s.id || ""}
+                  key={s.id}
+                  onClick={() => playSong(s)}
+                >
                   <PlaylistItem key={s.id} song={s} playlist={playlist} />
-                </SortableItem>
+                </SortableRow>
               ))}
               <DragOverlay wrapperElement="tr">
                 {activeId ? (
