@@ -1,5 +1,4 @@
-import { MoreHoriz } from "@mui/icons-material";
-import { IconButton, TableCell, Typography } from "@mui/material";
+import { TableCell, Typography } from "@mui/material";
 import React from "react";
 import { useSelector } from "react-redux";
 import { IPlaylist, ISong } from "../models";

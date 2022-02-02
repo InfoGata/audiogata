@@ -1,18 +1,9 @@
-import {
-  IconButton,
-  ListItem,
-  ListItemSecondaryAction,
-  ListItemText,
-  TableCell,
-  TableRow,
-  Typography,
-} from "@mui/material";
-import { MoreHoriz, PlayArrow } from "@mui/icons-material";
+import { IconButton, TableCell, Typography } from "@mui/material";
+import { MoreHoriz } from "@mui/icons-material";
 import React from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { ISong } from "../models";
-import { setTrack } from "../store/reducers/songReducer";
-import { AppDispatch, AppState } from "../store/store";
+import { AppState } from "../store/store";
 import { formatSeconds } from "../utils";
 
 export interface QueueItemProps {
