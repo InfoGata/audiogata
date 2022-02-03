@@ -1,6 +1,5 @@
 import React from "react";
 import { connect } from "react-redux";
-import { toast } from "react-toastify";
 import { bindActionCreators, Dispatch } from "redux";
 import { ISong } from "../models";
 import { IPlayerComponent } from "../plugins/IPlayerComponent";
@@ -15,8 +14,9 @@ import {
   toggleIsPlaying,
 } from "../store/reducers/songReducer";
 import { AppState } from "../store/store";
+import { withSnackbar, ProviderContext } from "notistack";
 
-interface IProps extends StateProps, DispatchProps {}
+interface IProps extends StateProps, DispatchProps, ProviderContext {}
 interface IState {
   errorCount: number;
 }
@@ -65,11 +65,11 @@ class AudioComponent extends React.Component<IProps, IState> {
   }
 
   private getPlayerFromName(name: string): IPlayerComponent {
-     switch (name) {
-       case "spotify":
-         return SpotifyPlayer;
-       case "napster":
-         return NapsterPlayer;
+    switch (name) {
+      case "spotify":
+        return SpotifyPlayer;
+      case "napster":
+        return NapsterPlayer;
     }
     return Local;
   }
@@ -178,7 +178,7 @@ class AudioComponent extends React.Component<IProps, IState> {
 
     if (this.props.currentSong) {
       const message = `${this.props.currentSong.name}: ${err.message}`;
-      toast.error(message);
+      this.props.enqueueSnackbar(message, { variant: "error" });
       console.log(err);
     }
     this.setState({
@@ -194,7 +194,7 @@ class AudioComponent extends React.Component<IProps, IState> {
       if (this.props.currentSong) {
         navigator.mediaSession.metadata = new MediaMetadata({
           title: this.props.currentSong.name,
-          artwork: this.props.currentSong.images.map(i => ({
+          artwork: this.props.currentSong.images.map((i) => ({
             src: i.url,
             sizes: `${i.height}x${i.width}`,
             type: this.getImageType(i.url),
@@ -234,7 +234,7 @@ const mapStateToProps = (state: AppState) => ({
   seekTime: state.song.seekTime,
   volume: state.song.volume,
   playbackRate: state.song.playbackRate,
-  plugins: state.plugin.plugins
+  plugins: state.plugin.plugins,
 });
 type StateProps = ReturnType<typeof mapStateToProps>;
 
@@ -247,7 +247,10 @@ const mapDispatchToProps = (dispatch: Dispatch) =>
       setElapsed,
       toggleIsPlaying,
     },
-    dispatch,
+    dispatch
   );
 type DispatchProps = ReturnType<typeof mapDispatchToProps>;
-export default connect(mapStateToProps, mapDispatchToProps)(AudioComponent);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(withSnackbar(AudioComponent));

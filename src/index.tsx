@@ -11,6 +11,7 @@ import App from "./App";
 import "./index.css";
 import store, { persistor } from "./store/store";
 import reportWebVitals from "./reportWebVitals";
+import { SnackbarProvider } from "notistack";
 import "@mui/styles";
 
 declare module "@mui/styles" {
@@ -29,7 +30,9 @@ ReactDOM.render(
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
         <ThemeProvider theme={theme}>
-          <App />
+          <SnackbarProvider maxSnack={3}>
+            <App />
+          </SnackbarProvider>
         </ThemeProvider>
       </PersistGate>
     </Provider>
