@@ -142,7 +142,6 @@ const Search: React.FC = () => {
         <option value="youtube">Youtube</option>
         <option value="soundcloud">SoundCloud</option>
         <option value="spotify">Spotify</option>
-        <option value="napster">Napster</option>
       </select>
       <AppBar position="static">
         <Tabs
