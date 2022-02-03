@@ -7,6 +7,8 @@ import {
   TableContainer,
   TableHead,
   TableRow,
+  useMediaQuery,
+  useTheme,
 } from "@mui/material";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -28,6 +30,8 @@ const Playlist: React.FC = () => {
   const playlist = useSelector((state: AppState) =>
     state.playlist.playlists.find((p) => p.id === id)
   );
+  const theme = useTheme();
+  const showTrackLength = useMediaQuery(theme.breakpoints.up("sm"));
 
   const playPlaylist = () => {
     if (!playlist) {
@@ -82,7 +86,7 @@ const Playlist: React.FC = () => {
               <TableRow>
                 <TableCell></TableCell>
                 <TableCell>Title</TableCell>
-                <TableCell>Track Length</TableCell>
+                {showTrackLength && <TableCell>Track Length</TableCell>}
                 <TableCell></TableCell>
               </TableRow>
             </TableHead>
@@ -93,12 +97,18 @@ const Playlist: React.FC = () => {
                   key={s.id}
                   onClick={() => playSong(s)}
                 >
-                  <PlaylistItem key={s.id} song={s} playlist={playlist} />
+                  <PlaylistItem
+                    showTrackLength={showTrackLength}
+                    key={s.id}
+                    song={s}
+                    playlist={playlist}
+                  />
                 </SortableRow>
               ))}
               <DragOverlay wrapperElement="tr">
                 {activeId ? (
                   <PlaylistItem
+                    showTrackLength={showTrackLength}
                     key={activeId}
                     song={
                       playlist.songs.find((s) => s.id === activeId) ||

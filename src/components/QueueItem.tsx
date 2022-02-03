@@ -8,11 +8,12 @@ import { formatSeconds } from "../utils";
 
 export interface QueueItemProps {
   song: ISong;
+  showTrackLength: boolean;
   openMenu: (event: React.MouseEvent<HTMLButtonElement>, song: ISong) => void;
 }
 
 const QueueItem: React.FC<QueueItemProps> = (props) => {
-  const { song, openMenu } = props;
+  const { song, openMenu, showTrackLength } = props;
   const currentSong = useSelector((state: AppState) => state.song.currentSong);
   const openSongMenu = (event: React.MouseEvent<HTMLButtonElement>) => {
     openMenu(event, song);
@@ -28,7 +29,7 @@ const QueueItem: React.FC<QueueItemProps> = (props) => {
           dangerouslySetInnerHTML={{ __html: song.name }}
         />
       </TableCell>
-      <TableCell>{formatSeconds(song.duration)}</TableCell>
+      {showTrackLength && <TableCell>{formatSeconds(song.duration)}</TableCell>}
       <TableCell>
         <IconButton aria-label="options" size="small" onClick={openSongMenu}>
           <MoreHoriz />

@@ -8,10 +8,11 @@ import { formatSeconds } from "../utils";
 interface IProps {
   song: ISong;
   playlist: IPlaylist;
+  showTrackLength: boolean;
 }
 
 const PlaylistItem: React.FC<IProps> = (props) => {
-  const { song } = props;
+  const { song, showTrackLength } = props;
   const currentSong = useSelector((state: AppState) => state.song.currentSong);
 
   return (
@@ -24,7 +25,7 @@ const PlaylistItem: React.FC<IProps> = (props) => {
           dangerouslySetInnerHTML={{ __html: song.name }}
         />
       </TableCell>
-      <TableCell>{formatSeconds(song.duration)}</TableCell>
+      {showTrackLength && <TableCell>{formatSeconds(song.duration)}</TableCell>}
       <TableCell>
         {/*<IconButton aria-label="options" size="small">
           <MoreHoriz />

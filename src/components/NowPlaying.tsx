@@ -18,6 +18,7 @@ import {
   TableContainer,
   TableRow,
   TableHead,
+  useMediaQuery,
 } from "@mui/material";
 import { Delete, Info, PlaylistAdd } from "@mui/icons-material";
 import {
@@ -35,6 +36,7 @@ import { getFormatTrackApiFromName, getPlayerFromName } from "../utils";
 import { DragEndEvent, DragOverlay, DragStartEvent } from "@dnd-kit/core";
 import { arrayMove } from "@dnd-kit/sortable";
 import SortableRow from "./SortableRow";
+import { useTheme } from "@mui/styles";
 
 const PlayQueue: React.FC = () => {
   const [activeId, setActiveId] = React.useState<string | null>(null);
@@ -42,6 +44,8 @@ const PlayQueue: React.FC = () => {
   const [menuSong, setMenuSong] = React.useState<ISong>({} as ISong);
   const [canOffline, setCanOffline] = React.useState(false);
   const [hasBlob, setHasBlob] = React.useState(false);
+  const theme = useTheme();
+  const showTrackLength = useMediaQuery(theme.breakpoints.up("sm"));
   const openMenu = async (
     event: React.MouseEvent<HTMLButtonElement>,
     song: ISong
@@ -168,7 +172,7 @@ const PlayQueue: React.FC = () => {
               <TableRow>
                 <TableCell></TableCell>
                 <TableCell>Title</TableCell>
-                <TableCell>Track Length</TableCell>
+                {showTrackLength && <TableCell>Track Length</TableCell>}
                 <TableCell></TableCell>
               </TableRow>
             </TableHead>
@@ -179,12 +183,17 @@ const PlayQueue: React.FC = () => {
                   key={songInfo.id}
                   onClick={() => playSong(songInfo)}
                 >
-                  <QueueItem song={songInfo} openMenu={openMenu} />
+                  <QueueItem
+                    song={songInfo}
+                    openMenu={openMenu}
+                    showTrackLength={showTrackLength}
+                  />
                 </SortableRow>
               ))}
               <DragOverlay wrapperElement="tr">
                 {activeId ? (
                   <QueueItem
+                    showTrackLength={showTrackLength}
                     key={activeId}
                     song={
                       songList.find((s) => s.id === activeId) || ({} as ISong)
