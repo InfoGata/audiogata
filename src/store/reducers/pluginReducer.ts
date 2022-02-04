@@ -1,30 +1,30 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { Plugin } from "../../models";
-
+import { createSlice, nanoid, PayloadAction } from "@reduxjs/toolkit";
+import { PluginInfo } from "../../models";
 
 export interface PluginState {
-  plugins: Plugin[];
+  plugins: PluginInfo[];
 }
 
 const initialState: PluginState = {
-  plugins: []
-}
+  plugins: [],
+};
 
 const pluginSlice = createSlice({
-  name: "playlist",
+  name: "plugin",
   initialState,
   reducers: {
-    setPlugin(state, action: PayloadAction<Plugin>) {
-      if (state.plugins.some(p => p.name === action.payload.name)) {
-        state.plugins = state.plugins.map((p) =>
-          p.name === action.payload.name ? action.payload : p
-        );
-      } else {
-        state.plugins.push(action.payload);
-      }
-    }
-  }
+    addPlugin(state, action: PayloadAction<PluginInfo>) {
+      action.payload.id = nanoid();
+      state.plugins.push(action.payload);
+    },
+    deletePlugin(state, action: PayloadAction<PluginInfo>) {
+      return {
+        ...state,
+        playlists: state.plugins.filter((p) => p.id !== action.payload.id),
+      };
+    },
+  },
 });
 
-export const { setPlugin } = pluginSlice.actions;
+export const { addPlugin } = pluginSlice.actions;
 export default pluginSlice.reducer;

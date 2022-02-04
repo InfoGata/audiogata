@@ -43,7 +43,10 @@ export interface IImage {
   width: number;
 }
 
-export interface Plugin {
+export interface PluginInfo {
+  id?: string;
   name: string;
-  data: Record<string, string>;
+  script: string;
+  description?: string;
+  optionsHtml?: string;
 }
