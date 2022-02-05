@@ -20,10 +20,8 @@ import PlaylistSearchResult from "./PlaylistSearchResult";
 import TrackSearchResult from "./TrackSearchResult";
 import { PlaylistPlay } from "@mui/icons-material";
 import PlaylistMenuItem from "./PlaylistMenuItem";
-import { useSelector } from "react-redux";
-import { AppDispatch, AppState } from "../store/store";
-import { useDispatch } from "react-redux";
 import { addTrack } from "../store/reducers/songReducer";
+import { useAppDispatch, useAppSelector } from "../store/hooks";
 
 interface ITabPanelProps {
   children?: React.ReactNode;
@@ -58,12 +56,12 @@ const Search: React.FC = () => {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [menuSong, setMenuSong] = React.useState<ISong>({} as ISong);
   const location = useLocation();
-  const playlists = useSelector((state: AppState) => state.playlist.playlists);
-  const plugins = useSelector((state: AppState) => state.plugin.plugins);
+  const playlists = useAppSelector((state) => state.playlist.playlists);
+  const plugins = useAppSelector((state) => state.plugin.plugins);
   const onSearchTypeChange = (e: React.FormEvent<HTMLSelectElement>) => {
     setSearchType(e.currentTarget.value);
   };
-  const dispatch = useDispatch<AppDispatch>();
+  const dispatch = useAppDispatch();
 
   const onClearSearch = () => {
     setTrackResults([]);

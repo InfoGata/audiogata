@@ -1,10 +1,9 @@
 import React from "react";
-import auth from 'solid-auth-client';
-import { useDispatch, useSelector } from "react-redux";
+import auth from "solid-auth-client";
 import { ISong } from "../models";
 import { setTracks } from "../store/reducers/songReducer";
-import { AppDispatch, AppState } from "../store/store";
 import { useEffect } from "react";
+import { useAppDispatch, useAppSelector } from "../store/hooks";
 
 const path = "/private/audiopwa/queue.json";
 const createFile = async (webId: string, todos: ISong[]) => {
@@ -39,31 +38,30 @@ const loadFile = async (webId: string) => {
 };
 
 const Sync: React.FC = () => {
-  const [webId, setWebId]  = React.useState("");
+  const [webId, setWebId] = React.useState("");
 
   useEffect(() => {
-    auth.trackSession(session => {
+    auth.trackSession((session) => {
       if (!session) {
         setWebId("");
-        console.log('The user is not logged in')
-      }
-      else {
-        console.log(`The user is ${session.webId}`)
+        console.log("The user is not logged in");
+      } else {
+        console.log(`The user is ${session.webId}`);
         setWebId(session.webId);
       }
     });
-  }, [])
+  }, []);
 
   const solidLogin = () => {
-    let popupUri = '/audio-pwa/popup.html';
+    let popupUri = "/audio-pwa/popup.html";
     auth.popupLogin({ popupUri });
   };
 
   const solidLogout = async () => {
     await auth.logout();
-  }
-  const dispatch = useDispatch<AppDispatch>();
-  const songs = useSelector((state: AppState) => state.song.songs);
+  };
+  const dispatch = useAppDispatch();
+  const songs = useAppSelector((state) => state.song.songs);
   const onSave = async () => {
     if (webId) {
       await createFile(webId, songs);
@@ -75,7 +73,6 @@ const Sync: React.FC = () => {
       dispatch(setTracks(data));
     }
   };
-
 
   return (
     <>

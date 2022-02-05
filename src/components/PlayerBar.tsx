@@ -7,8 +7,7 @@ import {
   useTheme,
 } from "@mui/material";
 import React from "react";
-import { useSelector } from "react-redux";
-import { AppState } from "../store/store";
+import { useAppSelector } from "../store/hooks";
 import { getThumbnailImage } from "../utils";
 import Controls from "./Controls";
 import Progress from "./Progress";
@@ -16,7 +15,7 @@ import Progress from "./Progress";
 const thumbnailSize = 75;
 const PlayerBar: React.FC = () => {
   const theme = useTheme();
-  const currentSong = useSelector((state: AppState) => state.song.currentSong);
+  const currentSong = useAppSelector((state) => state.song.currentSong);
 
   const image = getThumbnailImage(
     currentSong && currentSong.images,

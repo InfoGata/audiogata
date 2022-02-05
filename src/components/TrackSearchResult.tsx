@@ -8,23 +8,22 @@ import {
   IconButton,
 } from "@mui/material";
 import React from "react";
-import { useDispatch } from "react-redux";
 import { ISong } from "../models";
 import { addTrack, setTrack } from "../store/reducers/songReducer";
-import { AppDispatch } from "../store/store";
 import { getThumbnailImage, searchThumbnailSize } from "../utils";
 import { MoreHoriz } from "@mui/icons-material";
+import { useAppDispatch } from "../store/hooks";
 
 interface ITrackResultProps {
   track: ISong;
   openMenu: (event: React.MouseEvent<HTMLButtonElement>, song: ISong) => void;
 }
-const TrackSearchResult: React.FC<ITrackResultProps> = props => {
+const TrackSearchResult: React.FC<ITrackResultProps> = (props) => {
   const { track, openMenu } = props;
-  const dispatch = useDispatch<AppDispatch>();
+  const dispatch = useAppDispatch();
   const openSongMenu = (event: React.MouseEvent<HTMLButtonElement>) => {
     openMenu(event, track);
-  }
+  };
 
   const onClickSong = () => {
     dispatch(addTrack(props.track));
@@ -35,11 +34,7 @@ const TrackSearchResult: React.FC<ITrackResultProps> = props => {
   return (
     <ListItem button={true} onClick={onClickSong}>
       <ListItemAvatar>
-        <Avatar
-          alt={track.name}
-          src={image}
-          style={{ borderRadius: 0 }}
-        />
+        <Avatar alt={track.name} src={image} style={{ borderRadius: 0 }} />
       </ListItemAvatar>
       <ListItemText
         primary={

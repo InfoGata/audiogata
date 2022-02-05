@@ -1,10 +1,9 @@
 import { ListItemIcon, ListItemText, MenuItem } from "@mui/material";
 import { PlaylistAdd } from "@mui/icons-material";
 import React from "react";
-import { useDispatch } from "react-redux";
 import { IPlaylist, ISong } from "../models";
 import { addSongs } from "../store/reducers/playlistReducer";
-import { AppDispatch } from "../store/store";
+import { useAppDispatch } from "../store/hooks";
 
 interface IProps {
   playlist: IPlaylist;
@@ -12,9 +11,9 @@ interface IProps {
   closeMenu: () => void;
 }
 
-const PlaylistMenuItem: React.FC<IProps> = props => {
+const PlaylistMenuItem: React.FC<IProps> = (props) => {
   const { playlist, closeMenu, songs } = props;
-  const dispatch = useDispatch<AppDispatch>();
+  const dispatch = useAppDispatch();
 
   const addToPlaylist = () => {
     if (playlist.id) {

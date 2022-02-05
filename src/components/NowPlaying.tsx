@@ -1,7 +1,5 @@
 import React from "react";
-import { useSelector, useDispatch } from "react-redux";
 import { ISong } from "../models";
-import { AppState, AppDispatch } from "../store/store";
 import QueueItem from "./QueueItem";
 import {
   Menu,
@@ -37,6 +35,7 @@ import { DragEndEvent, DragOverlay, DragStartEvent } from "@dnd-kit/core";
 import { arrayMove } from "@dnd-kit/sortable";
 import SortableRow from "./SortableRow";
 import { useTheme } from "@mui/styles";
+import { useAppDispatch, useAppSelector } from "../store/hooks";
 
 const PlayQueue: React.FC = () => {
   const [activeId, setActiveId] = React.useState<string | null>(null);
@@ -70,7 +69,7 @@ const PlayQueue: React.FC = () => {
     }
   };
   const closeMenu = () => setAnchorEl(null);
-  const songList = useSelector((state: AppState) => state.song.songs);
+  const songList = useAppSelector((state) => state.song.songs);
   const deleteClick = async () => {
     if (menuSong.id) {
       await db.audioBlobs.delete(menuSong.id);
@@ -79,14 +78,14 @@ const PlayQueue: React.FC = () => {
     closeMenu();
   };
   const [dialogOpen, setDialogOpen] = React.useState(false);
-  const dispatch = useDispatch<AppDispatch>();
+  const dispatch = useAppDispatch();
   const openDialog = () => setDialogOpen(true);
   const closeDialog = () => setDialogOpen(false);
   const addToNewPlaylist = () => {
     openDialog();
     closeMenu();
   };
-  const playlists = useSelector((state: AppState) => state.playlist.playlists);
+  const playlists = useAppSelector((state) => state.playlist.playlists);
   const infoPath = `/track/${menuSong.id}`;
 
   const clearQueue = () => {

@@ -11,10 +11,8 @@ import {
   useTheme,
 } from "@mui/material";
 import React from "react";
-import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router";
 import { setTrack, setTracks } from "../store/reducers/songReducer";
-import { AppDispatch, AppState } from "../store/store";
 import PlaylistItem from "./PlaylistItem";
 import { DragEndEvent, DragOverlay, DragStartEvent } from "@dnd-kit/core";
 import { arrayMove } from "@dnd-kit/sortable";
@@ -22,12 +20,13 @@ import { setSongs } from "../store/reducers/playlistReducer";
 import Sortable from "./Sortable";
 import { ISong } from "../models";
 import SortableRow from "./SortableRow";
+import { useAppDispatch, useAppSelector } from "../store/hooks";
 
 const Playlist: React.FC = () => {
   const { id } = useParams<"id">();
-  const dispatch = useDispatch<AppDispatch>();
+  const dispatch = useAppDispatch();
   const [activeId, setActiveId] = React.useState<string | null>(null);
-  const playlist = useSelector((state: AppState) =>
+  const playlist = useAppSelector((state) =>
     state.playlist.playlists.find((p) => p.id === id)
   );
   const theme = useTheme();

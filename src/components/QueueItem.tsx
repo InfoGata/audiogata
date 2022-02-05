@@ -1,10 +1,9 @@
 import { IconButton, TableCell, Typography } from "@mui/material";
 import { MoreHoriz } from "@mui/icons-material";
 import React from "react";
-import { useSelector } from "react-redux";
 import { ISong } from "../models";
-import { AppState } from "../store/store";
 import { formatSeconds } from "../utils";
+import { useAppSelector } from "../store/hooks";
 
 export interface QueueItemProps {
   song: ISong;
@@ -14,7 +13,7 @@ export interface QueueItemProps {
 
 const QueueItem: React.FC<QueueItemProps> = (props) => {
   const { song, openMenu, showTrackLength } = props;
-  const currentSong = useSelector((state: AppState) => state.song.currentSong);
+  const currentSong = useAppSelector((state) => state.song.currentSong);
   const openSongMenu = (event: React.MouseEvent<HTMLButtonElement>) => {
     openMenu(event, song);
   };

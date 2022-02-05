@@ -1,10 +1,9 @@
 import MuiDrawer from "@mui/material/Drawer";
 import React from "react";
-import { useSelector } from "react-redux";
-import { AppState } from "../store/store";
 import { navbarWidth } from "../utils";
 import Navigation from "./Navigation";
 import { CSSObject, styled, Theme } from "@mui/material/styles";
+import { useAppSelector } from "../store/hooks";
 
 const openedMixin = (theme: Theme): CSSObject => ({
   width: navbarWidth,
@@ -54,7 +53,7 @@ const DrawerHeader = styled("div")(({ theme }) => ({
 }));
 
 const SideBar: React.FC = () => {
-  const navbarOpen = useSelector((state: AppState) => state.ui.navbarOpen);
+  const navbarOpen = useAppSelector((state) => state.ui.navbarOpen);
 
   return (
     <Drawer variant="permanent" open={navbarOpen} anchor="left">

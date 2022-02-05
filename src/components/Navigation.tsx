@@ -9,16 +9,15 @@ import {
   Sync,
 } from "@mui/icons-material";
 import React from "react";
-import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import { AppState } from "../store/store";
 import AddPlaylistDialog from "./AddPlaylistDialog";
 import NavigationPlaylistItem from "./NavigationPlaylistItem";
+import { useAppSelector } from "../store/hooks";
 
 const Navigation: React.FC = () => {
   const [dialogOpen, setDialogOpen] = React.useState(false);
-  const playlists = useSelector((state: AppState) => state.playlist.playlists);
-  const navbarOpen = useSelector((state: AppState) => state.ui.navbarOpen);
+  const playlists = useAppSelector((state) => state.playlist.playlists);
+  const navbarOpen = useAppSelector((state) => state.ui.navbarOpen);
 
   const openDialog = () => {
     setDialogOpen(true);
@@ -27,7 +26,7 @@ const Navigation: React.FC = () => {
     setDialogOpen(false);
   };
 
-  const playlistItems = playlists.map(p => (
+  const playlistItems = playlists.map((p) => (
     <NavigationPlaylistItem playlist={p} key={p.id} />
   ));
   return (

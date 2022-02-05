@@ -1,17 +1,16 @@
 import { Grid, Slider, Typography } from "@mui/material";
 import React from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useAppDispatch, useAppSelector } from "../store/hooks";
 import { seek } from "../store/reducers/songReducer";
-import { AppDispatch, AppState } from "../store/store";
 import { formatSeconds } from "../utils";
 
 const Progress: React.FC = () => {
   const [isDragging, setIsDragging] = React.useState(false);
   const [newElapsed, setNewElapsed] = React.useState(0);
-  const elapsed = useSelector((state: AppState) => state.song.elapsed);
-  const currentSong = useSelector((state: AppState) => state.song.currentSong);
-  const seekTime = useSelector((state: AppState) => state.song.seekTime);
-  const dispatch = useDispatch<AppDispatch>();
+  const elapsed = useAppSelector((state) => state.song.elapsed);
+  const currentSong = useAppSelector((state) => state.song.currentSong);
+  const seekTime = useAppSelector((state) => state.song.seekTime);
+  const dispatch = useAppDispatch();
 
   const onChange = (_: Event, value: number | number[]) => {
     setIsDragging(true);

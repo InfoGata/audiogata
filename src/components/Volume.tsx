@@ -1,15 +1,14 @@
 import { IconButton, Popover, Slider, Box, useTheme } from "@mui/material";
 import { VolumeOff, VolumeUp } from "@mui/icons-material";
 import React from "react";
-import { useDispatch, useSelector } from "react-redux";
 import { setVolume } from "../store/reducers/songReducer";
-import { AppDispatch, AppState } from "../store/store";
+import { useAppDispatch, useAppSelector } from "../store/hooks";
 
 const Volume: React.FC = () => {
   const theme = useTheme();
-  const dispatch = useDispatch<AppDispatch>();
-  const muted = useSelector((state: AppState) => state.song.mute);
-  const volume = useSelector((state: AppState) => state.song.volume);
+  const dispatch = useAppDispatch();
+  const muted = useAppSelector((state) => state.song.mute);
+  const volume = useAppSelector((state) => state.song.volume);
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(
     null
   );

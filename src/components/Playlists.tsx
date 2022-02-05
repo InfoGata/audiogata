@@ -7,28 +7,29 @@ import {
   MenuItem,
   ListItemIcon,
   IconButton,
-  Typography
+  Typography,
 } from "@mui/material";
 import React from "react";
-import { useSelector } from "react-redux";
 import { IPlaylist } from "../models";
-import { AppState, AppDispatch } from "../store/store";
 import { Link } from "react-router-dom";
 import { Delete, MoreHoriz } from "@mui/icons-material";
 import { deletePlaylist } from "../store/reducers/playlistReducer";
-import { useDispatch } from "react-redux";
+import { useAppDispatch, useAppSelector } from "../store/hooks";
 
 interface IPlaylistsItemProps {
   playlist: IPlaylist;
-  openMenu: (event: React.MouseEvent<HTMLButtonElement>, playlist: IPlaylist) => void;
+  openMenu: (
+    event: React.MouseEvent<HTMLButtonElement>,
+    playlist: IPlaylist
+  ) => void;
 }
 
-const PlaylistsItem: React.FC<IPlaylistsItemProps> = props => {
+const PlaylistsItem: React.FC<IPlaylistsItemProps> = (props) => {
   const { openMenu, playlist } = props;
   const playlistPath = `/playlists/${props.playlist.id}`;
   const openPlaylistMenu = (event: React.MouseEvent<HTMLButtonElement>) => {
     openMenu(event, playlist);
-  }
+  };
   return (
     <ListItem button={true} component={Link} to={playlistPath}>
       <ListItemText>{props.playlist.name}</ListItemText>
@@ -42,12 +43,17 @@ const PlaylistsItem: React.FC<IPlaylistsItemProps> = props => {
 };
 
 const Playlists: React.FC = () => {
-  const playlists = useSelector((state: AppState) => state.playlist.playlists);
+  const playlists = useAppSelector((state) => state.playlist.playlists);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-  const [menuPlaylist, setMenuPlaylist] = React.useState<IPlaylist>({} as IPlaylist);
+  const [menuPlaylist, setMenuPlaylist] = React.useState<IPlaylist>(
+    {} as IPlaylist
+  );
   const closeMenu = () => setAnchorEl(null);
-  const dispatch = useDispatch<AppDispatch>();
-  const openMenu = (event: React.MouseEvent<HTMLButtonElement>, playlist: IPlaylist) => {
+  const dispatch = useAppDispatch();
+  const openMenu = (
+    event: React.MouseEvent<HTMLButtonElement>,
+    playlist: IPlaylist
+  ) => {
     setAnchorEl(event.currentTarget);
     setMenuPlaylist(playlist);
   };
@@ -61,7 +67,7 @@ const Playlists: React.FC = () => {
         Playlists
       </Typography>
       <List>
-        {playlists.map(p => (
+        {playlists.map((p) => (
           <PlaylistsItem key={p.id} playlist={p} openMenu={openMenu} />
         ))}
       </List>

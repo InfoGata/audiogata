@@ -8,7 +8,6 @@ import {
   SkipPrevious,
 } from "@mui/icons-material";
 import React from "react";
-import { useDispatch, useSelector } from "react-redux";
 import {
   nextTrack,
   prevTrack,
@@ -16,15 +15,15 @@ import {
   toggleRepeat,
   toggleShuffle,
 } from "../store/reducers/songReducer";
-import { AppDispatch, AppState } from "../store/store";
 import Volume from "./Volume";
 import PlaybackRate from "./PlaybackRate";
+import { useAppDispatch, useAppSelector } from "../store/hooks";
 
 const Controls: React.FC = () => {
-  const repeat = useSelector((state: AppState) => state.song.repeat);
-  const shuffle = useSelector((state: AppState) => state.song.shuffle);
-  const isPlaying = useSelector((state: AppState) => state.song.isPlaying);
-  const dispatch = useDispatch<AppDispatch>();
+  const repeat = useAppSelector((state) => state.song.repeat);
+  const shuffle = useAppSelector((state) => state.song.shuffle);
+  const isPlaying = useAppSelector((state) => state.song.isPlaying);
+  const dispatch = useAppDispatch();
   const playIcon = isPlaying ? <Pause /> : <PlayArrow />;
 
   const onToggleShuffle = () => dispatch(toggleShuffle());

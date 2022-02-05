@@ -1,8 +1,7 @@
 import { TableCell, Typography } from "@mui/material";
 import React from "react";
-import { useSelector } from "react-redux";
 import { IPlaylist, ISong } from "../models";
-import { AppState } from "../store/store";
+import { useAppSelector } from "../store/hooks";
 import { formatSeconds } from "../utils";
 
 interface IProps {
@@ -13,7 +12,7 @@ interface IProps {
 
 const PlaylistItem: React.FC<IProps> = (props) => {
   const { song, showTrackLength } = props;
-  const currentSong = useSelector((state: AppState) => state.song.currentSong);
+  const currentSong = useAppSelector((state) => state.song.currentSong);
 
   return (
     <>

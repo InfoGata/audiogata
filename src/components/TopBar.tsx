@@ -10,10 +10,9 @@ import { alpha, styled, useTheme } from "@mui/material/styles";
 import { Menu, Search } from "@mui/icons-material";
 import { Clear } from "@mui/icons-material";
 import React from "react";
-import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router";
 import { toggleNavbar } from "../store/reducers/uiReducer";
-import { AppDispatch } from "../store/store";
+import { useAppDispatch } from "../store/hooks";
 
 const SearchBar = styled("div")(({ theme }) => ({
   position: "relative",
@@ -58,7 +57,7 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 const TopBar: React.FC = () => {
   const theme = useTheme();
   const navigate = useNavigate();
-  const dispatch = useDispatch<AppDispatch>();
+  const dispatch = useAppDispatch();
   const onToggleNavbar = () => dispatch(toggleNavbar());
   const [search, setSearch] = React.useState("");
 

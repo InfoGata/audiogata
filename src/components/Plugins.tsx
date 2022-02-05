@@ -3,9 +3,8 @@ import { Button, Divider, Grid, styled } from "@mui/material";
 import Spotify from "../plugins/spotify";
 import { nanoid } from "@reduxjs/toolkit";
 import { PluginInfo } from "../models";
-import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, AppState } from "../store/store";
 import { addPlugin } from "../store/reducers/pluginReducer";
+import { useAppDispatch, useAppSelector } from "../store/hooks";
 
 export interface DirectoryFile extends File {
   webkitRelativePath: string;
@@ -104,8 +103,8 @@ async function getPlugin(fileType: FileType): Promise<PluginInfo | null> {
 }
 
 const Plugins: React.FC = () => {
-  const dispatch = useDispatch<AppDispatch>();
-  const plugins = useSelector((state: AppState) => state.plugin.plugins);
+  const dispatch = useAppDispatch();
+  const plugins = useAppSelector((state) => state.plugin.plugins);
   const directoryProps = {
     directory: "",
     webkitdirectory: "",

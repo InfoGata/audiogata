@@ -8,10 +8,9 @@ import {
   TextField,
 } from "@mui/material";
 import React from "react";
-import { useDispatch } from "react-redux";
 import { IPlaylist, ISong } from "../models";
+import { useAppDispatch } from "../store/hooks";
 import { addPlaylist } from "../store/reducers/playlistReducer";
-import { AppDispatch } from "../store/store";
 
 interface IProps {
   open: boolean;
@@ -22,7 +21,7 @@ interface IProps {
 const AddPlaylistDialog: React.FC<IProps> = (props) => {
   const { open, handleClose } = props;
   const [name, setName] = React.useState("");
-  const dispatch = useDispatch<AppDispatch>();
+  const dispatch = useAppDispatch();
 
   const confirm = () => {
     const tracks = props.songs || [];
