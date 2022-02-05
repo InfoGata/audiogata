@@ -33,7 +33,6 @@
     "iso8601-duration": "^1.3.0",
     "miniget": "^4.2.1",
     "notistack": "^2.0.3",
-    "plugin-frame": "git+ssh://git@github.com:elijahgreen/plugin-frame.git",
     "react": "^17.0.1",
     "react-app-rewired": "^2.1.8",
     "react-dom": "^17.0.1",

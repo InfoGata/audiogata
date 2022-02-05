@@ -9869,10 +9869,6 @@
     "xmlbuilder" "^9.0.7"
     "xmldom" "^0.5.0"
 
-"plugin-frame@git+ssh://git@github.com:elijahgreen/plugin-frame.git":
-  "resolved" "git+ssh://git@github.com/elijahgreen/plugin-frame.git#a653cc2173e31c9dfa3a52d5ca47c173d0cbc91c"
-  "version" "0.1.0"
-
 "pnp-webpack-plugin@1.6.4":
   "integrity" "sha512-7Wjy+9E3WwLOEL30D+m8TSTF7qJJUJLONBnwQp0518siuMxUQUbgZwssaFX+QKlZkjHZcw/IpZCt/H0srrntSg=="
   "resolved" "https://registry.npmjs.org/pnp-webpack-plugin/-/pnp-webpack-plugin-1.6.4.tgz"
