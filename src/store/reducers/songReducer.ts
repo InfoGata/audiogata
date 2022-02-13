@@ -70,6 +70,14 @@ const songSlice = createSlice({
         songs: newPlaylist,
       };
     },
+    updateTrack(state, action: PayloadAction<ISong>): ISongState {
+      return {
+        ...state,
+        songs: state.songs.map((s) =>
+          s.id === action.payload.id ? action.payload : s
+        ),
+      };
+    },
     nextTrack: (state): ISongState => {
       let shuffleList = [...state.shuffleList];
       let index = -1;
@@ -229,5 +237,6 @@ export const {
   prevTrack,
   toggleIsPlaying,
   seek,
+  updateTrack,
 } = songSlice.actions;
 export default songSlice.reducer;

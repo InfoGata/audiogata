@@ -3,8 +3,8 @@ import { Button, Divider, Grid, styled } from "@mui/material";
 import Spotify from "../plugins/spotify";
 import { nanoid } from "@reduxjs/toolkit";
 import { PluginInfo } from "../models";
-import { addPlugin } from "../store/reducers/pluginReducer";
-import { useAppDispatch, useAppSelector } from "../store/hooks";
+import PluginsContext from "../PluginsContext";
+import PluginContainer from "./PluginContainer";
 
 export interface DirectoryFile extends File {
   webkitRelativePath: string;
@@ -103,8 +103,7 @@ async function getPlugin(fileType: FileType): Promise<PluginInfo | null> {
 }
 
 const Plugins: React.FC = () => {
-  const dispatch = useAppDispatch();
-  const plugins = useAppSelector((state) => state.plugin.plugins);
+  const pluginsContext = React.useContext(PluginsContext);
   const directoryProps = {
     directory: "",
     webkitdirectory: "",
@@ -120,7 +119,7 @@ const Plugins: React.FC = () => {
     const plugin = await getPlugin(fileType);
 
     if (plugin) {
-      dispatch(addPlugin(plugin));
+      await pluginsContext.addPlugin(plugin);
     }
   };
 
@@ -128,7 +127,13 @@ const Plugins: React.FC = () => {
     await Spotify.login();
   };
 
-  const pluginComponents = plugins.map((p) => <Grid id={p.id}>{p.name}</Grid>);
+  const pluginComponents = pluginsContext.plugins.map((plugin) => (
+    <PluginContainer
+      key={plugin.id}
+      plugin={plugin}
+      deletePlugin={pluginsContext.deletePlugin}
+    />
+  ));
 
   return (
     <Grid>

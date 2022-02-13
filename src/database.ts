@@ -1,14 +1,18 @@
 import dexie from "dexie";
+import { PluginInfo } from "./models";
 
 class AudioDatabase extends dexie {
   audioBlobs: Dexie.Table<AudioBlob, string>;
+  plugins: Dexie.Table<PluginInfo, string>;
 
   constructor() {
     super("AudioDatabase");
     this.version(1).stores({
-      audioBlobs: 'id',
+      audioBlobs: "id",
+      plugins: "id",
     });
     this.audioBlobs = this.table("audioBlobs");
+    this.plugins = this.table("plugins");
   }
 }
 

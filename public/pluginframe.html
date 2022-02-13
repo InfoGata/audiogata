@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+</head>
+
+<body>
+  <script type="module">
+    import { PluginRemote } from "./plugin-frame.esm.js";
+    window.global = window;
+    var parcelRequire;
+    const apis = {
+      searchAll: undefined,
+      getTrackUrl: undefined,
+      playlistTracks: undefined,
+      onUiMessage: undefined
+    };
+
+    const prepare = {
+      networkRequest: (input, init) => {
+        if (init) {
+          init = {
+            headers: init.headers,
+            mode: init.mode,
+            method: init.method,
+            signal: init.signal,
+            credentials: init.credentials,
+            body: init.body
+          }
+        }
+        return [input, init];
+      }
+    }
+
+    const complete = {
+      networkRequest: (result) => {
+        return new Response(result.body, {
+          headers: new Headers(result.headers),
+          status: result.status,
+          statusText: result.statusText
+        })
+      }
+    };
+
+    let remote = new PluginRemote(apis, { prepareFuncs: prepare, completeFuncs: complete });
+    </script>
+</body>
+
+
+</html>

@@ -14,6 +14,10 @@ import {
 } from "../store/reducers/songReducer";
 import { AppState } from "../store/store";
 import { withSnackbar, ProviderContext } from "notistack";
+import PluginsContext from "../PluginsContext";
+import { getFormatTrackApiFromName } from "../utils";
+import { db } from "../database";
+import { PluginFrame } from "../PluginsContext";
 
 interface IProps extends StateProps, DispatchProps, ProviderContext {}
 interface IState {
@@ -21,6 +25,8 @@ interface IState {
 }
 
 class AudioComponent extends React.Component<IProps, IState> {
+  static contextType = PluginsContext;
+  context!: React.ContextType<typeof PluginsContext>;
   private songLoaded = false;
   private lastPlayer: IPlayerComponent | undefined;
   constructor(props: IProps) {
@@ -145,11 +151,35 @@ class AudioComponent extends React.Component<IProps, IState> {
   };
 
   private async playSong(song: ISong, time?: number) {
-    if (song.from) {
-      const player = this.getPlayerFromName(song.from || "");
+    const newSong: ISong = { ...song };
+    if (newSong.from && newSong.id) {
+      const audioBlob = await db.audioBlobs
+        .where(":id")
+        .equals(newSong.id)
+        .first();
+      const formatApi = getFormatTrackApiFromName(newSong.from);
+      let hasPluginApi = false;
+      let pluginFrame: PluginFrame | undefined;
+      if (!formatApi) {
+        pluginFrame = this.context.plugins.find((p) => p.id === newSong.from);
+        hasPluginApi =
+          (await pluginFrame?.connection?.methodDefined("getTrackUrl")) ||
+          false;
+      }
+      const player = this.getPlayerFromName(newSong.from || "");
       this.lastPlayer?.pause();
       try {
-        await player.play(song);
+        if (audioBlob) {
+          newSong.source = URL.createObjectURL(audioBlob.blob);
+        } else if (formatApi) {
+          newSong.source = await formatApi.getTrackUrl(newSong);
+        } else if (hasPluginApi && pluginFrame) {
+          newSong.source = await pluginFrame.connection?.remote.getTrackUrl(
+            newSong
+          );
+        }
+
+        await player.play(newSong);
         this.lastPlayer = player;
         this.songLoaded = true;
         this.setState({
@@ -175,6 +205,7 @@ class AudioComponent extends React.Component<IProps, IState> {
     if (this.props.currentSong) {
       const message = `${this.props.currentSong.name}: ${err.message}`;
       this.props.enqueueSnackbar(message, { variant: "error" });
+      console.log(message);
       console.log(err);
     }
     this.setState({

@@ -22,6 +22,7 @@ import { PlaylistPlay } from "@mui/icons-material";
 import PlaylistMenuItem from "./PlaylistMenuItem";
 import { addTrack } from "../store/reducers/songReducer";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
+import PluginsContext from "../PluginsContext";
 
 interface ITabPanelProps {
   children?: React.ReactNode;
@@ -55,13 +56,14 @@ const Search: React.FC = () => {
   const [tabValue, setTabValue] = React.useState("tracks");
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [menuSong, setMenuSong] = React.useState<ISong>({} as ISong);
+  const [options, setOptions] = React.useState<[string, string][]>();
   const location = useLocation();
   const playlists = useAppSelector((state) => state.playlist.playlists);
-  const plugins = useAppSelector((state) => state.plugin.plugins);
   const onSearchTypeChange = (e: React.FormEvent<HTMLSelectElement>) => {
     setSearchType(e.currentTarget.value);
   };
   const dispatch = useAppDispatch();
+  const pluginsContext = React.useContext(PluginsContext);
 
   const onClearSearch = () => {
     setTrackResults([]);
@@ -69,6 +71,28 @@ const Search: React.FC = () => {
     setArtistResults([]);
     setPlaylistResults([]);
   };
+  useEffect(() => {
+    const getOptions = async () => {
+      let optionsTuple: [string, string][] = [
+        ["youtube", "Youtube"],
+        ["soundcloud", "SoundCloud"],
+        ["spotify", "Spotify"],
+      ];
+      const validPlugins = await Promise.all(
+        pluginsContext.plugins.filter(
+          async (p) => await p.connection?.methodDefined("searchAll")
+        )
+      );
+      const pluginTuples: [string, string][] = validPlugins.map((p) => [
+        p.id || "",
+        p.name || "",
+      ]);
+
+      optionsTuple = optionsTuple.concat(pluginTuples);
+      setOptions(optionsTuple);
+    };
+    getOptions();
+  }, [pluginsContext]);
 
   useEffect(() => {
     const onSearch = async (search: string) => {
@@ -79,6 +103,15 @@ const Search: React.FC = () => {
       const api = getApiByName(searchType);
       if (api) {
         ({ tracks, albums, artists, playlists } = await api.searchAll(search));
+      } else {
+        const plugin = pluginsContext.plugins.find((p) => p.id === searchType);
+        if (plugin?.connection?.methodDefined("searchAll")) {
+          ({ tracks, albums, artists, playlists } =
+            await plugin.connection.remote.searchAll(search));
+          tracks?.forEach((t) => {
+            t.from = searchType;
+          });
+        }
       }
       setAlbumResults(albums || []);
       setArtistResults(artists || []);
@@ -90,7 +123,7 @@ const Search: React.FC = () => {
     if (query && query.length > 3) {
       onSearch(query);
     }
-  }, [location.search, searchType, plugins]);
+  }, [location.search, searchType, pluginsContext]);
 
   const openMenu = (
     event: React.MouseEvent<HTMLButtonElement>,
@@ -134,12 +167,15 @@ const Search: React.FC = () => {
   const handleChange = (_event: React.ChangeEvent<{}>, newValue: string) => {
     setTabValue(newValue);
   };
+  const optionsComponents = options?.map((option) => (
+    <option key={option[0]} value={option[0]}>
+      {option[1]}
+    </option>
+  ));
   return (
     <>
       <select value={searchType} onChange={onSearchTypeChange}>
-        <option value="youtube">Youtube</option>
-        <option value="soundcloud">SoundCloud</option>
-        <option value="spotify">Spotify</option>
+        {optionsComponents}
       </select>
       <AppBar position="static">
         <Tabs
