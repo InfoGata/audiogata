@@ -31,13 +31,13 @@ class Local implements IPlayerComponent {
   }
 
   public pause() {
-    if (this.audio.readyState === 4) {
+    if (this.audio.readyState >= 3) {
       this.audio.pause();
     }
   }
 
   public resume() {
-    if (this.audio.readyState === 4) {
+    if (this.audio.readyState >= 3) {
       this.audio.play();
     }
   }

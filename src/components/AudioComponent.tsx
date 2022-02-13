@@ -90,11 +90,13 @@ class AudioComponent extends React.Component<IProps, IState> {
     const player = this.getPlayerFromName(newProps.currentSong?.from || "");
     if (prevProps.isPlaying !== newProps.isPlaying) {
       if (newProps.isPlaying) {
+        console.log("resume");
         player.resume();
         if (!this.songLoaded && newProps.currentSong) {
           await this.playSong(newProps.currentSong, newProps.elapsed);
         }
       } else {
+        console.log("pause");
         await player.pause();
       }
     }
@@ -163,8 +165,7 @@ class AudioComponent extends React.Component<IProps, IState> {
       if (!formatApi) {
         pluginFrame = this.context.plugins.find((p) => p.id === newSong.from);
         hasPluginApi =
-          (await pluginFrame?.connection?.methodDefined("getTrackUrl")) ||
-          false;
+          (await pluginFrame?.methodDefined("getTrackUrl")) || false;
       }
       const player = this.getPlayerFromName(newSong.from || "");
       this.lastPlayer?.pause();
@@ -174,9 +175,7 @@ class AudioComponent extends React.Component<IProps, IState> {
         } else if (formatApi) {
           newSong.source = await formatApi.getTrackUrl(newSong);
         } else if (hasPluginApi && pluginFrame) {
-          newSong.source = await pluginFrame.connection?.remote.getTrackUrl(
-            newSong
-          );
+          newSong.source = await pluginFrame.remote.getTrackUrl(newSong);
         }
 
         await player.play(newSong);

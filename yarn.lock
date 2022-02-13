@@ -9950,7 +9950,7 @@
     "xmldom" "^0.5.0"
 
 "plugin-frame@git+ssh://git@github.com:elijahgreen/plugin-frame.git":
-  "resolved" "git+ssh://git@github.com/elijahgreen/plugin-frame.git#43471562a72f6bc89439f7d64e8e8954a53044a8"
+  "resolved" "git+ssh://git@github.com/elijahgreen/plugin-frame.git#86bac7e5e609f6770fbb5e281b63ce8c2476dbda"
   "version" "0.1.0"
 
 "pnp-webpack-plugin@1.6.4":
