@@ -1,7 +1,6 @@
 import { IImage } from "./models";
 import { ISearchApi } from "./plugins/ISearchApi";
 import SoundCloud from "./plugins/SoundCloud";
-import Youtube from "./plugins/Youtube";
 import thumbnail from "./thumbnail.png";
 import Spotify from "./plugins/spotify";
 import { IFormatTrackApi } from "./plugins/IFormatTrackApi";
@@ -48,8 +47,6 @@ export const getThumbnailImage = (
 
 export const getApiByName = (name: string): ISearchApi | undefined => {
   switch (name) {
-    case "youtube":
-      return Youtube;
     case "soundcloud":
       return SoundCloud;
     case "spotify":
@@ -61,8 +58,6 @@ export const getFormatTrackApiFromName = (
   name: string
 ): IFormatTrackApi | undefined => {
   switch (name) {
-    case "youtube":
-      return Youtube;
     case "soundcloud":
       return SoundCloud;
   }

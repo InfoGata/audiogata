@@ -48,7 +48,7 @@ function TabPanel(props: ITabPanelProps) {
 }
 
 const Search: React.FC = () => {
-  const [searchType, setSearchType] = React.useState("youtube");
+  const [searchType, setSearchType] = React.useState("spotify");
   const [trackResults, setTrackResults] = React.useState<ISong[]>([]);
   const [albumResults, setAlbumResults] = React.useState<IAlbum[]>([]);
   const [artistResults, setArtistResults] = React.useState<IArtist[]>([]);
@@ -74,7 +74,6 @@ const Search: React.FC = () => {
   useEffect(() => {
     const getOptions = async () => {
       let optionsTuple: [string, string][] = [
-        ["youtube", "Youtube"],
         ["soundcloud", "SoundCloud"],
         ["spotify", "Spotify"],
       ];

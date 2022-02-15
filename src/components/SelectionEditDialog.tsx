@@ -34,7 +34,6 @@ const SelectionEditDialog: React.FC<SelectionEditProps> = (props) => {
   };
 
   const optionsTuple: [string, string][] = [
-    ["youtube", "Youtube"],
     ["soundcloud", "SoundCloud"],
     ["spotify", "Spotify"],
   ];

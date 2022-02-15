@@ -22,7 +22,6 @@ const TrackInfo: React.FC<ITrackInfo> = (props) => {
   const [editing, setEditing] = React.useState(false);
   const [from, setFrom] = React.useState(track.from);
   const optionsTuple: [string, string][] = [
-    ["youtube", "Youtube"],
     ["soundcloud", "SoundCloud"],
     ["spotify", "Spotify"],
   ];

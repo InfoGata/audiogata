@@ -190,7 +190,6 @@ const PlayQueue: React.FC = () => {
   };
 
   const optionsTuple: [string, string][] = [
-    ["youtube", "Youtube"],
     ["soundcloud", "SoundCloud"],
     ["spotify", "Spotify"],
   ];
