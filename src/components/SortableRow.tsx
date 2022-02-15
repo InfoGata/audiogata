@@ -5,10 +5,11 @@ import { TableRow } from "@mui/material";
 
 interface SortableItemProps {
   id: string;
+  disabled: boolean;
   onClick?: (...args: any) => void;
 }
 const SortableRow: React.FC<SortableItemProps> = (props) => {
-  const { id, onClick } = props;
+  const { id, onClick, disabled } = props;
   const {
     isDragging,
     attributes,
@@ -16,7 +17,7 @@ const SortableRow: React.FC<SortableItemProps> = (props) => {
     setNodeRef,
     transform,
     transition,
-  } = useSortable({ id: id || "" });
+  } = useSortable({ id: id || "", disabled: disabled });
 
   return (
     <TableRow

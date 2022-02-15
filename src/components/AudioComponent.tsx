@@ -90,13 +90,11 @@ class AudioComponent extends React.Component<IProps, IState> {
     const player = this.getPlayerFromName(newProps.currentSong?.from || "");
     if (prevProps.isPlaying !== newProps.isPlaying) {
       if (newProps.isPlaying) {
-        console.log("resume");
         player.resume();
         if (!this.songLoaded && newProps.currentSong) {
           await this.playSong(newProps.currentSong, newProps.elapsed);
         }
       } else {
-        console.log("pause");
         await player.pause();
       }
     }

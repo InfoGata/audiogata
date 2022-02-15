@@ -31,6 +31,7 @@ const Playlist: React.FC = () => {
   );
   const theme = useTheme();
   const showTrackLength = useMediaQuery(theme.breakpoints.up("sm"));
+  const dragDisabled = false;
 
   const playPlaylist = () => {
     if (!playlist) {
@@ -95,6 +96,7 @@ const Playlist: React.FC = () => {
                   id={s.id || ""}
                   key={s.id}
                   onClick={() => playSong(s)}
+                  disabled={dragDisabled}
                 >
                   <PlaylistItem
                     showTrackLength={showTrackLength}

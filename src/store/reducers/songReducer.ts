@@ -15,6 +15,11 @@ interface ISongState {
   playbackRate?: number;
 }
 
+interface IUpdateFrom {
+  updateIds: Set<string>;
+  from: string;
+}
+
 const initialState: ISongState = {
   isPlaying: false,
   mute: false,
@@ -75,6 +80,16 @@ const songSlice = createSlice({
         ...state,
         songs: state.songs.map((s) =>
           s.id === action.payload.id ? action.payload : s
+        ),
+      };
+    },
+    updateFrom(state, action: PayloadAction<IUpdateFrom>): ISongState {
+      return {
+        ...state,
+        songs: state.songs.map((s) =>
+          action.payload.updateIds.has(s.id || "")
+            ? { ...s, from: action.payload.from }
+            : s
         ),
       };
     },
@@ -238,5 +253,6 @@ export const {
   toggleIsPlaying,
   seek,
   updateTrack,
+  updateFrom,
 } = songSlice.actions;
 export default songSlice.reducer;

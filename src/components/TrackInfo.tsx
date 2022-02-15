@@ -29,6 +29,11 @@ const TrackInfo: React.FC<ITrackInfo> = (props) => {
   const options = optionsTuple.concat(
     pluginsContext.plugins.map((p) => [p.id || "", p.name || ""])
   );
+  const optionsComponents = options.map((option) => (
+    <MenuItem key={option[0]} value={option[0]}>
+      {option[1]}
+    </MenuItem>
+  ));
   const onSave = () => {
     const updatedTrack: ISong = { ...track, from };
     dispatch(updateTrack(updatedTrack));
@@ -49,11 +54,6 @@ const TrackInfo: React.FC<ITrackInfo> = (props) => {
     setFrom(newValue);
     setEditing(newValue !== track.from);
   };
-  const optionsComponents = options.map((option) => (
-    <MenuItem key={option[0]} value={option[0]}>
-      {option[1]}
-    </MenuItem>
-  ));
   return (
     <>
       <p>{track.name}</p>

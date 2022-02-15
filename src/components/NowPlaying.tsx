@@ -17,6 +17,11 @@ import {
   TableRow,
   TableHead,
   useMediaQuery,
+  InputLabel,
+  FormControl,
+  Select,
+  SelectChangeEvent,
+  Button,
 } from "@mui/material";
 import { Delete, Info, PlaylistAdd } from "@mui/icons-material";
 import {
@@ -36,6 +41,8 @@ import { arrayMove } from "@dnd-kit/sortable";
 import SortableRow from "./SortableRow";
 import { useTheme } from "@mui/styles";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
+import PluginsContext from "../PluginsContext";
+import SelectionEditDialog from "./SelectionEditDialog";
 
 const PlayQueue: React.FC = () => {
   const [activeId, setActiveId] = React.useState<string | null>(null);
@@ -43,6 +50,10 @@ const PlayQueue: React.FC = () => {
   const [menuSong, setMenuSong] = React.useState<ISong>({} as ISong);
   const [canOffline, setCanOffline] = React.useState(false);
   const [hasBlob, setHasBlob] = React.useState(false);
+  const [selected, setSelected] = React.useState<Set<string>>(new Set());
+  const [from, setFrom] = React.useState<string>("");
+  const pluginsContext = React.useContext(PluginsContext);
+  const dragDisabled = false;
   const theme = useTheme();
   const showTrackLength = useMediaQuery(theme.breakpoints.up("sm"));
   const openMenu = async (
@@ -77,12 +88,15 @@ const PlayQueue: React.FC = () => {
     dispatch(deleteTrack(menuSong));
     closeMenu();
   };
-  const [dialogOpen, setDialogOpen] = React.useState(false);
+  const [playlistDialogOpen, setPlaylistDialogOpen] = React.useState(false);
+  const [editDialogOpen, setEditDialogOpen] = React.useState(false);
   const dispatch = useAppDispatch();
-  const openDialog = () => setDialogOpen(true);
-  const closeDialog = () => setDialogOpen(false);
+  const openPlaylistDialog = () => setPlaylistDialogOpen(true);
+  const closePlaylistDialog = () => setPlaylistDialogOpen(false);
+  const openEditDialog = () => setEditDialogOpen(true);
+  const closeEditDialog = () => setEditDialogOpen(false);
   const addToNewPlaylist = () => {
-    openDialog();
+    openPlaylistDialog();
     closeMenu();
   };
   const playlists = useAppSelector((state) => state.playlist.playlists);
@@ -150,15 +164,72 @@ const PlayQueue: React.FC = () => {
   const playSong = (song: ISong) => {
     dispatch(setTrack(song));
   };
+  const isSelected = (id: string) => selected.has(id);
+  const onSelectClick = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    id: string
+  ) => {
+    setSelected((prev) => {
+      const next = new Set(prev);
+      e.target.checked ? next.add(id) : next.delete(id);
+      return next;
+    });
+  };
+
+  const onSelectFromChange = (e: SelectChangeEvent<string>) => {
+    const value = e.target.value;
+    setFrom(value);
+    if (value) {
+      const filterdList = songList
+        .filter((s) => s.from === value)
+        .map((s) => s.id) as string[];
+      setSelected(new Set(filterdList));
+    } else {
+      setSelected(new Set());
+    }
+  };
+
+  const optionsTuple: [string, string][] = [
+    ["youtube", "Youtube"],
+    ["soundcloud", "SoundCloud"],
+    ["spotify", "Spotify"],
+  ];
+  const options = optionsTuple.concat(
+    pluginsContext.plugins.map((p) => [p.id || "", p.name || ""])
+  );
+  const optionsComponents = options.map((option) => (
+    <MenuItem key={option[0]} value={option[0]}>
+      {option[1]}
+    </MenuItem>
+  ));
+
+  const editSelection = () => {
+    openEditDialog();
+  };
 
   return (
     <>
-      <Typography variant="h5" gutterBottom>
+      <Typography variant="h3" gutterBottom>
         Now Playing
       </Typography>
       <IconButton aria-label="clear" onClick={clearQueue} size="large">
         <Delete fontSize="large" />
       </IconButton>
+      <FormControl fullWidth>
+        <InputLabel id="select-from">From</InputLabel>
+        <Select
+          id="select-form"
+          value={from}
+          label="From"
+          onChange={onSelectFromChange}
+        >
+          <MenuItem value={""}>All</MenuItem>
+          {optionsComponents}
+        </Select>
+      </FormControl>
+      {selected.size > 0 && (
+        <Button onClick={editSelection}>Edit Selection</Button>
+      )}
       <Sortable
         ids={songList.map((s) => s.id || "")}
         onDragOver={handleDragOver}
@@ -181,9 +252,12 @@ const PlayQueue: React.FC = () => {
                   id={songInfo.id || ""}
                   key={songInfo.id}
                   onClick={() => playSong(songInfo)}
+                  disabled={dragDisabled}
                 >
                   <QueueItem
                     song={songInfo}
+                    isSelected={isSelected}
+                    onSelectClick={onSelectClick}
                     openMenu={openMenu}
                     showTrackLength={showTrackLength}
                   />
@@ -193,6 +267,8 @@ const PlayQueue: React.FC = () => {
                 {activeId ? (
                   <QueueItem
                     showTrackLength={showTrackLength}
+                    isSelected={isSelected}
+                    onSelectClick={onSelectClick}
                     key={activeId}
                     song={
                       songList.find((s) => s.id === activeId) || ({} as ISong)
@@ -237,8 +313,13 @@ const PlayQueue: React.FC = () => {
       </Menu>
       <AddPlaylistDialog
         songs={[menuSong]}
-        open={dialogOpen}
-        handleClose={closeDialog}
+        open={playlistDialogOpen}
+        handleClose={closePlaylistDialog}
+      />
+      <SelectionEditDialog
+        open={editDialogOpen}
+        trackIdSet={selected}
+        onClose={closeEditDialog}
       />
     </>
   );
