@@ -1,9 +1,19 @@
 import React from "react";
-import { PluginInfo } from "./models";
+import { IAlbum, IArtist, IPlaylist, ISong, PluginInfo } from "./models";
 import { PluginHost } from "plugin-frame";
 import { db } from "./database";
 
-export class PluginFrame extends PluginHost {
+interface PluginInterface {
+  searchAll: (query: string) => Promise<{
+    tracks?: ISong[];
+    albums?: IAlbum[];
+    artists?: IArtist[];
+    playlists?: IPlaylist[];
+  }>;
+  getTrackUrl: (song: ISong) => Promise<string>;
+}
+
+export class PluginFrame extends PluginHost<PluginInterface> {
   name?: string;
   id?: string;
 }
