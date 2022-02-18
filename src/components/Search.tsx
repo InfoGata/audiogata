@@ -63,7 +63,7 @@ const Search: React.FC = () => {
     setSearchType(e.currentTarget.value);
   };
   const dispatch = useAppDispatch();
-  const pluginsContext = React.useContext(PluginsContext);
+  const { plugins } = React.useContext(PluginsContext);
 
   const onClearSearch = () => {
     setTrackResults([]);
@@ -78,9 +78,7 @@ const Search: React.FC = () => {
         ["spotify", "Spotify"],
       ];
       const validPlugins = await Promise.all(
-        pluginsContext.plugins.filter(
-          async (p) => await p.methodDefined("searchAll")
-        )
+        plugins.filter(async (p) => await p.methodDefined("searchAll"))
       );
       const pluginTuples: [string, string][] = validPlugins.map((p) => [
         p.id || "",
@@ -91,7 +89,7 @@ const Search: React.FC = () => {
       setOptions(optionsTuple);
     };
     getOptions();
-  }, [pluginsContext]);
+  }, [plugins]);
 
   useEffect(() => {
     const onSearch = async (search: string) => {
@@ -103,7 +101,7 @@ const Search: React.FC = () => {
       if (api) {
         ({ tracks, albums, artists, playlists } = await api.searchAll(search));
       } else {
-        const plugin = pluginsContext.plugins.find((p) => p.id === searchType);
+        const plugin = plugins.find((p) => p.id === searchType);
         if (plugin?.methodDefined("searchAll")) {
           ({ tracks, albums, artists, playlists } =
             await plugin.remote.searchAll(search));
@@ -122,7 +120,7 @@ const Search: React.FC = () => {
     if (query && query.length > 3) {
       onSearch(query);
     }
-  }, [location.search, searchType, pluginsContext]);
+  }, [location.search, searchType, plugins]);
 
   const openMenu = (
     event: React.MouseEvent<HTMLButtonElement>,

@@ -103,7 +103,7 @@ async function getPlugin(fileType: FileType): Promise<PluginInfo | null> {
 }
 
 const Plugins: React.FC = () => {
-  const pluginsContext = React.useContext(PluginsContext);
+  const { plugins, addPlugin, deletePlugin } = React.useContext(PluginsContext);
   const directoryProps = {
     directory: "",
     webkitdirectory: "",
@@ -119,7 +119,7 @@ const Plugins: React.FC = () => {
     const plugin = await getPlugin(fileType);
 
     if (plugin) {
-      await pluginsContext.addPlugin(plugin);
+      await addPlugin(plugin);
     }
   };
 
@@ -127,11 +127,11 @@ const Plugins: React.FC = () => {
     await Spotify.login();
   };
 
-  const pluginComponents = pluginsContext.plugins.map((plugin) => (
+  const pluginComponents = plugins.map((plugin) => (
     <PluginContainer
       key={plugin.id}
       plugin={plugin}
-      deletePlugin={pluginsContext.deletePlugin}
+      deletePlugin={deletePlugin}
     />
   ));
 

@@ -18,7 +18,7 @@ interface ITrackInfo {
 const TrackInfo: React.FC<ITrackInfo> = (props) => {
   const { track } = props;
   const dispatch = useAppDispatch();
-  const pluginsContext = React.useContext(PluginsContext);
+  const { plugins } = React.useContext(PluginsContext);
   const [editing, setEditing] = React.useState(false);
   const [from, setFrom] = React.useState(track.from);
   const optionsTuple: [string, string][] = [
@@ -26,7 +26,7 @@ const TrackInfo: React.FC<ITrackInfo> = (props) => {
     ["spotify", "Spotify"],
   ];
   const options = optionsTuple.concat(
-    pluginsContext.plugins.map((p) => [p.id || "", p.name || ""])
+    plugins.map((p) => [p.id || "", p.name || ""])
   );
   const optionsComponents = options.map((option) => (
     <MenuItem key={option[0]} value={option[0]}>

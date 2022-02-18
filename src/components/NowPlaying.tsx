@@ -52,7 +52,7 @@ const PlayQueue: React.FC = () => {
   const [hasBlob, setHasBlob] = React.useState(false);
   const [selected, setSelected] = React.useState<Set<string>>(new Set());
   const [from, setFrom] = React.useState<string>("");
-  const pluginsContext = React.useContext(PluginsContext);
+  const { plugins } = React.useContext(PluginsContext);
   const dragDisabled = false;
   const theme = useTheme();
   const showTrackLength = useMediaQuery(theme.breakpoints.up("sm"));
@@ -194,7 +194,7 @@ const PlayQueue: React.FC = () => {
     ["spotify", "Spotify"],
   ];
   const options = optionsTuple.concat(
-    pluginsContext.plugins.map((p) => [p.id || "", p.name || ""])
+    plugins.map((p) => [p.id || "", p.name || ""])
   );
   const optionsComponents = options.map((option) => (
     <MenuItem key={option[0]} value={option[0]}>

@@ -26,7 +26,7 @@ const SelectionEditDialog: React.FC<SelectionEditProps> = (props) => {
   const { trackIdSet, onClose, open } = props;
   const [from, setFrom] = React.useState("");
   const dispatch = useAppDispatch();
-  const pluginsContext = React.useContext(PluginsContext);
+  const { plugins } = React.useContext(PluginsContext);
   const onSave = () => {
     if (from) {
       dispatch(updateFrom({ updateIds: trackIdSet, from }));
@@ -38,7 +38,7 @@ const SelectionEditDialog: React.FC<SelectionEditProps> = (props) => {
     ["spotify", "Spotify"],
   ];
   const options = optionsTuple.concat(
-    pluginsContext.plugins.map((p) => [p.id || "", p.name || ""])
+    plugins.map((p) => [p.id || "", p.name || ""])
   );
   const optionsComponents = options.map((option) => (
     <MenuItem key={option[0]} value={option[0]}>
