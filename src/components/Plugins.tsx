@@ -3,7 +3,7 @@ import { Button, Divider, Grid, styled } from "@mui/material";
 import Spotify from "../plugins/spotify";
 import { nanoid } from "@reduxjs/toolkit";
 import { PluginInfo } from "../models";
-import PluginsContext from "../PluginsContext";
+import { usePlugins } from "../PluginsContext";
 import PluginContainer from "./PluginContainer";
 
 export interface DirectoryFile extends File {
@@ -103,7 +103,7 @@ async function getPlugin(fileType: FileType): Promise<PluginInfo | null> {
 }
 
 const Plugins: React.FC = () => {
-  const { plugins, addPlugin, deletePlugin } = React.useContext(PluginsContext);
+  const { plugins, addPlugin, deletePlugin } = usePlugins();
   const directoryProps = {
     directory: "",
     webkitdirectory: "",

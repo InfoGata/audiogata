@@ -1,6 +1,6 @@
 import { Button, Grid, IconButton, Typography } from "@mui/material";
 import React, { useRef } from "react";
-import PluginsContext, { PluginFrame } from "../PluginsContext";
+import { PluginFrame, usePlugins } from "../PluginsContext";
 import { Delete } from "@mui/icons-material";
 import { db } from "../database";
 
@@ -12,7 +12,7 @@ interface PluginContainerProps {
 const PluginContainer: React.FC<PluginContainerProps> = (props) => {
   const { plugin, deletePlugin } = props;
   const [optionsOpen, setOptionsOpen] = React.useState(false);
-  const { pluginMessage } = React.useContext(PluginsContext);
+  const { pluginMessage } = usePlugins();
   const [optionsHtml, setOptionsHtml] = React.useState<string>();
   const ref = useRef<HTMLIFrameElement>(null);
 

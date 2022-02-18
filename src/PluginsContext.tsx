@@ -37,7 +37,7 @@ export interface PluginContextInterface {
 
 const PluginsContext = React.createContext<PluginContextInterface>(undefined!);
 
-const PluginsProvider: React.FC = (props) => {
+export const PluginsProvider: React.FC = (props) => {
   const [pluginFrames, setPluginFrames] = React.useState<PluginFrame[]>([]);
   const [pluginMessage, setPluginMessage] = React.useState<PluginMessage>();
 
@@ -109,6 +109,6 @@ const PluginsProvider: React.FC = (props) => {
   );
 };
 
-export default PluginsContext;
+export const usePlugins = () => React.useContext(PluginsContext);
 
-export { PluginsProvider };
+export default PluginsContext;

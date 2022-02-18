@@ -22,7 +22,7 @@ import { PlaylistPlay } from "@mui/icons-material";
 import PlaylistMenuItem from "./PlaylistMenuItem";
 import { addTrack } from "../store/reducers/songReducer";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
-import PluginsContext from "../PluginsContext";
+import { usePlugins } from "../PluginsContext";
 
 interface ITabPanelProps {
   children?: React.ReactNode;
@@ -63,7 +63,7 @@ const Search: React.FC = () => {
     setSearchType(e.currentTarget.value);
   };
   const dispatch = useAppDispatch();
-  const { plugins } = React.useContext(PluginsContext);
+  const { plugins } = usePlugins();
 
   const onClearSearch = () => {
     setTrackResults([]);

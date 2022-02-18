@@ -7,7 +7,7 @@ import {
 } from "@mui/material";
 import React from "react";
 import { ISong } from "../models";
-import PluginsContext from "../PluginsContext";
+import { usePlugins } from "../PluginsContext";
 import { useAppDispatch } from "../store/hooks";
 import { updateTrack } from "../store/reducers/songReducer";
 
@@ -18,7 +18,7 @@ interface ITrackInfo {
 const TrackInfo: React.FC<ITrackInfo> = (props) => {
   const { track } = props;
   const dispatch = useAppDispatch();
-  const { plugins } = React.useContext(PluginsContext);
+  const { plugins } = usePlugins();
   const [editing, setEditing] = React.useState(false);
   const [from, setFrom] = React.useState(track.from);
   const optionsTuple: [string, string][] = [

@@ -41,7 +41,7 @@ import { arrayMove } from "@dnd-kit/sortable";
 import SortableRow from "./SortableRow";
 import { useTheme } from "@mui/styles";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
-import PluginsContext from "../PluginsContext";
+import { usePlugins } from "../PluginsContext";
 import SelectionEditDialog from "./SelectionEditDialog";
 
 const PlayQueue: React.FC = () => {
@@ -52,7 +52,7 @@ const PlayQueue: React.FC = () => {
   const [hasBlob, setHasBlob] = React.useState(false);
   const [selected, setSelected] = React.useState<Set<string>>(new Set());
   const [from, setFrom] = React.useState<string>("");
-  const { plugins } = React.useContext(PluginsContext);
+  const { plugins } = usePlugins();
   const dragDisabled = false;
   const theme = useTheme();
   const showTrackLength = useMediaQuery(theme.breakpoints.up("sm"));

@@ -12,7 +12,7 @@ import {
   SelectChangeEvent,
 } from "@mui/material";
 import React from "react";
-import PluginsContext from "../PluginsContext";
+import { usePlugins } from "../PluginsContext";
 import { useAppDispatch } from "../store/hooks";
 import { updateFrom } from "../store/reducers/songReducer";
 
@@ -26,7 +26,7 @@ const SelectionEditDialog: React.FC<SelectionEditProps> = (props) => {
   const { trackIdSet, onClose, open } = props;
   const [from, setFrom] = React.useState("");
   const dispatch = useAppDispatch();
-  const { plugins } = React.useContext(PluginsContext);
+  const { plugins } = usePlugins();
   const onSave = () => {
     if (from) {
       dispatch(updateFrom({ updateIds: trackIdSet, from }));
