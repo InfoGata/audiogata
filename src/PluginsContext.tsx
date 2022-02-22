@@ -28,6 +28,27 @@ export class PluginFrame extends PluginHost<PluginInterface> {
   hasOptions = false;
 }
 
+interface NetworkRequest {
+  body: Blob;
+  headers: { [k: string]: string };
+  status: number;
+  statusText: string;
+  url: string;
+}
+
+interface MediaGataExtension {
+  networkRequest: (
+    input: RequestInfo,
+    init?: RequestInit
+  ) => Promise<NetworkRequest>;
+}
+
+declare global {
+  interface Window {
+    MediaGata: MediaGataExtension;
+  }
+}
+
 export interface PluginContextInterface {
   addPlugin: (plugin: PluginInfo) => Promise<void>;
   deletePlugin: (plugin: PluginFrame) => Promise<void>;
@@ -44,6 +65,10 @@ export const PluginsProvider: React.FC = (props) => {
   const loadPlugin = (plugin: PluginInfo) => {
     const api = {
       networkRequest: async (input: RequestInfo, init?: RequestInit) => {
+        const hasExtension = typeof window.MediaGata !== "undefined";
+        if (hasExtension) {
+          return await window.MediaGata.networkRequest(input, init);
+        }
         const response = await fetch(input, init);
         const body = await response.blob();
         const responseHeaders = Object.fromEntries(response.headers.entries());
@@ -55,6 +80,9 @@ export const PluginsProvider: React.FC = (props) => {
           url: response.url,
         };
         return result;
+      },
+      isNetworkRequestCorsDisabled: async () => {
+        return typeof window.MediaGata !== "undefined";
       },
       postUiMessage: async (message: any) => {
         setPluginMessage({ pluginId: plugin.id, message });
