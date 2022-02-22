@@ -31,6 +31,7 @@ const SelectionEditDialog: React.FC<SelectionEditProps> = (props) => {
     if (from) {
       dispatch(updateFrom({ updateIds: trackIdSet, from }));
     }
+    onClose();
   };
 
   const optionsTuple: [string, string][] = [
