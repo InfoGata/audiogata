@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef } from "react";
 import { Button, Divider, Grid, styled } from "@mui/material";
 import Spotify from "../plugins/spotify";
 import { nanoid } from "@reduxjs/toolkit";
@@ -86,7 +86,6 @@ async function getPlugin(fileType: FileType): Promise<PluginInfo | null> {
   if (!script) return null;
 
   const plugin: PluginInfo = {
-    id: nanoid(),
     name: manifest.name,
     script,
     description: manifest.description,
@@ -103,11 +102,19 @@ async function getPlugin(fileType: FileType): Promise<PluginInfo | null> {
 }
 
 const Plugins: React.FC = () => {
-  const { plugins, addPlugin, deletePlugin } = usePlugins();
+  const { plugins, addPlugin, deletePlugin, updatePlugin } = usePlugins();
+  const [updateId, setUpdateId] = React.useState("");
+  const fileRef = useRef<HTMLInputElement>(null);
   const directoryProps = {
     directory: "",
     webkitdirectory: "",
     mozdirectory: "",
+  };
+  const onFocus = () => {
+    if (fileRef.current && fileRef.current.value.length === 0) {
+      setUpdateId("");
+    }
+    window.removeEventListener("focus", onFocus);
   };
   const onFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
@@ -119,8 +126,22 @@ const Plugins: React.FC = () => {
     const plugin = await getPlugin(fileType);
 
     if (plugin) {
-      await addPlugin(plugin);
+      if (updateId) {
+        await updatePlugin(plugin, updateId);
+      } else {
+        plugin.id = nanoid();
+        await addPlugin(plugin);
+      }
     }
+    window.removeEventListener("focus", onFocus);
+    setUpdateId("");
+    if (fileRef.current) {
+      fileRef.current.value = "";
+    }
+  };
+
+  const onFileClick = () => {
+    window.addEventListener("focus", onFocus);
   };
 
   const onSpotifyLoginClick = async () => {
@@ -132,6 +153,8 @@ const Plugins: React.FC = () => {
       key={plugin.id}
       plugin={plugin}
       deletePlugin={deletePlugin}
+      fileRef={fileRef}
+      setUpdateId={setUpdateId}
     />
   ));
 
@@ -139,9 +162,11 @@ const Plugins: React.FC = () => {
     <Grid>
       <label htmlFor="contained-button-file">
         <Input
+          ref={fileRef}
           id="contained-button-file"
           type="file"
           {...directoryProps}
+          onClick={onFileClick}
           onChange={onFileChange}
         />
         <Button variant="contained" component="span">

@@ -8942,7 +8942,7 @@
     "xmldom" "^0.5.0"
 
 "plugin-frame@git+ssh://git@github.com:elijahgreen/plugin-frame.git":
-  "resolved" "git+ssh://git@github.com/elijahgreen/plugin-frame.git#86bac7e5e609f6770fbb5e281b63ce8c2476dbda"
+  "resolved" "git+ssh://git@github.com/elijahgreen/plugin-frame.git#790e8db6d3565af24977029f3306cd139d33ae3c"
   "version" "0.1.0"
 
 "portfinder@^1.0.28":

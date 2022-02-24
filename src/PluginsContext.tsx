@@ -51,6 +51,7 @@ declare global {
 
 export interface PluginContextInterface {
   addPlugin: (plugin: PluginInfo) => Promise<void>;
+  updatePlugin: (plugin: PluginInfo, id: string) => Promise<void>;
   deletePlugin: (plugin: PluginFrame) => Promise<void>;
   plugins: PluginFrame[];
   pluginMessage?: PluginMessage;
@@ -82,7 +83,8 @@ export const PluginsProvider: React.FC = (props) => {
         return result;
       },
       isNetworkRequestCorsDisabled: async () => {
-        return typeof window.MediaGata !== "undefined";
+        const hasExtension = typeof window.MediaGata !== "undefined";
+        return hasExtension;
       },
       postUiMessage: async (message: any) => {
         setPluginMessage({ pluginId: plugin.id, message });
@@ -118,6 +120,14 @@ export const PluginsProvider: React.FC = (props) => {
     await db.plugins.add(plugin);
   };
 
+  const updatePlugin = async (plugin: PluginInfo, id: string) => {
+    const oldPlugin = pluginFrames.find((p) => p.id === id);
+    oldPlugin?.destroy();
+    const pluginFrame = loadPlugin(plugin);
+    setPluginFrames(pluginFrames.map((p) => (p.id === id ? pluginFrame : p)));
+    await db.plugins.update(id, plugin);
+  };
+
   const deletePlugin = async (pluginFrame: PluginFrame) => {
     const newPlugins = pluginFrames.filter((p) => p.id !== pluginFrame.id);
     setPluginFrames(newPlugins);
@@ -127,6 +137,7 @@ export const PluginsProvider: React.FC = (props) => {
   const defaultContext: PluginContextInterface = {
     addPlugin: addPlugin,
     deletePlugin: deletePlugin,
+    updatePlugin: updatePlugin,
     plugins: pluginFrames,
     pluginMessage: pluginMessage,
   };
