@@ -7,14 +7,14 @@ import {
   MenuItem,
 } from "@mui/material";
 import React, { RefObject, useRef } from "react";
-import { PluginFrame, usePlugins } from "../PluginsContext";
+import { PluginFrameContainer, usePlugins } from "../PluginsContext";
 import { Delete, MoreHoriz, Update } from "@mui/icons-material";
 import { db } from "../database";
 
 interface PluginContainerProps {
-  plugin: PluginFrame;
+  plugin: PluginFrameContainer;
   fileRef: RefObject<HTMLInputElement>;
-  deletePlugin: (plugin: PluginFrame) => Promise<void>;
+  deletePlugin: (plugin: PluginFrameContainer) => Promise<void>;
   setUpdateId: (id: string) => void;
 }
 
@@ -87,7 +87,7 @@ const PluginContainer: React.FC<PluginContainerProps> = (props) => {
     <iframe
       ref={ref}
       name={plugin.id}
-      title={PluginFrame.name}
+      title={plugin.name}
       sandbox="allow-scripts allow-popups allow-popups-to-escape-sandbox"
       srcDoc={optionsHtml}
     />

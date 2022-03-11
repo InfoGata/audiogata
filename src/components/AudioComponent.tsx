@@ -17,7 +17,7 @@ import { withSnackbar, ProviderContext } from "notistack";
 import PluginsContext from "../PluginsContext";
 import { getFormatTrackApiFromName } from "../utils";
 import { db } from "../database";
-import { PluginFrame } from "../PluginsContext";
+import { PluginFrameContainer } from "../PluginsContext";
 
 interface IProps extends StateProps, DispatchProps, ProviderContext {}
 interface IState {
@@ -159,7 +159,7 @@ class AudioComponent extends React.Component<IProps, IState> {
         .first();
       const formatApi = getFormatTrackApiFromName(newSong.from);
       let hasPluginApi = false;
-      let pluginFrame: PluginFrame | undefined;
+      let pluginFrame: PluginFrameContainer | undefined;
       if (!formatApi) {
         pluginFrame = this.context.plugins.find((p) => p.id === newSong.from);
         hasPluginApi =

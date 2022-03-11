@@ -1,6 +1,6 @@
 import React from "react";
 import { IAlbum, IArtist, IPlaylist, ISong, PluginInfo } from "./models";
-import { PluginHost } from "plugin-frame";
+import { PluginFrame } from "plugin-frame";
 import { db } from "./database";
 
 interface PluginInterface {
@@ -22,7 +22,7 @@ interface PluginMessage {
   message: any;
 }
 
-export class PluginFrame extends PluginHost<PluginInterface> {
+export class PluginFrameContainer extends PluginFrame<PluginInterface> {
   name?: string;
   id?: string;
   hasOptions = false;
@@ -52,15 +52,17 @@ declare global {
 export interface PluginContextInterface {
   addPlugin: (plugin: PluginInfo) => Promise<void>;
   updatePlugin: (plugin: PluginInfo, id: string) => Promise<void>;
-  deletePlugin: (plugin: PluginFrame) => Promise<void>;
-  plugins: PluginFrame[];
+  deletePlugin: (plugin: PluginFrameContainer) => Promise<void>;
+  plugins: PluginFrameContainer[];
   pluginMessage?: PluginMessage;
 }
 
 const PluginsContext = React.createContext<PluginContextInterface>(undefined!);
 
 export const PluginsProvider: React.FC = (props) => {
-  const [pluginFrames, setPluginFrames] = React.useState<PluginFrame[]>([]);
+  const [pluginFrames, setPluginFrames] = React.useState<
+    PluginFrameContainer[]
+  >([]);
   const [pluginMessage, setPluginMessage] = React.useState<PluginMessage>();
 
   const loadPlugin = (plugin: PluginInfo) => {
@@ -92,7 +94,7 @@ export const PluginsProvider: React.FC = (props) => {
     };
     //const srcUrl = `http://${plugin.id}.${window.location.host}/pluginframe.html`;
     const srcUrl = `http://${window.location.host}/audiogata/pluginframe.html`;
-    const host = new PluginFrame(api, {
+    const host = new PluginFrameContainer(api, {
       frameSrc: new URL(srcUrl),
       sandboxAttributes: ["allow-scripts"],
     });
@@ -128,7 +130,7 @@ export const PluginsProvider: React.FC = (props) => {
     await db.plugins.update(id, plugin);
   };
 
-  const deletePlugin = async (pluginFrame: PluginFrame) => {
+  const deletePlugin = async (pluginFrame: PluginFrameContainer) => {
     const newPlugins = pluginFrames.filter((p) => p.id !== pluginFrame.id);
     setPluginFrames(newPlugins);
     await db.plugins.delete(pluginFrame.id || "");

@@ -9,7 +9,7 @@
 
 <body>
   <script type="module">
-    import { PluginRemote } from "./plugin-frame.esm.js";
+    import { ChildPlugin } from "./plugin-frame.esm.js";
     window.global = window;
     var parcelRequire;
     const apis = {
@@ -33,7 +33,6 @@
             body: init.body
           }
         }
-        console.log("init:", init);
         return [input, init];
       }
     }
@@ -48,7 +47,7 @@
       }
     };
 
-    let remote = new PluginRemote(apis, { prepareFuncs: prepare, completeFuncs: complete });
+    let remote = new ChildPlugin(apis, { prepareMethods: prepare, completeMethods: complete });
     </script>
 </body>
 
