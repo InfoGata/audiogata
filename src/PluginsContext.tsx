@@ -92,11 +92,19 @@ export const PluginsProvider: React.FC = (props) => {
         setPluginMessage({ pluginId: plugin.id, message });
       },
     };
-    //const srcUrl = `http://${plugin.id}.${window.location.host}/pluginframe.html`;
-    const srcUrl = `http://${window.location.host}/audiogata/pluginframe.html`;
+
+    let sandboxAttributes = ["allow-scripts", "allow-same-origin"];
+    let srcUrl = `http://${plugin.id}.${window.location.host}/audiogata/pluginframe.html`;
+    if (process.env.NODE_ENV === "production") {
+      // Current production url doesn't hae subdomains
+      // So origin must be null for security reasons.
+      srcUrl = `http://${window.location.host}/audiogata/pluginframe.html`;
+      sandboxAttributes = ["allow-scripts"];
+    }
+
     const host = new PluginFrameContainer(api, {
       frameSrc: new URL(srcUrl),
-      sandboxAttributes: ["allow-scripts"],
+      sandboxAttributes: sandboxAttributes,
     });
     host.id = plugin.id;
     host.name = plugin.name;
