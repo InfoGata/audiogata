@@ -35,7 +35,6 @@ import PlaylistMenuItem from "./PlaylistMenuItem";
 import Sortable from "./Sortable";
 import { Link } from "react-router-dom";
 import { AudioBlob, db } from "../database";
-import { getFormatTrackApiFromName, getPlayerFromName } from "../utils";
 import { DragEndEvent, DragOverlay, DragStartEvent } from "@dnd-kit/core";
 import { arrayMove } from "@dnd-kit/sortable";
 import SortableRow from "./SortableRow";
@@ -68,14 +67,15 @@ const PlayQueue: React.FC = () => {
     if (song.id && song.from) {
       // Check if this needs it's own player
       // Intead of being able to play locally
-      const playerApi = getPlayerFromName(song.from);
-      setCanOffline(!playerApi);
+      const pluginFrame = plugins.find((p) => p.id === song.from);
+      const canDownload =
+        (await pluginFrame?.methodDefined("getTrackUrl")) || false;
+      setCanOffline(canDownload);
 
       const primaryCount = await db.audioBlobs
         .where(":id")
         .equals(song.id)
         .count();
-      console.log(song.id);
       setHasBlob(primaryCount > 0);
     }
   };
@@ -109,8 +109,12 @@ const PlayQueue: React.FC = () => {
   const enablePlayingOffline = async () => {
     try {
       if (menuSong.from) {
-        const api = getFormatTrackApiFromName(menuSong.from);
-        const source = await api?.getTrackUrl(menuSong);
+        const pluginFrame = plugins.find((p) => p.id === menuSong.from);
+        if (!(await pluginFrame?.methodDefined("getTrackUrl"))) {
+          return;
+        }
+
+        const source = pluginFrame?.remote.getTrackUrl(menuSong);
         if (source && menuSong.id) {
           const data = await fetch(`http://localhost:8085/${source}`);
           const blob: AudioBlob = {
@@ -189,10 +193,7 @@ const PlayQueue: React.FC = () => {
     }
   };
 
-  const optionsTuple: [string, string][] = [
-    ["soundcloud", "SoundCloud"],
-    ["spotify", "Spotify"],
-  ];
+  const optionsTuple: [string, string][] = [["spotify", "Spotify"]];
   const options = optionsTuple.concat(
     plugins.map((p) => [p.id || "", p.name || ""])
   );

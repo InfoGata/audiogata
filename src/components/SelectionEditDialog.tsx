@@ -34,10 +34,7 @@ const SelectionEditDialog: React.FC<SelectionEditProps> = (props) => {
     onClose();
   };
 
-  const optionsTuple: [string, string][] = [
-    ["soundcloud", "SoundCloud"],
-    ["spotify", "Spotify"],
-  ];
+  const optionsTuple: [string, string][] = [["spotify", "Spotify"]];
   const options = optionsTuple.concat(
     plugins.map((p) => [p.id || "", p.name || ""])
   );

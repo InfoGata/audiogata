@@ -73,10 +73,7 @@ const Search: React.FC = () => {
   };
   useEffect(() => {
     const getOptions = async () => {
-      let optionsTuple: [string, string][] = [
-        ["soundcloud", "SoundCloud"],
-        ["spotify", "Spotify"],
-      ];
+      let optionsTuple: [string, string][] = [["spotify", "Spotify"]];
       const validPlugins = await Promise.all(
         plugins.filter(async (p) => await p.methodDefined("searchAll"))
       );

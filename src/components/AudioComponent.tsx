@@ -15,9 +15,7 @@ import {
 import { AppState } from "../store/store";
 import { withSnackbar, ProviderContext } from "notistack";
 import PluginsContext from "../PluginsContext";
-import { getFormatTrackApiFromName } from "../utils";
 import { db } from "../database";
-import { PluginFrameContainer } from "../PluginsContext";
 
 interface IProps extends StateProps, DispatchProps, ProviderContext {}
 interface IState {
@@ -157,21 +155,16 @@ class AudioComponent extends React.Component<IProps, IState> {
         .where(":id")
         .equals(newSong.id)
         .first();
-      const formatApi = getFormatTrackApiFromName(newSong.from);
-      let hasPluginApi = false;
-      let pluginFrame: PluginFrameContainer | undefined;
-      if (!formatApi) {
-        pluginFrame = this.context.plugins.find((p) => p.id === newSong.from);
-        hasPluginApi =
-          (await pluginFrame?.methodDefined("getTrackUrl")) || false;
-      }
+      const pluginFrame = this.context.plugins.find(
+        (p) => p.id === newSong.from
+      );
+      const hasPluginApi =
+        (await pluginFrame?.methodDefined("getTrackUrl")) || false;
       const player = this.getPlayerFromName(newSong.from || "");
       this.lastPlayer?.pause();
       try {
         if (audioBlob) {
           newSong.source = URL.createObjectURL(audioBlob.blob);
-        } else if (formatApi) {
-          newSong.source = await formatApi.getTrackUrl(newSong);
         } else if (hasPluginApi && pluginFrame) {
           newSong.source = await pluginFrame.remote.getTrackUrl(newSong);
         }

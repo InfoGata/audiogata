@@ -21,10 +21,7 @@ const TrackInfo: React.FC<ITrackInfo> = (props) => {
   const { plugins } = usePlugins();
   const [editing, setEditing] = React.useState(false);
   const [from, setFrom] = React.useState(track.from);
-  const optionsTuple: [string, string][] = [
-    ["soundcloud", "SoundCloud"],
-    ["spotify", "Spotify"],
-  ];
+  const optionsTuple: [string, string][] = [["spotify", "Spotify"]];
   const options = optionsTuple.concat(
     plugins.map((p) => [p.id || "", p.name || ""])
   );
