@@ -39,7 +39,7 @@ const PluginContainer: React.FC<PluginContainerProps> = (props) => {
         event.origin === "null" &&
         ref.current?.contentWindow === event.source
       ) {
-        if (await plugin.methodDefined("onUiMessage")) {
+        if (await plugin.hasDefined.onUiMessage()) {
           plugin.remote.onUiMessage(event.data);
         }
       }

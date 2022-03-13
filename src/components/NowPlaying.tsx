@@ -69,7 +69,7 @@ const PlayQueue: React.FC = () => {
       // Intead of being able to play locally
       const pluginFrame = plugins.find((p) => p.id === song.from);
       const canDownload =
-        (await pluginFrame?.methodDefined("getTrackUrl")) || false;
+        (await pluginFrame?.hasDefined.getTrackUrl()) || false;
       setCanOffline(canDownload);
 
       const primaryCount = await db.audioBlobs
@@ -110,7 +110,7 @@ const PlayQueue: React.FC = () => {
     try {
       if (menuSong.from) {
         const pluginFrame = plugins.find((p) => p.id === menuSong.from);
-        if (!(await pluginFrame?.methodDefined("getTrackUrl"))) {
+        if (!(await pluginFrame?.hasDefined.getTrackUrl())) {
           return;
         }
 

@@ -75,7 +75,7 @@ const Search: React.FC = () => {
     const getOptions = async () => {
       let optionsTuple: [string, string][] = [["spotify", "Spotify"]];
       const validPlugins = await Promise.all(
-        plugins.filter(async (p) => await p.methodDefined("searchAll"))
+        plugins.filter(async (p) => await p.hasDefined.searchAll())
       );
       const pluginTuples: [string, string][] = validPlugins.map((p) => [
         p.id || "",
@@ -99,7 +99,7 @@ const Search: React.FC = () => {
         ({ tracks, albums, artists, playlists } = await api.searchAll(search));
       } else {
         const plugin = plugins.find((p) => p.id === searchType);
-        if (plugin?.methodDefined("searchAll")) {
+        if (plugin?.hasDefined.searchAll()) {
           ({ tracks, albums, artists, playlists } =
             await plugin.remote.searchAll(search));
           tracks?.forEach((t) => {

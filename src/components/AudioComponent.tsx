@@ -159,7 +159,7 @@ class AudioComponent extends React.Component<IProps, IState> {
         (p) => p.id === newSong.from
       );
       const hasPluginApi =
-        (await pluginFrame?.methodDefined("getTrackUrl")) || false;
+        (await pluginFrame?.hasDefined.getTrackUrl()) || false;
       const player = this.getPlayerFromName(newSong.from || "");
       this.lastPlayer?.pause();
       try {

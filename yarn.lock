@@ -8941,10 +8941,10 @@
     "xmlbuilder" "^9.0.7"
     "xmldom" "^0.5.0"
 
-"plugin-frame@^0.1.1":
-  "integrity" "sha512-/NSYJas4pnVIb4GizIc60RUPUNOZUfIJN2hH3s4KAWlZxI0wKwgrGNO336Lo813hRxSfQM5bZ040Uah2+gG7Cg=="
-  "resolved" "https://registry.npmjs.org/plugin-frame/-/plugin-frame-0.1.1.tgz"
-  "version" "0.1.1"
+"plugin-frame@^0.2.0":
+  "integrity" "sha512-XX/ubvdl6V4I0jBDEjnIk8Tx0MYlEfO1x3lJR8l5z7ZGR8yYxVHHihJrCRYCOjJVY5thOD5Ej7Iez72H3+Rc4A=="
+  "resolved" "https://registry.npmjs.org/plugin-frame/-/plugin-frame-0.2.0.tgz"
+  "version" "0.2.0"
 
 "portfinder@^1.0.28":
   "integrity" "sha512-Se+2isanIcEqf2XMHjyUKskczxbPH7dQnlMjXX6+dybayyHvAf/TCgyMRlzf/B6QDhAEFOGes0pzRo3by4AbMA=="
