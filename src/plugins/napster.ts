@@ -200,21 +200,21 @@ class NapsterPlayer implements IPlayerComponent, ISearchApi {
     Napster.player.play(id);
   }
 
-  public pause() {
+  public async pause() {
     try {
       Napster.player.pause();
     } catch {}
   }
 
-  public resume() {
+  public async resume() {
     Napster.player.resume();
   }
 
-  public seek(time: number) {
+  public async seek(time: number) {
     Napster.player.seek(time);
   }
 
-  public setVolume(volume: number) {
+  public async setVolume(volume: number) {
     if (Napster && Napster.player) {
       Napster.player.setVolume(volume);
     }

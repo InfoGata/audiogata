@@ -15,6 +15,12 @@ interface PluginInterface {
   getAlbumTracks: (album: IAlbum) => Promise<ISong[]>;
   getPlaylistTracks: (playlist: IPlaylist) => Promise<ISong[]>;
   getArtistAlbums: (artist: IArtist) => Promise<IAlbum[]>;
+  play: (song: ISong) => Promise<void>;
+  setVolume: (volume: number) => Promise<void>;
+  pause: () => Promise<void>;
+  resume: () => Promise<void>;
+  seek: (time: number) => Promise<void>;
+  setPlaybackRate: (rate: number) => Promise<void>;
 }
 
 interface PluginMessage {

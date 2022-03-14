@@ -20,23 +20,21 @@ class Local implements IPlayerComponent {
     };
   }
 
-  public init() {}
-
-  public setVolume(volume: number) {
+  public async setVolume(volume: number) {
     this.audio.volume = volume;
   }
 
-  public setPlaybackRate(rate: number) {
+  public async setPlaybackRate(rate: number) {
     this.audio.playbackRate = rate;
   }
 
-  public pause() {
+  public async pause() {
     if (this.audio.readyState >= 3) {
       this.audio.pause();
     }
   }
 
-  public resume() {
+  public async resume() {
     if (this.audio.readyState >= 3) {
       this.audio.play();
     }
@@ -48,7 +46,7 @@ class Local implements IPlayerComponent {
     await this.audio.play();
   }
 
-  public seek(time: number) {
+  public async seek(time: number) {
     this.audio.currentTime = time;
   }
 }

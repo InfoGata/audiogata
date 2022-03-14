@@ -105,11 +105,11 @@ class AudioComponent extends React.Component<IProps, IState> {
     }
   }
 
-  private onRateUpdate(prevProps: IProps, newProps: IProps) {
+  private async onRateUpdate(prevProps: IProps, newProps: IProps) {
     if (prevProps.playbackRate !== newProps.playbackRate) {
       const player = this.getPlayerFromName(this.props.currentSong?.from || "");
       if (player.setPlaybackRate) {
-        player.setPlaybackRate(newProps.playbackRate || 1.0);
+        await player.setPlaybackRate(newProps.playbackRate || 1.0);
       }
     }
   }

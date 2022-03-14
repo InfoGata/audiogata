@@ -42,10 +42,10 @@ interface ISpotifyTrack {
 }
 
 type WebPlaybackErrors =
-  | 'initialization_error'
-  | 'authentication_error'
-  | 'account_error'
-  | 'playback_error';
+  | "initialization_error"
+  | "authentication_error"
+  | "account_error"
+  | "playback_error";
 
 interface WebPlaybackError {
   message: WebPlaybackErrors;
@@ -53,7 +53,7 @@ interface WebPlaybackError {
 
 function trackResultToSong(results: ISpotifyTrack[]): ISong[] {
   return results.map(
-    r =>
+    (r) =>
       ({
         albumId: r.album && r.album.uri,
         apiId: r.uri,
@@ -63,63 +63,64 @@ function trackResultToSong(results: ISpotifyTrack[]): ISong[] {
         from: "spotify",
         images: r.album.images,
         name: r.name,
-      } as ISong),
+      } as ISong)
   );
 }
 
 function artistResultToArtist(results: ISpotifyArtist[]): IArtist[] {
   return results.map(
-    r =>
+    (r) =>
       ({
         apiId: r.uri,
         from: "spotify",
         name: r.name,
-      } as IArtist),
+      } as IArtist)
   );
 }
 
 function albumResultToAlbum(results: ISpotifyAlbum[]): IAlbum[] {
   return results.map(
-    r =>
+    (r) =>
       ({
         apiId: r.uri,
         artistId: r.artists[0].uri,
         artistName: r.artists[0].name,
         from: "spotify",
         name: r.name,
-      } as IAlbum),
+      } as IAlbum)
   );
 }
 
-
 function generateRandomString() {
-    var array = new Uint32Array(28);
-    window.crypto.getRandomValues(array);
-    return Array.from(array, dec => ('0' + dec.toString(16)).substr(-2)).join('');
+  var array = new Uint32Array(28);
+  window.crypto.getRandomValues(array);
+  return Array.from(array, (dec) => ("0" + dec.toString(16)).substr(-2)).join(
+    ""
+  );
 }
 
 function sha256(plain: string) {
-    const encoder = new TextEncoder();
-    const data = encoder.encode(plain);
-    return window.crypto.subtle.digest('SHA-256', data);
+  const encoder = new TextEncoder();
+  const data = encoder.encode(plain);
+  return window.crypto.subtle.digest("SHA-256", data);
 }
 
 // Base64-urlencodes the input string
 function base64urlencode(str: ArrayBuffer) {
-    // Convert the ArrayBuffer to string using Uint8 array to convert to what btoa accepts.
-    // btoa accepts chars only within ascii 0-255 and base64 encodes them.
-    // Then convert the base64 encoded to base64url encoded
-    //   (replace + with -, replace / with _, trim trailing =)
-    return btoa(String.fromCharCode.apply(null, Array.from(new Uint8Array(str))))
-        .replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+  // Convert the ArrayBuffer to string using Uint8 array to convert to what btoa accepts.
+  // btoa accepts chars only within ascii 0-255 and base64 encodes them.
+  // Then convert the base64 encoded to base64url encoded
+  //   (replace + with -, replace / with _, trim trailing =)
+  return btoa(String.fromCharCode.apply(null, Array.from(new Uint8Array(str))))
+    .replace(/\+/g, "-")
+    .replace(/\//g, "_")
+    .replace(/=+$/, "");
 }
 
 async function pkceChallengeFromVerifier(v: string) {
-    const hashed = await sha256(v);
-    return base64urlencode(hashed);
+  const hashed = await sha256(v);
+  return base64urlencode(hashed);
 }
-
-
 
 class SpotifyPlayer implements IPlayerComponent, ISearchApi {
   public name = "spotify";
@@ -144,9 +145,8 @@ class SpotifyPlayer implements IPlayerComponent, ISearchApi {
   }
 
   public init() {
-    (window as any).onSpotifyWebPlaybackSDKReady = this.initializePlayer.bind(
-      this
-    );
+    (window as any).onSpotifyWebPlaybackSDKReady =
+      this.initializePlayer.bind(this);
   }
 
   private initializePlayer = () => {
@@ -403,7 +403,9 @@ class SpotifyPlayer implements IPlayerComponent, ISearchApi {
       }
     };
     const scopes = "streaming user-read-email user-read-private";
-    const url = `${this.authorizeUrl}?response_type=code&client_id=${encodeURIComponent(
+    const url = `${
+      this.authorizeUrl
+    }?response_type=code&client_id=${encodeURIComponent(
       this.clientId
     )}&state=${encodeURIComponent(state)}&scope=${encodeURIComponent(
       scopes
