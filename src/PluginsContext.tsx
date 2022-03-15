@@ -2,6 +2,8 @@ import React from "react";
 import { IAlbum, IArtist, IPlaylist, ISong, PluginInfo } from "./models";
 import { PluginFrame } from "plugin-frame";
 import { db } from "./database";
+import { useAppDispatch, useAppSelector } from "./store/hooks";
+import { nextTrack, setElapsed } from "./store/reducers/songReducer";
 
 interface PluginInterface {
   searchAll: (query: string) => Promise<{
@@ -70,6 +72,8 @@ export const PluginsProvider: React.FC = (props) => {
     PluginFrameContainer[]
   >([]);
   const [pluginMessage, setPluginMessage] = React.useState<PluginMessage>();
+  const dispatch = useAppDispatch();
+  const currentSong = useAppSelector((state) => state.song.currentSong);
 
   const loadPlugin = (plugin: PluginInfo) => {
     const api = {
@@ -97,20 +101,26 @@ export const PluginsProvider: React.FC = (props) => {
       postUiMessage: async (message: any) => {
         setPluginMessage({ pluginId: plugin.id, message });
       },
+      endTrack: async () => {
+        if (currentSong?.id === plugin.id) {
+          dispatch(nextTrack());
+        }
+      },
+      setTrackTime: async (currentTime: number) => {
+        if (currentSong?.id === plugin.id) {
+          dispatch(setElapsed(currentTime));
+        }
+      },
     };
 
-    let sandboxAttributes = ["allow-scripts", "allow-same-origin"];
     let srcUrl = `http://${plugin.id}.${window.location.host}/audiogata/pluginframe.html`;
     if (process.env.NODE_ENV === "production") {
-      // Current production url doesn't hae subdomains
-      // So origin must be null for security reasons.
-      srcUrl = `http://${window.location.host}/audiogata/pluginframe.html`;
-      sandboxAttributes = ["allow-scripts"];
+      srcUrl = `https://${plugin.id}.audiogata.com/pluginframe.html`;
     }
 
     const host = new PluginFrameContainer(api, {
       frameSrc: new URL(srcUrl),
-      sandboxAttributes: sandboxAttributes,
+      sandboxAttributes: ["allow-scripts", "allow-same-origin"],
     });
     host.id = plugin.id;
     host.name = plugin.name;
@@ -128,6 +138,7 @@ export const PluginsProvider: React.FC = (props) => {
       setPluginFrames(frames);
     };
     getPlugins();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const addPlugin = async (plugin: PluginInfo) => {
