@@ -3,7 +3,7 @@ import { IAlbum, IArtist, IPlaylist, ISong, PluginInfo } from "./models";
 import { PluginFrame } from "plugin-frame";
 import { db } from "./database";
 import { useAppDispatch, useAppSelector } from "./store/hooks";
-import { nextTrack, setElapsed } from "./store/reducers/songReducer";
+import { nextTrack, setElapsed, setTracks } from "./store/reducers/songReducer";
 
 interface PluginInterface {
   searchAll: (query: string) => Promise<{
@@ -74,6 +74,7 @@ export const PluginsProvider: React.FC = (props) => {
   const [pluginMessage, setPluginMessage] = React.useState<PluginMessage>();
   const dispatch = useAppDispatch();
   const currentSong = useAppSelector((state) => state.song.currentSong);
+  const tracks = useAppSelector((state) => state.song.songs);
 
   const loadPlugin = (plugin: PluginInfo) => {
     const api = {
@@ -110,6 +111,12 @@ export const PluginsProvider: React.FC = (props) => {
         if (currentSong?.id === plugin.id) {
           dispatch(setElapsed(currentTime));
         }
+      },
+      getNowPlayingTracks: async () => {
+        return tracks;
+      },
+      setNowPlayingTracks: async (tracks: ISong[]) => {
+        dispatch(setTracks(tracks));
       },
     };
 
