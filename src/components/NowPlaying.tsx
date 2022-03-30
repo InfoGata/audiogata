@@ -22,6 +22,7 @@ import {
   Select,
   SelectChangeEvent,
   Button,
+  useTheme,
 } from "@mui/material";
 import { Delete, Info, PlaylistAdd } from "@mui/icons-material";
 import {
@@ -38,7 +39,6 @@ import { AudioBlob, db } from "../database";
 import { DragEndEvent, DragOverlay, DragStartEvent } from "@dnd-kit/core";
 import { arrayMove } from "@dnd-kit/sortable";
 import SortableRow from "./SortableRow";
-import { useTheme } from "@mui/styles";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
 import { usePlugins } from "../PluginsContext";
 import SelectionEditDialog from "./SelectionEditDialog";
