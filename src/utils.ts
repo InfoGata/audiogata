@@ -1,4 +1,10 @@
-import { IImage } from "./models";
+import {
+  DirectoryFile,
+  FileType,
+  IImage,
+  Manifest,
+  PluginInfo,
+} from "./models";
 import { ISearchApi } from "./plugins/ISearchApi";
 import thumbnail from "./thumbnail.png";
 import Spotify from "./plugins/spotify";
@@ -59,6 +65,84 @@ export const getPlayerFromName = (
   }
   return undefined;
 };
+
+export const directoryProps = {
+  directory: "",
+  webkitdirectory: "",
+  mozdirectory: "",
+};
+
+export function getFileByDirectoryAndName(files: FileList, name: string) {
+  if (files.length === 0) {
+    return null;
+  }
+  const firstFile = files[0] as DirectoryFile;
+  const directory = firstFile.webkitRelativePath.split("/")[0];
+  for (let i = 0; i < files.length; i++) {
+    const file = files[i] as DirectoryFile;
+    if (file.webkitRelativePath === `${directory}/${name}`) {
+      return file;
+    }
+  }
+  return null;
+}
+
+export async function getFileText(
+  fileType: FileType,
+  name: string
+): Promise<string | null> {
+  if (fileType.filelist) {
+    const file = getFileByDirectoryAndName(fileType.filelist, name);
+    if (!file) {
+      alert(`Error: Couldn't find ${name}`);
+      return null;
+    }
+
+    return await file.text();
+  } else if (fileType.url) {
+    const encodedName = encodeURIComponent(name);
+    const newUrl = fileType.url.url.replace("manifest.json", encodedName);
+    try {
+      const result = await fetch(newUrl, { headers: fileType.url.headers });
+      return await result.text();
+    } catch {
+      alert(`Error: Couldn't get ${name}`);
+      return null;
+    }
+  }
+  return null;
+}
+
+export async function getPlugin(
+  fileType: FileType
+): Promise<PluginInfo | null> {
+  const manifestText = await getFileText(fileType, "manifest.json");
+  if (!manifestText) return null;
+
+  const manifest = JSON.parse(manifestText) as Manifest;
+  if (!manifest.script) {
+    alert("Error: Manifest does not contain script");
+    return null;
+  }
+
+  const script = await getFileText(fileType, manifest.script);
+  if (!script) return null;
+
+  const plugin: PluginInfo = {
+    name: manifest.name,
+    script,
+    description: manifest.description,
+  };
+
+  if (manifest.options) {
+    const optionsText = await getFileText(fileType, manifest.options);
+    if (!optionsText) return null;
+
+    plugin.optionsHtml = optionsText;
+  }
+
+  return plugin;
+}
 
 export const navbarWidth = 200;
 

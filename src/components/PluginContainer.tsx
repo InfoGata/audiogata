@@ -1,37 +1,25 @@
-import {
-  Button,
-  Grid,
-  IconButton,
-  Typography,
-  Menu,
-  MenuItem,
-} from "@mui/material";
-import React, { RefObject, useRef } from "react";
+import { Button, Grid, Typography, styled } from "@mui/material";
+import React from "react";
 import { PluginFrameContainer, usePlugins } from "../PluginsContext";
-import { Delete, MoreHoriz, Update } from "@mui/icons-material";
 import { db } from "../database";
+import { directoryProps, getPlugin } from "../utils";
+import { FileType } from "../models";
+
+const FileInput = styled("input")({
+  display: "none",
+});
 
 interface PluginContainerProps {
   plugin: PluginFrameContainer;
-  fileRef: RefObject<HTMLInputElement>;
   deletePlugin: (plugin: PluginFrameContainer) => Promise<void>;
-  setUpdateId: (id: string) => void;
 }
 
 const PluginContainer: React.FC<PluginContainerProps> = (props) => {
-  const { plugin, deletePlugin, fileRef, setUpdateId } = props;
+  const { plugin, deletePlugin } = props;
   const [optionsOpen, setOptionsOpen] = React.useState(false);
-  const { pluginMessage } = usePlugins();
+  const { pluginMessage, updatePlugin } = usePlugins();
   const [optionsHtml, setOptionsHtml] = React.useState<string>();
-  const ref = useRef<HTMLIFrameElement>(null);
-  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-  const open = Boolean(anchorEl);
-  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorEl(event.currentTarget);
-  };
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
+  const ref = React.useRef<HTMLIFrameElement>(null);
 
   const iframeListener = React.useCallback(
     async (event: MessageEvent<any>) => {
@@ -69,7 +57,6 @@ const PluginContainer: React.FC<PluginContainerProps> = (props) => {
   };
 
   const onDelete = async () => {
-    handleClose();
     const confirmDelete = window.confirm(
       "Are you sure you want to delete this plugin"
     );
@@ -78,9 +65,23 @@ const PluginContainer: React.FC<PluginContainerProps> = (props) => {
     }
   };
 
-  const onUpdate = () => {
-    setUpdateId(plugin.id || "");
-    fileRef.current?.click();
+  const updatePluginFromFilelist = async (files: FileList) => {
+    const fileType: FileType = {
+      filelist: files,
+    };
+    const newPlugin = await getPlugin(fileType);
+
+    if (newPlugin && plugin.id) {
+      newPlugin.id = plugin.id;
+      await updatePlugin(newPlugin, plugin.id);
+    }
+  };
+
+  const onFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files) return;
+
+    await updatePluginFromFilelist(files);
   };
 
   const pluginIframe = (
@@ -93,29 +94,25 @@ const PluginContainer: React.FC<PluginContainerProps> = (props) => {
     />
   );
   return (
-    <>
-      <Grid key={plugin.id}>
-        <Typography>{plugin.name}</Typography>
-        {plugin.hasOptions && !optionsOpen && (
-          <Button onClick={onOpenOptions}>Open Options</Button>
-        )}
-        {optionsOpen && <Button onClick={onCloseOptions}>Close Options</Button>}
-        <IconButton onClick={handleClick}>
-          <MoreHoriz />
-        </IconButton>
-        {optionsOpen && pluginIframe}
-      </Grid>
-      <Menu open={open} onClose={handleClose} anchorEl={anchorEl}>
-        <MenuItem onClick={onDelete} disableRipple>
-          <Delete />
-          Delete
-        </MenuItem>
-        <MenuItem onClick={onUpdate} disableRipple>
-          <Update />
-          Update From File
-        </MenuItem>
-      </Menu>
-    </>
+    <Grid key={plugin.id}>
+      <Typography>{plugin.name}</Typography>
+      {plugin.hasOptions && !optionsOpen && (
+        <Button onClick={onOpenOptions}>Open Options</Button>
+      )}
+      {optionsOpen && <Button onClick={onCloseOptions}>Close Options</Button>}
+      <Button onClick={onDelete}>Delete</Button>
+      <label htmlFor="update-plugin">
+        <FileInput
+          id="update-plugin"
+          type="file"
+          {...directoryProps}
+          onChange={onFileChange}
+        />
+        <Button component="span">Update From File</Button>
+      </label>
+      <Button></Button>
+      {optionsOpen && pluginIframe}
+    </Grid>
   );
 };
 
