@@ -1,6 +1,9 @@
 import React from "react";
 import { IAlbum, IArtist, IPlaylist, ISong, PluginInfo } from "./models";
-import { PluginFrame } from "plugin-frame";
+import {
+  PluginFrame,
+  PluginInterface as PluginFrameInterface,
+} from "plugin-frame";
 import { db } from "./database";
 import { useAppDispatch, useAppSelector } from "./store/hooks";
 import { nextTrack, setElapsed, setTracks } from "./store/reducers/songReducer";
@@ -23,6 +26,19 @@ interface PluginInterface {
   resume: () => Promise<void>;
   seek: (time: number) => Promise<void>;
   setPlaybackRate: (rate: number) => Promise<void>;
+}
+
+interface ApplicationPluginInterface extends PluginFrameInterface {
+  networkRequest: (
+    input: RequestInfo,
+    init?: RequestInit
+  ) => Promise<NetworkRequest>;
+  postUiMessage: (message: any) => Promise<void>;
+  isNetworkRequestCorsDisabled: () => Promise<boolean>;
+  endTrack: () => Promise<void>;
+  setTrackTime: (currentTime: number) => Promise<void>;
+  getNowPlayingTracks: () => Promise<ISong[]>;
+  setNowPlayingTracks: (tracks: ISong[]) => Promise<void>;
 }
 
 interface PluginMessage {
@@ -77,7 +93,7 @@ export const PluginsProvider: React.FC = (props) => {
   const tracks = useAppSelector((state) => state.song.songs);
 
   const loadPlugin = (plugin: PluginInfo) => {
-    const api = {
+    const api: ApplicationPluginInterface = {
       networkRequest: async (input: RequestInfo, init?: RequestInit) => {
         const hasExtension = typeof window.MediaGata !== "undefined";
         if (hasExtension) {
