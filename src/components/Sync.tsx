@@ -53,7 +53,7 @@ const Sync: React.FC = () => {
   }, []);
 
   const solidLogin = () => {
-    let popupUri = "/audio-pwa/popup.html";
+    let popupUri = "https://solidcommunity.net/common/popup.html";
     auth.popupLogin({ popupUri });
   };
 
