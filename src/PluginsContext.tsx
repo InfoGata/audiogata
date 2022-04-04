@@ -50,6 +50,7 @@ export class PluginFrameContainer extends PluginFrame<PluginInterface> {
   name?: string;
   id?: string;
   hasOptions = false;
+  fileList?: FileList;
 }
 
 interface NetworkRequest {
@@ -74,8 +75,12 @@ declare global {
 }
 
 export interface PluginContextInterface {
-  addPlugin: (plugin: PluginInfo) => Promise<void>;
-  updatePlugin: (plugin: PluginInfo, id: string) => Promise<void>;
+  addPlugin: (plugin: PluginInfo, pluginFiles?: FileList) => Promise<void>;
+  updatePlugin: (
+    plugin: PluginInfo,
+    id: string,
+    pluginFiles?: FileList
+  ) => Promise<void>;
   deletePlugin: (plugin: PluginFrameContainer) => Promise<void>;
   plugins: PluginFrameContainer[];
   pluginMessage?: PluginMessage;
@@ -92,7 +97,7 @@ export const PluginsProvider: React.FC = (props) => {
   const currentSong = useAppSelector((state) => state.song.currentSong);
   const tracks = useAppSelector((state) => state.song.songs);
 
-  const loadPlugin = (plugin: PluginInfo) => {
+  const loadPlugin = (plugin: PluginInfo, pluginFiles?: FileList) => {
     const api: ApplicationPluginInterface = {
       networkRequest: async (input: RequestInfo, init?: RequestInit) => {
         const hasExtension = typeof window.MediaGata !== "undefined";
@@ -148,6 +153,7 @@ export const PluginsProvider: React.FC = (props) => {
     host.id = plugin.id;
     host.name = plugin.name;
     host.hasOptions = !!plugin.optionsHtml;
+    host.fileList = pluginFiles;
     host.ready().then(async () => {
       await host.executeCode(plugin.script);
     });
@@ -170,10 +176,14 @@ export const PluginsProvider: React.FC = (props) => {
     await db.plugins.add(plugin);
   };
 
-  const updatePlugin = async (plugin: PluginInfo, id: string) => {
+  const updatePlugin = async (
+    plugin: PluginInfo,
+    id: string,
+    pluginFiles?: FileList
+  ) => {
     const oldPlugin = pluginFrames.find((p) => p.id === id);
     oldPlugin?.destroy();
-    const pluginFrame = loadPlugin(plugin);
+    const pluginFrame = loadPlugin(plugin, pluginFiles);
     setPluginFrames(pluginFrames.map((p) => (p.id === id ? pluginFrame : p)));
     await db.plugins.update(id, plugin);
   };

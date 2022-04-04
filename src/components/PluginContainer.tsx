@@ -73,12 +73,20 @@ const PluginContainer: React.FC<PluginContainerProps> = (props) => {
 
     if (newPlugin && plugin.id) {
       newPlugin.id = plugin.id;
-      await updatePlugin(newPlugin, plugin.id);
+      await updatePlugin(newPlugin, plugin.id, files);
+      setOptionsOpen(false);
     }
   };
 
   const onFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
+    if (!files) return;
+
+    await updatePluginFromFilelist(files);
+  };
+
+  const onReload = async () => {
+    const files = plugin.fileList;
     if (!files) return;
 
     await updatePluginFromFilelist(files);
@@ -101,17 +109,17 @@ const PluginContainer: React.FC<PluginContainerProps> = (props) => {
       )}
       {optionsOpen && <Button onClick={onCloseOptions}>Close Options</Button>}
       <Button onClick={onDelete}>Delete</Button>
-      <label htmlFor="update-plugin">
+      <label htmlFor={`update-plugin-${plugin.id}`}>
         <FileInput
-          id="update-plugin"
+          id={`update-plugin-${plugin.id}`}
           type="file"
           {...directoryProps}
           onChange={onFileChange}
         />
         <Button component="span">Update From File</Button>
       </label>
-      <Button></Button>
-      {optionsOpen && pluginIframe}
+      {plugin.fileList && <Button onClick={onReload}>Reload</Button>}
+      <Grid>{optionsOpen && pluginIframe}</Grid>
     </Grid>
   );
 };
