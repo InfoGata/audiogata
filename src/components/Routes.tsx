@@ -7,7 +7,6 @@ import Playlists from "./Playlists";
 import Plugins from "./Plugins";
 import Search from "./Search";
 import Settings from "./Settings";
-import Sync from "./Sync";
 import QueueTrackInfo from "./QueueTrackInfo";
 import { styled } from "@mui/material/styles";
 import { Box } from "@mui/material";
@@ -29,7 +28,6 @@ const Routing: React.FC = () => {
         <Route path="/" element={<Home />} />
         <Route path="/nowplaying" element={<NowPlaying />} />
         <Route path="/plugins" element={<Plugins />} />
-        <Route path="/sync" element={<Sync />} />
         <Route path="/playlists" element={<Playlists />} />
         <Route path="/playlists/:id" element={<Playlist />} />
         <Route path="/settings" element={<Settings />} />

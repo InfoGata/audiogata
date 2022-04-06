@@ -6,7 +6,6 @@ import {
   PlaylistAdd,
   PlaylistPlay,
   SettingsApplications,
-  Sync,
 } from "@mui/icons-material";
 import React from "react";
 import { Link } from "react-router-dom";
@@ -53,12 +52,6 @@ const Navigation: React.FC = () => {
           <Extension />
         </ListItemIcon>
         <ListItemText>Plugins</ListItemText>
-      </ListItem>
-      <ListItem button={true} component={Link} to="/sync" key="Sync">
-        <ListItemIcon>
-          <Sync />
-        </ListItemIcon>
-        <ListItemText>Sync</ListItemText>
       </ListItem>
       <ListItem button={true} component={Link} to="/settings" key="Settings">
         <ListItemIcon>

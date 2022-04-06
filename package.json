@@ -21,7 +21,6 @@
     "@types/react": "^17.0.39",
     "@types/react-dom": "^17.0.11",
     "@types/react-redux": "^7.1.16",
-    "@types/solid-auth-client": "^2.4.0",
     "@types/webpack-env": "^1.16.0",
     "@types/wicg-mediasession": "^1.1.0",
     "axios": "^0.21.1",
@@ -40,7 +39,6 @@
     "react-scripts": "5.0.0",
     "redux": "^4.0.5",
     "redux-persist": "^6.0.0",
-    "solid-auth-client": "^2.5.6",
     "source-map-explorer": "^2.5.2",
     "typescript": "^4.5.5",
     "web-vitals": "^2.1.4"
