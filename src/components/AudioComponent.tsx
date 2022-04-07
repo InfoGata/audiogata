@@ -251,7 +251,6 @@ const mapStateToProps = (state: AppState) => ({
   seekTime: state.song.seekTime,
   volume: state.song.volume,
   playbackRate: state.song.playbackRate,
-  plugins: state.plugin.plugins,
 });
 type StateProps = ReturnType<typeof mapStateToProps>;
 
