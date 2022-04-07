@@ -135,9 +135,16 @@ export async function getPlugin(
   };
 
   if (manifest.options) {
-    const optionsText = await getFileText(fileType, manifest.options);
+    const optionsFile =
+      typeof manifest.options === "string"
+        ? manifest.options
+        : manifest.options.page;
+    const optionsText = await getFileText(fileType, optionsFile);
     if (!optionsText) return null;
 
+    if (typeof manifest.options !== "string") {
+      plugin.optionsSameOrigin = manifest.options.sameOrigin;
+    }
     plugin.optionsHtml = optionsText;
   }
 

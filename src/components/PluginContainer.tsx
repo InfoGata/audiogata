@@ -47,9 +47,11 @@ const PluginContainer: React.FC<PluginContainerProps> = (props) => {
   }, [pluginMessage, plugin.id]);
 
   const onOpenOptions = async () => {
-    const pluginData = await db.plugins.get(plugin.id || "");
-    setOptionsHtml(pluginData?.optionsHtml);
     setOptionsOpen(true);
+    if (!plugin.optionsSameOrigin) {
+      const pluginData = await db.plugins.get(plugin.id || "");
+      setOptionsHtml(pluginData?.optionsHtml);
+    }
   };
 
   const onCloseOptions = () => {
@@ -92,7 +94,34 @@ const PluginContainer: React.FC<PluginContainerProps> = (props) => {
     await updatePluginFromFilelist(files);
   };
 
-  const pluginIframe = (
+  const iframeOnload = async () => {
+    const pluginData = await db.plugins.get(plugin.id || "");
+    if (pluginData) {
+      ref.current?.contentWindow?.postMessage(
+        {
+          type: "init",
+          srcdoc: pluginData?.optionsHtml,
+        },
+        "*"
+      );
+    }
+  };
+
+  let srcUrl = `http://${plugin.id}.${window.location.host}/audiogata/ui.html`;
+  if (process.env.NODE_ENV === "production") {
+    srcUrl = `https://${plugin.id}.audiogata.com/ui.html`;
+  }
+
+  const pluginIframe = plugin.optionsSameOrigin ? (
+    <iframe
+      ref={ref}
+      name={plugin.id}
+      title={plugin.name}
+      sandbox="allow-scripts allow-popups allow-popups-to-escape-sandbox allow-same-origin"
+      src={srcUrl}
+      onLoad={iframeOnload}
+    />
+  ) : (
     <iframe
       ref={ref}
       name={plugin.id}

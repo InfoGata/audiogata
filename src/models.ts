@@ -49,6 +49,7 @@ export interface PluginInfo {
   script: string;
   description?: string;
   optionsHtml?: string;
+  optionsSameOrigin?: boolean;
 }
 
 export interface DirectoryFile extends File {
@@ -69,5 +70,10 @@ export interface Manifest {
   name: string;
   script: string;
   description?: string;
-  options?: string;
+  options?: string | ManifestOptions;
+}
+
+export interface ManifestOptions {
+  page: string;
+  sameOrigin?: boolean;
 }

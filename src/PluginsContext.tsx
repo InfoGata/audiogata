@@ -51,6 +51,7 @@ export class PluginFrameContainer extends PluginFrame<PluginInterface> {
   id?: string;
   hasOptions = false;
   fileList?: FileList;
+  optionsSameOrigin?: boolean;
 }
 
 interface NetworkRequest {
@@ -151,6 +152,7 @@ export const PluginsProvider: React.FC = (props) => {
       sandboxAttributes: ["allow-scripts", "allow-same-origin"],
     });
     host.id = plugin.id;
+    host.optionsSameOrigin = plugin.optionsSameOrigin;
     host.name = plugin.name;
     host.hasOptions = !!plugin.optionsHtml;
     host.fileList = pluginFiles;

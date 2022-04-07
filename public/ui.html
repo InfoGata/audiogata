@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script type="text/javascript">
+        let isLoaded = false;
+        window.addEventListener("message", event => {
+            if (event.source === parent) {
+                if (!isLoaded && event.data.type === "init" && event.data.srcdoc) {
+                    const el = document.createRange()
+                        .createContextualFragment(event.data.srcdoc);
+                    document.body.appendChild(el);
+
+                    isLoaded = true;
+                }
+            }
+        });
+    </script>
+</head>
+
+<body>
+</body>
+</html>
