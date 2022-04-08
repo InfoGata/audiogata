@@ -117,6 +117,7 @@ const PluginContainer: React.FC<PluginContainerProps> = (props) => {
       sandbox="allow-scripts allow-popups allow-popups-to-escape-sandbox allow-same-origin"
       src={srcUrl}
       onLoad={iframeOnload}
+      style={{ backgroundColor: "white" }}
     />
   ) : (
     <iframe
@@ -125,6 +126,7 @@ const PluginContainer: React.FC<PluginContainerProps> = (props) => {
       title={plugin.name}
       sandbox="allow-scripts allow-popups allow-popups-to-escape-sandbox"
       srcDoc={optionsHtml}
+      style={{ backgroundColor: "white" }}
     />
   );
   return (
