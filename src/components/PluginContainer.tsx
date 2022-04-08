@@ -23,10 +23,7 @@ const PluginContainer: React.FC<PluginContainerProps> = (props) => {
 
   const iframeListener = React.useCallback(
     async (event: MessageEvent<any>) => {
-      if (
-        event.origin === "null" &&
-        ref.current?.contentWindow === event.source
-      ) {
+      if (ref.current?.contentWindow === event.source) {
         if (await plugin.hasDefined.onUiMessage()) {
           plugin.remote.onUiMessage(event.data);
         }
