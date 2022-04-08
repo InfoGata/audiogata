@@ -1,6 +1,5 @@
 import React from "react";
 import { Button, Divider, Grid, styled } from "@mui/material";
-import Spotify from "../plugins/spotify";
 import { nanoid } from "@reduxjs/toolkit";
 import { FileType } from "../models";
 import { usePlugins } from "../PluginsContext";
@@ -29,10 +28,6 @@ const Plugins: React.FC = () => {
     }
   };
 
-  const onSpotifyLoginClick = async () => {
-    await Spotify.login();
-  };
-
   const pluginComponents = plugins.map((plugin) => (
     <PluginContainer
       key={plugin.id}
@@ -56,7 +51,6 @@ const Plugins: React.FC = () => {
       </label>
       <Divider />
       {pluginComponents}
-      <Button onClick={onSpotifyLoginClick}>Login to Spotify</Button>
     </Grid>
   );
 };

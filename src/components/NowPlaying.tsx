@@ -193,10 +193,7 @@ const PlayQueue: React.FC = () => {
     }
   };
 
-  const optionsTuple: [string, string][] = [["spotify", "Spotify"]];
-  const options = optionsTuple.concat(
-    plugins.map((p) => [p.id || "", p.name || ""])
-  );
+  const options = plugins.map((p) => [p.id || "", p.name || ""]);
   const optionsComponents = options.map((option) => (
     <MenuItem key={option[0]} value={option[0]}>
       {option[1]}
