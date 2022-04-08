@@ -15,7 +15,11 @@ interface PluginInterface {
     artists?: IArtist[];
     playlists?: IPlaylist[];
   }>;
-  getTrackUrl: (song: ISong) => Promise<string>;
+  onNowPlayingTracksAdded: (track: ISong[]) => Promise<void>;
+  onNowPlayingTracksRemoved: (track: ISong[]) => Promise<void>;
+  onNowPlayingTracksChanged: (track: ISong[]) => Promise<void>;
+  onNowPlayingTracksSet: (track: ISong[]) => Promise<void>;
+  getTrackUrl: (track: ISong) => Promise<string>;
   onUiMessage: (message: any) => Promise<void>;
   getAlbumTracks: (album: IAlbum) => Promise<ISong[]>;
   getPlaylistTracks: (playlist: IPlaylist) => Promise<ISong[]>;
@@ -88,6 +92,9 @@ export interface PluginContextInterface {
 }
 
 const PluginsContext = React.createContext<PluginContextInterface>(undefined!);
+
+let globalPluginFrames: PluginFrameContainer[] = [];
+export const getPluginFrames = () => globalPluginFrames;
 
 export const PluginsProvider: React.FC = (props) => {
   const [pluginFrames, setPluginFrames] = React.useState<
@@ -171,6 +178,10 @@ export const PluginsProvider: React.FC = (props) => {
     getPlugins();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  React.useEffect(() => {
+    globalPluginFrames = pluginFrames;
+  }, [pluginFrames]);
 
   const addPlugin = async (plugin: PluginInfo) => {
     const pluginFrame = loadPlugin(plugin);

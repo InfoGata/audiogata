@@ -13,7 +13,7 @@ import {
 import React, { useEffect } from "react";
 import { useLocation } from "react-router";
 import { IAlbum, IArtist, IPlaylist, ISong } from "../models";
-import { getApiByName } from "../utils";
+import { filterAsync, getApiByName } from "../utils";
 import AlbumSearchResult from "./AlbumSearchResult";
 import ArtistSearchResult from "./ArtistSearchResult";
 import PlaylistSearchResult from "./PlaylistSearchResult";
@@ -74,8 +74,8 @@ const Search: React.FC = () => {
   useEffect(() => {
     const getOptions = async () => {
       let optionsTuple: [string, string][] = [["spotify", "Spotify"]];
-      const validPlugins = await Promise.all(
-        plugins.filter(async (p) => await p.hasDefined.searchAll())
+      const validPlugins = await filterAsync(plugins, (p) =>
+        p.hasDefined.searchAll()
       );
       const pluginTuples: [string, string][] = validPlugins.map((p) => [
         p.id || "",
