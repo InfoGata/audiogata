@@ -149,7 +149,7 @@ export const PluginsProvider: React.FC = (props) => {
       },
     };
 
-    let srcUrl = `http://${plugin.id}.${window.location.host}/audiogata/pluginframe.html`;
+    let srcUrl = `${window.location.protocol}//${plugin.id}.${window.location.host}/audiogata/pluginframe.html`;
     if (process.env.NODE_ENV === "production") {
       srcUrl = `https://${plugin.id}.audiogata.com/pluginframe.html`;
     }
