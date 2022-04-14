@@ -1,5 +1,12 @@
 import React from "react";
-import { IAlbum, IArtist, IPlaylist, ISong, PluginInfo } from "./models";
+import {
+  IAlbum,
+  IArtist,
+  IPlaylist,
+  ISong,
+  NotificationMessage,
+  PluginInfo,
+} from "./models";
 import {
   PluginFrame,
   PluginInterface as PluginFrameInterface,
@@ -7,6 +14,7 @@ import {
 import { db } from "./database";
 import { useAppDispatch, useAppSelector } from "./store/hooks";
 import { nextTrack, setElapsed, setTracks } from "./store/reducers/songReducer";
+import { useSnackbar } from "notistack";
 
 interface PluginInterface {
   searchAll: (query: string) => Promise<{
@@ -43,6 +51,7 @@ interface ApplicationPluginInterface extends PluginFrameInterface {
   setTrackTime: (currentTime: number) => Promise<void>;
   getNowPlayingTracks: () => Promise<ISong[]>;
   setNowPlayingTracks: (tracks: ISong[]) => Promise<void>;
+  createNotification: (notification: NotificationMessage) => Promise<void>;
 }
 
 interface PluginMessage {
@@ -104,6 +113,7 @@ export const PluginsProvider: React.FC = (props) => {
   const dispatch = useAppDispatch();
   const currentSong = useAppSelector((state) => state.song.currentSong);
   const tracks = useAppSelector((state) => state.song.songs);
+  const { enqueueSnackbar } = useSnackbar();
 
   const loadPlugin = (plugin: PluginInfo, pluginFiles?: FileList) => {
     const api: ApplicationPluginInterface = {
@@ -146,6 +156,9 @@ export const PluginsProvider: React.FC = (props) => {
       },
       setNowPlayingTracks: async (tracks: ISong[]) => {
         dispatch(setTracks(tracks));
+      },
+      createNotification: async (notification: NotificationMessage) => {
+        enqueueSnackbar(notification.message, { variant: notification.type });
       },
     };
 

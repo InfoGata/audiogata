@@ -43,6 +43,11 @@ export interface IImage {
   width: number;
 }
 
+export interface NotificationMessage {
+  message: string;
+  type?: "default" | "success" | "error" | "warning" | "info";
+}
+
 export interface PluginInfo {
   id?: string;
   name: string;
