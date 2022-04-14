@@ -13,7 +13,7 @@ import {
 import React, { useEffect } from "react";
 import { useLocation } from "react-router";
 import { IAlbum, IArtist, IPlaylist, ISong } from "../models";
-import { filterAsync, getApiByName } from "../utils";
+import { filterAsync } from "../utils";
 import AlbumSearchResult from "./AlbumSearchResult";
 import ArtistSearchResult from "./ArtistSearchResult";
 import PlaylistSearchResult from "./PlaylistSearchResult";
@@ -92,18 +92,14 @@ const Search: React.FC = () => {
       let albums: IAlbum[] | undefined = [];
       let artists: IArtist[] | undefined = [];
       let playlists: IPlaylist[] | undefined = [];
-      const api = getApiByName(searchType);
-      if (api) {
-        ({ tracks, albums, artists, playlists } = await api.searchAll(search));
-      } else {
-        const plugin = plugins.find((p) => p.id === searchType);
-        if (plugin?.hasDefined.searchAll()) {
-          ({ tracks, albums, artists, playlists } =
-            await plugin.remote.searchAll(search));
-          tracks?.forEach((t) => {
-            t.from = searchType;
-          });
-        }
+      const plugin = plugins.find((p) => p.id === searchType);
+      if (plugin?.hasDefined.searchAll()) {
+        ({ tracks, albums, artists, playlists } = await plugin.remote.searchAll(
+          search
+        ));
+        tracks?.forEach((t) => {
+          t.from = searchType;
+        });
       }
       setAlbumResults(albums || []);
       setArtistResults(artists || []);

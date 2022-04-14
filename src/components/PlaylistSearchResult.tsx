@@ -7,7 +7,8 @@ import {
 } from "@mui/material";
 import React from "react";
 import { IPlaylist, ISong } from "../models";
-import { getApiByName, getThumbnailImage, searchThumbnailSize } from "../utils";
+import { usePlugins } from "../PluginsContext";
+import { getThumbnailImage, searchThumbnailSize } from "../utils";
 
 interface IPlaylistResultProps {
   playlist: IPlaylist;
@@ -15,30 +16,28 @@ interface IPlaylistResultProps {
   setTrackResults: (songs: ISong[]) => void;
 }
 
-const PlaylistSearchResult: React.FC<IPlaylistResultProps> = props => {
+const PlaylistSearchResult: React.FC<IPlaylistResultProps> = (props) => {
+  const { clearSearch, playlist, setTrackResults } = props;
+  const { plugins } = usePlugins();
+
   const onClickPlaylist = async () => {
-    props.clearSearch();
-    const api = getApiByName(props.playlist.from || "");
-    if (api) {
-      const songs = await api.getPlaylistTracks(props.playlist);
-      props.setTrackResults(songs);
+    clearSearch();
+
+    const plugin = plugins.find((p) => p.id === playlist.from);
+    if (plugin && (await plugin.hasDefined.getPlaylistTracks())) {
+      const tracks = await plugin.remote.getPlaylistTracks(playlist);
+      setTrackResults(tracks);
     }
   };
-  const image = getThumbnailImage(props.playlist.images, searchThumbnailSize);
+  const image = getThumbnailImage(playlist.images, searchThumbnailSize);
   return (
     <ListItem button={true} onClick={onClickPlaylist}>
       <ListItemAvatar>
-        <Avatar
-          alt={props.playlist.name}
-          src={image}
-          style={{ borderRadius: 0 }}
-        />
+        <Avatar alt={playlist.name} src={image} style={{ borderRadius: 0 }} />
       </ListItemAvatar>
       <ListItemText
         primary={
-          <Typography
-            dangerouslySetInnerHTML={{ __html: props.playlist.name }}
-          />
+          <Typography dangerouslySetInnerHTML={{ __html: playlist.name }} />
         }
       />
     </ListItem>

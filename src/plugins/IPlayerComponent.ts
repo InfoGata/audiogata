@@ -6,5 +6,7 @@ export interface IPlayerComponent {
   resume: () => Promise<void>;
   seek: (time: number) => Promise<void>;
   play: (song: ISong) => Promise<void>;
-  setPlaybackRate?: (rate: number) => Promise<void>;
+  setPlaybackRate: (rate: number) => Promise<void>;
 }
+
+export type PlayerComponentType = keyof IPlayerComponent;

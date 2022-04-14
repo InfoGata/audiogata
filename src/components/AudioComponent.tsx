@@ -2,9 +2,11 @@ import React from "react";
 import { connect } from "react-redux";
 import { bindActionCreators, Dispatch } from "redux";
 import { ISong } from "../models";
-import { IPlayerComponent } from "../plugins/IPlayerComponent";
+import {
+  IPlayerComponent,
+  PlayerComponentType,
+} from "../plugins/IPlayerComponent";
 import Local from "../plugins/local";
-import SpotifyPlayer from "../plugins/spotify";
 import {
   nextTrack,
   prevTrack,
@@ -16,6 +18,7 @@ import { AppState } from "../store/store";
 import { withSnackbar, ProviderContext } from "notistack";
 import PluginsContext from "../PluginsContext";
 import { db } from "../database";
+import { filterAsync } from "../utils";
 
 interface IProps extends StateProps, DispatchProps, ProviderContext {}
 interface IState {
@@ -32,7 +35,6 @@ class AudioComponent extends React.Component<IProps, IState> {
 
     Local.onSongEnd = this.onSongEnd;
     Local.setTime = this.setTrackTimes;
-    SpotifyPlayer.onSongEnd = this.onSongEnd;
     this.state = {
       errorCount: 0,
     };
@@ -40,11 +42,12 @@ class AudioComponent extends React.Component<IProps, IState> {
 
   public async componentDidMount() {
     this.setMediaSessionActions();
-    const player = this.getPlayerFromName(this.props.currentSong?.from || "");
-    await player.setVolume(this.props.volume);
-    if (player.setPlaybackRate) {
-      player.setPlaybackRate(this.props.playbackRate || 1.0);
-    }
+    const player = await this.getPlayerFromName(
+      this.props.currentSong?.from || "",
+      "setVolume"
+    );
+    await player?.setVolume(this.props.volume);
+    // await player?.setPlaybackRate(this.props.playbackRate || 1.0);
     if (this.props.playOnStartup && this.props.isPlaying) {
       await this.playCurrentSong();
     } else if (this.props.isPlaying) {
@@ -66,11 +69,25 @@ class AudioComponent extends React.Component<IProps, IState> {
     return null;
   }
 
-  private getPlayerFromName(name: string): IPlayerComponent {
-    switch (name) {
-      case "spotify":
-        return SpotifyPlayer;
+  private async getPlayerFromName(
+    name: string,
+    method: PlayerComponentType = "play"
+  ): Promise<IPlayerComponent | undefined> {
+    // PlayerComponent must have play, pause, and resume defined
+    const plugins = this.context.plugins;
+    const validPlugins = await filterAsync(
+      plugins,
+      async (p) =>
+        (await p.hasDefined.play()) &&
+        (await p.hasDefined.resume()) &&
+        (await p.hasDefined.pause())
+    );
+
+    const plugin = validPlugins.find((p) => p.id === name);
+    if (plugin) {
+      return (await plugin.methodDefined(method)) ? plugin.remote : undefined;
     }
+
     return Local;
   }
 
@@ -85,50 +102,62 @@ class AudioComponent extends React.Component<IProps, IState> {
   }
 
   private async onIsPlayingUpdate(prevProps: IProps, newProps: IProps) {
-    const player = this.getPlayerFromName(newProps.currentSong?.from || "");
+    const player = await this.getPlayerFromName(
+      newProps.currentSong?.from || ""
+    );
     if (prevProps.isPlaying !== newProps.isPlaying) {
       if (newProps.isPlaying) {
-        player.resume();
+        player?.resume();
         if (!this.songLoaded && newProps.currentSong) {
           await this.playSong(newProps.currentSong, newProps.elapsed);
         }
       } else {
-        await player.pause();
+        await player?.pause();
       }
     }
   }
 
   private async onVolumeUpdate(prevProps: IProps, newProps: IProps) {
     if (prevProps.volume !== newProps.volume) {
-      const player = this.getPlayerFromName(newProps.currentSong?.from || "");
-      await player.setVolume(newProps.volume);
+      const player = await this.getPlayerFromName(
+        newProps.currentSong?.from || "",
+        "setVolume"
+      );
+      await player?.setVolume(newProps.volume);
     }
   }
 
   private async onRateUpdate(prevProps: IProps, newProps: IProps) {
     if (prevProps.playbackRate !== newProps.playbackRate) {
-      const player = this.getPlayerFromName(this.props.currentSong?.from || "");
-      if (player.setPlaybackRate) {
-        await player.setPlaybackRate(newProps.playbackRate || 1.0);
-      }
+      const player = await this.getPlayerFromName(
+        this.props.currentSong?.from || "",
+        "setPlaybackRate"
+      );
+      await player?.setPlaybackRate(newProps.playbackRate || 1.0);
     }
   }
 
   private async onMuteUpdate(prevProps: IProps, newProps: IProps) {
     if (prevProps.mute !== newProps.mute) {
-      const player = this.getPlayerFromName(this.props.currentSong?.from || "");
+      const player = await this.getPlayerFromName(
+        this.props.currentSong?.from || "",
+        "setVolume"
+      );
       if (newProps.mute) {
-        await player.setVolume(0);
+        await player?.setVolume(0);
       } else {
-        await player.setVolume(newProps.volume);
+        await player?.setVolume(newProps.volume);
       }
     }
   }
 
   private async onSeek(prevProps: IProps, newProps: IProps) {
     if (newProps.seekTime != null && prevProps.seekTime !== newProps.seekTime) {
-      const player = this.getPlayerFromName(newProps.currentSong?.from || "");
-      await player.seek(newProps.seekTime);
+      const player = await this.getPlayerFromName(
+        newProps.currentSong?.from || "",
+        "seek"
+      );
+      await player?.seek(newProps.seekTime);
       this.props.seek(undefined);
     }
   }
@@ -160,7 +189,7 @@ class AudioComponent extends React.Component<IProps, IState> {
       );
       const hasPluginApi =
         (await pluginFrame?.hasDefined.getTrackUrl()) || false;
-      const player = this.getPlayerFromName(newSong.from || "");
+      const player = await this.getPlayerFromName(newSong.from || "");
       this.lastPlayer?.pause();
       try {
         if (audioBlob) {
@@ -169,7 +198,7 @@ class AudioComponent extends React.Component<IProps, IState> {
           newSong.source = await pluginFrame.remote.getTrackUrl(newSong);
         }
 
-        await player.play(newSong);
+        await player?.play(newSong);
         this.lastPlayer = player;
         this.songLoaded = true;
         this.setState({
@@ -180,7 +209,7 @@ class AudioComponent extends React.Component<IProps, IState> {
         return;
       }
       if (time) {
-        await player.seek(time);
+        await player?.seek(time);
       }
     }
   }

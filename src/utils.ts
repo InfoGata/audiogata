@@ -5,11 +5,7 @@ import {
   Manifest,
   PluginInfo,
 } from "./models";
-import { ISearchApi } from "./plugins/ISearchApi";
 import thumbnail from "./thumbnail.png";
-import Spotify from "./plugins/spotify";
-import SpotifyPlayer from "./plugins/spotify";
-import { IPlayerComponent } from "./plugins/IPlayerComponent";
 
 export function formatSeconds(seconds?: number) {
   if (!seconds) {
@@ -47,23 +43,6 @@ export const getThumbnailImage = (
   const sortedImages = [...images].sort((a, b) => a.height - b.height);
   const thumbnailImage = sortedImages.find((i) => i.height >= size);
   return thumbnailImage ? thumbnailImage.url : thumbnail;
-};
-
-export const getApiByName = (name: string): ISearchApi | undefined => {
-  switch (name) {
-    case "spotify":
-      return Spotify;
-  }
-};
-
-export const getPlayerFromName = (
-  name: string
-): IPlayerComponent | undefined => {
-  switch (name) {
-    case "spotify":
-      return SpotifyPlayer;
-  }
-  return undefined;
 };
 
 export const directoryProps = {

@@ -15,8 +15,9 @@ import { db } from "./database";
 import { useAppDispatch, useAppSelector } from "./store/hooks";
 import { nextTrack, setElapsed, setTracks } from "./store/reducers/songReducer";
 import { useSnackbar } from "notistack";
+import { IPlayerComponent } from "./plugins/IPlayerComponent";
 
-interface PluginInterface {
+interface PluginInterface extends IPlayerComponent {
   searchAll: (query: string) => Promise<{
     tracks?: ISong[];
     albums?: IAlbum[];
