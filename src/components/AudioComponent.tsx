@@ -42,12 +42,16 @@ class AudioComponent extends React.Component<IProps, IState> {
 
   public async componentDidMount() {
     this.setMediaSessionActions();
-    const player = await this.getPlayerFromName(
+    let player = await this.getPlayerFromName(
       this.props.currentSong?.from || "",
       "setVolume"
     );
     await player?.setVolume(this.props.volume);
-    // await player?.setPlaybackRate(this.props.playbackRate || 1.0);
+    player = await this.getPlayerFromName(
+      this.props.currentSong?.from || "",
+      "setPlaybackRate"
+    );
+    await player?.setPlaybackRate(this.props.playbackRate || 1.0);
     if (this.props.playOnStartup && this.props.isPlaying) {
       await this.playCurrentSong();
     } else if (this.props.isPlaying) {
@@ -74,16 +78,7 @@ class AudioComponent extends React.Component<IProps, IState> {
     method: PlayerComponentType = "play"
   ): Promise<IPlayerComponent | undefined> {
     // PlayerComponent must have play, pause, and resume defined
-    const plugins = this.context.plugins;
-    const validPlugins = await filterAsync(
-      plugins,
-      async (p) =>
-        (await p.hasDefined.play()) &&
-        (await p.hasDefined.resume()) &&
-        (await p.hasDefined.pause())
-    );
-
-    const plugin = validPlugins.find((p) => p.id === name);
+    const plugin = this.context.plugins.find((p) => p.id === name);
     if (plugin) {
       return (await plugin.methodDefined(method)) ? plugin.remote : undefined;
     }
