@@ -5071,7 +5071,7 @@
     "agent-base" "6"
     "debug" "4"
 
-"http-proxy-middleware@^2.0.0", "http-proxy-middleware@^2.0.2":
+"http-proxy-middleware@^2.0.0":
   "integrity" "sha512-XtmDN5w+vdFTBZaYhdJAbMqn0DP/EhkUaAeo963mojwpKMMbw6nivtFKw07D7DDOH745L5k0VL0P8KRYNEVF/g=="
   "resolved" "https://registry.npmjs.org/http-proxy-middleware/-/http-proxy-middleware-2.0.2.tgz"
   "version" "2.0.2"
