@@ -77,10 +77,15 @@ class AudioComponent extends React.Component<IProps, IState> {
     name: string,
     method: PlayerComponentType = "play"
   ): Promise<IPlayerComponent | undefined> {
-    // PlayerComponent must have play, pause, and resume defined
-    const plugin = this.context.plugins.find((p) => p.id === name);
+    // PlayerComponent must have play
+    const playerPlugins = await filterAsync(this.context.plugins, (p) =>
+      p.hasDefined.play()
+    );
+    const plugin = playerPlugins.find((p) => p.id === name);
     if (plugin) {
-      return (await plugin.methodDefined(method)) ? plugin.remote : undefined;
+      const hasMethod = await plugin.methodDefined(method);
+      const result = hasMethod ? plugin.remote : undefined;
+      return result;
     }
 
     return Local;
