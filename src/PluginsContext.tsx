@@ -143,12 +143,12 @@ export const PluginsProvider: React.FC = (props) => {
         setPluginMessage({ pluginId: plugin.id, message });
       },
       endTrack: async () => {
-        if (currentSong?.id === plugin.id) {
+        if (currentSong?.from === plugin.id) {
           dispatch(nextTrack());
         }
       },
       setTrackTime: async (currentTime: number) => {
-        if (currentSong?.id === plugin.id) {
+        if (currentSong?.from === plugin.id) {
           dispatch(setElapsed(currentTime));
         }
       },
