@@ -55,6 +55,7 @@ const PlayQueue: React.FC = () => {
   const dragDisabled = false;
   const theme = useTheme();
   const showTrackLength = useMediaQuery(theme.breakpoints.up("sm"));
+  const lastChecked = React.useRef<number | null>(null);
   const openMenu = async (
     event: React.MouseEvent<HTMLButtonElement>,
     song: ISong
@@ -173,11 +174,28 @@ const PlayQueue: React.FC = () => {
     e: React.ChangeEvent<HTMLInputElement>,
     id: string
   ) => {
-    setSelected((prev) => {
-      const next = new Set(prev);
-      e.target.checked ? next.add(id) : next.delete(id);
-      return next;
-    });
+    const index = Number(e.target.dataset.index);
+    if (
+      lastChecked.current !== null &&
+      (e.nativeEvent as any).shiftKey &&
+      e.target.checked
+    ) {
+      setSelected((prev) => {
+        const next = new Set(prev);
+        const start = Math.min(lastChecked.current || 0, index);
+        const end = Math.max(lastChecked.current || 0, index) + 1;
+        const ids = songList.slice(start, end).map((s) => s.id);
+        ids.forEach((id) => next.add(id || ""));
+        return next;
+      });
+    } else {
+      setSelected((prev) => {
+        const next = new Set(prev);
+        e.target.checked ? next.add(id) : next.delete(id);
+        return next;
+      });
+    }
+    lastChecked.current = e.target.checked ? index : null;
   };
 
   const onSelectFromChange = (e: SelectChangeEvent<string>) => {
@@ -244,7 +262,7 @@ const PlayQueue: React.FC = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {songList.map((songInfo) => (
+              {songList.map((songInfo, index) => (
                 <SortableRow
                   id={songInfo.id || ""}
                   key={songInfo.id}
@@ -252,6 +270,7 @@ const PlayQueue: React.FC = () => {
                   disabled={dragDisabled}
                 >
                   <QueueItem
+                    index={index}
                     song={songInfo}
                     isSelected={isSelected}
                     onSelectClick={onSelectClick}
@@ -263,6 +282,7 @@ const PlayQueue: React.FC = () => {
               <DragOverlay wrapperElement="tr">
                 {activeId ? (
                   <QueueItem
+                    index={0}
                     showTrackLength={showTrackLength}
                     isSelected={isSelected}
                     onSelectClick={onSelectClick}

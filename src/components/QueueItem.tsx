@@ -14,10 +14,12 @@ export interface QueueItemProps {
     id: string
   ) => void;
   openMenu: (event: React.MouseEvent<HTMLButtonElement>, song: ISong) => void;
+  index: number;
 }
 
 const QueueItem: React.FC<QueueItemProps> = (props) => {
-  const { song, openMenu, showTrackLength, isSelected, onSelectClick } = props;
+  const { song, openMenu, showTrackLength, isSelected, onSelectClick, index } =
+    props;
   const currentSong = useAppSelector((state) => state.song.currentSong);
   const openSongMenu = (event: React.MouseEvent<HTMLButtonElement>) => {
     openMenu(event, song);
@@ -38,6 +40,11 @@ const QueueItem: React.FC<QueueItemProps> = (props) => {
           checked={isSelected(song.id || "")}
           onChange={onChange}
           onClick={stopPropagation}
+          inputProps={
+            {
+              "data-index": index,
+            } as any
+          }
         />
       </TableCell>
       <TableCell>
