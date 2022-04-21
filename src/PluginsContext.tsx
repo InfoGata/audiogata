@@ -4,6 +4,7 @@ import {
   IArtist,
   IPlaylist,
   ISong,
+  NetworkRequest,
   NotificationMessage,
   PluginInfo,
 } from "./models";
@@ -16,6 +17,7 @@ import { useAppDispatch, useAppSelector } from "./store/hooks";
 import { nextTrack, setElapsed, setTracks } from "./store/reducers/songReducer";
 import { useSnackbar } from "notistack";
 import { IPlayerComponent } from "./plugins/IPlayerComponent";
+import { isElectron } from "./utils";
 
 interface PluginInterface extends IPlayerComponent {
   searchAll: (query: string) => Promise<{
@@ -68,27 +70,6 @@ export class PluginFrameContainer extends PluginFrame<PluginInterface> {
   optionsSameOrigin?: boolean;
 }
 
-interface NetworkRequest {
-  body: Blob;
-  headers: { [k: string]: string };
-  status: number;
-  statusText: string;
-  url: string;
-}
-
-interface MediaGataExtension {
-  networkRequest: (
-    input: RequestInfo,
-    init?: RequestInit
-  ) => Promise<NetworkRequest>;
-}
-
-declare global {
-  interface Window {
-    MediaGata: MediaGataExtension;
-  }
-}
-
 export interface PluginContextInterface {
   addPlugin: (plugin: PluginInfo, pluginFiles?: FileList) => Promise<void>;
   updatePlugin: (
@@ -136,8 +117,9 @@ export const PluginsProvider: React.FC = (props) => {
         return result;
       },
       isNetworkRequestCorsDisabled: async () => {
-        const hasExtension = typeof window.MediaGata !== "undefined";
-        return hasExtension;
+        const isDisabled =
+          typeof window.MediaGata !== "undefined" || isElectron();
+        return isDisabled;
       },
       postUiMessage: async (message: any) => {
         setPluginMessage({ pluginId: plugin.id, message });
@@ -163,7 +145,7 @@ export const PluginsProvider: React.FC = (props) => {
       },
     };
 
-    let srcUrl = `${window.location.protocol}//${plugin.id}.${window.location.host}/audiogata/pluginframe.html`;
+    let srcUrl = `${window.location.protocol}//${plugin.id}.${window.location.host}/pluginframe.html`;
     if (process.env.NODE_ENV === "production") {
       srcUrl = `https://${plugin.id}.audiogata.com/pluginframe.html`;
     }

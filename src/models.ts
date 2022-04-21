@@ -1,3 +1,23 @@
+export interface NetworkRequest {
+  body: Blob;
+  headers: { [k: string]: string };
+  status: number;
+  statusText: string;
+  url: string;
+}
+export interface MediaGataExtension {
+  networkRequest: (
+    input: RequestInfo,
+    init?: RequestInit
+  ) => Promise<NetworkRequest>;
+}
+
+declare global {
+  interface Window {
+    MediaGata: MediaGataExtension;
+  }
+}
+
 export interface ISong {
   id?: string;
   name: string;

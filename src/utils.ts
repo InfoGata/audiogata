@@ -145,6 +145,11 @@ export async function filterAsync<T>(
   return array.filter((_value, index) => filterMap[index]);
 }
 
+export const isElectron = (): boolean => {
+  const userAgent = navigator.userAgent.toLowerCase();
+  return userAgent.indexOf(" electron/") > -1;
+};
+
 export const navbarWidth = 200;
 
 export const searchThumbnailSize = 40;

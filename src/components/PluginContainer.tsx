@@ -104,7 +104,7 @@ const PluginContainer: React.FC<PluginContainerProps> = (props) => {
     }
   };
 
-  let srcUrl = `${window.location.protocol}//${plugin.id}.${window.location.host}/audiogata/ui.html`;
+  let srcUrl = `${window.location.protocol}//${plugin.id}.${window.location.host}/ui.html`;
   if (process.env.NODE_ENV === "production") {
     srcUrl = `https://${plugin.id}.audiogata.com/ui.html`;
   }
