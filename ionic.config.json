@@ -1,0 +1,7 @@
+{
+  "name": "AudioGata",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "react"
+}
