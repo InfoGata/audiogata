@@ -18,6 +18,7 @@ import { nextTrack, setElapsed, setTracks } from "./store/reducers/songReducer";
 import { useSnackbar } from "notistack";
 import { IPlayerComponent } from "./plugins/IPlayerComponent";
 import { isElectron } from "./utils";
+import { Capacitor } from "@capacitor/core";
 
 interface PluginInterface extends IPlayerComponent {
   searchAll: (query: string) => Promise<{
@@ -87,6 +88,30 @@ const PluginsContext = React.createContext<PluginContextInterface>(undefined!);
 let globalPluginFrames: PluginFrameContainer[] = [];
 export const getPluginFrames = () => globalPluginFrames;
 
+function iteratorFor(items: any) {
+  var iterator = {
+    next: function () {
+      var value = items.shift();
+      return { done: value === undefined, value: value };
+    },
+    [Symbol.iterator]: () => {
+      return iterator;
+    },
+  };
+
+  return iterator;
+}
+
+const getHeaderEntries = (
+  headers: Headers
+): IterableIterator<[string, string]> => {
+  var items: string[][] = [];
+  headers.forEach(function (value, name) {
+    items.push([name, value]);
+  });
+  return iteratorFor(items);
+};
+
 export const PluginsProvider: React.FC = (props) => {
   const [pluginFrames, setPluginFrames] = React.useState<
     PluginFrameContainer[]
@@ -104,9 +129,17 @@ export const PluginsProvider: React.FC = (props) => {
         if (hasExtension) {
           return await window.MediaGata.networkRequest(input, init);
         }
-        const response = await fetch(input, init);
+        const response = Capacitor.isNativePlatform()
+          ? await window.cordovaFetch(input, init)
+          : await fetch(input, init);
+
         const body = await response.blob();
-        const responseHeaders = Object.fromEntries(response.headers.entries());
+
+        // Cordova plugin does not have Headers.entries();
+        const responseHeaders = Capacitor.isNativePlatform()
+          ? Object.fromEntries(getHeaderEntries(response.headers))
+          : Object.fromEntries(response.headers.entries());
+
         const result = {
           body: body,
           headers: responseHeaders,
@@ -118,7 +151,9 @@ export const PluginsProvider: React.FC = (props) => {
       },
       isNetworkRequestCorsDisabled: async () => {
         const isDisabled =
-          typeof window.MediaGata !== "undefined" || isElectron();
+          typeof window.MediaGata !== "undefined" ||
+          isElectron() ||
+          Capacitor.isNativePlatform();
         return isDisabled;
       },
       postUiMessage: async (message: any) => {

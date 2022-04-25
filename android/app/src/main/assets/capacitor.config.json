@@ -1,0 +1,6 @@
+{
+	"appId": "com.audiogata.app",
+	"appName": "AudioGata",
+	"webDir": "build",
+	"bundledWebRuntime": false
+}

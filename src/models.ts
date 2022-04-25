@@ -15,6 +15,7 @@ export interface MediaGataExtension {
 declare global {
   interface Window {
     MediaGata: MediaGataExtension;
+    cordovaFetch: typeof fetch;
   }
 }
 
