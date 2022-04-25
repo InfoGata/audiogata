@@ -4,6 +4,7 @@ import { PluginFrameContainer, usePlugins } from "../PluginsContext";
 import { db } from "../database";
 import { directoryProps, getPlugin } from "../utils";
 import { FileType } from "../models";
+import { Capacitor } from "@capacitor/core";
 
 const FileInput = styled("input")({
   display: "none",
@@ -105,7 +106,7 @@ const PluginContainer: React.FC<PluginContainerProps> = (props) => {
   };
 
   let srcUrl = `${window.location.protocol}//${plugin.id}.${window.location.host}/ui.html`;
-  if (process.env.NODE_ENV === "production") {
+  if (process.env.NODE_ENV === "production" || Capacitor.isNativePlatform()) {
     srcUrl = `https://${plugin.id}.audiogata.com/ui.html`;
   }
 

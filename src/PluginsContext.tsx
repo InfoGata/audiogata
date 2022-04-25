@@ -129,16 +129,22 @@ export const PluginsProvider: React.FC = (props) => {
         if (hasExtension) {
           return await window.MediaGata.networkRequest(input, init);
         }
+
         const response = Capacitor.isNativePlatform()
           ? await window.cordovaFetch(input, init)
           : await fetch(input, init);
 
         const body = await response.blob();
 
-        // Cordova plugin does not have Headers.entries();
+        // cordova-plugin-fetch does not support Headers.entries
         const responseHeaders = Capacitor.isNativePlatform()
           ? Object.fromEntries(getHeaderEntries(response.headers))
           : Object.fromEntries(response.headers.entries());
+
+        // Remove forbidden header
+        if (responseHeaders["set-cookie"]) {
+          delete responseHeaders["set-cookie"];
+        }
 
         const result = {
           body: body,
@@ -181,7 +187,7 @@ export const PluginsProvider: React.FC = (props) => {
     };
 
     let srcUrl = `${window.location.protocol}//${plugin.id}.${window.location.host}/pluginframe.html`;
-    if (process.env.NODE_ENV === "production") {
+    if (process.env.NODE_ENV === "production" || Capacitor.isNativePlatform()) {
       srcUrl = `https://${plugin.id}.audiogata.com/pluginframe.html`;
     }
 
