@@ -3899,8 +3899,8 @@
   "resolved" "https://registry.npmjs.org/cookie/-/cookie-0.4.2.tgz"
   "version" "0.4.2"
 
-"cordova-plugin-fetch@git+https://github.com/aporat/cordova-plugin-fetch.git":
-  "resolved" "git+ssh://git@github.com/aporat/cordova-plugin-fetch.git#e59b2707950c899f815f4737b7b4c7cf9e163547"
+"cordova-plugin-fetch@git+https://git@github.com/aporat/cordova-plugin-fetch.git":
+  "resolved" "git+https://git@github.com/aporat/cordova-plugin-fetch.git#e59b2707950c899f815f4737b7b4c7cf9e163547"
   "version" "1.0.0"
 
 "core-js-compat@^3.20.0", "core-js-compat@^3.20.2":
