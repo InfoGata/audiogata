@@ -56,6 +56,7 @@ interface ApplicationPluginInterface extends PluginFrameInterface {
   getNowPlayingTracks: () => Promise<ISong[]>;
   setNowPlayingTracks: (tracks: ISong[]) => Promise<void>;
   createNotification: (notification: NotificationMessage) => Promise<void>;
+  getCorsProxy: () => Promise<string>;
 }
 
 interface PluginMessage {
@@ -183,6 +184,9 @@ export const PluginsProvider: React.FC = (props) => {
       },
       createNotification: async (notification: NotificationMessage) => {
         enqueueSnackbar(notification.message, { variant: notification.type });
+      },
+      getCorsProxy: async () => {
+        return "http://localhost:8085";
       },
     };
 
