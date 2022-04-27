@@ -38,7 +38,7 @@ const QueueItem: React.FC<QueueItemProps> = (props) => {
   React.useEffect(() => {
     if (progress) {
       if (progress.success === true) {
-        enqueueSnackbar(`Succesfully downloaded ${song.name}`);
+        enqueueSnackbar(`Succesfully downloaded '${song.name}'`);
         dispatch(removeDownload(song.id || ""));
       } else if (progress.success === false) {
         enqueueSnackbar(`Can't download '${song.name}'`, {

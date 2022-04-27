@@ -31,16 +31,7 @@ const downloadsSlice = createSlice({
       state.progress[trackId] = newDownload;
     },
     setDownloadProgress: (state, action: PayloadAction<TrackProgress>) => {
-      return {
-        ...state,
-        downloads: {
-          ...state.progress,
-          [action.payload.trackId]: {
-            ...state.progress[action.payload.trackId],
-            progress: action.payload.progress,
-          },
-        },
-      };
+      state.progress[action.payload.trackId].progress = action.payload.progress;
     },
     downloadSuccess: (state, action: PayloadAction<string>) => {
       state.progress[action.payload].success = true;
@@ -63,8 +54,11 @@ export const downloadTrack: AppActionCreator =
       if (Capacitor.isNativePlatform()) {
         // TODO: Implement downloads on mobile
         dispatch(downloadsSlice.actions.downloadFailure(track.id || ""));
-      } else {
+        return;
+      } else if (typeof window.MediaGata !== "undefined") {
         // TODO: Implement downloads on mobile
+        dispatch(downloadsSlice.actions.downloadFailure(track.id || ""));
+        return;
       }
       response = await fetch(`http://localhost:8085/${url}`);
       const reader = response.body?.getReader();
@@ -83,7 +77,6 @@ export const downloadTrack: AppActionCreator =
           chunks.push(value || new Uint8Array());
           receivedLength += value?.length || 0;
           const progress = (receivedLength / contentLength) * 100;
-          console.log(progress);
           dispatch(
             downloadsSlice.actions.setDownloadProgress({
               trackId: track.id || "",
