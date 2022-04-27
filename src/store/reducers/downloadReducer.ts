@@ -48,7 +48,7 @@ const downloadsSlice = createSlice({
 export const downloadTrack: AppActionCreator =
   (track: ISong, url: string) => async (dispatch) => {
     dispatch(downloadsSlice.actions.downloadTrack(track));
-    let response: Response;
+    let response: Response | undefined = undefined;
     let blob: Blob;
     try {
       if (Capacitor.isNativePlatform()) {
@@ -61,7 +61,13 @@ export const downloadTrack: AppActionCreator =
         blob = extensionResponse.body;
         dispatch(downloadsSlice.actions.downloadFailure(track.id || ""));
       } else {
-        response = await fetch(`http://localhost:8085/${url}`);
+        try {
+          response = await fetch(url);
+        } catch {}
+        // Error maybe because of cors so try a the proxy
+        if (!response) {
+          response = await fetch(`http://localhost:8085/${url}`);
+        }
         const reader = response.body?.getReader();
         if (response.headers.has("Content-Length") && reader) {
           const contentLenghStr = response.headers.get("Content-Length") || "";
