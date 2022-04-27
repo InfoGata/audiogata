@@ -52,42 +52,44 @@ export const downloadTrack: AppActionCreator =
     let blob: Blob;
     try {
       if (Capacitor.isNativePlatform()) {
-        // TODO: Implement downloads on mobile
-        dispatch(downloadsSlice.actions.downloadFailure(track.id || ""));
-        return;
+        // TODO: add progress when using mobile
+        response = await window.cordovaFetch(url);
+        blob = await response.blob();
       } else if (typeof window.MediaGata !== "undefined") {
-        // TODO: Implement downloads on mobile
+        // TODO: Implement downloads when using MediaGata extension
+        const extensionResponse = await window.MediaGata.networkRequest(url);
+        blob = extensionResponse.body;
         dispatch(downloadsSlice.actions.downloadFailure(track.id || ""));
-        return;
-      }
-      response = await fetch(`http://localhost:8085/${url}`);
-      const reader = response.body?.getReader();
-      if (response.headers.has("Content-Length") && reader) {
-        const contentLenghStr = response.headers.get("Content-Length") || "";
-        const contentLength = +contentLenghStr;
-        let receivedLength = 0;
-        let chunks: Uint8Array[] = [];
-        while (true) {
-          const { done, value } = await reader.read();
+      } else {
+        response = await fetch(`http://localhost:8085/${url}`);
+        const reader = response.body?.getReader();
+        if (response.headers.has("Content-Length") && reader) {
+          const contentLenghStr = response.headers.get("Content-Length") || "";
+          const contentLength = +contentLenghStr;
+          let receivedLength = 0;
+          let chunks: Uint8Array[] = [];
+          while (true) {
+            const { done, value } = await reader.read();
 
-          if (done) {
-            break;
+            if (done) {
+              break;
+            }
+
+            chunks.push(value || new Uint8Array());
+            receivedLength += value?.length || 0;
+            const progress = (receivedLength / contentLength) * 100;
+            dispatch(
+              downloadsSlice.actions.setDownloadProgress({
+                trackId: track.id || "",
+                progress,
+              })
+            );
           }
 
-          chunks.push(value || new Uint8Array());
-          receivedLength += value?.length || 0;
-          const progress = (receivedLength / contentLength) * 100;
-          dispatch(
-            downloadsSlice.actions.setDownloadProgress({
-              trackId: track.id || "",
-              progress,
-            })
-          );
+          blob = new Blob(chunks);
+        } else {
+          blob = await response.blob();
         }
-
-        blob = new Blob(chunks);
-      } else {
-        blob = await response.blob();
       }
       const audioBlob: AudioBlob = {
         id: track.id || "",
