@@ -1,9 +1,17 @@
-import { Checkbox, IconButton, TableCell, Typography } from "@mui/material";
+import {
+  Checkbox,
+  LinearProgress,
+  IconButton,
+  TableCell,
+  Typography,
+} from "@mui/material";
 import { MoreHoriz } from "@mui/icons-material";
 import React from "react";
 import { ISong } from "../models";
 import { formatSeconds } from "../utils";
-import { useAppSelector } from "../store/hooks";
+import { useAppDispatch, useAppSelector } from "../store/hooks";
+import { removeDownload } from "../store/reducers/downloadReducer";
+import { useSnackbar } from "notistack";
 
 export interface QueueItemProps {
   song: ISong;
@@ -21,6 +29,26 @@ const QueueItem: React.FC<QueueItemProps> = (props) => {
   const { song, openMenu, showTrackLength, isSelected, onSelectClick, index } =
     props;
   const currentSong = useAppSelector((state) => state.song.currentSong);
+  const progress = useAppSelector(
+    (state) => state.download.progress[song.id || ""]
+  );
+  const dispatch = useAppDispatch();
+  const { enqueueSnackbar } = useSnackbar();
+
+  React.useEffect(() => {
+    if (progress) {
+      if (progress.success === true) {
+        enqueueSnackbar(`Succesfully downloaded ${song.name}`);
+        dispatch(removeDownload(song.id || ""));
+      } else if (progress.success === false) {
+        enqueueSnackbar(`Can't download '${song.name}'`, {
+          variant: "error",
+        });
+        dispatch(removeDownload(song.id || ""));
+      }
+    }
+  }, [progress, dispatch, song.id, song.name, enqueueSnackbar]);
+
   const openSongMenu = (event: React.MouseEvent<HTMLButtonElement>) => {
     openMenu(event, song);
   };
@@ -52,6 +80,17 @@ const QueueItem: React.FC<QueueItemProps> = (props) => {
           color={currentSong?.id === song.id ? "primary.main" : undefined}
           noWrap={true}
           dangerouslySetInnerHTML={{ __html: song.name }}
+        />
+        <Typography
+          variant="body2"
+          color={currentSong?.id === song.id ? "primary.main" : undefined}
+          noWrap={true}
+          dangerouslySetInnerHTML={{ __html: song.artistName || "" }}
+        />
+        <LinearProgress
+          variant="determinate"
+          value={progress?.progress || 0}
+          sx={{ visibility: progress ? "visible" : "hidden" }}
         />
       </TableCell>
       {showTrackLength && <TableCell>{formatSeconds(song.duration)}</TableCell>}

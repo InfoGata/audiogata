@@ -35,13 +35,14 @@ import AddPlaylistDialog from "./AddPlaylistDialog";
 import PlaylistMenuItem from "./PlaylistMenuItem";
 import Sortable from "./Sortable";
 import { Link } from "react-router-dom";
-import { AudioBlob, db } from "../database";
+import { db } from "../database";
 import { DragEndEvent, DragOverlay, DragStartEvent } from "@dnd-kit/core";
 import { arrayMove } from "@dnd-kit/sortable";
 import SortableRow from "./SortableRow";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
 import { usePlugins } from "../PluginsContext";
 import SelectionEditDialog from "./SelectionEditDialog";
+import { downloadTrack } from "../store/reducers/downloadReducer";
 
 const PlayQueue: React.FC = () => {
   const [activeId, setActiveId] = React.useState<string | null>(null);
@@ -61,8 +62,8 @@ const PlayQueue: React.FC = () => {
     song: ISong
   ) => {
     event.stopPropagation();
-    event.preventDefault();
     setAnchorEl(event.currentTarget);
+    event.preventDefault();
     setMenuSong(song);
     // Check whether song can be played offline
     if (song.id && song.from) {
@@ -115,14 +116,9 @@ const PlayQueue: React.FC = () => {
           return;
         }
 
-        const source = pluginFrame?.remote.getTrackUrl(menuSong);
-        if (source && menuSong.id) {
-          const data = await fetch(`http://localhost:8085/${source}`);
-          const blob: AudioBlob = {
-            id: menuSong.id,
-            blob: await data.blob(),
-          };
-          await db.audioBlobs.add(blob);
+        const source = await pluginFrame?.remote.getTrackUrl(menuSong);
+        if (source) {
+          dispatch(downloadTrack(menuSong, source));
         }
       }
     } catch (e) {
