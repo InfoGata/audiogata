@@ -1,4 +1,10 @@
-import { List, ListItem, ListItemIcon, ListItemText } from "@mui/material";
+import {
+  List,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
+  Tooltip,
+} from "@mui/material";
 import {
   Extension,
   Home,
@@ -32,7 +38,9 @@ const Navigation: React.FC = () => {
     <List>
       <ListItem button={true} component={Link} to="/" key="Home">
         <ListItemIcon>
-          <Home />
+          <Tooltip title="Home" placement="right">
+            <Home />
+          </Tooltip>
         </ListItemIcon>
         <ListItemText>Home</ListItemText>
       </ListItem>
@@ -43,31 +51,41 @@ const Navigation: React.FC = () => {
         key="Now Playing"
       >
         <ListItemIcon>
-          <PlaylistPlay />
+          <Tooltip title="Now Playing" placement="right">
+            <PlaylistPlay />
+          </Tooltip>
         </ListItemIcon>
         <ListItemText>Now Playing</ListItemText>
       </ListItem>
       <ListItem button={true} component={Link} to="/plugins" key="Plugins">
         <ListItemIcon>
-          <Extension />
+          <Tooltip title="Plugins" placement="right">
+            <Extension />
+          </Tooltip>
         </ListItemIcon>
         <ListItemText>Plugins</ListItemText>
       </ListItem>
       <ListItem button={true} component={Link} to="/settings" key="Settings">
         <ListItemIcon>
-          <SettingsApplications />
+          <Tooltip title="Settings" placement="right">
+            <SettingsApplications />
+          </Tooltip>
         </ListItemIcon>
         <ListItemText>Settings</ListItemText>
       </ListItem>
       <ListItem button={true} key="AddPlaylist" onClick={openDialog}>
         <ListItemIcon>
-          <PlaylistAdd />
+          <Tooltip title="Add Playlist" placement="right">
+            <PlaylistAdd />
+          </Tooltip>
         </ListItemIcon>
         <ListItemText>Add Playlist</ListItemText>
       </ListItem>
       <ListItem button={true} component={Link} to="/playlists" key="Playlists">
         <ListItemIcon>
-          <Menu />
+          <Tooltip title="Playlists" placement="right">
+            <Menu />
+          </Tooltip>
         </ListItemIcon>
         <ListItemText>Playlists</ListItemText>
       </ListItem>
