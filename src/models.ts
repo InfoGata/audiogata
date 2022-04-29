@@ -17,6 +17,11 @@ declare global {
     MediaGata: MediaGataExtension;
     cordovaFetch: typeof fetch;
   }
+  namespace NodeJS {
+    interface ProcessEnv {
+      GITLAB_ACCESS_TOKEN: string;
+    }
+  }
 }
 
 export interface ISong {
