@@ -26,7 +26,7 @@ const closedMixin = (theme: Theme): CSSObject => ({
   },
 });
 
-const Drawer = styled(MuiDrawer, {
+const MiniDrawer = styled(MuiDrawer, {
   shouldForwardProp: (prop) => prop !== "open",
 })(({ theme, open }) => ({
   width: navbarWidth,
@@ -55,12 +55,40 @@ const DrawerHeader = styled("div")(({ theme }) => ({
 const SideBar: React.FC = () => {
   const navbarOpen = useAppSelector((state) => state.ui.navbarOpen);
 
-  return (
-    <Drawer variant="permanent" open={navbarOpen} anchor="left">
+  const drawer = (
+    <>
       <DrawerHeader />
       <Navigation />
       <DrawerHeader />
-    </Drawer>
+    </>
+  );
+
+  return (
+    <>
+      <MiniDrawer
+        variant="permanent"
+        open={navbarOpen}
+        anchor="left"
+        sx={{
+          display: { xs: "none", sm: "block" },
+        }}
+      >
+        {drawer}
+      </MiniDrawer>
+      <MuiDrawer
+        variant="temporary"
+        open={navbarOpen}
+        anchor="left"
+        sx={{
+          display: { xs: "block", sm: "none" },
+        }}
+        ModalProps={{
+          keepMounted: true, // Better open performance on mobile.
+        }}
+      >
+        {drawer}
+      </MuiDrawer>
+    </>
   );
 };
 
