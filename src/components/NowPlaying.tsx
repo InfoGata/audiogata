@@ -23,8 +23,9 @@ import {
   SelectChangeEvent,
   Button,
   useTheme,
+  Tooltip,
 } from "@mui/material";
-import { Delete, Info, PlaylistAdd } from "@mui/icons-material";
+import { Delete, Info, MoreHoriz, PlaylistAdd } from "@mui/icons-material";
 import {
   clearTracks,
   deleteTrack,
@@ -52,6 +53,8 @@ const PlayQueue: React.FC = () => {
   const [hasBlob, setHasBlob] = React.useState(false);
   const [selected, setSelected] = React.useState<Set<string>>(new Set());
   const [from, setFrom] = React.useState<string>("");
+  const [queueMenuAnchorEl, setQueueMenuAnchorEl] =
+    React.useState<null | HTMLElement>(null);
   const { plugins } = usePlugins();
   const dragDisabled = false;
   const theme = useTheme();
@@ -81,7 +84,13 @@ const PlayQueue: React.FC = () => {
       setHasBlob(primaryCount > 0);
     }
   };
+  const openQueueMenu = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setQueueMenuAnchorEl(event.currentTarget);
+  };
+
   const closeMenu = () => setAnchorEl(null);
+  const closeQueueMenu = () => setQueueMenuAnchorEl(null);
+
   const songList = useAppSelector((state) => state.song.songs);
   const deleteClick = async () => {
     if (menuSong.id) {
@@ -91,15 +100,23 @@ const PlayQueue: React.FC = () => {
     closeMenu();
   };
   const [playlistDialogOpen, setPlaylistDialogOpen] = React.useState(false);
+  const [queuePlaylistDialogOpen, setQueuePlaylistDialogOpen] =
+    React.useState(false);
   const [editDialogOpen, setEditDialogOpen] = React.useState(false);
   const dispatch = useAppDispatch();
   const openPlaylistDialog = () => setPlaylistDialogOpen(true);
+  const openQueuePlaylistDialog = () => setQueuePlaylistDialogOpen(true);
   const closePlaylistDialog = () => setPlaylistDialogOpen(false);
+  const closeQueuePlaylistDialog = () => setQueuePlaylistDialogOpen(false);
   const openEditDialog = () => setEditDialogOpen(true);
   const closeEditDialog = () => setEditDialogOpen(false);
   const addToNewPlaylist = () => {
     openPlaylistDialog();
     closeMenu();
+  };
+  const addToNewPlaylistQueue = () => {
+    openQueuePlaylistDialog();
+    closeQueueMenu();
   };
   const playlists = useAppSelector((state) => state.playlist.playlists);
   const infoPath = `/track/${menuSong.id}`;
@@ -223,8 +240,13 @@ const PlayQueue: React.FC = () => {
       <Typography variant="h3" gutterBottom>
         Now Playing
       </Typography>
-      <IconButton aria-label="clear" onClick={clearQueue} size="large">
-        <Delete fontSize="large" />
+      <IconButton aria-label="clear" onClick={clearQueue}>
+        <Tooltip title="Clear All Tracks">
+          <Delete fontSize="large" />
+        </Tooltip>
+      </IconButton>
+      <IconButton aria-label="clear" onClick={openQueueMenu}>
+        <MoreHoriz fontSize="large" />
       </IconButton>
       <FormControl fullWidth>
         <InputLabel id="select-from">From</InputLabel>
@@ -294,6 +316,32 @@ const PlayQueue: React.FC = () => {
           </Table>
         </TableContainer>
       </Sortable>
+      <Menu
+        open={Boolean(queueMenuAnchorEl)}
+        onClose={closeQueueMenu}
+        anchorEl={queueMenuAnchorEl}
+      >
+        <MenuItem onClick={clearQueue}>
+          <ListItemIcon>
+            <Delete />
+          </ListItemIcon>
+          <ListItemText primary="Clear All Tracks" />
+        </MenuItem>
+        <MenuItem onClick={addToNewPlaylistQueue}>
+          <ListItemIcon>
+            <PlaylistAdd />
+          </ListItemIcon>
+          <ListItemText primary="Add To New Playlist" />
+        </MenuItem>
+        {playlists.map((p) => (
+          <PlaylistMenuItem
+            key={p.id}
+            playlist={p}
+            songs={songList}
+            closeMenu={closeQueueMenu}
+          />
+        ))}
+      </Menu>
       <Menu open={Boolean(anchorEl)} onClose={closeMenu} anchorEl={anchorEl}>
         <MenuItem onClick={deleteClick}>
           <ListItemIcon>
@@ -329,6 +377,11 @@ const PlayQueue: React.FC = () => {
         open={playlistDialogOpen}
         handleClose={closePlaylistDialog}
       />
+      <AddPlaylistDialog
+        songs={songList}
+        open={queuePlaylistDialogOpen}
+        handleClose={closeQueuePlaylistDialog}
+      />
       <SelectionEditDialog
         open={editDialogOpen}
         trackIdSet={selected}
@@ -337,4 +390,5 @@ const PlayQueue: React.FC = () => {
     </>
   );
 };
+
 export default React.memo(PlayQueue);
