@@ -8,6 +8,7 @@ import {
   ListItemIcon,
   IconButton,
   Typography,
+  Grid,
 } from "@mui/material";
 import React from "react";
 import { IPlaylist } from "../models";
@@ -15,6 +16,8 @@ import { Link } from "react-router-dom";
 import { Delete, MoreHoriz } from "@mui/icons-material";
 import { deletePlaylist } from "../store/reducers/playlistReducer";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
+import { PluginFrameContainer, usePlugins } from "../PluginsContext";
+import { filterAsync } from "../utils";
 
 interface IPlaylistsItemProps {
   playlist: IPlaylist;
@@ -43,11 +46,25 @@ const PlaylistsItem: React.FC<IPlaylistsItemProps> = (props) => {
 };
 
 const Playlists: React.FC = () => {
+  const { plugins } = usePlugins();
+  const [playlistPlugins, setPlaylistPlugins] = React.useState<
+    PluginFrameContainer[]
+  >([]);
   const playlists = useAppSelector((state) => state.playlist.playlists);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [menuPlaylist, setMenuPlaylist] = React.useState<IPlaylist>(
     {} as IPlaylist
   );
+
+  React.useEffect(() => {
+    const setPlugins = async () => {
+      const filteredPlugins = await filterAsync(plugins, (p) =>
+        p.hasDefined.getUserPlaylists()
+      );
+      setPlaylistPlugins(filteredPlugins);
+    };
+    setPlugins();
+  }, [plugins]);
   const closeMenu = () => setAnchorEl(null);
   const dispatch = useAppDispatch();
   const openMenu = (
@@ -61,11 +78,16 @@ const Playlists: React.FC = () => {
     dispatch(deletePlaylist(menuPlaylist));
     closeMenu();
   };
+
+  const pluginPlaylists = playlistPlugins.map((p) => (
+    <Link to={`/plugin/${p.id}/playlists`}>{p.name}</Link>
+  ));
   return (
     <>
       <Typography variant="h5" gutterBottom>
         Playlists
       </Typography>
+      <Grid>{pluginPlaylists}</Grid>
       <List>
         {playlists.map((p) => (
           <PlaylistsItem key={p.id} playlist={p} openMenu={openMenu} />

@@ -42,6 +42,7 @@ interface PluginInterface extends IPlayerComponent {
   resume: () => Promise<void>;
   seek: (time: number) => Promise<void>;
   setPlaybackRate: (rate: number) => Promise<void>;
+  getUserPlaylists: () => Promise<IPlaylist[]>;
 }
 
 interface ApplicationPluginInterface extends PluginFrameInterface {

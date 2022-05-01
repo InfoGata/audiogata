@@ -10,6 +10,8 @@ import Settings from "./Settings";
 import QueueTrackInfo from "./QueueTrackInfo";
 import { styled } from "@mui/material/styles";
 import { Box } from "@mui/material";
+import PluginPlaylists from "./PluginPlaylists";
+import PluginPlaylist from "./PluginPlaylist";
 
 const DrawerHeader = styled("div")(({ theme }) => ({
   display: "flex",
@@ -32,6 +34,11 @@ const Routing: React.FC = () => {
         <Route path="/playlists/:id" element={<Playlist />} />
         <Route path="/settings" element={<Settings />} />
         <Route path="/search" element={<Search />} />
+        <Route path="/plugins/:id/playlists" element={<PluginPlaylists />} />
+        <Route
+          path="/plugins/:pluginid/playlists/:id"
+          element={<PluginPlaylist />}
+        />
         <Route path="/track/:id" element={<QueueTrackInfo />} />
       </Routes>
       <DrawerHeader />

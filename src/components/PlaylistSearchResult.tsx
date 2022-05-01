@@ -37,7 +37,9 @@ const PlaylistSearchResult: React.FC<IPlaylistResultProps> = (props) => {
       </ListItemAvatar>
       <ListItemText
         primary={
-          <Typography dangerouslySetInnerHTML={{ __html: playlist.name }} />
+          <Typography
+            dangerouslySetInnerHTML={{ __html: playlist?.name || "" }}
+          />
         }
       />
     </ListItem>

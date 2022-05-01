@@ -56,7 +56,7 @@ export interface IArtist {
 
 export interface IPlaylist {
   id?: string;
-  name: string;
+  name?: string;
   songs: ISong[];
   apiId?: string;
   images?: IImage[];
