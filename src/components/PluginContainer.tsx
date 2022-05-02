@@ -132,7 +132,9 @@ const PluginContainer: React.FC<PluginContainerProps> = (props) => {
   );
   return (
     <Grid key={plugin.id}>
-      <Typography>{plugin.name}</Typography>
+      <Typography>
+        {plugin.name} {plugin.version}
+      </Typography>
       {plugin.hasOptions && !optionsOpen && (
         <Button onClick={onOpenOptions}>Open Options</Button>
       )}

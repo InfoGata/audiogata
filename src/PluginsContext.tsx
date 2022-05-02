@@ -74,6 +74,7 @@ export class PluginFrameContainer extends PluginFrame<PluginInterface> {
   hasOptions = false;
   fileList?: FileList;
   optionsSameOrigin?: boolean;
+  version?: string;
 }
 
 export interface PluginContextInterface {
@@ -216,6 +217,7 @@ export const PluginsProvider: React.FC = (props) => {
     host.id = plugin.id;
     host.optionsSameOrigin = plugin.optionsSameOrigin;
     host.name = plugin.name;
+    host.version = plugin.version;
     host.hasOptions = !!plugin.optionsHtml;
     host.fileList = pluginFiles;
     host.ready().then(async () => {

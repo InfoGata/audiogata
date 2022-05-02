@@ -11,6 +11,8 @@ import { nanoid } from "@reduxjs/toolkit";
 import { FileType } from "../models";
 import { usePlugins } from "../PluginsContext";
 import { getPlugin } from "../utils";
+import { useNavigate } from "react-router";
+import { useSnackbar } from "notistack";
 
 interface PluginDescription {
   name: string;
@@ -52,11 +54,18 @@ const pluginDescriptions: PluginDescription[] = [
 ];
 
 const Home: React.FC = () => {
+  const { enqueueSnackbar } = useSnackbar();
   const { addPlugin } = usePlugins();
+  const navigate = useNavigate();
+
   const onAddPlugin = async (description: PluginDescription) => {
     const headers = new Headers();
-    if (process.env.GITLAB_ACCESS_TOKEN) {
-      headers.append("PRIVATE-TOKEN", process.env.GITLAB_ACCESS_TOKEN);
+    console.log(process.env);
+    if (process.env.REACT_APP_GITLAB_ACCESS_TOKEN) {
+      headers.append(
+        "PRIVATE-TOKEN",
+        process.env.REACT_APP_GITLAB_ACCESS_TOKEN
+      );
     }
     const fileType: FileType = {
       url: {
@@ -70,6 +79,8 @@ const Home: React.FC = () => {
     if (plugin) {
       plugin.id = nanoid();
       await addPlugin(plugin);
+      enqueueSnackbar(`Successfully added plugin: ${plugin.name}`);
+      navigate("/plugins");
     }
   };
 

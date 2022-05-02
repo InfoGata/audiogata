@@ -111,6 +111,7 @@ export async function getPlugin(
     name: manifest.name,
     script,
     description: manifest.description,
+    version: manifest.version,
   };
 
   if (manifest.options) {

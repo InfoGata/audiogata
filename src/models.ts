@@ -19,7 +19,7 @@ declare global {
   }
   namespace NodeJS {
     interface ProcessEnv {
-      GITLAB_ACCESS_TOKEN: string;
+      REACT_APP_GITLAB_ACCESS_TOKEN: string;
     }
   }
 }
@@ -78,6 +78,7 @@ export interface PluginInfo {
   id?: string;
   name: string;
   script: string;
+  version?: string;
   description?: string;
   optionsHtml?: string;
   optionsSameOrigin?: boolean;
@@ -100,6 +101,7 @@ export interface FileType {
 export interface Manifest {
   name: string;
   script: string;
+  version?: string;
   description?: string;
   options?: string | ManifestOptions;
 }
