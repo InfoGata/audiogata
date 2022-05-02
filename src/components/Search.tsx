@@ -9,6 +9,8 @@ import {
   MenuItem,
   ListItemIcon,
   ListItemText,
+  Backdrop,
+  CircularProgress,
 } from "@mui/material";
 import React, { useEffect } from "react";
 import { useLocation } from "react-router";
@@ -63,6 +65,7 @@ const Search: React.FC = () => {
     setSearchType(e.currentTarget.value);
   };
   const dispatch = useAppDispatch();
+  const [backdropOpen, setBackdropOpen] = React.useState(false);
   const { plugins } = usePlugins();
 
   const onClearSearch = () => {
@@ -88,6 +91,7 @@ const Search: React.FC = () => {
 
   useEffect(() => {
     const onSearch = async (search: string) => {
+      setBackdropOpen(true);
       let tracks: ISong[] | undefined = [];
       let albums: IAlbum[] | undefined = [];
       let artists: IArtist[] | undefined = [];
@@ -105,6 +109,7 @@ const Search: React.FC = () => {
       setArtistResults(artists || []);
       setTrackResults(tracks || []);
       setPlaylistResults(playlists || []);
+      setBackdropOpen(false);
     };
     const params = new URLSearchParams(location.search);
     const query = params.get("q");
@@ -162,6 +167,9 @@ const Search: React.FC = () => {
   ));
   return (
     <>
+      <Backdrop open={backdropOpen}>
+        <CircularProgress color="inherit" />
+      </Backdrop>
       <select value={searchType} onChange={onSearchTypeChange}>
         {optionsComponents}
       </select>
