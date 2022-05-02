@@ -1,20 +1,24 @@
 import React from "react";
-import { Button, Grid, styled, TextField, Typography } from "@mui/material";
+import { Button, Grid, styled, TextField } from "@mui/material";
 import { nanoid } from "@reduxjs/toolkit";
-import { FileType } from "../models";
+import { FileType, PluginInfo } from "../models";
 import { usePlugins } from "../PluginsContext";
 import PluginContainer from "./PluginContainer";
 import { directoryProps, getPlugin } from "../utils";
+import ConfirmPluginDialog from "./ConfirmPluginDialog";
 
 const FileInput = styled("input")({
   display: "none",
 });
 
 const Plugins: React.FC = () => {
-  const { plugins, addPlugin, deletePlugin } = usePlugins();
+  const { plugins, deletePlugin } = usePlugins();
   const [pluginUrl, setPluginUrl] = React.useState("");
   const [headerKey, setHeaderKey] = React.useState("");
   const [headerValue, setHeaderValue] = React.useState("");
+  const [pendingPlugin, setPendingPlugin] = React.useState<PluginInfo | null>(
+    null
+  );
 
   const onFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
@@ -27,7 +31,7 @@ const Plugins: React.FC = () => {
 
     if (plugin) {
       plugin.id = nanoid();
-      await addPlugin(plugin);
+      setPendingPlugin(plugin);
     }
   };
 
@@ -39,6 +43,10 @@ const Plugins: React.FC = () => {
   };
   const onChangeHeaderValue = (event: React.ChangeEvent<HTMLInputElement>) => {
     setHeaderValue(event.target.value);
+  };
+
+  const onConfirmPluginClose = () => {
+    setPendingPlugin(null);
   };
 
   const onLoadUrl = async () => {
@@ -62,7 +70,7 @@ const Plugins: React.FC = () => {
 
     if (plugin) {
       plugin.id = nanoid();
-      await addPlugin(plugin);
+      setPendingPlugin(plugin);
     }
   };
 
@@ -110,8 +118,12 @@ const Plugins: React.FC = () => {
         />
         <Button onClick={onLoadUrl}>Load Url</Button>
       </Grid>
-      <Typography></Typography>
       <Grid>{pluginComponents}</Grid>
+      <ConfirmPluginDialog
+        open={Boolean(pendingPlugin)}
+        plugins={pendingPlugin ? [pendingPlugin] : []}
+        handleClose={onConfirmPluginClose}
+      />
     </Grid>
   );
 };

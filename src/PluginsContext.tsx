@@ -19,6 +19,7 @@ import { useSnackbar } from "notistack";
 import { IPlayerComponent } from "./plugins/IPlayerComponent";
 import { isElectron } from "./utils";
 import { Capacitor } from "@capacitor/core";
+import ConfirmPluginDialog from "./components/ConfirmPluginDialog";
 
 interface PluginInterface extends IPlayerComponent {
   searchAll: (query: string) => Promise<{
@@ -58,6 +59,8 @@ interface ApplicationPluginInterface extends PluginFrameInterface {
   setNowPlayingTracks: (tracks: ISong[]) => Promise<void>;
   createNotification: (notification: NotificationMessage) => Promise<void>;
   getCorsProxy: () => Promise<string>;
+  installPlugins: (plugins: PluginInfo[]) => void;
+  getPlugins: () => Promise<PluginInfo[]>;
 }
 
 interface PluginMessage {
@@ -123,6 +126,9 @@ export const PluginsProvider: React.FC = (props) => {
   const currentSong = useAppSelector((state) => state.song.currentSong);
   const tracks = useAppSelector((state) => state.song.songs);
   const { enqueueSnackbar } = useSnackbar();
+  const [pendingPlugins, setPendingPlugins] = React.useState<
+    PluginInfo[] | null
+  >(null);
 
   const loadPlugin = (plugin: PluginInfo, pluginFiles?: FileList) => {
     const api: ApplicationPluginInterface = {
@@ -188,6 +194,13 @@ export const PluginsProvider: React.FC = (props) => {
       },
       getCorsProxy: async () => {
         return "http://localhost:8085";
+      },
+      getPlugins: async () => {
+        const plugs = await db.plugins.toArray();
+        return plugs;
+      },
+      installPlugins: async (plugins: PluginInfo[]) => {
+        setPendingPlugins(plugins);
       },
     };
 
@@ -256,9 +269,18 @@ export const PluginsProvider: React.FC = (props) => {
     plugins: pluginFrames,
     pluginMessage: pluginMessage,
   };
+
+  const handleClose = () => {
+    setPendingPlugins(null);
+  };
   return (
     <PluginsContext.Provider value={defaultContext}>
       {props.children}
+      <ConfirmPluginDialog
+        open={Boolean(pendingPlugins)}
+        plugins={pendingPlugins || []}
+        handleClose={handleClose}
+      />
     </PluginsContext.Provider>
   );
 };
