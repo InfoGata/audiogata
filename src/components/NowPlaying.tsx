@@ -249,14 +249,14 @@ const PlayQueue: React.FC = () => {
         <MoreHoriz fontSize="large" />
       </IconButton>
       <FormControl fullWidth>
-        <InputLabel id="select-from">From</InputLabel>
+        <InputLabel id="select-from">Select Plugin</InputLabel>
         <Select
           id="select-form"
           value={from}
-          label="From"
+          label="Select Plugin"
           onChange={onSelectFromChange}
         >
-          <MenuItem value={""}>All</MenuItem>
+          <MenuItem value={""}>None</MenuItem>
           {optionsComponents}
         </Select>
       </FormControl>
