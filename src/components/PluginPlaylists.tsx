@@ -3,6 +3,15 @@ import { usePlugins } from "../PluginsContext";
 import { useParams } from "react-router";
 import { Link } from "react-router-dom";
 import { IPlaylist } from "../models";
+import {
+  Card,
+  CardActionArea,
+  CardContent,
+  CardMedia,
+  Grid,
+  Typography,
+} from "@mui/material";
+import { getThumbnailImage, playlistThumbnailSize } from "../utils";
 
 const PluginPlaylists: React.FC = () => {
   const { plugins } = usePlugins();
@@ -20,10 +29,34 @@ const PluginPlaylists: React.FC = () => {
     getPlaylists();
   }, [plugin]);
 
-  const playlistLinks = playlists.map((m) => (
-    <Link to={`/plugins/${id}/playlists/${m.apiId}`}>{m.name}</Link>
+  const playlistLinks = playlists.map((p, i) => (
+    <Grid item xs={2} key={i}>
+      <Card>
+        <CardActionArea
+          component={Link}
+          to={`/plugins/${id}/playlists/${p.apiId}`}
+        >
+          <CardMedia
+            component={"img"}
+            image={getThumbnailImage(p.images, playlistThumbnailSize)}
+            alt={p.name}
+          />
+          <CardContent>
+            <Typography gutterBottom variant="h6" component="div">
+              {p.name}
+            </Typography>
+          </CardContent>
+        </CardActionArea>
+      </Card>
+    </Grid>
   ));
-  return plugin ? <div>{playlistLinks}</div> : <>Not Found</>;
+  return plugin ? (
+    <Grid container spacing={2}>
+      {playlistLinks}
+    </Grid>
+  ) : (
+    <>Not Found</>
+  );
 };
 
 export default PluginPlaylists;

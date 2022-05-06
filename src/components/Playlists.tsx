@@ -9,6 +9,7 @@ import {
   IconButton,
   Typography,
   Grid,
+  Button,
 } from "@mui/material";
 import React from "react";
 import { IPlaylist } from "../models";
@@ -58,8 +59,11 @@ const Playlists: React.FC = () => {
 
   React.useEffect(() => {
     const setPlugins = async () => {
-      const filteredPlugins = await filterAsync(plugins, (p) =>
-        p.hasDefined.getUserPlaylists()
+      const filteredPlugins = await filterAsync(
+        plugins,
+        async (p) =>
+          (await p.hasDefined.getUserPlaylists()) &&
+          (await p.hasDefined.getPlaylistTracks())
       );
       setPlaylistPlugins(filteredPlugins);
     };
@@ -80,7 +84,9 @@ const Playlists: React.FC = () => {
   };
 
   const pluginPlaylists = playlistPlugins.map((p) => (
-    <Link to={`/plugin/${p.id}/playlists`}>{p.name}</Link>
+    <Button component={Link} to={`/plugins/${p.id}/playlists`} key={p.id}>
+      {p.name}
+    </Button>
   ));
   return (
     <>

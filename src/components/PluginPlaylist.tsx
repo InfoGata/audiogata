@@ -1,17 +1,33 @@
-import { List, ListItem, ListItemText, Typography } from "@mui/material";
+import { PlayCircle } from "@mui/icons-material";
+import {
+  IconButton,
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  useMediaQuery,
+  useTheme,
+} from "@mui/material";
 import React from "react";
 import { useParams } from "react-router";
 import { ISong } from "../models";
 import { usePlugins } from "../PluginsContext";
-import { useAppSelector } from "../store/hooks";
+import { useAppDispatch } from "../store/hooks";
+import PlaylistItem from "./PlaylistItem";
+import { setTracks } from "../store/reducers/songReducer";
 
 const PluginPlaylist: React.FC = () => {
   const { pluginid } = useParams<"pluginid">();
   const { id } = useParams<"id">();
   const { plugins } = usePlugins();
   const plugin = plugins.find((p) => p.id === pluginid);
-  const [tracks, setTracks] = React.useState<ISong[]>([]);
-  const currentSong = useAppSelector((state) => state.song.currentSong);
+  const [playlistTracks, setPlaylistTracks] = React.useState<ISong[]>([]);
+  const theme = useTheme();
+  const showTrackLength = useMediaQuery(theme.breakpoints.up("sm"));
+  const dispatch = useAppDispatch();
 
   React.useEffect(() => {
     const getPlaylistTracks = async () => {
@@ -20,27 +36,48 @@ const PluginPlaylist: React.FC = () => {
           apiId: id,
           songs: [],
         });
-        setTracks(t);
+        setPlaylistTracks(t);
       }
     };
 
     getPlaylistTracks();
   }, [plugin, id]);
-  const trackItems = tracks.map((track) => (
-    <ListItem>
-      <ListItemText>
-        <Typography
-          color={
-            currentSong?.apiId === track.apiId ? "primary.main" : undefined
-          }
-          noWrap={true}
-          dangerouslySetInnerHTML={{ __html: track.name }}
-        ></Typography>
-      </ListItemText>
-    </ListItem>
-  ));
 
-  return <List>{trackItems}</List>;
+  const onPlayClick = () => {
+    const tracksWithIds = playlistTracks.map((t) => ({ ...t, id: t.apiId }));
+    dispatch(setTracks(tracksWithIds));
+  };
+
+  return (
+    <>
+      <IconButton size="large" onClick={onPlayClick}>
+        <PlayCircle color="success" sx={{ fontSize: 45 }} />
+      </IconButton>
+      <TableContainer component={Paper}>
+        <Table size="small">
+          <TableHead>
+            <TableRow>
+              <TableCell></TableCell>
+              <TableCell>Title</TableCell>
+              {showTrackLength && <TableCell>Track Length</TableCell>}
+              <TableCell></TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {playlistTracks.map((track, index) => (
+              <TableRow hover={true}>
+                <PlaylistItem
+                  key={index}
+                  song={track}
+                  showTrackLength={showTrackLength}
+                />
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+    </>
+  );
 };
 
 export default PluginPlaylist;

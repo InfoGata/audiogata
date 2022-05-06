@@ -6,7 +6,7 @@ import { formatSeconds } from "../utils";
 
 interface IProps {
   song: ISong;
-  playlist: IPlaylist;
+  playlist?: IPlaylist;
   showTrackLength: boolean;
 }
 

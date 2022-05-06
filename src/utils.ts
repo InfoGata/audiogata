@@ -154,3 +154,5 @@ export const isElectron = (): boolean => {
 export const navbarWidth = 200;
 
 export const searchThumbnailSize = 40;
+
+export const playlistThumbnailSize = 200;
