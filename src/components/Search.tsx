@@ -55,7 +55,7 @@ const Search: React.FC = () => {
   const [albumResults, setAlbumResults] = React.useState<IAlbum[]>([]);
   const [artistResults, setArtistResults] = React.useState<IArtist[]>([]);
   const [playlistResults, setPlaylistResults] = React.useState<IPlaylist[]>([]);
-  const [tabValue, setTabValue] = React.useState("tracks");
+  const [tabValue, setTabValue] = React.useState<string | boolean>(false);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [menuSong, setMenuSong] = React.useState<ISong>({} as ISong);
   const [options, setOptions] = React.useState<[string, string][]>();
@@ -110,6 +110,7 @@ const Search: React.FC = () => {
       setTrackResults(tracks || []);
       setPlaylistResults(playlists || []);
       setBackdropOpen(false);
+      setTabValue("tracks");
     };
     const params = new URLSearchParams(location.search);
     const query = params.get("q");
