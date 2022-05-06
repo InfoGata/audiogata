@@ -58,7 +58,7 @@ const ConfirmPluginDialog: React.FC<ConfirmPluginDialogProps> = (props) => {
         />
       )}
       <ListItemText
-        primary={`${p.name} ${p.version}`}
+        primary={`${p.name} ${p.version || ""}`}
         secondary={p.description}
       />
     </ListItem>
