@@ -88,12 +88,8 @@ const Home: React.FC = () => {
     <Grid item xs={4} key={i}>
       <Card>
         <CardContent>
-          <Typography variant="h6" component="div">
-            {p.name}
-          </Typography>
-          <Typography sx={{ mb: 1.5 }} color="text.secondary">
-            {p.description}
-          </Typography>
+          <Typography>{p.name}</Typography>
+          <Typography color="text.secondary">{p.description}</Typography>
         </CardContent>
         <CardActions>
           <Button size="small" onClick={() => onAddPlugin(p)}>
