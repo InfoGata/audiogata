@@ -3,7 +3,8 @@ import React from "react";
 import { navbarWidth } from "../utils";
 import Navigation from "./Navigation";
 import { CSSObject, styled, Theme } from "@mui/material/styles";
-import { useAppSelector } from "../store/hooks";
+import { useAppDispatch, useAppSelector } from "../store/hooks";
+import { toggleNavbar } from "../store/reducers/uiReducer";
 
 const openedMixin = (theme: Theme): CSSObject => ({
   width: navbarWidth,
@@ -54,6 +55,11 @@ const DrawerHeader = styled("div")(({ theme }) => ({
 
 const SideBar: React.FC = () => {
   const navbarOpen = useAppSelector((state) => state.ui.navbarOpen);
+  const dispatch = useAppDispatch();
+
+  const onNavbarClose = () => {
+    dispatch(toggleNavbar());
+  };
 
   const drawer = (
     <>
@@ -79,6 +85,7 @@ const SideBar: React.FC = () => {
         variant="temporary"
         open={navbarOpen}
         anchor="left"
+        onClose={onNavbarClose}
         sx={{
           display: { xs: "block", sm: "none" },
         }}
