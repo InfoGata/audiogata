@@ -1060,6 +1060,11 @@
   "resolved" "https://registry.npmjs.org/@capacitor/android/-/android-3.5.0.tgz"
   "version" "3.5.0"
 
+"@capacitor/app@^1.1.1":
+  "integrity" "sha512-8ADkldHnoE1xkWvPUsGlERVGm6/Zvcxy6hCI80AxydIKyaCG7kbDAvUclebbnw/eFRxj2zBoVatGLjmJNvTbYw=="
+  "resolved" "https://registry.npmjs.org/@capacitor/app/-/app-1.1.1.tgz"
+  "version" "1.1.1"
+
 "@capacitor/cli@^3.5.0":
   "integrity" "sha512-URRAfCbrXufaxRCsDR68m0H3PPndyd4UyfhF4Y+DM5GI1i+0a1SlDYx2s/Ik0ttUFuKc+StwtlmR9Bt5sYNPtQ=="
   "resolved" "https://registry.npmjs.org/@capacitor/cli/-/cli-3.5.0.tgz"
@@ -1082,7 +1087,7 @@
     "tslib" "^2.1.0"
     "xml2js" "^0.4.23"
 
-"@capacitor/core@^3.5.0":
+"@capacitor/core@^3.0.0", "@capacitor/core@^3.5.0":
   "integrity" "sha512-+CFSG+CztpFIir9gGqNEtAYuf6OWryQ8dojXoeozAkoz3mKvyFfcEfvLVPo/pw/B4zHIlNnJLHne6vbjAFbDKQ=="
   "resolved" "https://registry.npmjs.org/@capacitor/core/-/core-3.5.0.tgz"
   "version" "3.5.0"

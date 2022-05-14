@@ -6,6 +6,7 @@
   "main": "build/electron/main.js",
   "dependencies": {
     "@capacitor/android": "3.5.0",
+    "@capacitor/app": "^1.1.1",
     "@capacitor/core": "^3.5.0",
     "@dnd-kit/core": "^5.0.1",
     "@dnd-kit/sortable": "^6.0.0",

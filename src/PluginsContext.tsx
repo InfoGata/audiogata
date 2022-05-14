@@ -20,6 +20,7 @@ import { IPlayerComponent } from "./plugins/IPlayerComponent";
 import { isElectron } from "./utils";
 import { Capacitor } from "@capacitor/core";
 import ConfirmPluginDialog from "./components/ConfirmPluginDialog";
+import { App, URLOpenListenerEvent } from "@capacitor/app";
 
 interface PluginInterface extends IPlayerComponent {
   searchAll: (query: string) => Promise<{
@@ -34,6 +35,7 @@ interface PluginInterface extends IPlayerComponent {
   onNowPlayingTracksSet: (track: ISong[]) => Promise<void>;
   getTrackUrl: (track: ISong) => Promise<string>;
   onUiMessage: (message: any) => Promise<void>;
+  onDeepLinkMessage: (message: any) => Promise<void>;
   getAlbumTracks: (album: IAlbum) => Promise<ISong[]>;
   getPlaylistTracks: (playlist: IPlaylist) => Promise<ISong[]>;
   getArtistAlbums: (artist: IArtist) => Promise<IAlbum[]>;
@@ -233,11 +235,29 @@ export const PluginsProvider: React.FC = (props) => {
       setPluginFrames(frames);
     };
     getPlugins();
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   React.useEffect(() => {
+    App.addListener("appUrlOpen", async (event: URLOpenListenerEvent) => {
+      if (event.url.startsWith("com.audiogata.app://message")) {
+        const url = new URL(event.url);
+        const pluginId = url.searchParams.get("pluginId");
+        const plugin = pluginFrames.find((p) => p.id === pluginId);
+        if (plugin) {
+          const message = url.searchParams.get("message");
+          if (await plugin.hasDefined.onDeepLinkMessage()) {
+            await plugin.remote.onDeepLinkMessage(message);
+          }
+        }
+      }
+    });
     globalPluginFrames = pluginFrames;
+
+    return () => {
+      App.removeAllListeners();
+    };
   }, [pluginFrames]);
 
   const addPlugin = async (plugin: PluginInfo) => {

@@ -12,7 +12,37 @@
 
     <h1>Authenticating...</h1>
 
+    <button id="continue-btn">Continue</button>
+
     <script>
+        document.getElementById("continue-btn").addEventListener("click", () => {
+            // close and send back to mobile app
+            let message = "http://yourdomain.com/somepath#code=test&state=";
+            const state = { pluginId: "test" };
+            const stateStr = JSON.stringify(state);
+            message += encodeURIComponent(stateStr);
+            let deepLink = new URL("com.audiogata.app://message");
+            try {
+                const url = new URL(message);
+                let stateInfoStr = url.searchParams.get("state");
+                if (!stateInfoStr) {
+                    // Some providers put info in hash instead of params
+                    if (url.hash) {
+                        url.search = url.hash.substring(1);
+                        stateInfoStr = url.searchParams.get("state");
+                    }
+                }
+                const stateInfo = JSON.parse(stateInfoStr);
+                if (stateInfo.pluginId) {
+                    deepLink.searchParams.append("pluginId", stateInfo.pluginId);
+                    deepLink.searchParams.append("message", message);
+                }
+            } catch(e) {
+                console.log(e);
+            }finally {
+                document.location = deepLink;
+            }
+        });
         if (window.opener) {
             const data = {
                 url: window.location.href,

@@ -109,13 +109,18 @@ const PluginContainer: React.FC<PluginContainerProps> = (props) => {
   if (process.env.NODE_ENV === "production" || Capacitor.isNativePlatform()) {
     srcUrl = `https://${plugin.id}.audiogata.com/ui.html`;
   }
+  let sandbox = "allow-scripts allow-popups allow-popups-to-escape-sandbox";
+  if (plugin.optionsSameOrigin) sandbox = sandbox.concat(" allow-same-origin");
+  // window.open needs allow-top-navigation-by-user-activiation
+  if (Capacitor.isNativePlatform())
+    sandbox = sandbox.concat(" allow-top-navigation-by-user-activation");
 
   const pluginIframe = plugin.optionsSameOrigin ? (
     <iframe
       ref={ref}
       name={plugin.id}
       title={plugin.name}
-      sandbox="allow-scripts allow-popups allow-popups-to-escape-sandbox allow-same-origin"
+      sandbox={sandbox}
       src={srcUrl}
       onLoad={iframeOnload}
       style={{ backgroundColor: "white" }}
@@ -125,7 +130,7 @@ const PluginContainer: React.FC<PluginContainerProps> = (props) => {
       ref={ref}
       name={plugin.id}
       title={plugin.name}
-      sandbox="allow-scripts allow-popups allow-popups-to-escape-sandbox"
+      sandbox={sandbox}
       srcDoc={optionsHtml}
       style={{ backgroundColor: "white" }}
     />
