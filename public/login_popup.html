@@ -28,7 +28,7 @@
                         stateStr = url.searchParams.get("state");
                     }
                 }
-                const state = JSON.parse(stateInfoStr);
+                const state = JSON.parse(stateStr);
                 if (state.pluginId) {
                     deepLink.searchParams.append("pluginId", state.pluginId);
                     deepLink.searchParams.append("message", href);
