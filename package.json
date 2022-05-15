@@ -65,7 +65,7 @@
     "electron:dev": "concurrently \"cross-env BROWSER=none npm start\" \"wait-on http://localhost:3000 && tsc -p electron -w\" \"wait-on http://localhost:3000 && tsc -p electron && electron .\"",
     "electron:build": "npm run build && tsc -p electron && electron-builder",
     "cap:build": "npm run build && cap sync",
-    "android": "cap run android"
+    "android": "npm run build && cap run android"
   },
   "build": {
     "extends": null,
