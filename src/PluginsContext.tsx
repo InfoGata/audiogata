@@ -61,8 +61,9 @@ interface ApplicationPluginInterface extends PluginFrameInterface {
   setNowPlayingTracks: (tracks: ISong[]) => Promise<void>;
   createNotification: (notification: NotificationMessage) => Promise<void>;
   getCorsProxy: () => Promise<string>;
-  installPlugins: (plugins: PluginInfo[]) => void;
+  installPlugins: (plugins: PluginInfo[]) => Promise<void>;
   getPlugins: () => Promise<PluginInfo[]>;
+  getPluginId: () => Promise<string>;
 }
 
 interface PluginMessage {
@@ -205,6 +206,9 @@ export const PluginsProvider: React.FC = (props) => {
       installPlugins: async (plugins: PluginInfo[]) => {
         setPendingPlugins(plugins);
       },
+      getPluginId: async () => {
+        return plugin.id || "";
+      },
     };
 
     let srcUrl = `${window.location.protocol}//${plugin.id}.${window.location.host}/pluginframe.html`;
@@ -241,10 +245,14 @@ export const PluginsProvider: React.FC = (props) => {
 
   React.useEffect(() => {
     App.addListener("appUrlOpen", async (event: URLOpenListenerEvent) => {
+      console.log(event.url);
       if (event.url.startsWith("com.audiogata.app://message")) {
         const url = new URL(event.url);
         const pluginId = url.searchParams.get("pluginId");
+        console.log("pluginId:", pluginId);
+        console.log("plugins:", pluginFrames);
         const plugin = pluginFrames.find((p) => p.id === pluginId);
+        console.log("plugin:", plugin);
         if (plugin) {
           const message = url.searchParams.get("message");
           if (await plugin.hasDefined.onDeepLinkMessage()) {
@@ -254,10 +262,6 @@ export const PluginsProvider: React.FC = (props) => {
       }
     });
     globalPluginFrames = pluginFrames;
-
-    return () => {
-      App.removeAllListeners();
-    };
   }, [pluginFrames]);
 
   const addPlugin = async (plugin: PluginInfo) => {
