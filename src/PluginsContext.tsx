@@ -35,7 +35,7 @@ interface PluginInterface extends IPlayerComponent {
   onNowPlayingTracksSet: (track: ISong[]) => Promise<void>;
   getTrackUrl: (track: ISong) => Promise<string>;
   onUiMessage: (message: any) => Promise<void>;
-  onDeepLinkMessage: (message: any) => Promise<void>;
+  onDeepLinkMessage: (message: string) => Promise<void>;
   getAlbumTracks: (album: IAlbum) => Promise<ISong[]>;
   getPlaylistTracks: (playlist: IPlaylist) => Promise<ISong[]>;
   getArtistAlbums: (artist: IArtist) => Promise<IAlbum[]>;
