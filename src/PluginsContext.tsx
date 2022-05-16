@@ -256,7 +256,7 @@ export const PluginsProvider: React.FC = (props) => {
         if (plugin) {
           const message = url.searchParams.get("message");
           if (await plugin.hasDefined.onDeepLinkMessage()) {
-            await plugin.remote.onDeepLinkMessage(message);
+            await plugin.remote.onDeepLinkMessage(message || "");
           }
         }
       }
