@@ -37,11 +37,6 @@ const pluginDescriptions: PluginDescription[] = [
     url: "https://gitlab.com/api/v4/projects/35723151/repository/files/manifest.json/raw?ref=master",
   },
   {
-    name: "Plugin for Solid",
-    description: "Store and retrieve playlists with Solid",
-    url: "https://gitlab.com/api/v4/projects/35214259/repository/files/manifest.json/raw?ref=master",
-  },
-  {
     name: "Plugin for Google Drive",
     description: "Store and retrieve playlists from Google Drive",
     url: "https://gitlab.com/api/v4/projects/35748829/repository/files/manifest.json/raw?ref=master",
