@@ -58,7 +58,7 @@ const PlayQueue: React.FC = () => {
   const { plugins } = usePlugins();
   const dragDisabled = false;
   const theme = useTheme();
-  const showTrackLength = useMediaQuery(theme.breakpoints.up("sm"));
+  const showTrackLength = useMediaQuery(theme.breakpoints.up("md"));
   const lastChecked = React.useRef<number | null>(null);
   const openMenu = async (
     event: React.MouseEvent<HTMLButtonElement>,
@@ -270,11 +270,11 @@ const PlayQueue: React.FC = () => {
         onDragEnd={handleDragEnd}
       >
         <TableContainer component={Paper}>
-          <Table size="small">
+          <Table size="small" sx={{ tableLayout: "fixed" }}>
             <TableHead>
               <TableRow>
-                <TableCell></TableCell>
-                <TableCell>Title</TableCell>
+                <TableCell padding="none" width="5%"></TableCell>
+                <TableCell width="80%">Title</TableCell>
                 {showTrackLength && <TableCell>Track Length</TableCell>}
                 <TableCell></TableCell>
               </TableRow>

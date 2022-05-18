@@ -24,7 +24,7 @@ const DrawerHeader = styled("div")(({ theme }) => ({
 
 const Routing: React.FC = () => {
   return (
-    <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
+    <Box component="main" sx={{ flexGrow: 1, p: 1, overflow: "auto" }}>
       <DrawerHeader />
       <Routes>
         <Route path="/" element={<Home />} />

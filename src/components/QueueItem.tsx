@@ -62,12 +62,13 @@ const QueueItem: React.FC<QueueItemProps> = (props) => {
 
   return (
     <>
-      <TableCell>
+      <TableCell padding="none">
         <Checkbox
           color="primary"
           checked={isSelected(song.id || "")}
           onChange={onChange}
           onClick={stopPropagation}
+          size="small"
           inputProps={
             {
               "data-index": index,
@@ -80,12 +81,14 @@ const QueueItem: React.FC<QueueItemProps> = (props) => {
           color={currentSong?.id === song.id ? "primary.main" : undefined}
           noWrap={true}
           dangerouslySetInnerHTML={{ __html: song.name }}
+          sx={{ overflow: "hidden", textOverflow: "ellipsis" }}
         />
         <Typography
           variant="body2"
           color={currentSong?.id === song.id ? "primary.main" : undefined}
           noWrap={true}
           dangerouslySetInnerHTML={{ __html: song.artistName || "" }}
+          sx={{ overflow: "hidden", textOverflow: "ellipsis" }}
         />
         <LinearProgress
           variant="determinate"
@@ -94,7 +97,7 @@ const QueueItem: React.FC<QueueItemProps> = (props) => {
         />
       </TableCell>
       {showTrackLength && <TableCell>{formatSeconds(song.duration)}</TableCell>}
-      <TableCell>
+      <TableCell align="right">
         <IconButton aria-label="options" size="small" onClick={openSongMenu}>
           <MoreHoriz />
         </IconButton>
