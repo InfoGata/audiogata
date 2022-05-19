@@ -18,7 +18,7 @@ import { DragEndEvent, DragOverlay, DragStartEvent } from "@dnd-kit/core";
 import { arrayMove } from "@dnd-kit/sortable";
 import { setSongs } from "../store/reducers/playlistReducer";
 import Sortable from "./Sortable";
-import { ISong } from "../models";
+import { ISong } from "../types";
 import SortableRow from "./SortableRow";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
 

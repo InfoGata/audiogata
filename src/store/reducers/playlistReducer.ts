@@ -1,5 +1,5 @@
 import { createSlice, nanoid, PayloadAction } from "@reduxjs/toolkit";
-import { IPlaylist, ISong } from "../../models";
+import { IPlaylist, ISong } from "../../types";
 
 interface IPlaylistState {
   playlists: IPlaylist[];

@@ -7,7 +7,7 @@ import {
 } from "@mui/material";
 import { MoreHoriz } from "@mui/icons-material";
 import React from "react";
-import { ISong } from "../models";
+import { ISong } from "../types";
 import { formatSeconds } from "../utils";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
 import { removeDownload } from "../store/reducers/downloadReducer";

@@ -14,7 +14,7 @@ import {
 } from "@mui/material";
 import React, { useEffect } from "react";
 import { useLocation } from "react-router";
-import { IAlbum, IArtist, IPlaylist, ISong } from "../models";
+import { IAlbum, IArtist, IPlaylist, ISong } from "../types";
 import { filterAsync } from "../utils";
 import AlbumSearchResult from "./AlbumSearchResult";
 import ArtistSearchResult from "./ArtistSearchResult";

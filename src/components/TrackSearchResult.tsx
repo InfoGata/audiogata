@@ -8,7 +8,7 @@ import {
   IconButton,
 } from "@mui/material";
 import React from "react";
-import { ISong } from "../models";
+import { ISong } from "../types";
 import { addTrack, setTrack } from "../store/reducers/songReducer";
 import { getThumbnailImage, searchThumbnailSize } from "../utils";
 import { MoreHoriz } from "@mui/icons-material";

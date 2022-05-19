@@ -1,5 +1,5 @@
 import React from "react";
-import { ISong } from "../models";
+import { ISong } from "../types";
 import QueueItem from "./QueueItem";
 import {
   Menu,

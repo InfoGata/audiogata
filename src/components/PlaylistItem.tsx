@@ -1,6 +1,6 @@
 import { TableCell, Typography } from "@mui/material";
 import React from "react";
-import { IPlaylist, ISong } from "../models";
+import { IPlaylist, ISong } from "../types";
 import { useAppSelector } from "../store/hooks";
 import { formatSeconds } from "../utils";
 

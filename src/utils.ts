@@ -1,10 +1,4 @@
-import {
-  DirectoryFile,
-  FileType,
-  IImage,
-  Manifest,
-  PluginInfo,
-} from "./models";
+import { DirectoryFile, FileType, IImage, Manifest, PluginInfo } from "./types";
 import thumbnail from "./thumbnail.png";
 
 export function formatSeconds(seconds?: number) {

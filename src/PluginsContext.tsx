@@ -7,7 +7,7 @@ import {
   NetworkRequest,
   NotificationMessage,
   PluginInfo,
-} from "./models";
+} from "./types";
 import {
   PluginFrame,
   PluginInterface as PluginFrameInterface,

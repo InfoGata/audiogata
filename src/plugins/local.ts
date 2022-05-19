@@ -1,4 +1,4 @@
-import { ISong } from "../models";
+import { ISong } from "../types";
 import { IPlayerComponent } from "./IPlayerComponent";
 
 class Local implements IPlayerComponent {

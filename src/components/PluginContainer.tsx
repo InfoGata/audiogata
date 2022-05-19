@@ -3,7 +3,7 @@ import React from "react";
 import { PluginFrameContainer, usePlugins } from "../PluginsContext";
 import { db } from "../database";
 import { directoryProps, getPlugin } from "../utils";
-import { FileType } from "../models";
+import { FileType } from "../types";
 import { Capacitor } from "@capacitor/core";
 
 const FileInput = styled("input")({

@@ -8,7 +8,7 @@ import {
   TextField,
 } from "@mui/material";
 import React from "react";
-import { IPlaylist, ISong } from "../models";
+import { IPlaylist, ISong } from "../types";
 import { useAppDispatch } from "../store/hooks";
 import { addPlaylist } from "../store/reducers/playlistReducer";
 

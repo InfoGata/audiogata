@@ -1,7 +1,7 @@
 import React from "react";
 import { Button, Grid, styled, TextField } from "@mui/material";
 import { nanoid } from "@reduxjs/toolkit";
-import { FileType, PluginInfo } from "../models";
+import { FileType, PluginInfo } from "../types";
 import { usePlugins } from "../PluginsContext";
 import PluginContainer from "./PluginContainer";
 import { directoryProps, getPlugin } from "../utils";

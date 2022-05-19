@@ -1,5 +1,5 @@
 import { createSlice, nanoid, PayloadAction } from "@reduxjs/toolkit";
-import { ISong } from "../../models";
+import { ISong } from "../../types";
 import { getPluginFrames } from "../../PluginsContext";
 import { filterAsync } from "../../utils";
 import { AppActionCreator } from "../store";

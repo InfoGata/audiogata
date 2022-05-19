@@ -1,7 +1,7 @@
 import React from "react";
 import { connect } from "react-redux";
 import { bindActionCreators, Dispatch } from "redux";
-import { ISong } from "../models";
+import { ISong } from "../types";
 import {
   IPlayerComponent,
   PlayerComponentType,

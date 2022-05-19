@@ -8,7 +8,7 @@ import {
   Button,
 } from "@mui/material";
 import { nanoid } from "@reduxjs/toolkit";
-import { FileType } from "../models";
+import { FileType } from "../types";
 import { usePlugins } from "../PluginsContext";
 import { getPlugin } from "../utils";
 import { useNavigate } from "react-router";

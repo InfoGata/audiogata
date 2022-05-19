@@ -2,7 +2,7 @@ import React from "react";
 import { usePlugins } from "../PluginsContext";
 import { useParams } from "react-router";
 import { Link } from "react-router-dom";
-import { IPlaylist } from "../models";
+import { IPlaylist } from "../types";
 import {
   Card,
   CardActionArea,

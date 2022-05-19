@@ -13,7 +13,7 @@ import {
 } from "@mui/material";
 import React from "react";
 import { useParams } from "react-router";
-import { ISong } from "../models";
+import { ISong } from "../types";
 import { usePlugins } from "../PluginsContext";
 import { useAppDispatch } from "../store/hooks";
 import PlaylistItem from "./PlaylistItem";

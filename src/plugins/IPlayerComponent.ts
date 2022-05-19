@@ -1,4 +1,4 @@
-import { ISong } from "../models";
+import { ISong } from "../types";
 
 export interface IPlayerComponent {
   setVolume: (volume: number) => Promise<void>;

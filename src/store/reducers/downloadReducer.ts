@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { AudioBlob, db } from "../../database";
-import { ISong } from "../../models";
+import { ISong } from "../../types";
 import { AppActionCreator } from "../store";
 import { Capacitor } from "@capacitor/core";
 
