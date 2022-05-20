@@ -15,7 +15,7 @@ const playlistSlice = createSlice({
   name: "playlist",
   initialState,
   reducers: {
-    initialize(state, action: PayloadAction<PlaylistInfo[]>) {
+    setPlaylists(state, action: PayloadAction<PlaylistInfo[]>) {
       return {
         ...state,
         playlists: action.payload,
@@ -36,14 +36,16 @@ const playlistSlice = createSlice({
   },
 });
 
+const playlistToPlaylistInfo = (playlist: IPlaylist): PlaylistInfo => ({
+  id: playlist.id,
+  name: playlist.name,
+  images: playlist.images,
+});
+
 export const initializePlaylists: AppActionCreator = () => async (dispatch) => {
   const playlists = await db.playlists.toArray();
-  const info: PlaylistInfo[] = await playlists.map((p) => ({
-    id: p.id,
-    name: p.name,
-    images: p.images,
-  }));
-  dispatch(playlistSlice.actions.initialize(info));
+  const info = playlists.map(playlistToPlaylistInfo);
+  dispatch(playlistSlice.actions.setPlaylists(info));
 };
 
 export const addPlaylist: AppActionCreator =
@@ -51,12 +53,16 @@ export const addPlaylist: AppActionCreator =
     const id = nanoid();
     playlist.id = id;
     await db.playlists.add(playlist);
-    const info: PlaylistInfo = {
-      id: playlist.id,
-      images: playlist.images,
-      name: playlist.name,
-    };
+    const info: PlaylistInfo = playlistToPlaylistInfo(playlist);
     dispatch(playlistSlice.actions.addPlaylist(info));
+  };
+
+export const addPlaylists: AppActionCreator =
+  (playlists: IPlaylist[]) => async (dispatch) => {
+    await db.playlists.bulkPut(playlists);
+    const newPlaylists = await db.playlists.toArray();
+    const info = newPlaylists.map(playlistToPlaylistInfo);
+    dispatch(playlistSlice.actions.setPlaylists(info));
   };
 
 export const deletePlaylist: AppActionCreator =

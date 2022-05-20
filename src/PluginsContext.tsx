@@ -21,6 +21,7 @@ import { isElectron } from "./utils";
 import { Capacitor } from "@capacitor/core";
 import ConfirmPluginDialog from "./components/ConfirmPluginDialog";
 import { App, URLOpenListenerEvent } from "@capacitor/app";
+import { addPlaylists } from "./store/reducers/playlistReducer";
 
 interface PluginInterface extends IPlayerComponent {
   searchAll: (query: string) => Promise<{
@@ -29,10 +30,10 @@ interface PluginInterface extends IPlayerComponent {
     artists?: IArtist[];
     playlists?: IPlaylist[];
   }>;
-  onNowPlayingTracksAdded: (track: ISong[]) => Promise<void>;
-  onNowPlayingTracksRemoved: (track: ISong[]) => Promise<void>;
-  onNowPlayingTracksChanged: (track: ISong[]) => Promise<void>;
-  onNowPlayingTracksSet: (track: ISong[]) => Promise<void>;
+  onNowPlayingTracksAdded: (tracks: ISong[]) => Promise<void>;
+  onNowPlayingTracksRemoved: (tracks: ISong[]) => Promise<void>;
+  onNowPlayingTracksChanged: (tracks: ISong[]) => Promise<void>;
+  onNowPlayingTracksSet: (tracks: ISong[]) => Promise<void>;
   getTrackUrl: (track: ISong) => Promise<string>;
   onUiMessage: (message: any) => Promise<void>;
   onDeepLinkMessage: (message: string) => Promise<void>;
@@ -59,6 +60,8 @@ interface ApplicationPluginInterface extends PluginFrameInterface {
   setTrackTime: (currentTime: number) => Promise<void>;
   getNowPlayingTracks: () => Promise<ISong[]>;
   setNowPlayingTracks: (tracks: ISong[]) => Promise<void>;
+  getPlaylists: () => Promise<IPlaylist[]>;
+  addPlaylists: (playlists: IPlaylist[]) => Promise<void>;
   createNotification: (notification: NotificationMessage) => Promise<void>;
   getCorsProxy: () => Promise<string>;
   installPlugins: (plugins: PluginInfo[]) => Promise<void>;
@@ -208,6 +211,12 @@ export const PluginsProvider: React.FC = (props) => {
       },
       getPluginId: async () => {
         return plugin.id || "";
+      },
+      getPlaylists: async () => {
+        return await db.playlists.toArray();
+      },
+      addPlaylists: async (playlists: IPlaylist[]) => {
+        dispatch(addPlaylists(playlists));
       },
     };
 
