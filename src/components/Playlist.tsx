@@ -1,5 +1,7 @@
 import {
+  Backdrop,
   Button,
+  CircularProgress,
   Paper,
   Table,
   TableBody,
@@ -7,6 +9,7 @@ import {
   TableContainer,
   TableHead,
   TableRow,
+  Typography,
   useMediaQuery,
   useTheme,
 } from "@mui/material";
@@ -16,19 +19,29 @@ import { setTrack, setTracks } from "../store/reducers/songReducer";
 import PlaylistItem from "./PlaylistItem";
 import { DragEndEvent, DragOverlay, DragStartEvent } from "@dnd-kit/core";
 import { arrayMove } from "@dnd-kit/sortable";
-import { setSongs } from "../store/reducers/playlistReducer";
+import { db } from "../database";
 import Sortable from "./Sortable";
-import { ISong } from "../types";
+import { IPlaylist, ISong } from "../types";
 import SortableRow from "./SortableRow";
-import { useAppDispatch, useAppSelector } from "../store/hooks";
+import { useAppDispatch } from "../store/hooks";
+import { setPlaylistTracks } from "../store/reducers/playlistReducer";
 
 const Playlist: React.FC = () => {
   const { id } = useParams<"id">();
   const dispatch = useAppDispatch();
   const [activeId, setActiveId] = React.useState<string | null>(null);
-  const playlist = useAppSelector((state) =>
-    state.playlist.playlists.find((p) => p.id === id)
-  );
+  const [playlist, setPlaylist] = React.useState<IPlaylist | undefined>();
+  const [loaded, setLoaded] = React.useState(false);
+
+  React.useEffect(() => {
+    const getPlaylist = async () => {
+      if (id) {
+        setPlaylist(await db.playlists.get(id));
+        setLoaded(true);
+      }
+    };
+    getPlaylist();
+  }, [id]);
   const theme = useTheme();
   const showTrackLength = useMediaQuery(theme.breakpoints.up("sm"));
   const dragDisabled = false;
@@ -52,7 +65,7 @@ const Playlist: React.FC = () => {
       const newIndex = playlist.songs.findIndex((item) => item.id === over?.id);
       const newList = arrayMove(playlist.songs, oldIndex, newIndex);
       if (id) {
-        dispatch(setSongs(id, newList));
+        dispatch(setPlaylistTracks(playlist, newList));
       }
     }
   };
@@ -70,62 +83,69 @@ const Playlist: React.FC = () => {
     dispatch(setTracks(playlist?.songs || []));
   };
 
-  return playlist ? (
+  return (
     <>
-      <div>{playlist.name}</div>
-      <Button onClick={playPlaylist}>Play</Button>
-      <Sortable
-        ids={playlist.songs.map((s) => s.id || "")}
-        onDragOver={handleDragOver}
-        onDragStart={handleDragStart}
-        onDragEnd={handleDragEnd}
-      >
-        <TableContainer component={Paper}>
-          <Table size="small">
-            <TableHead>
-              <TableRow>
-                <TableCell></TableCell>
-                <TableCell>Title</TableCell>
-                {showTrackLength && <TableCell>Track Length</TableCell>}
-                <TableCell></TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {playlist.songs.map((s) => (
-                <SortableRow
-                  id={s.id || ""}
-                  key={s.id}
-                  onClick={() => playSong(s)}
-                  disabled={dragDisabled}
-                >
-                  <PlaylistItem
-                    showTrackLength={showTrackLength}
-                    key={s.id}
-                    song={s}
-                    playlist={playlist}
-                  />
-                </SortableRow>
-              ))}
-              <DragOverlay wrapperElement="tr">
-                {activeId ? (
-                  <PlaylistItem
-                    showTrackLength={showTrackLength}
-                    key={activeId}
-                    song={
-                      playlist.songs.find((s) => s.id === activeId) ||
-                      ({} as ISong)
-                    }
-                    playlist={playlist}
-                  />
-                ) : null}
-              </DragOverlay>
-            </TableBody>
-          </Table>
-        </TableContainer>
-      </Sortable>
+      <Backdrop open={!loaded}>
+        <CircularProgress color="inherit" />
+      </Backdrop>
+      {playlist ? (
+        <>
+          <div>{playlist.name}</div>
+          <Button onClick={playPlaylist}>Play</Button>
+          <Sortable
+            ids={playlist.songs.map((s) => s.id || "")}
+            onDragOver={handleDragOver}
+            onDragStart={handleDragStart}
+            onDragEnd={handleDragEnd}
+          >
+            <TableContainer component={Paper}>
+              <Table size="small">
+                <TableHead>
+                  <TableRow>
+                    <TableCell></TableCell>
+                    <TableCell>Title</TableCell>
+                    {showTrackLength && <TableCell>Track Length</TableCell>}
+                    <TableCell></TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {playlist.songs.map((s) => (
+                    <SortableRow
+                      id={s.id || ""}
+                      key={s.id}
+                      onClick={() => playSong(s)}
+                      disabled={dragDisabled}
+                    >
+                      <PlaylistItem
+                        showTrackLength={showTrackLength}
+                        key={s.id}
+                        song={s}
+                        playlist={playlist}
+                      />
+                    </SortableRow>
+                  ))}
+                  <DragOverlay wrapperElement="tr">
+                    {activeId ? (
+                      <PlaylistItem
+                        showTrackLength={showTrackLength}
+                        key={activeId}
+                        song={
+                          playlist.songs.find((s) => s.id === activeId) ||
+                          ({} as ISong)
+                        }
+                        playlist={playlist}
+                      />
+                    ) : null}
+                  </DragOverlay>
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </Sortable>
+        </>
+      ) : (
+        <>{loaded && <Typography>Not Found</Typography>}</>
+      )}
     </>
-  ) : (
-    <>Not Found</>
   );
 };
 

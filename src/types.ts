@@ -54,13 +54,16 @@ export interface IArtist {
   images: IImage[];
 }
 
-export interface IPlaylist {
-  id?: string;
-  name?: string;
+export interface IPlaylist extends PlaylistInfo {
   songs: ISong[];
   apiId?: string;
-  images?: IImage[];
   from?: string;
+}
+
+export interface PlaylistInfo {
+  id?: string;
+  images?: IImage[];
+  name?: string;
 }
 
 export interface IImage {

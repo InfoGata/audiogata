@@ -12,7 +12,7 @@ import {
   Button,
 } from "@mui/material";
 import React from "react";
-import { IPlaylist } from "../types";
+import { PlaylistInfo } from "../types";
 import { Link } from "react-router-dom";
 import { Delete, MoreHoriz } from "@mui/icons-material";
 import { deletePlaylist } from "../store/reducers/playlistReducer";
@@ -20,15 +20,15 @@ import { useAppDispatch, useAppSelector } from "../store/hooks";
 import { PluginFrameContainer, usePlugins } from "../PluginsContext";
 import { filterAsync } from "../utils";
 
-interface IPlaylistsItemProps {
-  playlist: IPlaylist;
+interface PlaylistsItemProps {
+  playlist: PlaylistInfo;
   openMenu: (
     event: React.MouseEvent<HTMLButtonElement>,
-    playlist: IPlaylist
+    playlist: PlaylistInfo
   ) => void;
 }
 
-const PlaylistsItem: React.FC<IPlaylistsItemProps> = (props) => {
+const PlaylistsItem: React.FC<PlaylistsItemProps> = (props) => {
   const { openMenu, playlist } = props;
   const playlistPath = `/playlists/${props.playlist.id}`;
   const openPlaylistMenu = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -53,9 +53,9 @@ const Playlists: React.FC = () => {
   >([]);
   const playlists = useAppSelector((state) => state.playlist.playlists);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-  const [menuPlaylist, setMenuPlaylist] = React.useState<IPlaylist>(
-    {} as IPlaylist
-  );
+  const [menuPlaylist, setMenuPlaylist] = React.useState<
+    PlaylistInfo | undefined
+  >();
 
   React.useEffect(() => {
     const setPlugins = async () => {
@@ -73,7 +73,7 @@ const Playlists: React.FC = () => {
   const dispatch = useAppDispatch();
   const openMenu = (
     event: React.MouseEvent<HTMLButtonElement>,
-    playlist: IPlaylist
+    playlist: PlaylistInfo
   ) => {
     setAnchorEl(event.currentTarget);
     setMenuPlaylist(playlist);
