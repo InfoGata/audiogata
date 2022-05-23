@@ -64,6 +64,11 @@ const Search: React.FC = () => {
   const onSearchTypeChange = (e: React.FormEvent<HTMLSelectElement>) => {
     setSearchType(e.currentTarget.value);
   };
+
+  const onSetTrackResults = (tracks: ISong[]) => {
+    setTrackResults(tracks);
+    setTabValue("tracks");
+  };
   const dispatch = useAppDispatch();
   const [backdropOpen, setBackdropOpen] = React.useState(false);
   const { plugins } = usePlugins();
@@ -104,6 +109,15 @@ const Search: React.FC = () => {
         tracks?.forEach((t) => {
           t.from = searchType;
         });
+        albums?.forEach((a) => {
+          a.from = searchType;
+        });
+        artists?.forEach((a) => {
+          a.from = searchType;
+        });
+        playlists?.forEach((p) => {
+          p.from = searchType;
+        });
       }
       setAlbumResults(albums || []);
       setArtistResults(artists || []);
@@ -139,7 +153,7 @@ const Search: React.FC = () => {
       key={album.apiId}
       album={album}
       clearSearch={onClearSearch}
-      setTrackResults={setTrackResults}
+      setTrackResults={onSetTrackResults}
     />
   ));
   const artistList = artistResults.map((artist) => (
@@ -155,7 +169,7 @@ const Search: React.FC = () => {
       key={playlist.apiId}
       playlist={playlist}
       clearSearch={onClearSearch}
-      setTrackResults={setTrackResults}
+      setTrackResults={onSetTrackResults}
     />
   ));
   const handleChange = (_event: React.ChangeEvent<{}>, newValue: string) => {
