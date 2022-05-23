@@ -1,6 +1,6 @@
 import {
   Backdrop,
-  Button,
+  IconButton,
   CircularProgress,
   Paper,
   Table,
@@ -25,6 +25,7 @@ import { IPlaylist, ISong } from "../types";
 import SortableRow from "./SortableRow";
 import { useAppDispatch } from "../store/hooks";
 import { setPlaylistTracks } from "../store/reducers/playlistReducer";
+import { PlayCircle } from "@mui/icons-material";
 
 const Playlist: React.FC = () => {
   const { id } = useParams<"id">();
@@ -91,7 +92,9 @@ const Playlist: React.FC = () => {
       {playlist ? (
         <>
           <div>{playlist.name}</div>
-          <Button onClick={playPlaylist}>Play</Button>
+          <IconButton size="large" onClick={playPlaylist}>
+            <PlayCircle color="success" sx={{ fontSize: 45 }} />
+          </IconButton>
           <Sortable
             ids={playlist.songs.map((s) => s.id || "")}
             onDragOver={handleDragOver}
