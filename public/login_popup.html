@@ -44,6 +44,11 @@
                 url: window.location.href,
             };
             window.opener.postMessage(data, "*");
+        } else {
+            const data = {
+                url: window.location.href,
+            };
+            parent.postMessage(data, "*");
         }
     </script>
 
