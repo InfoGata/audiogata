@@ -23,6 +23,7 @@ import {
   Button,
   useTheme,
   Tooltip,
+  Checkbox,
 } from "@mui/material";
 import { Delete, Info, MoreHoriz, PlaylistAdd } from "@mui/icons-material";
 import {
@@ -64,14 +65,15 @@ const PlayQueue: React.FC = () => {
     event: React.MouseEvent<HTMLButtonElement>,
     song: ISong
   ) => {
+    const currentTarget = event.currentTarget;
     event.stopPropagation();
-    setAnchorEl(event.currentTarget);
     event.preventDefault();
     setMenuSong(song);
+    setAnchorEl(currentTarget);
     // Check whether song can be played offline
     if (song.id && song.from) {
       // Check if this needs it's own player
-      // Intead of being able to play locally
+      // Instead of being able to play locally
       const pluginFrame = plugins.find((p) => p.id === song.from);
       const canDownload =
         (await pluginFrame?.hasDefined.getTrackUrl()) || false;
@@ -235,6 +237,14 @@ const PlayQueue: React.FC = () => {
     openEditDialog();
   };
 
+  const onSelectAllClick = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.checked) {
+      setSelected(new Set(songList.map((s) => s.id || "")));
+      return;
+    }
+    setSelected(new Set());
+  };
+
   return (
     <>
       <Typography variant="h3" gutterBottom>
@@ -248,6 +258,9 @@ const PlayQueue: React.FC = () => {
       <IconButton aria-label="clear" onClick={openQueueMenu}>
         <MoreHoriz fontSize="large" />
       </IconButton>
+      {selected.size > 0 && (
+        <Button onClick={editSelection}>Edit Selection</Button>
+      )}
       <FormControl fullWidth>
         <InputLabel id="select-from">Select Plugin</InputLabel>
         <Select
@@ -260,9 +273,6 @@ const PlayQueue: React.FC = () => {
           {optionsComponents}
         </Select>
       </FormControl>
-      {selected.size > 0 && (
-        <Button onClick={editSelection}>Edit Selection</Button>
-      )}
       <Sortable
         ids={songList.map((s) => s.id || "")}
         onDragOver={handleDragOver}
@@ -273,7 +283,21 @@ const PlayQueue: React.FC = () => {
           <Table size="small" sx={{ tableLayout: "fixed" }}>
             <TableHead>
               <TableRow>
-                <TableCell padding="none" width="5%"></TableCell>
+                <TableCell padding="none" width="5%">
+                  <Checkbox
+                    color="primary"
+                    indeterminate={
+                      selected.size > 0 && selected.size < songList.length
+                    }
+                    checked={
+                      songList.length > 0 && selected.size === songList.length
+                    }
+                    onChange={onSelectAllClick}
+                    inputProps={{
+                      "aria-label": "select all desserts",
+                    }}
+                  />
+                </TableCell>
                 <TableCell width="80%">Title</TableCell>
                 {showTrackLength && <TableCell>Track Length</TableCell>}
                 <TableCell></TableCell>
