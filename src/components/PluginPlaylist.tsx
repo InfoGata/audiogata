@@ -34,6 +34,7 @@ const PluginPlaylist: React.FC = () => {
       if (plugin && plugin.hasDefined.getPlaylistTracks()) {
         const t = await plugin.remote.getPlaylistTracks({
           apiId: id,
+          isUserPlaylist: true,
           songs: [],
         });
         setPlaylistTracks(t);

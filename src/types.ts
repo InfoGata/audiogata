@@ -64,6 +64,7 @@ export interface PlaylistInfo {
   id?: string;
   images?: IImage[];
   name?: string;
+  isUserPlaylist?: boolean;
 }
 
 export interface IImage {
