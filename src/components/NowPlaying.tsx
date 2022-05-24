@@ -1,6 +1,5 @@
 import React from "react";
 import { ISong } from "../types";
-import QueueItem from "./QueueItem";
 import {
   Menu,
   ListItemText,
@@ -44,6 +43,7 @@ import { useAppDispatch, useAppSelector } from "../store/hooks";
 import { usePlugins } from "../PluginsContext";
 import SelectionEditDialog from "./SelectionEditDialog";
 import { downloadTrack } from "../store/reducers/downloadReducer";
+import PlaylistItem from "./PlaylistItem";
 
 const PlayQueue: React.FC = () => {
   const [activeId, setActiveId] = React.useState<string | null>(null);
@@ -287,7 +287,7 @@ const PlayQueue: React.FC = () => {
                   onClick={() => playSong(songInfo)}
                   disabled={dragDisabled}
                 >
-                  <QueueItem
+                  <PlaylistItem
                     index={index}
                     song={songInfo}
                     isSelected={isSelected}
@@ -299,7 +299,7 @@ const PlayQueue: React.FC = () => {
               ))}
               <DragOverlay wrapperElement="tr">
                 {activeId ? (
-                  <QueueItem
+                  <PlaylistItem
                     index={0}
                     showTrackLength={showTrackLength}
                     isSelected={isSelected}

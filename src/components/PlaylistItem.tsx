@@ -1,34 +1,97 @@
-import { TableCell, Typography } from "@mui/material";
+import {
+  Checkbox,
+  IconButton,
+  LinearProgress,
+  TableCell,
+  Typography,
+} from "@mui/material";
 import React from "react";
-import { IPlaylist, ISong } from "../types";
-import { useAppSelector } from "../store/hooks";
+import { ISong } from "../types";
 import { formatSeconds } from "../utils";
+import { MoreHoriz } from "@mui/icons-material";
+import { useAppSelector } from "../store/hooks";
 
 interface IProps {
   song: ISong;
-  playlist?: IPlaylist;
   showTrackLength: boolean;
+  isSelected?: (id: string) => boolean;
+  onSelectClick?: (
+    event: React.ChangeEvent<HTMLInputElement>,
+    id: string
+  ) => void;
+  openMenu?: (event: React.MouseEvent<HTMLButtonElement>, song: ISong) => void;
+  index?: number;
 }
 
 const PlaylistItem: React.FC<IProps> = (props) => {
-  const { song, showTrackLength } = props;
+  const { song, showTrackLength, openMenu, onSelectClick, isSelected, index } =
+    props;
   const currentSong = useAppSelector((state) => state.song.currentSong);
+  const progress = useAppSelector(
+    (state) => state.download.progress[song.id || ""]
+  );
+
+  const openTrackMenu = (event: React.MouseEvent<HTMLButtonElement>) => {
+    if (openMenu) {
+      openMenu(event, song);
+    }
+  };
+
+  const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (onSelectClick) {
+      onSelectClick(event, song.id || "");
+    }
+  };
+
+  const stopPropagation = (e: React.MouseEvent) => {
+    e.stopPropagation();
+  };
 
   return (
     <>
-      <TableCell></TableCell>
+      <TableCell padding="none">
+        {isSelected && (
+          <Checkbox
+            color="primary"
+            checked={isSelected(song.id || "")}
+            onChange={onChange}
+            onClick={stopPropagation}
+            size="small"
+            inputProps={
+              {
+                "data-index": index,
+              } as any
+            }
+          />
+        )}
+      </TableCell>
       <TableCell>
         <Typography
           color={currentSong?.id === song.id ? "primary.main" : undefined}
           noWrap={true}
           dangerouslySetInnerHTML={{ __html: song.name }}
+          sx={{ overflow: "hidden", textOverflow: "ellipsis" }}
+        />
+        <Typography
+          variant="body2"
+          color={currentSong?.id === song.id ? "primary.main" : undefined}
+          noWrap={true}
+          dangerouslySetInnerHTML={{ __html: song.artistName || "" }}
+          sx={{ overflow: "hidden", textOverflow: "ellipsis" }}
+        />
+        <LinearProgress
+          variant="determinate"
+          value={progress?.progress || 0}
+          sx={{ visibility: progress ? "visible" : "hidden" }}
         />
       </TableCell>
       {showTrackLength && <TableCell>{formatSeconds(song.duration)}</TableCell>}
-      <TableCell>
-        {/*<IconButton aria-label="options" size="small">
-          <MoreHoriz />
-  </IconButton>*/}
+      <TableCell align="right">
+        {openMenu && (
+          <IconButton aria-label="options" size="small" onClick={openTrackMenu}>
+            <MoreHoriz />
+          </IconButton>
+        )}
       </TableCell>
     </>
   );

@@ -123,7 +123,6 @@ const Playlist: React.FC = () => {
                         showTrackLength={showTrackLength}
                         key={s.id}
                         song={s}
-                        playlist={playlist}
                       />
                     </SortableRow>
                   ))}
@@ -136,7 +135,6 @@ const Playlist: React.FC = () => {
                           playlist.songs.find((s) => s.id === activeId) ||
                           ({} as ISong)
                         }
-                        playlist={playlist}
                       />
                     ) : null}
                   </DragOverlay>
