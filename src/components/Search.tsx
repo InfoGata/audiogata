@@ -106,18 +106,6 @@ const Search: React.FC = () => {
         ({ tracks, albums, artists, playlists } = await plugin.remote.searchAll(
           search
         ));
-        tracks?.forEach((t) => {
-          t.from = searchType;
-        });
-        albums?.forEach((a) => {
-          a.from = searchType;
-        });
-        artists?.forEach((a) => {
-          a.from = searchType;
-        });
-        playlists?.forEach((p) => {
-          p.from = searchType;
-        });
       }
       setAlbumResults(albums || []);
       setArtistResults(artists || []);

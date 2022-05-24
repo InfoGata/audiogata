@@ -7902,10 +7902,10 @@
     "base64-js" "^1.5.1"
     "xmlbuilder" "^9.0.7"
 
-"plugin-frame@0.3.0":
-  "integrity" "sha512-Ub8hS1K6kitBc3GgM+s6+TaYew2o+HX6FriYszz1vs33vy+3n4DmnwFCUPJC83kIofFrw8WSfxXS5RdSZVW7tQ=="
-  "resolved" "https://registry.npmjs.org/plugin-frame/-/plugin-frame-0.3.0.tgz"
-  "version" "0.3.0"
+"plugin-frame@^0.4.1":
+  "integrity" "sha512-mhIYaWhKNA41nIcN889mKVg1twpGG/oEf08ff/n5GrWRHfIehR+efPA560mTUqj7qkx8rRCciYPZT2zq/LBMKg=="
+  "resolved" "https://registry.npmjs.org/plugin-frame/-/plugin-frame-0.4.1.tgz"
+  "version" "0.4.1"
 
 "portfinder@^1.0.28":
   "integrity" "sha512-Se+2isanIcEqf2XMHjyUKskczxbPH7dQnlMjXX6+dybayyHvAf/TCgyMRlzf/B6QDhAEFOGes0pzRo3by4AbMA=="

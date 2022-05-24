@@ -225,7 +225,31 @@ export const PluginsProvider: React.FC = (props) => {
       srcUrl = `https://${plugin.id}.audiogata.com/pluginframe.html`;
     }
 
+    const completeMethods = {
+      searchAll: (result: {
+        tracks?: ISong[];
+        albums?: IAlbum[];
+        artists?: IArtist[];
+        playlists?: IPlaylist[];
+      }) => {
+        result.tracks?.forEach((t) => {
+          t.from = plugin.id;
+        });
+        result.albums?.forEach((a) => {
+          a.from = plugin.id;
+        });
+        result.artists?.forEach((a) => {
+          a.from = plugin.id;
+        });
+        result.playlists?.forEach((p) => {
+          p.from = plugin.id;
+        });
+        return result;
+      },
+    };
+
     const host = new PluginFrameContainer(api, {
+      completeMethods,
       frameSrc: new URL(srcUrl),
       sandboxAttributes: ["allow-scripts", "allow-same-origin"],
     });

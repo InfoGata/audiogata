@@ -41,7 +41,7 @@ export interface ISong {
 export interface IAlbum {
   name: string;
   apiId: string;
-  from: string;
+  from?: string;
   artistName?: string;
   artistId?: string;
   images: IImage[];
@@ -50,7 +50,7 @@ export interface IAlbum {
 export interface IArtist {
   name: string;
   apiId: string;
-  from: string;
+  from?: string;
   images: IImage[];
 }
 
