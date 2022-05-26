@@ -27,6 +27,7 @@ interface TrackListProps {
   onSelectAll: (event: React.ChangeEvent<HTMLInputElement>) => void;
   isSelected: (id: string) => boolean;
   selected: Set<string>;
+  dragDisabled?: boolean;
 }
 
 const TrackList: React.FC<TrackListProps> = (props) => {
@@ -39,11 +40,11 @@ const TrackList: React.FC<TrackListProps> = (props) => {
     onSelectAll,
     isSelected,
     selected,
+    dragDisabled,
   } = props;
   const [activeId, setActiveId] = React.useState<string | null>(null);
   const theme = useTheme();
   const showTrackLength = useMediaQuery(theme.breakpoints.up("sm"));
-  const dragDisabled = false;
 
   const handleDragStart = (event: DragStartEvent) => {
     setActiveId(event.active.id);
@@ -67,10 +68,10 @@ const TrackList: React.FC<TrackListProps> = (props) => {
       onDragEnd={handleDragEnd}
     >
       <TableContainer component={Paper}>
-        <Table size="small">
+        <Table size="small" sx={{ tableLayout: "fixed" }}>
           <TableHead>
             <TableRow>
-              <TableCell>
+              <TableCell padding="none" width="4%">
                 <Checkbox
                   color="primary"
                   indeterminate={
@@ -78,12 +79,13 @@ const TrackList: React.FC<TrackListProps> = (props) => {
                   }
                   checked={tracks.length > 0 && selected.size === tracks.length}
                   onChange={onSelectAll}
+                  size="small"
                   inputProps={{
                     "aria-label": "select all desserts",
                   }}
                 />
               </TableCell>
-              <TableCell>Title</TableCell>
+              <TableCell width="80%">Title</TableCell>
               {showTrackLength && <TableCell>Track Length</TableCell>}
               <TableCell></TableCell>
             </TableRow>

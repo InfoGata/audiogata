@@ -1,4 +1,6 @@
 import {
+  Avatar,
+  Box,
   Checkbox,
   IconButton,
   LinearProgress,
@@ -10,6 +12,7 @@ import { ISong } from "../types";
 import { formatSeconds } from "../utils";
 import { MoreHoriz } from "@mui/icons-material";
 import { useAppSelector } from "../store/hooks";
+import { getThumbnailImage, searchThumbnailSize } from "../utils";
 
 interface IProps {
   song: ISong;
@@ -47,6 +50,7 @@ const PlaylistItem: React.FC<IProps> = (props) => {
     e.stopPropagation();
   };
 
+  const image = getThumbnailImage(song.images, searchThumbnailSize);
   return (
     <>
       <TableCell padding="none">
@@ -66,27 +70,38 @@ const PlaylistItem: React.FC<IProps> = (props) => {
         )}
       </TableCell>
       <TableCell>
-        <Typography
-          color={currentSong?.id === song.id ? "primary.main" : undefined}
-          noWrap={true}
-          dangerouslySetInnerHTML={{ __html: song.name }}
-          sx={{ overflow: "hidden", textOverflow: "ellipsis" }}
-        />
-        <Typography
-          variant="body2"
-          color={currentSong?.id === song.id ? "primary.main" : undefined}
-          noWrap={true}
-          dangerouslySetInnerHTML={{ __html: song.artistName || "" }}
-          sx={{ overflow: "hidden", textOverflow: "ellipsis" }}
-        />
-        <LinearProgress
-          variant="determinate"
-          value={progress?.progress || 0}
-          sx={{ visibility: progress ? "visible" : "hidden" }}
-        />
+        <Box
+          sx={{
+            display: "flex",
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+          }}
+        >
+          <Avatar alt={song.name} src={image} style={{ borderRadius: 0 }} />
+          <Box sx={{ minWidth: 0 }}>
+            <Typography
+              color={currentSong?.id === song.id ? "primary.main" : undefined}
+              noWrap={true}
+              dangerouslySetInnerHTML={{ __html: song.name }}
+              sx={{ overflow: "hidden", textOverflow: "ellipsis" }}
+            />
+            <Typography
+              variant="body2"
+              color={currentSong?.id === song.id ? "primary.main" : undefined}
+              noWrap={true}
+              dangerouslySetInnerHTML={{ __html: song.artistName || "" }}
+              sx={{ overflow: "hidden", textOverflow: "ellipsis" }}
+            />
+            <LinearProgress
+              variant="determinate"
+              value={progress?.progress || 0}
+              sx={{ visibility: progress ? "visible" : "hidden" }}
+            />
+          </Box>
+        </Box>
       </TableCell>
       {showTrackLength && <TableCell>{formatSeconds(song.duration)}</TableCell>}
-      <TableCell align="right">
+      <TableCell align="right" padding="checkbox">
         {openMenu && (
           <IconButton aria-label="options" size="small" onClick={openTrackMenu}>
             <MoreHoriz />

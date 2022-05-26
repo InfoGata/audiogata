@@ -5,7 +5,7 @@ import { TableRow } from "@mui/material";
 
 interface SortableItemProps {
   id: string;
-  disabled: boolean;
+  disabled?: boolean;
   onClick?: (...args: any) => void;
 }
 const SortableRow: React.FC<SortableItemProps> = (props) => {
