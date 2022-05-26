@@ -17,7 +17,7 @@ import React from "react";
 
 interface SortableProps {
   ids: string[];
-  onDragOver: (event: DragOverEvent) => void;
+  onDragOver?: (event: DragOverEvent) => void;
   onDragStart: (event: DragStartEvent) => void;
   onDragEnd: (event: DragEndEvent) => void;
 }

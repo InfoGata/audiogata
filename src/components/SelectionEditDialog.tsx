@@ -71,4 +71,4 @@ const SelectionEditDialog: React.FC<SelectionEditProps> = (props) => {
   );
 };
 
-export default SelectionEditDialog;
+export default React.memo(SelectionEditDialog);

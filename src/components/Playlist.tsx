@@ -2,37 +2,45 @@ import {
   Backdrop,
   IconButton,
   CircularProgress,
-  Paper,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
   Typography,
-  useMediaQuery,
-  useTheme,
+  Menu,
+  MenuItem,
+  ListItemIcon,
+  ListItemText,
 } from "@mui/material";
 import React from "react";
 import { useParams } from "react-router";
-import { setTrack, setTracks } from "../store/reducers/songReducer";
-import PlaylistItem from "./PlaylistItem";
-import { DragEndEvent, DragOverlay, DragStartEvent } from "@dnd-kit/core";
-import { arrayMove } from "@dnd-kit/sortable";
+import {
+  deleteTrack,
+  setTrack,
+  setTracks,
+} from "../store/reducers/songReducer";
 import { db } from "../database";
-import Sortable from "./Sortable";
 import { IPlaylist, ISong } from "../types";
-import SortableRow from "./SortableRow";
 import { useAppDispatch } from "../store/hooks";
 import { setPlaylistTracks } from "../store/reducers/playlistReducer";
-import { PlayCircle } from "@mui/icons-material";
+import { Delete, Info, PlayCircle } from "@mui/icons-material";
+import { Link } from "react-router-dom";
+import { usePlugins } from "../PluginsContext";
+import { downloadTrack } from "../store/reducers/downloadReducer";
+import TrackList from "./TrackList";
+import useSelected from "../hooks/useSelected";
 
 const Playlist: React.FC = () => {
   const { id } = useParams<"id">();
   const dispatch = useAppDispatch();
-  const [activeId, setActiveId] = React.useState<string | null>(null);
   const [playlist, setPlaylist] = React.useState<IPlaylist | undefined>();
   const [loaded, setLoaded] = React.useState(false);
+  const [menuSong, setMenuSong] = React.useState<ISong>({} as ISong);
+  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const [hasBlob, setHasBlob] = React.useState(false);
+  const [canOffline, setCanOffline] = React.useState(false);
+  const { plugins } = usePlugins();
+  const infoPath = `/track/${menuSong.id}`;
+  const closeMenu = () => setAnchorEl(null);
+  const { onSelect, onSelectAll, isSelected, selected } = useSelected(
+    playlist?.songs || []
+  );
 
   React.useEffect(() => {
     const getPlaylist = async () => {
@@ -43,9 +51,6 @@ const Playlist: React.FC = () => {
     };
     getPlaylist();
   }, [id]);
-  const theme = useTheme();
-  const showTrackLength = useMediaQuery(theme.breakpoints.up("sm"));
-  const dragDisabled = false;
 
   const playPlaylist = () => {
     if (!playlist) {
@@ -57,31 +62,88 @@ const Playlist: React.FC = () => {
     dispatch(setTracks(playlist.songs));
   };
 
-  const handleDragOver = (event: DragEndEvent) => {
-    const { active, over } = event;
-    if (playlist && active.id !== over?.id) {
-      const oldIndex = playlist.songs.findIndex(
-        (item) => item.id === active.id
-      );
-      const newIndex = playlist.songs.findIndex((item) => item.id === over?.id);
-      const newList = arrayMove(playlist.songs, oldIndex, newIndex);
-      if (id) {
-        dispatch(setPlaylistTracks(playlist, newList));
-      }
+  const openMenu = async (
+    event: React.MouseEvent<HTMLButtonElement>,
+    song: ISong
+  ) => {
+    const currentTarget = event.currentTarget;
+    event.stopPropagation();
+    event.preventDefault();
+    setMenuSong(song);
+    setAnchorEl(currentTarget);
+    // Check whether song can be played offline
+    if (song.id && song.from) {
+      // Check if this needs it's own player
+      // Instead of being able to play locally
+      const pluginFrame = plugins.find((p) => p.id === song.from);
+      const canDownload =
+        (await pluginFrame?.hasDefined.getTrackUrl()) || false;
+      setCanOffline(canDownload);
+
+      const primaryCount = await db.audioBlobs
+        .where(":id")
+        .equals(song.id)
+        .count();
+      setHasBlob(primaryCount > 0);
     }
   };
 
-  const handleDragStart = (event: DragStartEvent) => {
-    setActiveId(event.active.id);
+  const deleteClick = async () => {
+    if (menuSong.id) {
+      await db.audioBlobs.delete(menuSong.id);
+    }
+    dispatch(deleteTrack(menuSong));
+    closeMenu();
   };
 
-  const handleDragEnd = () => {
-    setActiveId(null);
+  const enablePlayingOffline = async () => {
+    try {
+      if (menuSong.from) {
+        const pluginFrame = plugins.find((p) => p.id === menuSong.from);
+        if (!(await pluginFrame?.hasDefined.getTrackUrl())) {
+          return;
+        }
+
+        const source = await pluginFrame?.remote.getTrackUrl(menuSong);
+        if (source) {
+          dispatch(downloadTrack(menuSong, source));
+        }
+      }
+    } catch (e) {
+      console.log(e);
+    }
+    closeMenu();
   };
 
-  const playSong = (song: ISong) => {
-    dispatch(setTrack(song));
+  const disablePlayingOffline = async () => {
+    if (menuSong.id) {
+      await db.audioBlobs.delete(menuSong.id);
+    }
+    closeMenu();
+  };
+
+  const offlineMenuItem = canOffline ? (
+    hasBlob ? (
+      <MenuItem onClick={disablePlayingOffline}>
+        <ListItemText primary="Disable Playing Offline"></ListItemText>
+      </MenuItem>
+    ) : (
+      <MenuItem onClick={enablePlayingOffline}>
+        <ListItemText primary="Enable Playing Offline"></ListItemText>
+      </MenuItem>
+    )
+  ) : null;
+
+  const onTrackClick = (track: ISong) => {
+    dispatch(setTrack(track));
     dispatch(setTracks(playlist?.songs || []));
+  };
+
+  const onDragOver = (trackList: ISong[]) => {
+    dispatch(setPlaylistTracks(playlist, trackList));
+
+    const newPlaylist: IPlaylist = { ...playlist, songs: trackList };
+    setPlaylist(newPlaylist);
   };
 
   return (
@@ -95,53 +157,35 @@ const Playlist: React.FC = () => {
           <IconButton size="large" onClick={playPlaylist}>
             <PlayCircle color="success" sx={{ fontSize: 45 }} />
           </IconButton>
-          <Sortable
-            ids={playlist.songs.map((s) => s.id || "")}
-            onDragOver={handleDragOver}
-            onDragStart={handleDragStart}
-            onDragEnd={handleDragEnd}
+          <TrackList
+            tracks={playlist.songs}
+            openMenu={openMenu}
+            onTrackClick={onTrackClick}
+            onDragOver={onDragOver}
+            onSelect={onSelect}
+            isSelected={isSelected}
+            onSelectAll={onSelectAll}
+            selected={selected}
+          />
+          <Menu
+            open={Boolean(anchorEl)}
+            onClose={closeMenu}
+            anchorEl={anchorEl}
           >
-            <TableContainer component={Paper}>
-              <Table size="small">
-                <TableHead>
-                  <TableRow>
-                    <TableCell></TableCell>
-                    <TableCell>Title</TableCell>
-                    {showTrackLength && <TableCell>Track Length</TableCell>}
-                    <TableCell></TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {playlist.songs.map((s) => (
-                    <SortableRow
-                      id={s.id || ""}
-                      key={s.id}
-                      onClick={() => playSong(s)}
-                      disabled={dragDisabled}
-                    >
-                      <PlaylistItem
-                        showTrackLength={showTrackLength}
-                        key={s.id}
-                        song={s}
-                      />
-                    </SortableRow>
-                  ))}
-                  <DragOverlay wrapperElement="tr">
-                    {activeId ? (
-                      <PlaylistItem
-                        showTrackLength={showTrackLength}
-                        key={activeId}
-                        song={
-                          playlist.songs.find((s) => s.id === activeId) ||
-                          ({} as ISong)
-                        }
-                      />
-                    ) : null}
-                  </DragOverlay>
-                </TableBody>
-              </Table>
-            </TableContainer>
-          </Sortable>
+            <MenuItem onClick={deleteClick}>
+              <ListItemIcon>
+                <Delete />
+              </ListItemIcon>
+              <ListItemText primary="Delete" />
+            </MenuItem>
+            <MenuItem component={Link} to={infoPath}>
+              <ListItemIcon>
+                <Info />
+              </ListItemIcon>
+              <ListItemText primary="Info" />
+            </MenuItem>
+            {offlineMenuItem}
+          </Menu>
         </>
       ) : (
         <>{loaded && <Typography>Not Found</Typography>}</>

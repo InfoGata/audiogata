@@ -8,22 +8,12 @@ import {
   Divider,
   Typography,
   IconButton,
-  Paper,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableRow,
-  TableHead,
-  useMediaQuery,
   InputLabel,
   FormControl,
   Select,
   SelectChangeEvent,
   Button,
-  useTheme,
   Tooltip,
-  Checkbox,
 } from "@mui/material";
 import { Delete, Info, MoreHoriz, PlaylistAdd } from "@mui/icons-material";
 import {
@@ -34,33 +24,21 @@ import {
 } from "../store/reducers/songReducer";
 import AddPlaylistDialog from "./AddPlaylistDialog";
 import PlaylistMenuItem from "./PlaylistMenuItem";
-import Sortable from "./Sortable";
 import { Link } from "react-router-dom";
 import { db } from "../database";
-import { DragEndEvent, DragOverlay, DragStartEvent } from "@dnd-kit/core";
-import { arrayMove } from "@dnd-kit/sortable";
-import SortableRow from "./SortableRow";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
 import { usePlugins } from "../PluginsContext";
 import SelectionEditDialog from "./SelectionEditDialog";
-import { downloadTrack } from "../store/reducers/downloadReducer";
-import PlaylistItem from "./PlaylistItem";
+import TrackList from "./TrackList";
+import useSelected from "../hooks/useSelected";
 
 const PlayQueue: React.FC = () => {
-  const [activeId, setActiveId] = React.useState<string | null>(null);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [menuSong, setMenuSong] = React.useState<ISong>({} as ISong);
-  const [canOffline, setCanOffline] = React.useState(false);
-  const [hasBlob, setHasBlob] = React.useState(false);
-  const [selected, setSelected] = React.useState<Set<string>>(new Set());
   const [from, setFrom] = React.useState<string>("");
   const [queueMenuAnchorEl, setQueueMenuAnchorEl] =
     React.useState<null | HTMLElement>(null);
   const { plugins } = usePlugins();
-  const dragDisabled = false;
-  const theme = useTheme();
-  const showTrackLength = useMediaQuery(theme.breakpoints.up("md"));
-  const lastChecked = React.useRef<number | null>(null);
   const openMenu = async (
     event: React.MouseEvent<HTMLButtonElement>,
     song: ISong
@@ -70,22 +48,8 @@ const PlayQueue: React.FC = () => {
     event.preventDefault();
     setMenuSong(song);
     setAnchorEl(currentTarget);
-    // Check whether song can be played offline
-    if (song.id && song.from) {
-      // Check if this needs it's own player
-      // Instead of being able to play locally
-      const pluginFrame = plugins.find((p) => p.id === song.from);
-      const canDownload =
-        (await pluginFrame?.hasDefined.getTrackUrl()) || false;
-      setCanOffline(canDownload);
-
-      const primaryCount = await db.audioBlobs
-        .where(":id")
-        .equals(song.id)
-        .count();
-      setHasBlob(primaryCount > 0);
-    }
   };
+
   const openQueueMenu = (event: React.MouseEvent<HTMLButtonElement>) => {
     setQueueMenuAnchorEl(event.currentTarget);
   };
@@ -112,6 +76,9 @@ const PlayQueue: React.FC = () => {
   const closeQueuePlaylistDialog = () => setQueuePlaylistDialogOpen(false);
   const openEditDialog = () => setEditDialogOpen(true);
   const closeEditDialog = () => setEditDialogOpen(false);
+
+  const { onSelect, onSelectAll, isSelected, selected, setSelected } =
+    useSelected(songList);
   const addToNewPlaylist = () => {
     openPlaylistDialog();
     closeMenu();
@@ -123,94 +90,16 @@ const PlayQueue: React.FC = () => {
   const playlists = useAppSelector((state) => state.playlist.playlists);
   const infoPath = `/track/${menuSong.id}`;
 
+  const onTrackClick = (song: ISong) => {
+    dispatch(setTrack(song));
+  };
+
   const clearQueue = () => {
     dispatch(clearTracks());
   };
 
-  const enablePlayingOffline = async () => {
-    try {
-      if (menuSong.from) {
-        const pluginFrame = plugins.find((p) => p.id === menuSong.from);
-        if (!(await pluginFrame?.hasDefined.getTrackUrl())) {
-          return;
-        }
-
-        const source = await pluginFrame?.remote.getTrackUrl(menuSong);
-        if (source) {
-          dispatch(downloadTrack(menuSong, source));
-        }
-      }
-    } catch (e) {
-      console.log(e);
-    }
-    closeMenu();
-  };
-
-  const disablePlayingOffline = async () => {
-    if (menuSong.id) {
-      await db.audioBlobs.delete(menuSong.id);
-    }
-    closeMenu();
-  };
-
-  const offlineMenuItem = canOffline ? (
-    hasBlob ? (
-      <MenuItem onClick={disablePlayingOffline}>
-        <ListItemText primary="Disable Playing Offline"></ListItemText>
-      </MenuItem>
-    ) : (
-      <MenuItem onClick={enablePlayingOffline}>
-        <ListItemText primary="Enable Playing Offline"></ListItemText>
-      </MenuItem>
-    )
-  ) : null;
-
-  const handleDragOver = (event: DragEndEvent) => {
-    const { active, over } = event;
-    const oldIndex = songList.findIndex((item) => item.id === active.id);
-    const newIndex = songList.findIndex((item) => item.id === over?.id);
-    const newList = arrayMove(songList, oldIndex, newIndex);
-    dispatch(setTracks(newList));
-  };
-
-  const handleDragStart = (event: DragStartEvent) => {
-    setActiveId(event.active.id);
-  };
-
-  const handleDragEnd = () => {
-    setActiveId(null);
-  };
-
-  const playSong = (song: ISong) => {
-    dispatch(setTrack(song));
-  };
-  const isSelected = (id: string) => selected.has(id);
-  const onSelectClick = (
-    e: React.ChangeEvent<HTMLInputElement>,
-    id: string
-  ) => {
-    const index = Number(e.target.dataset.index);
-    if (
-      lastChecked.current !== null &&
-      (e.nativeEvent as any).shiftKey &&
-      e.target.checked
-    ) {
-      setSelected((prev) => {
-        const next = new Set(prev);
-        const start = Math.min(lastChecked.current || 0, index);
-        const end = Math.max(lastChecked.current || 0, index) + 1;
-        const ids = songList.slice(start, end).map((s) => s.id);
-        ids.forEach((id) => next.add(id || ""));
-        return next;
-      });
-    } else {
-      setSelected((prev) => {
-        const next = new Set(prev);
-        e.target.checked ? next.add(id) : next.delete(id);
-        return next;
-      });
-    }
-    lastChecked.current = e.target.checked ? index : null;
+  const onDragOver = (newTrackList: ISong[]) => {
+    dispatch(setTracks(newTrackList));
   };
 
   const onSelectFromChange = (e: SelectChangeEvent<string>) => {
@@ -235,14 +124,6 @@ const PlayQueue: React.FC = () => {
 
   const editSelection = () => {
     openEditDialog();
-  };
-
-  const onSelectAllClick = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.target.checked) {
-      setSelected(new Set(songList.map((s) => s.id || "")));
-      return;
-    }
-    setSelected(new Set());
   };
 
   return (
@@ -273,73 +154,16 @@ const PlayQueue: React.FC = () => {
           {optionsComponents}
         </Select>
       </FormControl>
-      <Sortable
-        ids={songList.map((s) => s.id || "")}
-        onDragOver={handleDragOver}
-        onDragStart={handleDragStart}
-        onDragEnd={handleDragEnd}
-      >
-        <TableContainer component={Paper}>
-          <Table size="small" sx={{ tableLayout: "fixed" }}>
-            <TableHead>
-              <TableRow>
-                <TableCell padding="none" width="5%">
-                  <Checkbox
-                    color="primary"
-                    indeterminate={
-                      selected.size > 0 && selected.size < songList.length
-                    }
-                    checked={
-                      songList.length > 0 && selected.size === songList.length
-                    }
-                    onChange={onSelectAllClick}
-                    inputProps={{
-                      "aria-label": "select all desserts",
-                    }}
-                  />
-                </TableCell>
-                <TableCell width="80%">Title</TableCell>
-                {showTrackLength && <TableCell>Track Length</TableCell>}
-                <TableCell></TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {songList.map((songInfo, index) => (
-                <SortableRow
-                  id={songInfo.id || ""}
-                  key={songInfo.id}
-                  onClick={() => playSong(songInfo)}
-                  disabled={dragDisabled}
-                >
-                  <PlaylistItem
-                    index={index}
-                    song={songInfo}
-                    isSelected={isSelected}
-                    onSelectClick={onSelectClick}
-                    openMenu={openMenu}
-                    showTrackLength={showTrackLength}
-                  />
-                </SortableRow>
-              ))}
-              <DragOverlay wrapperElement="tr">
-                {activeId ? (
-                  <PlaylistItem
-                    index={0}
-                    showTrackLength={showTrackLength}
-                    isSelected={isSelected}
-                    onSelectClick={onSelectClick}
-                    key={activeId}
-                    song={
-                      songList.find((s) => s.id === activeId) || ({} as ISong)
-                    }
-                    openMenu={openMenu}
-                  />
-                ) : null}
-              </DragOverlay>
-            </TableBody>
-          </Table>
-        </TableContainer>
-      </Sortable>
+      <TrackList
+        tracks={songList}
+        openMenu={openMenu}
+        onTrackClick={onTrackClick}
+        onDragOver={onDragOver}
+        onSelect={onSelect}
+        isSelected={isSelected}
+        onSelectAll={onSelectAll}
+        selected={selected}
+      />
       <Menu
         open={Boolean(queueMenuAnchorEl)}
         onClose={closeQueueMenu}
@@ -379,7 +203,6 @@ const PlayQueue: React.FC = () => {
           </ListItemIcon>
           <ListItemText primary="Info" />
         </MenuItem>
-        {offlineMenuItem}
         <Divider />
         <MenuItem onClick={addToNewPlaylist}>
           <ListItemIcon>

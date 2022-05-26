@@ -97,4 +97,4 @@ const PlaylistItem: React.FC<IProps> = (props) => {
   );
 };
 
-export default PlaylistItem;
+export default React.memo(PlaylistItem);

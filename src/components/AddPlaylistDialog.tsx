@@ -67,4 +67,4 @@ const AddPlaylistDialog: React.FC<IProps> = (props) => {
   );
 };
 
-export default AddPlaylistDialog;
+export default React.memo(AddPlaylistDialog);
