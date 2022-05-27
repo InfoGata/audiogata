@@ -11,10 +11,22 @@ import {
   ListItemText,
   Backdrop,
   CircularProgress,
+  FormControl,
+  InputLabel,
+  NativeSelect,
+  Button,
 } from "@mui/material";
 import React, { useEffect } from "react";
 import { useLocation } from "react-router";
-import { IAlbum, IArtist, IPlaylist, ISong } from "../types";
+import {
+  IAlbum,
+  IArtist,
+  IPlaylist,
+  ISong,
+  PageInfo,
+  ResultType,
+  SearchRequest,
+} from "../types";
 import { filterAsync } from "../utils";
 import AlbumSearchResult from "./AlbumSearchResult";
 import ArtistSearchResult from "./ArtistSearchResult";
@@ -50,6 +62,7 @@ function TabPanel(props: ITabPanelProps) {
 }
 
 const Search: React.FC = () => {
+  const [searchQuery, setSearchQuery] = React.useState("");
   const [searchType, setSearchType] = React.useState("");
   const [trackResults, setTrackResults] = React.useState<ISong[]>([]);
   const [albumResults, setAlbumResults] = React.useState<IAlbum[]>([]);
@@ -59,6 +72,10 @@ const Search: React.FC = () => {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [menuSong, setMenuSong] = React.useState<ISong>({} as ISong);
   const [options, setOptions] = React.useState<[string, string][]>();
+  const [trackPage, setTrackPage] = React.useState<PageInfo>();
+  const [albumPage, setAlbumPage] = React.useState<PageInfo>();
+  const [artistPage, setArtistPage] = React.useState<PageInfo>();
+  const [playlistPage, setPlaylistPage] = React.useState<PageInfo>();
   const location = useLocation();
   const playlists = useAppSelector((state) => state.playlist.playlists);
   const onSearchTypeChange = (e: React.FormEvent<HTMLSelectElement>) => {
@@ -67,7 +84,7 @@ const Search: React.FC = () => {
 
   const onSetTrackResults = (tracks: ISong[]) => {
     setTrackResults(tracks);
-    setTabValue("tracks");
+    setTabValue(ResultType.Tracks);
   };
   const dispatch = useAppDispatch();
   const [backdropOpen, setBackdropOpen] = React.useState(false);
@@ -94,7 +111,15 @@ const Search: React.FC = () => {
     getOptions();
   }, [plugins]);
 
+  const resetPagination = () => {
+    setTrackPage(undefined);
+    setAlbumPage(undefined);
+    setArtistPage(undefined);
+    setPlaylistPage(undefined);
+  };
+
   useEffect(() => {
+    resetPagination();
     const onSearch = async (search: string) => {
       setBackdropOpen(true);
       let tracks: ISong[] | undefined = [];
@@ -103,20 +128,27 @@ const Search: React.FC = () => {
       let playlists: IPlaylist[] | undefined = [];
       const plugin = plugins.find((p) => p.id === searchType);
       if (plugin?.hasDefined.searchAll()) {
-        ({ tracks, albums, artists, playlists } = await plugin.remote.searchAll(
-          search
-        ));
+        const searchAll = await plugin.remote.searchAll({ query: search });
+        tracks = searchAll.tracks?.items;
+        setTrackPage(searchAll.tracks?.pageInfo);
+        albums = searchAll.albums?.items;
+        setAlbumPage(searchAll.tracks?.pageInfo);
+        artists = searchAll.artists?.items;
+        setArtistPage(searchAll.tracks?.pageInfo);
+        playlists = searchAll.playlists?.items;
+        setTrackPage(searchAll.tracks?.pageInfo);
       }
       setAlbumResults(albums || []);
       setArtistResults(artists || []);
       setTrackResults(tracks || []);
       setPlaylistResults(playlists || []);
       setBackdropOpen(false);
-      setTabValue("tracks");
+      setTabValue(ResultType.Tracks);
     };
     const params = new URLSearchParams(location.search);
     const query = params.get("q");
-    if (query && query.length > 3) {
+    if (query) {
+      setSearchQuery(query);
       onSearch(query);
     }
   }, [location.search, searchType, plugins]);
@@ -168,15 +200,97 @@ const Search: React.FC = () => {
       {option[1]}
     </option>
   ));
+
+  const pluginSearch = async (newPage: PageInfo, resultType: ResultType) => {
+    const plugin = plugins.find((p) => p.id === searchType);
+    if (!plugin) {
+      return;
+    }
+
+    const request: SearchRequest = { query: searchQuery, page: newPage };
+    switch (resultType) {
+      case ResultType.Tracks:
+        const tracksResult = await plugin.remote.searchTracks(request);
+        setTrackResults(tracksResult.items);
+        setTrackPage(tracksResult.pageInfo);
+        break;
+      case ResultType.Albums:
+        const albumsResult = await plugin.remote.searchAlbums(request);
+        setAlbumResults(albumsResult.items);
+        setAlbumPage(albumsResult.pageInfo);
+        break;
+      case ResultType.Artists:
+        const artistsResult = await plugin.remote.searchArtists(request);
+        setArtistResults(artistsResult.items);
+        setArtistPage(artistsResult.pageInfo);
+        break;
+      case ResultType.Playlists:
+        const playlistsResult = await plugin.remote.searchPlaylists(request);
+        setPlaylistResults(playlistsResult.items);
+        setPlaylistPage(playlistsResult.pageInfo);
+        break;
+    }
+  };
+
+  const pageButtons = (pageInfo: PageInfo, resultType: ResultType) => {
+    const hasPrev = pageInfo.offset !== 0;
+    const nextOffset = pageInfo.offset + pageInfo.resultsPerPage;
+    const hasNext = nextOffset < pageInfo.totalResults;
+
+    const onPrev = async () => {
+      setBackdropOpen(true);
+      const prevOffset = pageInfo.offset - pageInfo.resultsPerPage;
+      const newPage: PageInfo = {
+        offset: prevOffset,
+        totalResults: pageInfo.totalResults,
+        resultsPerPage: pageInfo.resultsPerPage,
+        prevPage: pageInfo.prevPage,
+      };
+      await pluginSearch(newPage, resultType);
+      setBackdropOpen(false);
+    };
+
+    const onNext = async () => {
+      setBackdropOpen(true);
+      const newPage: PageInfo = {
+        offset: nextOffset,
+        totalResults: pageInfo.totalResults,
+        resultsPerPage: pageInfo.resultsPerPage,
+        nextPage: pageInfo.nextPage,
+      };
+      await pluginSearch(newPage, resultType);
+      setBackdropOpen(false);
+    };
+
+    return (
+      <>
+        {hasPrev && <Button onClick={onPrev}>Prev</Button>}
+        {hasNext && <Button onClick={onNext}>Next</Button>}
+      </>
+    );
+  };
+
   return (
     <>
-      <Backdrop open={backdropOpen}>
-        <CircularProgress color="inherit" />
-      </Backdrop>
-      <select value={searchType} onChange={onSearchTypeChange}>
-        {optionsComponents}
-      </select>
+      <FormControl fullWidth>
+        <InputLabel variant="standard" htmlFor="uncontrolled-native">
+          Plugin
+        </InputLabel>
+        <NativeSelect
+          value={searchType}
+          onChange={onSearchTypeChange}
+          inputProps={{
+            name: "plugin",
+            id: "uncontrolled-native",
+          }}
+        >
+          {optionsComponents}
+        </NativeSelect>
+      </FormControl>
       <AppBar position="static">
+        <Backdrop open={backdropOpen}>
+          <CircularProgress color="inherit" />
+        </Backdrop>
         <Tabs
           value={tabValue}
           onChange={handleChange}
@@ -184,27 +298,35 @@ const Search: React.FC = () => {
           textColor="primary"
           variant="fullWidth"
         >
-          {trackList.length > 0 ? <Tab label="Songs" value="tracks" /> : null}
-          {albumList.length > 0 ? <Tab label="Albums" value="albums" /> : null}
+          {trackList.length > 0 ? (
+            <Tab label="Songs" value={ResultType.Tracks} />
+          ) : null}
+          {albumList.length > 0 ? (
+            <Tab label="Albums" value={ResultType.Albums} />
+          ) : null}
           {artistList.length > 0 ? (
-            <Tab label="Artists" value="artists" />
+            <Tab label="Artists" value={ResultType.Artists} />
           ) : null}
           {playlistList.length > 0 ? (
-            <Tab label="Playlists" value="playlists" />
+            <Tab label="Playlists" value={ResultType.Playlists} />
           ) : null}
         </Tabs>
       </AppBar>
-      <TabPanel value={tabValue} index="tracks">
+      <TabPanel value={tabValue} index={ResultType.Tracks}>
         <List dense={true}>{trackList}</List>
+        {trackPage && pageButtons(trackPage, ResultType.Tracks)}
       </TabPanel>
-      <TabPanel value={tabValue} index="albums">
+      <TabPanel value={tabValue} index={ResultType.Albums}>
         <List dense={true}>{albumList}</List>
+        {albumPage && pageButtons(albumPage, ResultType.Albums)}
       </TabPanel>
-      <TabPanel value={tabValue} index="artists">
+      <TabPanel value={tabValue} index={ResultType.Artists}>
         <List dense={true}>{artistList}</List>
+        {artistPage && pageButtons(artistPage, ResultType.Artists)}
       </TabPanel>
-      <TabPanel value={tabValue} index="playlists">
+      <TabPanel value={tabValue} index={ResultType.Playlists}>
         <List dense={true}>{playlistList}</List>
+        {playlistPage && pageButtons(playlistPage, ResultType.Playlists)}
       </TabPanel>
       <Menu open={Boolean(anchorEl)} onClose={closeMenu} anchorEl={anchorEl}>
         <MenuItem onClick={addSongToQueue}>

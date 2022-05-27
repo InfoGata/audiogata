@@ -5,6 +5,7 @@ export interface NetworkRequest {
   statusText: string;
   url: string;
 }
+
 export interface MediaGataExtension {
   networkRequest: (
     input: RequestInfo,
@@ -114,3 +115,58 @@ export interface ManifestOptions {
   page: string;
   sameOrigin?: boolean;
 }
+
+export interface PageInfo {
+  totalResults: number;
+  resultsPerPage: number;
+  offset: number;
+  nextPage?: string;
+  prevPage?: string;
+}
+
+export interface SearchAllResult {
+  tracks?: SearchTrackResult;
+  albums?: SearchAlbumResult;
+  artists?: SearchArtistResult;
+  playlists?: SearchPlaylistResult;
+}
+
+export interface SearchRequest {
+  query: string;
+  page?: PageInfo;
+}
+
+export interface PlaylistTrackRequest {
+  playlist: IPlaylist;
+  currentPage?: PageInfo;
+  page?: PageInfo;
+}
+
+export interface SearchTrackResult {
+  items: ISong[];
+  pageInfo?: PageInfo;
+}
+
+export interface SearchArtistResult {
+  items: IArtist[];
+  pageInfo?: PageInfo;
+}
+
+export interface SearchAlbumResult {
+  items: IAlbum[];
+  pageInfo?: PageInfo;
+}
+
+export interface SearchPlaylistResult {
+  items: IPlaylist[];
+  pageInfo?: PageInfo;
+}
+
+export const ResultType = {
+  Tracks: "tracks",
+  Albums: "albums",
+  Artists: "artists",
+  Playlists: "playlists",
+} as const;
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export type ResultType = typeof ResultType[keyof typeof ResultType];

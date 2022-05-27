@@ -7,6 +7,12 @@ import {
   NetworkRequest,
   NotificationMessage,
   PluginInfo,
+  SearchAlbumResult,
+  SearchAllResult,
+  SearchArtistResult,
+  SearchPlaylistResult,
+  SearchRequest,
+  SearchTrackResult,
 } from "./types";
 import {
   PluginFrame,
@@ -24,12 +30,11 @@ import { App, URLOpenListenerEvent } from "@capacitor/app";
 import { addPlaylists } from "./store/reducers/playlistReducer";
 
 interface PluginInterface extends IPlayerComponent {
-  searchAll: (query: string) => Promise<{
-    tracks?: ISong[];
-    albums?: IAlbum[];
-    artists?: IArtist[];
-    playlists?: IPlaylist[];
-  }>;
+  searchAll: (request: SearchRequest) => Promise<SearchAllResult>;
+  searchTracks: (request: SearchRequest) => Promise<SearchTrackResult>;
+  searchArtists: (request: SearchRequest) => Promise<SearchArtistResult>;
+  searchAlbums: (request: SearchRequest) => Promise<SearchAlbumResult>;
+  searchPlaylists: (request: SearchRequest) => Promise<SearchPlaylistResult>;
   onNowPlayingTracksAdded: (tracks: ISong[]) => Promise<void>;
   onNowPlayingTracksRemoved: (tracks: ISong[]) => Promise<void>;
   onNowPlayingTracksChanged: (tracks: ISong[]) => Promise<void>;
@@ -226,23 +231,42 @@ export const PluginsProvider: React.FC = (props) => {
     }
 
     const completeMethods = {
-      searchAll: (result: {
-        tracks?: ISong[];
-        albums?: IAlbum[];
-        artists?: IArtist[];
-        playlists?: IPlaylist[];
-      }) => {
-        result.tracks?.forEach((t) => {
-          t.from = plugin.id;
+      searchAll: (result: SearchAllResult) => {
+        result.tracks?.items.forEach((i) => {
+          i.from = plugin.id;
         });
-        result.albums?.forEach((a) => {
-          a.from = plugin.id;
+        result.albums?.items.forEach((i) => {
+          i.from = plugin.id;
         });
-        result.artists?.forEach((a) => {
-          a.from = plugin.id;
+        result.artists?.items.forEach((i) => {
+          i.from = plugin.id;
         });
-        result.playlists?.forEach((p) => {
-          p.from = plugin.id;
+        result.playlists?.items.forEach((i) => {
+          i.from = plugin.id;
+        });
+        return result;
+      },
+      searchTracks: (result: SearchTrackResult) => {
+        result.items.forEach((i) => {
+          i.from = plugin.id;
+        });
+        return result;
+      },
+      searchArtists: (result: SearchArtistResult) => {
+        result.items.forEach((i) => {
+          i.from = plugin.id;
+        });
+        return result;
+      },
+      searchAlbums: (result: SearchAlbumResult) => {
+        result.items.forEach((i) => {
+          i.from = plugin.id;
+        });
+        return result;
+      },
+      searchPlaylists: (result: SearchPlaylistResult) => {
+        result.items.forEach((i) => {
+          i.from = plugin.id;
         });
         return result;
       },
