@@ -138,7 +138,10 @@ export interface SearchRequest {
 
 export interface PlaylistTrackRequest {
   playlist: IPlaylist;
-  currentPage?: PageInfo;
+  page?: PageInfo;
+}
+
+export interface UserPlaylistRequest {
   page?: PageInfo;
 }
 

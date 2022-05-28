@@ -25,8 +25,8 @@ const PlaylistSearchResult: React.FC<IPlaylistResultProps> = (props) => {
 
     const plugin = plugins.find((p) => p.id === playlist.from);
     if (plugin && (await plugin.hasDefined.getPlaylistTracks())) {
-      const tracks = await plugin.remote.getPlaylistTracks(playlist);
-      setTrackResults(tracks);
+      const tracks = await plugin.remote.getPlaylistTracks({ playlist });
+      setTrackResults(tracks.items);
     }
   };
   const image = getThumbnailImage(playlist.images, searchThumbnailSize);

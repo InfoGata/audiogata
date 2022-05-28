@@ -6,6 +6,7 @@ import {
   ISong,
   NetworkRequest,
   NotificationMessage,
+  PlaylistTrackRequest,
   PluginInfo,
   SearchAlbumResult,
   SearchAllResult,
@@ -13,6 +14,7 @@ import {
   SearchPlaylistResult,
   SearchRequest,
   SearchTrackResult,
+  UserPlaylistRequest,
 } from "./types";
 import {
   PluginFrame,
@@ -43,7 +45,9 @@ interface PluginInterface extends IPlayerComponent {
   onUiMessage: (message: any) => Promise<void>;
   onDeepLinkMessage: (message: string) => Promise<void>;
   getAlbumTracks: (album: IAlbum) => Promise<ISong[]>;
-  getPlaylistTracks: (playlist: IPlaylist) => Promise<ISong[]>;
+  getPlaylistTracks: (
+    request: PlaylistTrackRequest
+  ) => Promise<SearchTrackResult>;
   getArtistAlbums: (artist: IArtist) => Promise<IAlbum[]>;
   play: (song: ISong) => Promise<void>;
   setVolume: (volume: number) => Promise<void>;
@@ -51,7 +55,9 @@ interface PluginInterface extends IPlayerComponent {
   resume: () => Promise<void>;
   seek: (time: number) => Promise<void>;
   setPlaybackRate: (rate: number) => Promise<void>;
-  getUserPlaylists: () => Promise<IPlaylist[]>;
+  getUserPlaylists: (
+    request: UserPlaylistRequest
+  ) => Promise<SearchPlaylistResult>;
 }
 
 interface ApplicationPluginInterface extends PluginFrameInterface {
@@ -265,6 +271,12 @@ export const PluginsProvider: React.FC = (props) => {
         return result;
       },
       searchPlaylists: (result: SearchPlaylistResult) => {
+        result.items.forEach((i) => {
+          i.from = plugin.id;
+        });
+        return result;
+      },
+      getPlaylistTracks: (result: SearchTrackResult) => {
         result.items.forEach((i) => {
           i.from = plugin.id;
         });

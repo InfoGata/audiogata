@@ -22,8 +22,9 @@ const PluginPlaylists: React.FC = () => {
   React.useEffect(() => {
     const getPlaylists = async () => {
       if (plugin && (await plugin.hasDefined.getUserPlaylists())) {
-        const p = await plugin.remote.getUserPlaylists();
-        setPlaylists(p);
+        const request = {};
+        const p = await plugin.remote.getUserPlaylists(request);
+        setPlaylists(p.items);
       }
     };
     getPlaylists();

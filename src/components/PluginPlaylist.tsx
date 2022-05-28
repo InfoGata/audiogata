@@ -33,11 +33,13 @@ const PluginPlaylist: React.FC = () => {
     const getPlaylistTracks = async () => {
       if (plugin && plugin.hasDefined.getPlaylistTracks()) {
         const t = await plugin.remote.getPlaylistTracks({
-          apiId: id,
-          isUserPlaylist: true,
-          songs: [],
+          playlist: {
+            apiId: id,
+            isUserPlaylist: true,
+            songs: [],
+          },
         });
-        setPlaylistTracks(t);
+        setPlaylistTracks(t.items);
       }
     };
 
@@ -66,12 +68,8 @@ const PluginPlaylist: React.FC = () => {
           </TableHead>
           <TableBody>
             {playlistTracks.map((track, index) => (
-              <TableRow hover={true}>
-                <PlaylistItem
-                  key={index}
-                  song={track}
-                  showTrackLength={showTrackLength}
-                />
+              <TableRow hover={true} key={index}>
+                <PlaylistItem song={track} showTrackLength={showTrackLength} />
               </TableRow>
             ))}
           </TableBody>
