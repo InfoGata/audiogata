@@ -23,7 +23,7 @@ interface PluginDescription {
 const pluginDescriptions: PluginDescription[] = [
   {
     name: "Plugin for Youtube",
-    description: "Plugin for playiing music from youtube.com",
+    description: "Plugin for playing music from youtube.com",
     url: "https://gitlab.com/api/v4/projects/26680847/repository/files/manifest.json/raw?ref=master",
   },
   {

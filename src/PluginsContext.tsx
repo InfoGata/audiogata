@@ -82,7 +82,7 @@ interface PluginMessage {
 export class PluginFrameContainer extends PluginFrame<PluginInterface> {
   name?: string;
   id?: string;
-  hasOptions = false;
+  hasOptions?: boolean;
   fileList?: FileList;
   optionsSameOrigin?: boolean;
   version?: string;

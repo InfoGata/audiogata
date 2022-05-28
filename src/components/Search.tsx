@@ -132,11 +132,11 @@ const Search: React.FC = () => {
         tracks = searchAll.tracks?.items;
         setTrackPage(searchAll.tracks?.pageInfo);
         albums = searchAll.albums?.items;
-        setAlbumPage(searchAll.tracks?.pageInfo);
+        setAlbumPage(searchAll.albums?.pageInfo);
         artists = searchAll.artists?.items;
-        setArtistPage(searchAll.tracks?.pageInfo);
+        setArtistPage(searchAll.artists?.pageInfo);
         playlists = searchAll.playlists?.items;
-        setTrackPage(searchAll.tracks?.pageInfo);
+        setPlaylistPage(searchAll.playlists?.pageInfo);
       }
       setAlbumResults(albums || []);
       setArtistResults(artists || []);
