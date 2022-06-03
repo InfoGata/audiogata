@@ -38,13 +38,13 @@ import { addTrack } from "../store/reducers/songReducer";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
 import { usePlugins } from "../PluginsContext";
 
-interface ITabPanelProps {
+interface TabPanelProps {
   children?: React.ReactNode;
   index: any;
   value: any;
 }
 
-function TabPanel(props: ITabPanelProps) {
+const TabPanel: React.FC<TabPanelProps> = (props) => {
   const { children, value, index, ...other } = props;
 
   return (
@@ -59,7 +59,7 @@ function TabPanel(props: ITabPanelProps) {
       {value === index && <Box p={3}>{children}</Box>}
     </Typography>
   );
-}
+};
 
 const Search: React.FC = () => {
   const [searchQuery, setSearchQuery] = React.useState("");

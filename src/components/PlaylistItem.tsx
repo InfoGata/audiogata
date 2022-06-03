@@ -14,7 +14,7 @@ import { MoreHoriz } from "@mui/icons-material";
 import { useAppSelector } from "../store/hooks";
 import { getThumbnailImage, searchThumbnailSize } from "../utils";
 
-interface IProps {
+interface PlaylistItemsProps {
   song: ISong;
   showTrackLength: boolean;
   isSelected?: (id: string) => boolean;
@@ -26,7 +26,7 @@ interface IProps {
   index?: number;
 }
 
-const PlaylistItem: React.FC<IProps> = (props) => {
+const PlaylistItem: React.FC<PlaylistItemsProps> = (props) => {
   const { song, showTrackLength, openMenu, onSelectClick, isSelected, index } =
     props;
   const currentSong = useAppSelector((state) => state.song.currentSong);

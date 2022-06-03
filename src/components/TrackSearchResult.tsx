@@ -14,11 +14,11 @@ import { getThumbnailImage, searchThumbnailSize } from "../utils";
 import { MoreHoriz } from "@mui/icons-material";
 import { useAppDispatch } from "../store/hooks";
 
-interface ITrackResultProps {
+interface TrackSearchResultProps {
   track: ISong;
   openMenu: (event: React.MouseEvent<HTMLButtonElement>, song: ISong) => void;
 }
-const TrackSearchResult: React.FC<ITrackResultProps> = (props) => {
+const TrackSearchResult: React.FC<TrackSearchResultProps> = (props) => {
   const { track, openMenu } = props;
   const dispatch = useAppDispatch();
   const openSongMenu = (event: React.MouseEvent<HTMLButtonElement>) => {

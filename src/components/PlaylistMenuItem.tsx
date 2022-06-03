@@ -5,13 +5,13 @@ import { PlaylistInfo, ISong } from "../types";
 import { useAppDispatch } from "../store/hooks";
 import { addPlaylistTracks } from "../store/reducers/playlistReducer";
 
-interface IProps {
+interface PlaylistMenuItemProps {
   playlist: PlaylistInfo;
   songs: ISong[];
   closeMenu: () => void;
 }
 
-const PlaylistMenuItem: React.FC<IProps> = (props) => {
+const PlaylistMenuItem: React.FC<PlaylistMenuItemProps> = (props) => {
   const { playlist, closeMenu, songs } = props;
   const dispatch = useAppDispatch();
 

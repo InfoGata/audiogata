@@ -4,7 +4,7 @@ import { getPluginFrames } from "../../PluginsContext";
 import { filterAsync } from "../../utils";
 import { AppActionCreator } from "../store";
 
-interface ISongState {
+interface SongState {
   songs: ISong[];
   shuffleList: number[];
   shuffle: boolean;
@@ -18,12 +18,12 @@ interface ISongState {
   playbackRate?: number;
 }
 
-interface IUpdateFrom {
+interface UpdateFrom {
   updateIds: Set<string>;
   from: string;
 }
 
-const initialState: ISongState = {
+const initialState: SongState = {
   isPlaying: false,
   mute: false,
   repeat: false,
@@ -50,20 +50,20 @@ const songSlice = createSlice({
   name: "song",
   initialState,
   reducers: {
-    addTrack(state, action: PayloadAction<ISong>): ISongState {
+    addTrack(state, action: PayloadAction<ISong>): SongState {
       return {
         ...state,
         songs: [...state.songs, action.payload],
       };
     },
-    clearTracks(state): ISongState {
+    clearTracks(state): SongState {
       return {
         ...state,
         shuffleList: [],
         songs: [],
       };
     },
-    deleteTrack(state, action: PayloadAction<ISong>): ISongState {
+    deleteTrack(state, action: PayloadAction<ISong>): SongState {
       const newPlaylist = state.songs.filter((s) => s.id !== action.payload.id);
       let currentSong = state.currentSong;
       if (currentSong && currentSong.id === action.payload.id) {
@@ -76,7 +76,7 @@ const songSlice = createSlice({
         songs: newPlaylist,
       };
     },
-    updateTrack(state, action: PayloadAction<ISong>): ISongState {
+    updateTrack(state, action: PayloadAction<ISong>): SongState {
       return {
         ...state,
         songs: state.songs.map((s) =>
@@ -84,7 +84,7 @@ const songSlice = createSlice({
         ),
       };
     },
-    updateFrom(state, action: PayloadAction<IUpdateFrom>): ISongState {
+    updateFrom(state, action: PayloadAction<UpdateFrom>): SongState {
       return {
         ...state,
         songs: state.songs.map((s) =>
@@ -94,14 +94,14 @@ const songSlice = createSlice({
         ),
       };
     },
-    setTracks(state, action: PayloadAction<ISong[]>): ISongState {
+    setTracks(state, action: PayloadAction<ISong[]>): SongState {
       return {
         ...state,
         shuffleList: [],
         songs: action.payload,
       };
     },
-    nextTrack: (state): ISongState => {
+    nextTrack: (state): SongState => {
       let shuffleList = [...state.shuffleList];
       let index = -1;
       if (state.currentSong) {
@@ -139,7 +139,7 @@ const songSlice = createSlice({
         shuffleList,
       };
     },
-    prevTrack: (state): ISongState => {
+    prevTrack: (state): SongState => {
       if (state.elapsed && state.elapsed > 2) {
         return {
           ...state,
@@ -163,20 +163,20 @@ const songSlice = createSlice({
         elapsed: 0,
       };
     },
-    seek: (state, action: PayloadAction<number | undefined>): ISongState => {
+    seek: (state, action: PayloadAction<number | undefined>): SongState => {
       return {
         ...state,
         elapsed: action.payload,
         seekTime: action.payload,
       };
     },
-    setElapsed: (state, action: PayloadAction<number>): ISongState => {
+    setElapsed: (state, action: PayloadAction<number>): SongState => {
       return {
         ...state,
         elapsed: action.payload,
       };
     },
-    setTrack: (state, action: PayloadAction<ISong | undefined>): ISongState => {
+    setTrack: (state, action: PayloadAction<ISong | undefined>): SongState => {
       if (
         state.currentSong &&
         action.payload &&
@@ -196,38 +196,38 @@ const songSlice = createSlice({
         isPlaying: true,
       };
     },
-    setVolume: (state, action: PayloadAction<number>): ISongState => {
+    setVolume: (state, action: PayloadAction<number>): SongState => {
       return {
         ...state,
         mute: false,
         volume: action.payload,
       };
     },
-    setPlaybackRate: (state, action: PayloadAction<number>): ISongState => {
+    setPlaybackRate: (state, action: PayloadAction<number>): SongState => {
       return {
         ...state,
         playbackRate: action.payload,
       };
     },
-    toggleIsPlaying: (state): ISongState => {
+    toggleIsPlaying: (state): SongState => {
       return {
         ...state,
         isPlaying: !state.isPlaying,
       };
     },
-    toggleMute: (state): ISongState => {
+    toggleMute: (state): SongState => {
       return {
         ...state,
         mute: !state.mute,
       };
     },
-    toggleRepeat: (state): ISongState => {
+    toggleRepeat: (state): SongState => {
       return {
         ...state,
         repeat: !state.repeat,
       };
     },
-    toggleShuffle: (state): ISongState => {
+    toggleShuffle: (state): SongState => {
       return {
         ...state,
         shuffle: !state.shuffle,

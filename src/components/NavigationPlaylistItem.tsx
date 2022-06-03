@@ -3,11 +3,13 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { PlaylistInfo } from "../types";
 
-interface IProps {
+interface NavigationPlaylistItemProps {
   playlist: PlaylistInfo;
 }
 
-const NavigationPlaylistItem: React.FC<IProps> = (props: IProps) => {
+const NavigationPlaylistItem: React.FC<NavigationPlaylistItemProps> = (
+  props
+) => {
   const playlistPath = `/playlists/${props.playlist.id}`;
 
   return (

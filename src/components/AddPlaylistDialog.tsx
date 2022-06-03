@@ -12,13 +12,13 @@ import { IPlaylist, ISong } from "../types";
 import { useAppDispatch } from "../store/hooks";
 import { addPlaylist } from "../store/reducers/playlistReducer";
 
-interface IProps {
+interface AddPlaylistDialogProps {
   open: boolean;
   songs?: ISong[];
   handleClose: () => void;
 }
 
-const AddPlaylistDialog: React.FC<IProps> = (props) => {
+const AddPlaylistDialog: React.FC<AddPlaylistDialogProps> = (props) => {
   const { open, handleClose } = props;
   const [name, setName] = React.useState("");
   const dispatch = useAppDispatch();

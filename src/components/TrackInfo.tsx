@@ -11,11 +11,11 @@ import { usePlugins } from "../PluginsContext";
 import { useAppDispatch } from "../store/hooks";
 import { updateTrack } from "../store/reducers/songReducer";
 
-interface ITrackInfo {
+interface TrackInfoProps {
   track: ISong;
 }
 
-const TrackInfo: React.FC<ITrackInfo> = (props) => {
+const TrackInfo: React.FC<TrackInfoProps> = (props) => {
   const { track } = props;
   const dispatch = useAppDispatch();
   const { plugins } = usePlugins();

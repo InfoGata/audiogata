@@ -1,7 +1,6 @@
-import { ISong } from "../types";
-import { IPlayerComponent } from "./IPlayerComponent";
+import { PlayerComponent, ISong } from "../types";
 
-class Local implements IPlayerComponent {
+class Local implements PlayerComponent {
   public name = "local";
   private audio: HTMLAudioElement;
   public setTime?: (elapsed: number, total: number) => void;

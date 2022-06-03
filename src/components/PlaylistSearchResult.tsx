@@ -10,13 +10,13 @@ import { IPlaylist, ISong } from "../types";
 import { usePlugins } from "../PluginsContext";
 import { getThumbnailImage, searchThumbnailSize } from "../utils";
 
-interface IPlaylistResultProps {
+interface PlaylistSearchResultProps {
   playlist: IPlaylist;
   clearSearch: () => void;
   setTrackResults: (songs: ISong[]) => void;
 }
 
-const PlaylistSearchResult: React.FC<IPlaylistResultProps> = (props) => {
+const PlaylistSearchResult: React.FC<PlaylistSearchResultProps> = (props) => {
   const { clearSearch, playlist, setTrackResults } = props;
   const { plugins } = usePlugins();
 

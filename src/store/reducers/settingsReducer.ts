@@ -1,11 +1,11 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-interface ISettings {
+interface SettingsState {
   playOnStartup: boolean;
 }
 
-const initialState: ISettings = {
-  playOnStartup: false
+const initialState: SettingsState = {
+  playOnStartup: false,
 };
 
 const settingsSlice = createSlice({
@@ -15,9 +15,9 @@ const settingsSlice = createSlice({
     togglePlayOnStartup: (state) => {
       return {
         ...state,
-        playOnStartup: !state.playOnStartup
+        playOnStartup: !state.playOnStartup,
       };
-    }
+    },
   },
 });
 

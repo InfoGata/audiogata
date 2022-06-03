@@ -3,11 +3,11 @@ import { IPlaylist, ISong, PlaylistInfo } from "../../types";
 import { AppActionCreator } from "../store";
 import { db } from "../../database";
 
-interface IPlaylistState {
+interface PlaylistState {
   playlists: PlaylistInfo[];
 }
 
-const initialState: IPlaylistState = {
+const initialState: PlaylistState = {
   playlists: [],
 };
 

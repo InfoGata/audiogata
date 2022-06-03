@@ -1,10 +1,10 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-interface ISettings {
+interface SettingsState {
   navbarOpen: boolean;
 }
 
-const initialState: ISettings = {
+const initialState: SettingsState = {
   navbarOpen: false,
 };
 
@@ -15,7 +15,7 @@ const uiSlice = createSlice({
     toggleNavbar: (state) => {
       return {
         ...state,
-        navbarOpen: !state.navbarOpen
+        navbarOpen: !state.navbarOpen,
       };
     },
   },

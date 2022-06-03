@@ -1,11 +1,7 @@
 import React from "react";
 import { connect } from "react-redux";
 import { bindActionCreators, Dispatch } from "redux";
-import { ISong } from "../types";
-import {
-  IPlayerComponent,
-  PlayerComponentType,
-} from "../plugins/IPlayerComponent";
+import { PlayerComponent, ISong, PlayerComponentType } from "../types";
 import Local from "../plugins/local";
 import {
   nextTrack,
@@ -20,17 +16,23 @@ import PluginsContext from "../PluginsContext";
 import { db } from "../database";
 import { filterAsync } from "../utils";
 
-interface IProps extends StateProps, DispatchProps, ProviderContext {}
-interface IState {
+interface AudioComponentProps
+  extends StateProps,
+    DispatchProps,
+    ProviderContext {}
+interface AudioComponentState {
   errorCount: number;
 }
 
-class AudioComponent extends React.Component<IProps, IState> {
+class AudioComponent extends React.Component<
+  AudioComponentProps,
+  AudioComponentState
+> {
   static contextType = PluginsContext;
   context!: React.ContextType<typeof PluginsContext>;
   private songLoaded = false;
-  private lastPlayer: IPlayerComponent | undefined;
-  constructor(props: IProps) {
+  private lastPlayer: PlayerComponent | undefined;
+  constructor(props: AudioComponentProps) {
     super(props);
 
     Local.onSongEnd = this.onSongEnd;
@@ -59,7 +61,7 @@ class AudioComponent extends React.Component<IProps, IState> {
     }
   }
 
-  public async componentDidUpdate(prevProps: IProps) {
+  public async componentDidUpdate(prevProps: AudioComponentProps) {
     const currentProps = this.props;
     await this.onCurrentSongUpdate(prevProps, currentProps);
     await this.onIsPlayingUpdate(prevProps, currentProps);
@@ -76,7 +78,7 @@ class AudioComponent extends React.Component<IProps, IState> {
   private async getPlayerFromName(
     name: string,
     method: PlayerComponentType = "play"
-  ): Promise<IPlayerComponent | undefined> {
+  ): Promise<PlayerComponent | undefined> {
     // PlayerComponent must have play
     const playerPlugins = await filterAsync(this.context.plugins, (p) =>
       p.hasDefined.play()
@@ -91,7 +93,10 @@ class AudioComponent extends React.Component<IProps, IState> {
     return Local;
   }
 
-  private async onCurrentSongUpdate(prevProps: IProps, newProps: IProps) {
+  private async onCurrentSongUpdate(
+    prevProps: AudioComponentProps,
+    newProps: AudioComponentProps
+  ) {
     if (
       prevProps.currentSong &&
       newProps.currentSong &&
@@ -101,7 +106,10 @@ class AudioComponent extends React.Component<IProps, IState> {
     }
   }
 
-  private async onIsPlayingUpdate(prevProps: IProps, newProps: IProps) {
+  private async onIsPlayingUpdate(
+    prevProps: AudioComponentProps,
+    newProps: AudioComponentProps
+  ) {
     const player = await this.getPlayerFromName(
       newProps.currentSong?.from || ""
     );
@@ -117,7 +125,10 @@ class AudioComponent extends React.Component<IProps, IState> {
     }
   }
 
-  private async onVolumeUpdate(prevProps: IProps, newProps: IProps) {
+  private async onVolumeUpdate(
+    prevProps: AudioComponentProps,
+    newProps: AudioComponentProps
+  ) {
     if (prevProps.volume !== newProps.volume) {
       const player = await this.getPlayerFromName(
         newProps.currentSong?.from || "",
@@ -127,7 +138,10 @@ class AudioComponent extends React.Component<IProps, IState> {
     }
   }
 
-  private async onRateUpdate(prevProps: IProps, newProps: IProps) {
+  private async onRateUpdate(
+    prevProps: AudioComponentProps,
+    newProps: AudioComponentProps
+  ) {
     if (prevProps.playbackRate !== newProps.playbackRate) {
       const player = await this.getPlayerFromName(
         this.props.currentSong?.from || "",
@@ -137,7 +151,10 @@ class AudioComponent extends React.Component<IProps, IState> {
     }
   }
 
-  private async onMuteUpdate(prevProps: IProps, newProps: IProps) {
+  private async onMuteUpdate(
+    prevProps: AudioComponentProps,
+    newProps: AudioComponentProps
+  ) {
     if (prevProps.mute !== newProps.mute) {
       const player = await this.getPlayerFromName(
         this.props.currentSong?.from || "",
@@ -151,7 +168,10 @@ class AudioComponent extends React.Component<IProps, IState> {
     }
   }
 
-  private async onSeek(prevProps: IProps, newProps: IProps) {
+  private async onSeek(
+    prevProps: AudioComponentProps,
+    newProps: AudioComponentProps
+  ) {
     if (newProps.seekTime != null && prevProps.seekTime !== newProps.seekTime) {
       const player = await this.getPlayerFromName(
         newProps.currentSong?.from || "",

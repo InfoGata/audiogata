@@ -4,13 +4,13 @@ import { IAlbum, IArtist } from "../types";
 import { usePlugins } from "../PluginsContext";
 import { getThumbnailImage, searchThumbnailSize } from "../utils";
 
-interface IArtistResultProps {
+interface ArtistSearchResultProps {
   artist: IArtist;
   clearSearch: () => void;
   setAlbumResults: (albums: IAlbum[]) => void;
 }
 
-const ArtistSearchResult: React.FC<IArtistResultProps> = (props) => {
+const ArtistSearchResult: React.FC<ArtistSearchResultProps> = (props) => {
   const { plugins } = usePlugins();
   const { artist, clearSearch, setAlbumResults } = props;
 

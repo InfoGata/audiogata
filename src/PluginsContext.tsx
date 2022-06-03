@@ -2,6 +2,7 @@ import React from "react";
 import {
   IAlbum,
   IArtist,
+  PlayerComponent,
   IPlaylist,
   ISong,
   NetworkRequest,
@@ -24,14 +25,13 @@ import { db } from "./database";
 import { useAppDispatch, useAppSelector } from "./store/hooks";
 import { nextTrack, setElapsed, setTracks } from "./store/reducers/songReducer";
 import { useSnackbar } from "notistack";
-import { IPlayerComponent } from "./plugins/IPlayerComponent";
 import { isElectron } from "./utils";
 import { Capacitor } from "@capacitor/core";
 import ConfirmPluginDialog from "./components/ConfirmPluginDialog";
 import { App, URLOpenListenerEvent } from "@capacitor/app";
 import { addPlaylists } from "./store/reducers/playlistReducer";
 
-interface PluginInterface extends IPlayerComponent {
+interface PluginInterface extends PlayerComponent {
   searchAll: (request: SearchRequest) => Promise<SearchAllResult>;
   searchTracks: (request: SearchRequest) => Promise<SearchTrackResult>;
   searchArtists: (request: SearchRequest) => Promise<SearchArtistResult>;
