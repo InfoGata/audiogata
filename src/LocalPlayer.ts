@@ -1,6 +1,6 @@
-import { PlayerComponent, ISong } from "../types";
+import { PlayerComponent, ISong } from "./types";
 
-class Local implements PlayerComponent {
+class LocalPlayer implements PlayerComponent {
   public name = "local";
   private audio: HTMLAudioElement;
   public setTime?: (elapsed: number, total: number) => void;
@@ -50,4 +50,4 @@ class Local implements PlayerComponent {
   }
 }
 
-export default new Local();
+export default new LocalPlayer();
