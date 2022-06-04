@@ -5,6 +5,7 @@ import { db } from "../database";
 import { directoryProps, getPlugin } from "../utils";
 import { FileType } from "../types";
 import { Capacitor } from "@capacitor/core";
+import { Link } from "react-router-dom";
 
 const FileInput = styled("input")({
   display: "none",
@@ -154,6 +155,9 @@ const PluginContainer: React.FC<PluginContainerProps> = (props) => {
         />
         <Button component="span">Update From File</Button>
       </label>
+      <Button component={Link} to={`/plugins/${plugin.id}`}>
+        Details
+      </Button>
       {plugin.fileList && <Button onClick={onReload}>Reload</Button>}
       <Grid>{optionsOpen && pluginIframe}</Grid>
     </Grid>
