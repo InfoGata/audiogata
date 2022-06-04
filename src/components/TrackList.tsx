@@ -13,16 +13,16 @@ import {
   useTheme,
 } from "@mui/material";
 import React from "react";
-import { Song } from "../types";
+import { Track } from "../types";
 import PlaylistItem from "./PlaylistItem";
 import Sortable from "./Sortable";
 import SortableRow from "./SortableRow";
 
 interface TrackListProps {
-  tracks: Song[];
-  onDragOver: (newTrackList: Song[]) => void;
-  onTrackClick: (track: Song) => void;
-  openMenu: (event: React.MouseEvent<HTMLButtonElement>, song: Song) => void;
+  tracks: Track[];
+  onDragOver: (newTrackList: Track[]) => void;
+  onTrackClick: (track: Track) => void;
+  openMenu: (event: React.MouseEvent<HTMLButtonElement>, track: Track) => void;
   onSelect: (e: React.ChangeEvent<HTMLInputElement>, id: string) => void;
   onSelectAll: (event: React.ChangeEvent<HTMLInputElement>) => void;
   isSelected: (id: string) => boolean;
@@ -63,7 +63,7 @@ const TrackList: React.FC<TrackListProps> = (props) => {
 
   return (
     <Sortable
-      ids={tracks.map((s) => s.id || "")}
+      ids={tracks.map((t) => t.id || "")}
       onDragStart={handleDragStart}
       onDragEnd={handleDragEnd}
     >
@@ -91,17 +91,17 @@ const TrackList: React.FC<TrackListProps> = (props) => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {tracks.map((s) => (
+            {tracks.map((t) => (
               <SortableRow
-                id={s.id || ""}
-                key={s.id}
+                id={t.id || ""}
+                key={t.id}
                 onClick={onTrackClick}
                 disabled={dragDisabled}
               >
                 <PlaylistItem
                   showTrackLength={showTrackLength}
-                  key={s.id}
-                  song={s}
+                  key={t.id}
+                  track={t}
                   openMenu={openMenu}
                   isSelected={isSelected}
                   onSelectClick={onSelect}
@@ -113,7 +113,7 @@ const TrackList: React.FC<TrackListProps> = (props) => {
                 <PlaylistItem
                   showTrackLength={showTrackLength}
                   key={activeId}
-                  song={tracks.find((s) => s.id === activeId) || ({} as Song)}
+                  track={tracks.find((t) => t.id === activeId) || ({} as Track)}
                 />
               ) : null}
             </DragOverlay>

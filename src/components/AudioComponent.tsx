@@ -1,7 +1,7 @@
 import React from "react";
 import { connect } from "react-redux";
 import { bindActionCreators, Dispatch } from "redux";
-import { PlayerComponent, Song, PlayerComponentType } from "../types";
+import { PlayerComponent, Track, PlayerComponentType } from "../types";
 import LocalPlayer from "../LocalPlayer";
 import {
   nextTrack,
@@ -9,7 +9,7 @@ import {
   seek,
   setElapsed,
   toggleIsPlaying,
-} from "../store/reducers/songReducer";
+} from "../store/reducers/trackReducer";
 import { AppState } from "../store/store";
 import { withSnackbar, ProviderContext } from "notistack";
 import PluginsContext from "../PluginsContext";
@@ -30,12 +30,12 @@ class AudioComponent extends React.Component<
 > {
   static contextType = PluginsContext;
   context!: React.ContextType<typeof PluginsContext>;
-  private songLoaded = false;
+  private trackLoaded = false;
   private lastPlayer: PlayerComponent | undefined;
   constructor(props: AudioComponentProps) {
     super(props);
 
-    LocalPlayer.onSongEnd = this.onSongEnd;
+    LocalPlayer.onTrackEnd = this.onTrackEnd;
     LocalPlayer.setTime = this.setTrackTimes;
     this.state = {
       errorCount: 0,
@@ -45,17 +45,17 @@ class AudioComponent extends React.Component<
   public async componentDidMount() {
     this.setMediaSessionActions();
     let player = await this.getPlayerFromName(
-      this.props.currentSong?.from || "",
+      this.props.currentTrack?.from || "",
       "setVolume"
     );
     await player?.setVolume(this.props.volume);
     player = await this.getPlayerFromName(
-      this.props.currentSong?.from || "",
+      this.props.currentTrack?.from || "",
       "setPlaybackRate"
     );
     await player?.setPlaybackRate(this.props.playbackRate || 1.0);
     if (this.props.playOnStartup && this.props.isPlaying) {
-      await this.playCurrentSong();
+      await this.playCurrentTrack();
     } else if (this.props.isPlaying) {
       this.props.toggleIsPlaying();
     }
@@ -63,7 +63,7 @@ class AudioComponent extends React.Component<
 
   public async componentDidUpdate(prevProps: AudioComponentProps) {
     const currentProps = this.props;
-    await this.onCurrentSongUpdate(prevProps, currentProps);
+    await this.onCurrentTrackUpdate(prevProps, currentProps);
     await this.onIsPlayingUpdate(prevProps, currentProps);
     await this.onVolumeUpdate(prevProps, currentProps);
     await this.onMuteUpdate(prevProps, currentProps);
@@ -93,16 +93,16 @@ class AudioComponent extends React.Component<
     return LocalPlayer;
   }
 
-  private async onCurrentSongUpdate(
+  private async onCurrentTrackUpdate(
     prevProps: AudioComponentProps,
     newProps: AudioComponentProps
   ) {
     if (
-      prevProps.currentSong &&
-      newProps.currentSong &&
-      prevProps.currentSong.id !== newProps.currentSong.id
+      prevProps.currentTrack &&
+      newProps.currentTrack &&
+      prevProps.currentTrack.id !== newProps.currentTrack.id
     ) {
-      await this.playSong(newProps.currentSong);
+      await this.playTrack(newProps.currentTrack);
     }
   }
 
@@ -111,13 +111,13 @@ class AudioComponent extends React.Component<
     newProps: AudioComponentProps
   ) {
     const player = await this.getPlayerFromName(
-      newProps.currentSong?.from || ""
+      newProps.currentTrack?.from || ""
     );
     if (prevProps.isPlaying !== newProps.isPlaying) {
       if (newProps.isPlaying) {
         player?.resume();
-        if (!this.songLoaded && newProps.currentSong) {
-          await this.playSong(newProps.currentSong, newProps.elapsed);
+        if (!this.trackLoaded && newProps.currentTrack) {
+          await this.playTrack(newProps.currentTrack, newProps.elapsed);
         }
       } else {
         await player?.pause();
@@ -131,7 +131,7 @@ class AudioComponent extends React.Component<
   ) {
     if (prevProps.volume !== newProps.volume) {
       const player = await this.getPlayerFromName(
-        newProps.currentSong?.from || "",
+        newProps.currentTrack?.from || "",
         "setVolume"
       );
       await player?.setVolume(newProps.volume);
@@ -144,7 +144,7 @@ class AudioComponent extends React.Component<
   ) {
     if (prevProps.playbackRate !== newProps.playbackRate) {
       const player = await this.getPlayerFromName(
-        this.props.currentSong?.from || "",
+        this.props.currentTrack?.from || "",
         "setPlaybackRate"
       );
       await player?.setPlaybackRate(newProps.playbackRate || 1.0);
@@ -157,7 +157,7 @@ class AudioComponent extends React.Component<
   ) {
     if (prevProps.mute !== newProps.mute) {
       const player = await this.getPlayerFromName(
-        this.props.currentSong?.from || "",
+        this.props.currentTrack?.from || "",
         "setVolume"
       );
       if (newProps.mute) {
@@ -174,7 +174,7 @@ class AudioComponent extends React.Component<
   ) {
     if (newProps.seekTime != null && prevProps.seekTime !== newProps.seekTime) {
       const player = await this.getPlayerFromName(
-        newProps.currentSong?.from || "",
+        newProps.currentTrack?.from || "",
         "seek"
       );
       await player?.seek(newProps.seekTime);
@@ -182,10 +182,10 @@ class AudioComponent extends React.Component<
     }
   }
 
-  private async playCurrentSong() {
-    const currentSong = this.props.currentSong;
-    if (currentSong) {
-      await this.playSong(currentSong, this.props.elapsed);
+  private async playCurrentTrack() {
+    const currentTrack = this.props.currentTrack;
+    if (currentTrack) {
+      await this.playTrack(currentTrack, this.props.elapsed);
       this.setMediaSessionMetaData();
     }
   }
@@ -193,34 +193,34 @@ class AudioComponent extends React.Component<
     this.props.setElapsed(currentTime);
   };
 
-  private onSongEnd = () => {
+  private onTrackEnd = () => {
     this.props.nextTrack();
   };
 
-  private async playSong(song: Song, time?: number) {
-    const newSong: Song = { ...song };
-    if (newSong.from && newSong.id) {
+  private async playTrack(track: Track, time?: number) {
+    const newTrack: Track = { ...track };
+    if (newTrack.from && newTrack.id) {
       const audioBlob = await db.audioBlobs
         .where(":id")
-        .equals(newSong.id)
+        .equals(newTrack.id)
         .first();
       const pluginFrame = this.context.plugins.find(
-        (p) => p.id === newSong.from
+        (p) => p.id === newTrack.from
       );
       const hasPluginApi =
         (await pluginFrame?.hasDefined.getTrackUrl()) || false;
-      const player = await this.getPlayerFromName(newSong.from || "");
+      const player = await this.getPlayerFromName(newTrack.from || "");
       this.lastPlayer?.pause();
       try {
         if (audioBlob) {
-          newSong.source = URL.createObjectURL(audioBlob.blob);
+          newTrack.source = URL.createObjectURL(audioBlob.blob);
         } else if (hasPluginApi && pluginFrame) {
-          newSong.source = await pluginFrame.remote.getTrackUrl(newSong);
+          newTrack.source = await pluginFrame.remote.getTrackUrl(newTrack);
         }
 
-        await player?.play(newSong);
+        await player?.play(newTrack);
         this.lastPlayer = player;
-        this.songLoaded = true;
+        this.trackLoaded = true;
         this.setState({
           errorCount: 0,
         });
@@ -241,8 +241,8 @@ class AudioComponent extends React.Component<
       return;
     }
 
-    if (this.props.currentSong) {
-      const message = `${this.props.currentSong.name}: ${err.message}`;
+    if (this.props.currentTrack) {
+      const message = `${this.props.currentTrack.name}: ${err.message}`;
       this.props.enqueueSnackbar(message, { variant: "error" });
       console.log(message);
       console.log(err);
@@ -257,10 +257,10 @@ class AudioComponent extends React.Component<
 
   private setMediaSessionMetaData() {
     if (navigator && navigator.mediaSession) {
-      if (this.props.currentSong) {
+      if (this.props.currentTrack) {
         navigator.mediaSession.metadata = new MediaMetadata({
-          title: this.props.currentSong.name,
-          artwork: this.props.currentSong.images.map((i) => ({
+          title: this.props.currentTrack.name,
+          artwork: this.props.currentTrack.images.map((i) => ({
             src: i.url,
             sizes: `${i.height}x${i.width}`,
             type: this.getImageType(i.url),
@@ -292,14 +292,14 @@ class AudioComponent extends React.Component<
   }
 }
 const mapStateToProps = (state: AppState) => ({
-  currentSong: state.song.currentSong,
-  elapsed: state.song.elapsed,
-  isPlaying: state.song.isPlaying,
-  mute: state.song.mute,
+  currentTrack: state.track.currentTrack,
+  elapsed: state.track.elapsed,
+  isPlaying: state.track.isPlaying,
+  mute: state.track.mute,
   playOnStartup: state.settings.playOnStartup,
-  seekTime: state.song.seekTime,
-  volume: state.song.volume,
-  playbackRate: state.song.playbackRate,
+  seekTime: state.track.seekTime,
+  volume: state.track.volume,
+  playbackRate: state.track.playbackRate,
 });
 type StateProps = ReturnType<typeof mapStateToProps>;
 

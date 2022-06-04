@@ -1,23 +1,23 @@
 import { ListItemIcon, ListItemText, MenuItem } from "@mui/material";
 import { PlaylistAdd } from "@mui/icons-material";
 import React from "react";
-import { PlaylistInfo, Song } from "../types";
+import { PlaylistInfo, Track } from "../types";
 import { useAppDispatch } from "../store/hooks";
 import { addPlaylistTracks } from "../store/reducers/playlistReducer";
 
 interface PlaylistMenuItemProps {
   playlist: PlaylistInfo;
-  songs: Song[];
+  tracks: Track[];
   closeMenu: () => void;
 }
 
 const PlaylistMenuItem: React.FC<PlaylistMenuItemProps> = (props) => {
-  const { playlist, closeMenu, songs } = props;
+  const { playlist, closeMenu, tracks } = props;
   const dispatch = useAppDispatch();
 
   const addToPlaylist = () => {
     if (playlist.id) {
-      dispatch(addPlaylistTracks(playlist, songs));
+      dispatch(addPlaylistTracks(playlist, tracks));
     }
     closeMenu();
   };

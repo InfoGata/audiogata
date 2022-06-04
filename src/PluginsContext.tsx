@@ -4,7 +4,7 @@ import {
   Artist,
   PlayerComponent,
   IPlaylist,
-  Song,
+  Track,
   NetworkRequest,
   NotificationMessage,
   PlaylistTrackRequest,
@@ -23,7 +23,11 @@ import {
 } from "plugin-frame";
 import { db } from "./database";
 import { useAppDispatch, useAppSelector } from "./store/hooks";
-import { nextTrack, setElapsed, setTracks } from "./store/reducers/songReducer";
+import {
+  nextTrack,
+  setElapsed,
+  setTracks,
+} from "./store/reducers/trackReducer";
 import { useSnackbar } from "notistack";
 import { isElectron } from "./utils";
 import { Capacitor } from "@capacitor/core";
@@ -37,19 +41,19 @@ interface PluginInterface extends PlayerComponent {
   searchArtists: (request: SearchRequest) => Promise<SearchArtistResult>;
   searchAlbums: (request: SearchRequest) => Promise<SearchAlbumResult>;
   searchPlaylists: (request: SearchRequest) => Promise<SearchPlaylistResult>;
-  onNowPlayingTracksAdded: (tracks: Song[]) => Promise<void>;
-  onNowPlayingTracksRemoved: (tracks: Song[]) => Promise<void>;
-  onNowPlayingTracksChanged: (tracks: Song[]) => Promise<void>;
-  onNowPlayingTracksSet: (tracks: Song[]) => Promise<void>;
-  getTrackUrl: (track: Song) => Promise<string>;
+  onNowPlayingTracksAdded: (tracks: Track[]) => Promise<void>;
+  onNowPlayingTracksRemoved: (tracks: Track[]) => Promise<void>;
+  onNowPlayingTracksChanged: (tracks: Track[]) => Promise<void>;
+  onNowPlayingTracksSet: (tracks: Track[]) => Promise<void>;
+  getTrackUrl: (track: Track) => Promise<string>;
   onUiMessage: (message: any) => Promise<void>;
   onDeepLinkMessage: (message: string) => Promise<void>;
-  getAlbumTracks: (album: Album) => Promise<Song[]>;
+  getAlbumTracks: (album: Album) => Promise<Track[]>;
   getPlaylistTracks: (
     request: PlaylistTrackRequest
   ) => Promise<SearchTrackResult>;
   getArtistAlbums: (artist: Artist) => Promise<Album[]>;
-  play: (song: Song) => Promise<void>;
+  play: (track: Track) => Promise<void>;
   setVolume: (volume: number) => Promise<void>;
   pause: () => Promise<void>;
   resume: () => Promise<void>;
@@ -69,8 +73,8 @@ interface ApplicationPluginInterface extends PluginFrameInterface {
   isNetworkRequestCorsDisabled: () => Promise<boolean>;
   endTrack: () => Promise<void>;
   setTrackTime: (currentTime: number) => Promise<void>;
-  getNowPlayingTracks: () => Promise<Song[]>;
-  setNowPlayingTracks: (tracks: Song[]) => Promise<void>;
+  getNowPlayingTracks: () => Promise<Track[]>;
+  setNowPlayingTracks: (tracks: Track[]) => Promise<void>;
   getPlaylists: () => Promise<IPlaylist[]>;
   addPlaylists: (playlists: IPlaylist[]) => Promise<void>;
   createNotification: (notification: NotificationMessage) => Promise<void>;
@@ -141,8 +145,8 @@ export const PluginsProvider: React.FC = (props) => {
   >([]);
   const [pluginMessage, setPluginMessage] = React.useState<PluginMessage>();
   const dispatch = useAppDispatch();
-  const currentSong = useAppSelector((state) => state.song.currentSong);
-  const tracks = useAppSelector((state) => state.song.songs);
+  const currentTrack = useAppSelector((state) => state.track.currentTrack);
+  const tracks = useAppSelector((state) => state.track.tracks);
   const { enqueueSnackbar } = useSnackbar();
   const [pendingPlugins, setPendingPlugins] = React.useState<
     PluginInfo[] | null
@@ -192,19 +196,19 @@ export const PluginsProvider: React.FC = (props) => {
         setPluginMessage({ pluginId: plugin.id, message });
       },
       endTrack: async () => {
-        if (currentSong?.from === plugin.id) {
+        if (currentTrack?.from === plugin.id) {
           dispatch(nextTrack());
         }
       },
       setTrackTime: async (currentTime: number) => {
-        if (currentSong?.from === plugin.id) {
+        if (currentTrack?.from === plugin.id) {
           dispatch(setElapsed(currentTime));
         }
       },
       getNowPlayingTracks: async () => {
         return tracks;
       },
-      setNowPlayingTracks: async (tracks: Song[]) => {
+      setNowPlayingTracks: async (tracks: Track[]) => {
         dispatch(setTracks(tracks));
       },
       createNotification: async (notification: NotificationMessage) => {

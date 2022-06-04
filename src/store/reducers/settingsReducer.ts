@@ -9,7 +9,7 @@ const initialState: SettingsState = {
 };
 
 const settingsSlice = createSlice({
-  name: "song",
+  name: "settings",
   initialState,
   reducers: {
     togglePlayOnStartup: (state) => {

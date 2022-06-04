@@ -1,13 +1,13 @@
 import { IconButton, Popover, Slider, Box, useTheme } from "@mui/material";
 import { SlowMotionVideo } from "@mui/icons-material";
 import React from "react";
-import { setPlaybackRate } from "../store/reducers/songReducer";
+import { setPlaybackRate } from "../store/reducers/trackReducer";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
 
 const PlaybackRate: React.FC = () => {
   const theme = useTheme();
   const dispatch = useAppDispatch();
-  const playbackRate = useAppSelector((state) => state.song.playbackRate);
+  const playbackRate = useAppSelector((state) => state.track.playbackRate);
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(
     null
   );

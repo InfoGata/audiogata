@@ -1,5 +1,5 @@
 import { createSlice, nanoid, PayloadAction } from "@reduxjs/toolkit";
-import { IPlaylist, Song, PlaylistInfo } from "../../types";
+import { IPlaylist, Track, PlaylistInfo } from "../../types";
 import { AppActionCreator } from "../store";
 import { db } from "../../database";
 
@@ -74,17 +74,17 @@ export const deletePlaylist: AppActionCreator =
   };
 
 export const setPlaylistTracks: AppActionCreator =
-  (playlist: IPlaylist, tracks: Song[]) => async (_dispatch) => {
-    playlist.songs = tracks;
+  (playlist: IPlaylist, tracks: Track[]) => async (_dispatch) => {
+    playlist.tracks = tracks;
     await db.playlists.put(playlist);
   };
 
 export const addPlaylistTracks: AppActionCreator =
-  (playlistInfo: PlaylistInfo, tracks: Song[]) => async (_dispatch) => {
+  (playlistInfo: PlaylistInfo, tracks: Track[]) => async (_dispatch) => {
     const playlist = await db.playlists.get(playlistInfo.id || "");
     if (playlist) {
-      const newTracks = playlist.songs.concat(tracks);
-      playlist.songs = newTracks;
+      const newTracks = playlist.tracks.concat(tracks);
+      playlist.tracks = newTracks;
       await db.playlists.put(playlist);
     }
   };

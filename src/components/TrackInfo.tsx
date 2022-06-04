@@ -6,13 +6,13 @@ import {
   SelectChangeEvent,
 } from "@mui/material";
 import React from "react";
-import { Song } from "../types";
+import { Track } from "../types";
 import { usePlugins } from "../PluginsContext";
 import { useAppDispatch } from "../store/hooks";
-import { updateTrack } from "../store/reducers/songReducer";
+import { updateTrack } from "../store/reducers/trackReducer";
 
 interface TrackInfoProps {
-  track: Song;
+  track: Track;
 }
 
 const TrackInfo: React.FC<TrackInfoProps> = (props) => {
@@ -28,7 +28,7 @@ const TrackInfo: React.FC<TrackInfoProps> = (props) => {
     </MenuItem>
   ));
   const onSave = () => {
-    const updatedTrack: Song = { ...track, from };
+    const updatedTrack: Track = { ...track, from };
     dispatch(updateTrack(updatedTrack));
     setEditing(false);
   };

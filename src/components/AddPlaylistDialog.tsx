@@ -8,13 +8,13 @@ import {
   TextField,
 } from "@mui/material";
 import React from "react";
-import { IPlaylist, Song } from "../types";
+import { IPlaylist, Track } from "../types";
 import { useAppDispatch } from "../store/hooks";
 import { addPlaylist } from "../store/reducers/playlistReducer";
 
 interface AddPlaylistDialogProps {
   open: boolean;
-  songs?: Song[];
+  tracks?: Track[];
   handleClose: () => void;
 }
 
@@ -24,10 +24,10 @@ const AddPlaylistDialog: React.FC<AddPlaylistDialogProps> = (props) => {
   const dispatch = useAppDispatch();
 
   const confirm = () => {
-    const tracks = props.songs || [];
+    const tracks = props.tracks || [];
     const playlist: IPlaylist = {
       name,
-      songs: tracks,
+      tracks: tracks,
     };
     dispatch(addPlaylist(playlist));
     handleClose();

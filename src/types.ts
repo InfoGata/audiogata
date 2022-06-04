@@ -25,7 +25,7 @@ declare global {
   }
 }
 
-export interface Song {
+export interface Track {
   id?: string;
   name: string;
   source: string;
@@ -56,7 +56,7 @@ export interface Artist {
 }
 
 export interface IPlaylist extends PlaylistInfo {
-  songs: Song[];
+  tracks: Track[];
   apiId?: string;
   from?: string;
 }
@@ -145,7 +145,7 @@ export interface UserPlaylistRequest {
 }
 
 export interface SearchTrackResult {
-  items: Song[];
+  items: Track[];
   pageInfo?: PageInfo;
 }
 
@@ -178,7 +178,7 @@ export interface PlayerComponent {
   pause: () => Promise<void>;
   resume: () => Promise<void>;
   seek: (time: number) => Promise<void>;
-  play: (song: Song) => Promise<void>;
+  play: (track: Track) => Promise<void>;
   setPlaybackRate: (rate: number) => Promise<void>;
 }
 

@@ -1,10 +1,10 @@
-import { PlayerComponent, Song } from "./types";
+import { PlayerComponent, Track } from "./types";
 
 class LocalPlayer implements PlayerComponent {
   public name = "local";
   private audio: HTMLAudioElement;
   public setTime?: (elapsed: number, total: number) => void;
-  public onSongEnd?: () => void;
+  public onTrackEnd?: () => void;
   constructor() {
     this.audio = new Audio();
     this.audio.ontimeupdate = () => {
@@ -13,8 +13,8 @@ class LocalPlayer implements PlayerComponent {
       }
     };
     this.audio.onended = () => {
-      if (this.onSongEnd) {
-        this.onSongEnd();
+      if (this.onTrackEnd) {
+        this.onTrackEnd();
       }
     };
   }
@@ -39,8 +39,8 @@ class LocalPlayer implements PlayerComponent {
     }
   }
 
-  public async play(song: Song) {
-    this.audio.src = song.source;
+  public async play(track: Track) {
+    this.audio.src = track.source;
     this.audio.load();
     await this.audio.play();
   }

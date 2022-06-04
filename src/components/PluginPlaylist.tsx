@@ -16,18 +16,18 @@ import {
 } from "@mui/material";
 import React from "react";
 import { useParams } from "react-router";
-import { Song, PageInfo } from "../types";
+import { Track, PageInfo } from "../types";
 import { usePlugins } from "../PluginsContext";
 import { useAppDispatch } from "../store/hooks";
 import PlaylistItem from "./PlaylistItem";
-import { setTracks } from "../store/reducers/songReducer";
+import { setTracks } from "../store/reducers/trackReducer";
 
 const PluginPlaylist: React.FC = () => {
   const { pluginid } = useParams<"pluginid">();
   const { id } = useParams<"id">();
   const { plugins } = usePlugins();
   const plugin = plugins.find((p) => p.id === pluginid);
-  const [playlistTracks, setPlaylistTracks] = React.useState<Song[]>([]);
+  const [playlistTracks, setPlaylistTracks] = React.useState<Track[]>([]);
   const [page, setPage] = React.useState<PageInfo>();
   const [backdropOpen, setBackdropOpen] = React.useState(false);
   const theme = useTheme();
@@ -42,7 +42,7 @@ const PluginPlaylist: React.FC = () => {
           playlist: {
             apiId: id,
             isUserPlaylist: true,
-            songs: [],
+            tracks: [],
           },
         });
         setPlaylistTracks(t.items);
@@ -82,7 +82,7 @@ const PluginPlaylist: React.FC = () => {
         playlist: {
           apiId: id,
           isUserPlaylist: true,
-          songs: [],
+          tracks: [],
         },
         page: newPage,
       });
@@ -108,7 +108,7 @@ const PluginPlaylist: React.FC = () => {
         playlist: {
           apiId: id,
           isUserPlaylist: true,
-          songs: [],
+          tracks: [],
         },
         page: newPage,
       });
@@ -147,7 +147,7 @@ const PluginPlaylist: React.FC = () => {
           <TableBody>
             {playlistTracks.map((track, index) => (
               <TableRow hover={true} key={index}>
-                <PlaylistItem song={track} showTrackLength={showTrackLength} />
+                <PlaylistItem track={track} showTrackLength={showTrackLength} />
               </TableRow>
             ))}
           </TableBody>

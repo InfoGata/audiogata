@@ -1,5 +1,5 @@
 import React from "react";
-import { Song } from "../types";
+import { Track } from "../types";
 import {
   Menu,
   ListItemText,
@@ -21,7 +21,7 @@ import {
   deleteTrack,
   setTrack,
   setTracks,
-} from "../store/reducers/songReducer";
+} from "../store/reducers/trackReducer";
 import AddPlaylistDialog from "./AddPlaylistDialog";
 import PlaylistMenuItem from "./PlaylistMenuItem";
 import { Link } from "react-router-dom";
@@ -34,19 +34,19 @@ import useSelected from "../hooks/useSelected";
 
 const PlayQueue: React.FC = () => {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-  const [menuSong, setMenuSong] = React.useState<Song>({} as Song);
+  const [menuTrack, setMenuTrack] = React.useState<Track>({} as Track);
   const [from, setFrom] = React.useState<string>("");
   const [queueMenuAnchorEl, setQueueMenuAnchorEl] =
     React.useState<null | HTMLElement>(null);
   const { plugins } = usePlugins();
   const openMenu = async (
     event: React.MouseEvent<HTMLButtonElement>,
-    song: Song
+    track: Track
   ) => {
     const currentTarget = event.currentTarget;
     event.stopPropagation();
     event.preventDefault();
-    setMenuSong(song);
+    setMenuTrack(track);
     setAnchorEl(currentTarget);
   };
 
@@ -57,12 +57,12 @@ const PlayQueue: React.FC = () => {
   const closeMenu = () => setAnchorEl(null);
   const closeQueueMenu = () => setQueueMenuAnchorEl(null);
 
-  const songList = useAppSelector((state) => state.song.songs);
+  const trackList = useAppSelector((state) => state.track.tracks);
   const deleteClick = async () => {
-    if (menuSong.id) {
-      await db.audioBlobs.delete(menuSong.id);
+    if (menuTrack.id) {
+      await db.audioBlobs.delete(menuTrack.id);
     }
-    dispatch(deleteTrack(menuSong));
+    dispatch(deleteTrack(menuTrack));
     closeMenu();
   };
   const [playlistDialogOpen, setPlaylistDialogOpen] = React.useState(false);
@@ -78,7 +78,7 @@ const PlayQueue: React.FC = () => {
   const closeEditDialog = () => setEditDialogOpen(false);
 
   const { onSelect, onSelectAll, isSelected, selected, setSelected } =
-    useSelected(songList);
+    useSelected(trackList);
   const addToNewPlaylist = () => {
     openPlaylistDialog();
     closeMenu();
@@ -88,17 +88,17 @@ const PlayQueue: React.FC = () => {
     closeQueueMenu();
   };
   const playlists = useAppSelector((state) => state.playlist.playlists);
-  const infoPath = `/track/${menuSong.id}`;
+  const infoPath = `/track/${menuTrack.id}`;
 
-  const onTrackClick = (song: Song) => {
-    dispatch(setTrack(song));
+  const onTrackClick = (track: Track) => {
+    dispatch(setTrack(track));
   };
 
   const clearQueue = () => {
     dispatch(clearTracks());
   };
 
-  const onDragOver = (newTrackList: Song[]) => {
+  const onDragOver = (newTrackList: Track[]) => {
     dispatch(setTracks(newTrackList));
   };
 
@@ -106,9 +106,9 @@ const PlayQueue: React.FC = () => {
     const value = e.target.value;
     setFrom(value);
     if (value) {
-      const filterdList = songList
-        .filter((s) => s.from === value)
-        .map((s) => s.id) as string[];
+      const filterdList = trackList
+        .filter((t) => t.from === value)
+        .map((t) => t.id) as string[];
       setSelected(new Set(filterdList));
     } else {
       setSelected(new Set());
@@ -155,7 +155,7 @@ const PlayQueue: React.FC = () => {
         </Select>
       </FormControl>
       <TrackList
-        tracks={songList}
+        tracks={trackList}
         openMenu={openMenu}
         onTrackClick={onTrackClick}
         onDragOver={onDragOver}
@@ -185,7 +185,7 @@ const PlayQueue: React.FC = () => {
           <PlaylistMenuItem
             key={p.id}
             playlist={p}
-            songs={songList}
+            tracks={trackList}
             closeMenu={closeQueueMenu}
           />
         ))}
@@ -214,18 +214,18 @@ const PlayQueue: React.FC = () => {
           <PlaylistMenuItem
             key={p.id}
             playlist={p}
-            songs={[menuSong]}
+            tracks={[menuTrack]}
             closeMenu={closeMenu}
           />
         ))}
       </Menu>
       <AddPlaylistDialog
-        songs={[menuSong]}
+        tracks={[menuTrack]}
         open={playlistDialogOpen}
         handleClose={closePlaylistDialog}
       />
       <AddPlaylistDialog
-        songs={songList}
+        tracks={trackList}
         open={queuePlaylistDialogOpen}
         handleClose={closeQueuePlaylistDialog}
       />

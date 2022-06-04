@@ -14,9 +14,9 @@ import {
   deleteTrack,
   setTrack,
   setTracks,
-} from "../store/reducers/songReducer";
+} from "../store/reducers/trackReducer";
 import { db } from "../database";
-import { IPlaylist, Song } from "../types";
+import { IPlaylist, Track } from "../types";
 import { useAppDispatch } from "../store/hooks";
 import { setPlaylistTracks } from "../store/reducers/playlistReducer";
 import { Delete, Info, PlayCircle } from "@mui/icons-material";
@@ -31,15 +31,15 @@ const Playlist: React.FC = () => {
   const dispatch = useAppDispatch();
   const [playlist, setPlaylist] = React.useState<IPlaylist | undefined>();
   const [loaded, setLoaded] = React.useState(false);
-  const [menuSong, setMenuSong] = React.useState<Song>({} as Song);
+  const [menuTrack, setMenuTrack] = React.useState<Track>({} as Track);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [hasBlob, setHasBlob] = React.useState(false);
   const [canOffline, setCanOffline] = React.useState(false);
   const { plugins } = usePlugins();
-  const infoPath = `/track/${menuSong.id}`;
+  const infoPath = `/track/${menuTrack.id}`;
   const closeMenu = () => setAnchorEl(null);
   const { onSelect, onSelectAll, isSelected, selected } = useSelected(
-    playlist?.songs || []
+    playlist?.tracks || []
   );
 
   React.useEffect(() => {
@@ -57,56 +57,56 @@ const Playlist: React.FC = () => {
       return;
     }
 
-    const firstSong = playlist.songs[0];
-    dispatch(setTrack(firstSong));
-    dispatch(setTracks(playlist.songs));
+    const firstTrack = playlist.tracks[0];
+    dispatch(setTrack(firstTrack));
+    dispatch(setTracks(playlist.tracks));
   };
 
   const openMenu = async (
     event: React.MouseEvent<HTMLButtonElement>,
-    song: Song
+    track: Track
   ) => {
     const currentTarget = event.currentTarget;
     event.stopPropagation();
     event.preventDefault();
-    setMenuSong(song);
+    setMenuTrack(track);
     setAnchorEl(currentTarget);
-    // Check whether song can be played offline
-    if (song.id && song.from) {
+    // Check whether track can be played offline
+    if (track.id && track.from) {
       // Check if this needs it's own player
       // Instead of being able to play locally
-      const pluginFrame = plugins.find((p) => p.id === song.from);
+      const pluginFrame = plugins.find((p) => p.id === track.from);
       const canDownload =
         (await pluginFrame?.hasDefined.getTrackUrl()) || false;
       setCanOffline(canDownload);
 
       const primaryCount = await db.audioBlobs
         .where(":id")
-        .equals(song.id)
+        .equals(track.id)
         .count();
       setHasBlob(primaryCount > 0);
     }
   };
 
   const deleteClick = async () => {
-    if (menuSong.id) {
-      await db.audioBlobs.delete(menuSong.id);
+    if (menuTrack.id) {
+      await db.audioBlobs.delete(menuTrack.id);
     }
-    dispatch(deleteTrack(menuSong));
+    dispatch(deleteTrack(menuTrack));
     closeMenu();
   };
 
   const enablePlayingOffline = async () => {
     try {
-      if (menuSong.from) {
-        const pluginFrame = plugins.find((p) => p.id === menuSong.from);
+      if (menuTrack.from) {
+        const pluginFrame = plugins.find((p) => p.id === menuTrack.from);
         if (!(await pluginFrame?.hasDefined.getTrackUrl())) {
           return;
         }
 
-        const source = await pluginFrame?.remote.getTrackUrl(menuSong);
+        const source = await pluginFrame?.remote.getTrackUrl(menuTrack);
         if (source) {
-          dispatch(downloadTrack(menuSong, source));
+          dispatch(downloadTrack(menuTrack, source));
         }
       }
     } catch (e) {
@@ -116,8 +116,8 @@ const Playlist: React.FC = () => {
   };
 
   const disablePlayingOffline = async () => {
-    if (menuSong.id) {
-      await db.audioBlobs.delete(menuSong.id);
+    if (menuTrack.id) {
+      await db.audioBlobs.delete(menuTrack.id);
     }
     closeMenu();
   };
@@ -134,15 +134,15 @@ const Playlist: React.FC = () => {
     )
   ) : null;
 
-  const onTrackClick = (track: Song) => {
+  const onTrackClick = (track: Track) => {
     dispatch(setTrack(track));
-    dispatch(setTracks(playlist?.songs || []));
+    dispatch(setTracks(playlist?.tracks || []));
   };
 
-  const onDragOver = (trackList: Song[]) => {
+  const onDragOver = (trackList: Track[]) => {
     dispatch(setPlaylistTracks(playlist, trackList));
 
-    const newPlaylist: IPlaylist = { ...playlist, songs: trackList };
+    const newPlaylist: IPlaylist = { ...playlist, tracks: trackList };
     setPlaylist(newPlaylist);
   };
 
@@ -158,7 +158,7 @@ const Playlist: React.FC = () => {
             <PlayCircle color="success" sx={{ fontSize: 45 }} />
           </IconButton>
           <TrackList
-            tracks={playlist.songs}
+            tracks={playlist.tracks}
             openMenu={openMenu}
             onTrackClick={onTrackClick}
             onDragOver={onDragOver}

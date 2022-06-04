@@ -6,7 +6,7 @@ import TrackInfo from "./TrackInfo";
 const QueueTrackInfo: React.FC = () => {
   const { id } = useParams<"id">();
   const track = useAppSelector((state) =>
-    state.song.songs.find((p) => p.id === id)
+    state.track.tracks.find((p) => p.id === id)
   );
   return track ? <TrackInfo track={track} /> : <>Not Found</>;
 };

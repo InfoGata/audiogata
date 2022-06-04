@@ -14,15 +14,15 @@ import {
   toggleIsPlaying,
   toggleRepeat,
   toggleShuffle,
-} from "../store/reducers/songReducer";
+} from "../store/reducers/trackReducer";
 import Volume from "./Volume";
 import PlaybackRate from "./PlaybackRate";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
 
 const Controls: React.FC = () => {
-  const repeat = useAppSelector((state) => state.song.repeat);
-  const shuffle = useAppSelector((state) => state.song.shuffle);
-  const isPlaying = useAppSelector((state) => state.song.isPlaying);
+  const repeat = useAppSelector((state) => state.track.repeat);
+  const shuffle = useAppSelector((state) => state.track.shuffle);
+  const isPlaying = useAppSelector((state) => state.track.isPlaying);
   const dispatch = useAppDispatch();
   const playIcon = isPlaying ? <Pause /> : <PlayArrow />;
 

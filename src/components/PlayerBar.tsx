@@ -15,10 +15,10 @@ import Progress from "./Progress";
 const thumbnailSize = 75;
 const PlayerBar: React.FC = () => {
   const theme = useTheme();
-  const currentSong = useAppSelector((state) => state.song.currentSong);
+  const currentTrack = useAppSelector((state) => state.track.currentTrack);
 
   const image = getThumbnailImage(
-    currentSong && currentSong.images,
+    currentTrack && currentTrack.images,
     thumbnailSize
   );
 
@@ -53,7 +53,7 @@ const PlayerBar: React.FC = () => {
                 variant="body2"
                 sx={{ maxWidth: "250px" }}
                 dangerouslySetInnerHTML={{
-                  __html: (currentSong && currentSong.name) || "",
+                  __html: (currentTrack && currentTrack.name) || "",
                 }}
               />
             </Grid>

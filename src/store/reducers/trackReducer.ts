@@ -1,15 +1,15 @@
 import { createSlice, nanoid, PayloadAction } from "@reduxjs/toolkit";
-import { Song } from "../../types";
+import { Track } from "../../types";
 import { getPluginFrames } from "../../PluginsContext";
 import { filterAsync } from "../../utils";
 import { AppActionCreator } from "../store";
 
-interface SongState {
-  songs: Song[];
+interface TrackState {
+  tracks: Track[];
   shuffleList: number[];
   shuffle: boolean;
   repeat: boolean;
-  currentSong?: Song;
+  currentTrack?: Track;
   elapsed?: number;
   isPlaying: boolean;
   volume: number;
@@ -23,13 +23,13 @@ interface UpdateFrom {
   from: string;
 }
 
-const initialState: SongState = {
+const initialState: TrackState = {
   isPlaying: false,
   mute: false,
   repeat: false,
   shuffle: false,
   shuffleList: [],
-  songs: [],
+  tracks: [],
   volume: 1.0,
   playbackRate: 1.0,
 };
@@ -40,89 +40,91 @@ const shuffleArray = (array: any[]) => {
     [array[i], array[j]] = [array[j], array[i]];
   }
 };
-const createShuffleArray = (tracks: Song[]): number[] => {
+const createShuffleArray = (tracks: Track[]): number[] => {
   const indexArray = Object.keys(tracks).map(Number);
   shuffleArray(indexArray);
   return indexArray;
 };
 
-const songSlice = createSlice({
-  name: "song",
+const trackSlice = createSlice({
+  name: "track",
   initialState,
   reducers: {
-    addTrack(state, action: PayloadAction<Song>): SongState {
+    addTrack(state, action: PayloadAction<Track>): TrackState {
       return {
         ...state,
-        songs: [...state.songs, action.payload],
+        tracks: [...state.tracks, action.payload],
       };
     },
-    clearTracks(state): SongState {
+    clearTracks(state): TrackState {
       return {
         ...state,
         shuffleList: [],
-        songs: [],
+        tracks: [],
       };
     },
-    deleteTrack(state, action: PayloadAction<Song>): SongState {
-      const newPlaylist = state.songs.filter((s) => s.id !== action.payload.id);
-      let currentSong = state.currentSong;
-      if (currentSong && currentSong.id === action.payload.id) {
-        currentSong = undefined;
+    deleteTrack(state, action: PayloadAction<Track>): TrackState {
+      const newPlaylist = state.tracks.filter(
+        (t) => t.id !== action.payload.id
+      );
+      let currentTrack = state.currentTrack;
+      if (currentTrack && currentTrack.id === action.payload.id) {
+        currentTrack = undefined;
       }
       return {
         ...state,
-        currentSong,
+        currentTrack: currentTrack,
         shuffleList: [],
-        songs: newPlaylist,
+        tracks: newPlaylist,
       };
     },
-    updateTrack(state, action: PayloadAction<Song>): SongState {
+    updateTrack(state, action: PayloadAction<Track>): TrackState {
       return {
         ...state,
-        songs: state.songs.map((s) =>
-          s.id === action.payload.id ? action.payload : s
+        tracks: state.tracks.map((t) =>
+          t.id === action.payload.id ? action.payload : t
         ),
       };
     },
-    updateFrom(state, action: PayloadAction<UpdateFrom>): SongState {
+    updateFrom(state, action: PayloadAction<UpdateFrom>): TrackState {
       return {
         ...state,
-        songs: state.songs.map((s) =>
-          action.payload.updateIds.has(s.id || "")
-            ? { ...s, from: action.payload.from }
-            : s
+        tracks: state.tracks.map((t) =>
+          action.payload.updateIds.has(t.id || "")
+            ? { ...t, from: action.payload.from }
+            : t
         ),
       };
     },
-    setTracks(state, action: PayloadAction<Song[]>): SongState {
+    setTracks(state, action: PayloadAction<Track[]>): TrackState {
       return {
         ...state,
         shuffleList: [],
-        songs: action.payload,
+        tracks: action.payload,
       };
     },
-    nextTrack: (state): SongState => {
+    nextTrack: (state): TrackState => {
       let shuffleList = [...state.shuffleList];
       let index = -1;
-      if (state.currentSong) {
-        const prevSong = state.currentSong;
-        index = state.songs.findIndex((s) => s.id === prevSong.id);
+      if (state.currentTrack) {
+        const prevTrack = state.currentTrack;
+        index = state.tracks.findIndex((t) => t.id === prevTrack.id);
       }
       let newIndex = index + 1;
       if (state.shuffle) {
         if (shuffleList.length === 0) {
-          shuffleList = createShuffleArray(state.songs);
+          shuffleList = createShuffleArray(state.tracks);
         }
         newIndex = shuffleList.shift() || 0;
       }
-      if (newIndex > state.songs.length) {
+      if (newIndex > state.tracks.length) {
         newIndex = 0;
       }
-      const currentSong = state.songs[newIndex];
+      const currentTrack = state.tracks[newIndex];
       if (
-        currentSong &&
-        state.currentSong &&
-        currentSong.id === state.currentSong.id
+        currentTrack &&
+        state.currentTrack &&
+        currentTrack.id === state.currentTrack.id
       ) {
         return {
           ...state,
@@ -134,12 +136,12 @@ const songSlice = createSlice({
       }
       return {
         ...state,
-        currentSong,
+        currentTrack: currentTrack,
         elapsed: 0,
         shuffleList,
       };
     },
-    prevTrack: (state): SongState => {
+    prevTrack: (state): TrackState => {
       if (state.elapsed && state.elapsed > 2) {
         return {
           ...state,
@@ -148,39 +150,39 @@ const songSlice = createSlice({
       }
 
       let index = -1;
-      if (state.currentSong) {
-        const prevSong = state.currentSong;
-        index = state.songs.findIndex((s) => s.id === prevSong.id);
+      if (state.currentTrack) {
+        const prevTrack = state.currentTrack;
+        index = state.tracks.findIndex((t) => t.id === prevTrack.id);
       }
       let newIndex = index - 1;
       if (newIndex < 0) {
-        newIndex = state.songs.length - 1;
+        newIndex = state.tracks.length - 1;
       }
-      const currentSong = state.songs[newIndex];
+      const currentTrack = state.tracks[newIndex];
       return {
         ...state,
-        currentSong,
+        currentTrack: currentTrack,
         elapsed: 0,
       };
     },
-    seek: (state, action: PayloadAction<number | undefined>): SongState => {
+    seek: (state, action: PayloadAction<number | undefined>): TrackState => {
       return {
         ...state,
         elapsed: action.payload,
         seekTime: action.payload,
       };
     },
-    setElapsed: (state, action: PayloadAction<number>): SongState => {
+    setElapsed: (state, action: PayloadAction<number>): TrackState => {
       return {
         ...state,
         elapsed: action.payload,
       };
     },
-    setTrack: (state, action: PayloadAction<Song | undefined>): SongState => {
+    setTrack: (state, action: PayloadAction<Track | undefined>): TrackState => {
       if (
-        state.currentSong &&
+        state.currentTrack &&
         action.payload &&
-        state.currentSong.id === action.payload.id
+        state.currentTrack.id === action.payload.id
       ) {
         return {
           ...state,
@@ -191,43 +193,43 @@ const songSlice = createSlice({
       }
       return {
         ...state,
-        currentSong: action.payload,
+        currentTrack: action.payload,
         elapsed: 0,
         isPlaying: true,
       };
     },
-    setVolume: (state, action: PayloadAction<number>): SongState => {
+    setVolume: (state, action: PayloadAction<number>): TrackState => {
       return {
         ...state,
         mute: false,
         volume: action.payload,
       };
     },
-    setPlaybackRate: (state, action: PayloadAction<number>): SongState => {
+    setPlaybackRate: (state, action: PayloadAction<number>): TrackState => {
       return {
         ...state,
         playbackRate: action.payload,
       };
     },
-    toggleIsPlaying: (state): SongState => {
+    toggleIsPlaying: (state): TrackState => {
       return {
         ...state,
         isPlaying: !state.isPlaying,
       };
     },
-    toggleMute: (state): SongState => {
+    toggleMute: (state): TrackState => {
       return {
         ...state,
         mute: !state.mute,
       };
     },
-    toggleRepeat: (state): SongState => {
+    toggleRepeat: (state): TrackState => {
       return {
         ...state,
         repeat: !state.repeat,
       };
     },
-    toggleShuffle: (state): SongState => {
+    toggleShuffle: (state): TrackState => {
       return {
         ...state,
         shuffle: !state.shuffle,
@@ -237,23 +239,24 @@ const songSlice = createSlice({
   },
 });
 
-export const addTrack: AppActionCreator = (track: Song) => async (dispatch) => {
-  const plugins = getPluginFrames();
-  const id = nanoid();
-  track.id = id;
-  dispatch(songSlice.actions.addTrack(track));
-  const filteredPlugins = await filterAsync(plugins, (p) =>
-    p.hasDefined.onNowPlayingTracksAdded()
-  );
-  await Promise.all(
-    filteredPlugins.map((p) => p.remote.onNowPlayingTracksAdded([track]))
-  );
-};
+export const addTrack: AppActionCreator =
+  (track: Track) => async (dispatch) => {
+    const plugins = getPluginFrames();
+    const id = nanoid();
+    track.id = id;
+    dispatch(trackSlice.actions.addTrack(track));
+    const filteredPlugins = await filterAsync(plugins, (p) =>
+      p.hasDefined.onNowPlayingTracksAdded()
+    );
+    await Promise.all(
+      filteredPlugins.map((p) => p.remote.onNowPlayingTracksAdded([track]))
+    );
+  };
 
 export const deleteTrack: AppActionCreator =
-  (track: Song) => async (dispatch) => {
+  (track: Track) => async (dispatch) => {
     const plugins = getPluginFrames();
-    dispatch(songSlice.actions.deleteTrack(track));
+    dispatch(trackSlice.actions.deleteTrack(track));
     const filteredPlugins = await filterAsync(plugins, (p) =>
       p.hasDefined.onNowPlayingTracksRemoved()
     );
@@ -263,9 +266,9 @@ export const deleteTrack: AppActionCreator =
   };
 
 export const updateTrack: AppActionCreator =
-  (track: Song) => async (dispatch) => {
+  (track: Track) => async (dispatch) => {
     const plugins = getPluginFrames();
-    dispatch(songSlice.actions.updateTrack(track));
+    dispatch(trackSlice.actions.updateTrack(track));
     const filteredPlugins = await filterAsync(plugins, (p) =>
       p.hasDefined.onNowPlayingTracksChanged()
     );
@@ -278,21 +281,21 @@ export const clearTracks: AppActionCreator =
   () => async (dispatch, getState) => {
     const state = getState();
     const plugins = getPluginFrames();
-    dispatch(songSlice.actions.clearTracks());
+    dispatch(trackSlice.actions.clearTracks());
     const filteredPlugins = await filterAsync(plugins, (p) =>
       p.hasDefined.onNowPlayingTracksRemoved()
     );
     await Promise.all(
       filteredPlugins.map((p) =>
-        p.remote.onNowPlayingTracksRemoved(state.song.songs)
+        p.remote.onNowPlayingTracksRemoved(state.track.tracks)
       )
     );
   };
 
 export const setTracks: AppActionCreator =
-  (tracks: Song[]) => async (dispatch) => {
+  (tracks: Track[]) => async (dispatch) => {
     const plugins = getPluginFrames();
-    dispatch(songSlice.actions.setTracks(tracks));
+    dispatch(trackSlice.actions.setTracks(tracks));
     const filteredPlugins = await filterAsync(plugins, (p) =>
       p.hasDefined.onNowPlayingTracksSet()
     );
@@ -314,5 +317,5 @@ export const {
   toggleIsPlaying,
   seek,
   updateFrom,
-} = songSlice.actions;
-export default songSlice.reducer;
+} = trackSlice.actions;
+export default trackSlice.reducer;

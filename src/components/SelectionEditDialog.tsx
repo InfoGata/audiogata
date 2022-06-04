@@ -14,7 +14,7 @@ import {
 import React from "react";
 import { usePlugins } from "../PluginsContext";
 import { useAppDispatch } from "../store/hooks";
-import { updateFrom } from "../store/reducers/songReducer";
+import { updateFrom } from "../store/reducers/trackReducer";
 
 interface SelectionEditProps {
   trackIdSet: Set<string>;

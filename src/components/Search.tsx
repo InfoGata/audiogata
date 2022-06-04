@@ -22,7 +22,7 @@ import {
   Album,
   Artist,
   IPlaylist,
-  Song,
+  Track,
   PageInfo,
   ResultType,
   SearchRequest,
@@ -34,7 +34,7 @@ import PlaylistSearchResult from "./PlaylistSearchResult";
 import TrackSearchResult from "./TrackSearchResult";
 import { PlaylistPlay } from "@mui/icons-material";
 import PlaylistMenuItem from "./PlaylistMenuItem";
-import { addTrack } from "../store/reducers/songReducer";
+import { addTrack } from "../store/reducers/trackReducer";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
 import { usePlugins } from "../PluginsContext";
 
@@ -64,13 +64,13 @@ const TabPanel: React.FC<TabPanelProps> = (props) => {
 const Search: React.FC = () => {
   const [searchQuery, setSearchQuery] = React.useState("");
   const [searchType, setSearchType] = React.useState("");
-  const [trackResults, setTrackResults] = React.useState<Song[]>([]);
+  const [trackResults, setTrackResults] = React.useState<Track[]>([]);
   const [albumResults, setAlbumResults] = React.useState<Album[]>([]);
   const [artistResults, setArtistResults] = React.useState<Artist[]>([]);
   const [playlistResults, setPlaylistResults] = React.useState<IPlaylist[]>([]);
   const [tabValue, setTabValue] = React.useState<string | boolean>(false);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-  const [menuSong, setMenuSong] = React.useState<Song>({} as Song);
+  const [menuTrack, setMenuTrack] = React.useState<Track>({} as Track);
   const [options, setOptions] = React.useState<[string, string][]>();
   const [trackPage, setTrackPage] = React.useState<PageInfo>();
   const [albumPage, setAlbumPage] = React.useState<PageInfo>();
@@ -82,7 +82,7 @@ const Search: React.FC = () => {
     setSearchType(e.currentTarget.value);
   };
 
-  const onSetTrackResults = (tracks: Song[]) => {
+  const onSetTrackResults = (tracks: Track[]) => {
     setTrackResults(tracks);
     setTabValue(ResultType.Tracks);
   };
@@ -122,7 +122,7 @@ const Search: React.FC = () => {
     resetPagination();
     const onSearch = async (search: string) => {
       setBackdropOpen(true);
-      let tracks: Song[] | undefined = [];
+      let tracks: Track[] | undefined = [];
       let albums: Album[] | undefined = [];
       let artists: Artist[] | undefined = [];
       let playlists: IPlaylist[] | undefined = [];
@@ -153,13 +153,16 @@ const Search: React.FC = () => {
     }
   }, [location.search, searchType, plugins]);
 
-  const openMenu = (event: React.MouseEvent<HTMLButtonElement>, song: Song) => {
+  const openMenu = (
+    event: React.MouseEvent<HTMLButtonElement>,
+    track: Track
+  ) => {
     setAnchorEl(event.currentTarget);
-    setMenuSong(song);
+    setMenuTrack(track);
   };
   const closeMenu = () => setAnchorEl(null);
-  const addSongToQueue = () => {
-    dispatch(addTrack(menuSong));
+  const addTrackToQueue = () => {
+    dispatch(addTrack(menuTrack));
     closeMenu();
   };
   const trackList = trackResults.map((track) => (
@@ -296,7 +299,7 @@ const Search: React.FC = () => {
           variant="fullWidth"
         >
           {trackList.length > 0 ? (
-            <Tab label="Songs" value={ResultType.Tracks} />
+            <Tab label="Tracks" value={ResultType.Tracks} />
           ) : null}
           {albumList.length > 0 ? (
             <Tab label="Albums" value={ResultType.Albums} />
@@ -326,7 +329,7 @@ const Search: React.FC = () => {
         {playlistPage && pageButtons(playlistPage, ResultType.Playlists)}
       </TabPanel>
       <Menu open={Boolean(anchorEl)} onClose={closeMenu} anchorEl={anchorEl}>
-        <MenuItem onClick={addSongToQueue}>
+        <MenuItem onClick={addTrackToQueue}>
           <ListItemIcon>
             <PlaylistPlay />
           </ListItemIcon>
@@ -336,7 +339,7 @@ const Search: React.FC = () => {
           <PlaylistMenuItem
             key={p.id}
             playlist={p}
-            songs={[menuSong]}
+            tracks={[menuTrack]}
             closeMenu={closeMenu}
           />
         ))}

@@ -8,41 +8,41 @@ import {
   Typography,
 } from "@mui/material";
 import React from "react";
-import { Song } from "../types";
+import { Track } from "../types";
 import { formatSeconds } from "../utils";
 import { MoreHoriz } from "@mui/icons-material";
 import { useAppSelector } from "../store/hooks";
 import { getThumbnailImage, searchThumbnailSize } from "../utils";
 
 interface PlaylistItemsProps {
-  song: Song;
+  track: Track;
   showTrackLength: boolean;
   isSelected?: (id: string) => boolean;
   onSelectClick?: (
     event: React.ChangeEvent<HTMLInputElement>,
     id: string
   ) => void;
-  openMenu?: (event: React.MouseEvent<HTMLButtonElement>, song: Song) => void;
+  openMenu?: (event: React.MouseEvent<HTMLButtonElement>, track: Track) => void;
   index?: number;
 }
 
 const PlaylistItem: React.FC<PlaylistItemsProps> = (props) => {
-  const { song, showTrackLength, openMenu, onSelectClick, isSelected, index } =
+  const { track, showTrackLength, openMenu, onSelectClick, isSelected, index } =
     props;
-  const currentSong = useAppSelector((state) => state.song.currentSong);
+  const currentTrack = useAppSelector((state) => state.track.currentTrack);
   const progress = useAppSelector(
-    (state) => state.download.progress[song.id || ""]
+    (state) => state.download.progress[track.id || ""]
   );
 
   const openTrackMenu = (event: React.MouseEvent<HTMLButtonElement>) => {
     if (openMenu) {
-      openMenu(event, song);
+      openMenu(event, track);
     }
   };
 
   const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (onSelectClick) {
-      onSelectClick(event, song.id || "");
+      onSelectClick(event, track.id || "");
     }
   };
 
@@ -50,14 +50,14 @@ const PlaylistItem: React.FC<PlaylistItemsProps> = (props) => {
     e.stopPropagation();
   };
 
-  const image = getThumbnailImage(song.images, searchThumbnailSize);
+  const image = getThumbnailImage(track.images, searchThumbnailSize);
   return (
     <>
       <TableCell padding="none">
         {isSelected && (
           <Checkbox
             color="primary"
-            checked={isSelected(song.id || "")}
+            checked={isSelected(track.id || "")}
             onChange={onChange}
             onClick={stopPropagation}
             size="small"
@@ -77,19 +77,19 @@ const PlaylistItem: React.FC<PlaylistItemsProps> = (props) => {
             textOverflow: "ellipsis",
           }}
         >
-          <Avatar alt={song.name} src={image} style={{ borderRadius: 0 }} />
+          <Avatar alt={track.name} src={image} style={{ borderRadius: 0 }} />
           <Box sx={{ minWidth: 0 }}>
             <Typography
-              color={currentSong?.id === song.id ? "primary.main" : undefined}
+              color={currentTrack?.id === track.id ? "primary.main" : undefined}
               noWrap={true}
-              dangerouslySetInnerHTML={{ __html: song.name }}
+              dangerouslySetInnerHTML={{ __html: track.name }}
               sx={{ overflow: "hidden", textOverflow: "ellipsis" }}
             />
             <Typography
               variant="body2"
-              color={currentSong?.id === song.id ? "primary.main" : undefined}
+              color={currentTrack?.id === track.id ? "primary.main" : undefined}
               noWrap={true}
-              dangerouslySetInnerHTML={{ __html: song.artistName || "" }}
+              dangerouslySetInnerHTML={{ __html: track.artistName || "" }}
               sx={{ overflow: "hidden", textOverflow: "ellipsis" }}
             />
             <LinearProgress
@@ -100,7 +100,9 @@ const PlaylistItem: React.FC<PlaylistItemsProps> = (props) => {
           </Box>
         </Box>
       </TableCell>
-      {showTrackLength && <TableCell>{formatSeconds(song.duration)}</TableCell>}
+      {showTrackLength && (
+        <TableCell>{formatSeconds(track.duration)}</TableCell>
+      )}
       <TableCell align="right" padding="checkbox">
         {openMenu && (
           <IconButton aria-label="options" size="small" onClick={openTrackMenu}>

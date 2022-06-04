@@ -1,13 +1,13 @@
 import { Avatar, ListItem, ListItemAvatar, ListItemText } from "@mui/material";
 import React from "react";
-import { Album, Song } from "../types";
+import { Album, Track } from "../types";
 import { usePlugins } from "../PluginsContext";
 import { getThumbnailImage, searchThumbnailSize } from "../utils";
 
 interface AlbumSearchResultProps {
   album: Album;
   clearSearch: () => void;
-  setTrackResults: (songs: Song[]) => void;
+  setTrackResults: (tracks: Track[]) => void;
 }
 
 const AlbumSearchResult: React.FC<AlbumSearchResultProps> = (props) => {
