@@ -8,15 +8,15 @@ import {
   IconButton,
 } from "@mui/material";
 import React from "react";
-import { ISong } from "../types";
+import { Song } from "../types";
 import { addTrack, setTrack } from "../store/reducers/songReducer";
 import { getThumbnailImage, searchThumbnailSize } from "../utils";
 import { MoreHoriz } from "@mui/icons-material";
 import { useAppDispatch } from "../store/hooks";
 
 interface TrackSearchResultProps {
-  track: ISong;
-  openMenu: (event: React.MouseEvent<HTMLButtonElement>, song: ISong) => void;
+  track: Song;
+  openMenu: (event: React.MouseEvent<HTMLButtonElement>, song: Song) => void;
 }
 const TrackSearchResult: React.FC<TrackSearchResultProps> = (props) => {
   const { track, openMenu } = props;

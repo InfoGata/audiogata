@@ -16,7 +16,7 @@ import {
   setTracks,
 } from "../store/reducers/songReducer";
 import { db } from "../database";
-import { IPlaylist, ISong } from "../types";
+import { IPlaylist, Song } from "../types";
 import { useAppDispatch } from "../store/hooks";
 import { setPlaylistTracks } from "../store/reducers/playlistReducer";
 import { Delete, Info, PlayCircle } from "@mui/icons-material";
@@ -31,7 +31,7 @@ const Playlist: React.FC = () => {
   const dispatch = useAppDispatch();
   const [playlist, setPlaylist] = React.useState<IPlaylist | undefined>();
   const [loaded, setLoaded] = React.useState(false);
-  const [menuSong, setMenuSong] = React.useState<ISong>({} as ISong);
+  const [menuSong, setMenuSong] = React.useState<Song>({} as Song);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [hasBlob, setHasBlob] = React.useState(false);
   const [canOffline, setCanOffline] = React.useState(false);
@@ -64,7 +64,7 @@ const Playlist: React.FC = () => {
 
   const openMenu = async (
     event: React.MouseEvent<HTMLButtonElement>,
-    song: ISong
+    song: Song
   ) => {
     const currentTarget = event.currentTarget;
     event.stopPropagation();
@@ -134,12 +134,12 @@ const Playlist: React.FC = () => {
     )
   ) : null;
 
-  const onTrackClick = (track: ISong) => {
+  const onTrackClick = (track: Song) => {
     dispatch(setTrack(track));
     dispatch(setTracks(playlist?.songs || []));
   };
 
-  const onDragOver = (trackList: ISong[]) => {
+  const onDragOver = (trackList: Song[]) => {
     dispatch(setPlaylistTracks(playlist, trackList));
 
     const newPlaylist: IPlaylist = { ...playlist, songs: trackList };

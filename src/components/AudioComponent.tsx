@@ -1,7 +1,7 @@
 import React from "react";
 import { connect } from "react-redux";
 import { bindActionCreators, Dispatch } from "redux";
-import { PlayerComponent, ISong, PlayerComponentType } from "../types";
+import { PlayerComponent, Song, PlayerComponentType } from "../types";
 import LocalPlayer from "../LocalPlayer";
 import {
   nextTrack,
@@ -197,8 +197,8 @@ class AudioComponent extends React.Component<
     this.props.nextTrack();
   };
 
-  private async playSong(song: ISong, time?: number) {
-    const newSong: ISong = { ...song };
+  private async playSong(song: Song, time?: number) {
+    const newSong: Song = { ...song };
     if (newSong.from && newSong.id) {
       const audioBlob = await db.audioBlobs
         .where(":id")

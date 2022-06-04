@@ -16,7 +16,7 @@ import {
 } from "@mui/material";
 import React from "react";
 import { useParams } from "react-router";
-import { ISong, PageInfo } from "../types";
+import { Song, PageInfo } from "../types";
 import { usePlugins } from "../PluginsContext";
 import { useAppDispatch } from "../store/hooks";
 import PlaylistItem from "./PlaylistItem";
@@ -27,7 +27,7 @@ const PluginPlaylist: React.FC = () => {
   const { id } = useParams<"id">();
   const { plugins } = usePlugins();
   const plugin = plugins.find((p) => p.id === pluginid);
-  const [playlistTracks, setPlaylistTracks] = React.useState<ISong[]>([]);
+  const [playlistTracks, setPlaylistTracks] = React.useState<Song[]>([]);
   const [page, setPage] = React.useState<PageInfo>();
   const [backdropOpen, setBackdropOpen] = React.useState(false);
   const theme = useTheme();

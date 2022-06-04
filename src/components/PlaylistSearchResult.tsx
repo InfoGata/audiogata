@@ -6,14 +6,14 @@ import {
   Typography,
 } from "@mui/material";
 import React from "react";
-import { IPlaylist, ISong } from "../types";
+import { IPlaylist, Song } from "../types";
 import { usePlugins } from "../PluginsContext";
 import { getThumbnailImage, searchThumbnailSize } from "../utils";
 
 interface PlaylistSearchResultProps {
   playlist: IPlaylist;
   clearSearch: () => void;
-  setTrackResults: (songs: ISong[]) => void;
+  setTrackResults: (songs: Song[]) => void;
 }
 
 const PlaylistSearchResult: React.FC<PlaylistSearchResultProps> = (props) => {

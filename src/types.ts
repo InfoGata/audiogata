@@ -25,7 +25,7 @@ declare global {
   }
 }
 
-export interface ISong {
+export interface Song {
   id?: string;
   name: string;
   source: string;
@@ -36,44 +36,43 @@ export interface ISong {
   artistId?: string;
   artistName?: string;
   hasBlob?: string;
-  images: IImage[];
+  images: ImageInfo[];
 }
 
-export interface IAlbum {
+export interface Album {
   name: string;
   apiId: string;
   from?: string;
   artistName?: string;
   artistId?: string;
-  images: IImage[];
+  images: ImageInfo[];
 }
 
-export interface IArtist {
+export interface Artist {
   name: string;
   apiId: string;
   from?: string;
-  images: IImage[];
+  images: ImageInfo[];
 }
 
 export interface IPlaylist extends PlaylistInfo {
-  songs: ISong[];
+  songs: Song[];
   apiId?: string;
   from?: string;
 }
 
 export interface PlaylistInfo {
   id?: string;
-  images?: IImage[];
+  images?: ImageInfo[];
   name?: string;
   isUserPlaylist?: boolean;
 }
 
-export interface IImage {
+export interface ImageInfo {
   url: string;
   height: number;
   width: number;
 }
-
 export interface NotificationMessage {
   message: string;
   type?: "default" | "success" | "error" | "warning" | "info";
@@ -146,17 +145,17 @@ export interface UserPlaylistRequest {
 }
 
 export interface SearchTrackResult {
-  items: ISong[];
+  items: Song[];
   pageInfo?: PageInfo;
 }
 
 export interface SearchArtistResult {
-  items: IArtist[];
+  items: Artist[];
   pageInfo?: PageInfo;
 }
 
 export interface SearchAlbumResult {
-  items: IAlbum[];
+  items: Album[];
   pageInfo?: PageInfo;
 }
 
@@ -179,7 +178,7 @@ export interface PlayerComponent {
   pause: () => Promise<void>;
   resume: () => Promise<void>;
   seek: (time: number) => Promise<void>;
-  play: (song: ISong) => Promise<void>;
+  play: (song: Song) => Promise<void>;
   setPlaybackRate: (rate: number) => Promise<void>;
 }
 

@@ -13,16 +13,16 @@ import {
   useTheme,
 } from "@mui/material";
 import React from "react";
-import { ISong } from "../types";
+import { Song } from "../types";
 import PlaylistItem from "./PlaylistItem";
 import Sortable from "./Sortable";
 import SortableRow from "./SortableRow";
 
 interface TrackListProps {
-  tracks: ISong[];
-  onDragOver: (newTrackList: ISong[]) => void;
-  onTrackClick: (track: ISong) => void;
-  openMenu: (event: React.MouseEvent<HTMLButtonElement>, song: ISong) => void;
+  tracks: Song[];
+  onDragOver: (newTrackList: Song[]) => void;
+  onTrackClick: (track: Song) => void;
+  openMenu: (event: React.MouseEvent<HTMLButtonElement>, song: Song) => void;
   onSelect: (e: React.ChangeEvent<HTMLInputElement>, id: string) => void;
   onSelectAll: (event: React.ChangeEvent<HTMLInputElement>) => void;
   isSelected: (id: string) => boolean;
@@ -113,7 +113,7 @@ const TrackList: React.FC<TrackListProps> = (props) => {
                 <PlaylistItem
                   showTrackLength={showTrackLength}
                   key={activeId}
-                  song={tracks.find((s) => s.id === activeId) || ({} as ISong)}
+                  song={tracks.find((s) => s.id === activeId) || ({} as Song)}
                 />
               ) : null}
             </DragOverlay>

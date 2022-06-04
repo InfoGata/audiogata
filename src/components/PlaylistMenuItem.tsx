@@ -1,13 +1,13 @@
 import { ListItemIcon, ListItemText, MenuItem } from "@mui/material";
 import { PlaylistAdd } from "@mui/icons-material";
 import React from "react";
-import { PlaylistInfo, ISong } from "../types";
+import { PlaylistInfo, Song } from "../types";
 import { useAppDispatch } from "../store/hooks";
 import { addPlaylistTracks } from "../store/reducers/playlistReducer";
 
 interface PlaylistMenuItemProps {
   playlist: PlaylistInfo;
-  songs: ISong[];
+  songs: Song[];
   closeMenu: () => void;
 }
 

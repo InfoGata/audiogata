@@ -1,4 +1,10 @@
-import { DirectoryFile, FileType, IImage, Manifest, PluginInfo } from "./types";
+import {
+  DirectoryFile,
+  FileType,
+  ImageInfo,
+  Manifest,
+  PluginInfo,
+} from "./types";
 import thumbnail from "./thumbnail.png";
 
 export function formatSeconds(seconds?: number) {
@@ -27,7 +33,7 @@ export function formatSeconds(seconds?: number) {
 
 // Retreive smallest image bigger than thumbnail size
 export const getThumbnailImage = (
-  images: IImage[] | undefined,
+  images: ImageInfo[] | undefined,
   size: number
 ): string => {
   if (!images) {

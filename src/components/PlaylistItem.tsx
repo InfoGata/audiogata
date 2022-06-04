@@ -8,21 +8,21 @@ import {
   Typography,
 } from "@mui/material";
 import React from "react";
-import { ISong } from "../types";
+import { Song } from "../types";
 import { formatSeconds } from "../utils";
 import { MoreHoriz } from "@mui/icons-material";
 import { useAppSelector } from "../store/hooks";
 import { getThumbnailImage, searchThumbnailSize } from "../utils";
 
 interface PlaylistItemsProps {
-  song: ISong;
+  song: Song;
   showTrackLength: boolean;
   isSelected?: (id: string) => boolean;
   onSelectClick?: (
     event: React.ChangeEvent<HTMLInputElement>,
     id: string
   ) => void;
-  openMenu?: (event: React.MouseEvent<HTMLButtonElement>, song: ISong) => void;
+  openMenu?: (event: React.MouseEvent<HTMLButtonElement>, song: Song) => void;
   index?: number;
 }
 

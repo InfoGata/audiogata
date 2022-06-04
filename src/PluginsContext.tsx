@@ -1,10 +1,10 @@
 import React from "react";
 import {
-  IAlbum,
-  IArtist,
+  Album,
+  Artist,
   PlayerComponent,
   IPlaylist,
-  ISong,
+  Song,
   NetworkRequest,
   NotificationMessage,
   PlaylistTrackRequest,
@@ -37,19 +37,19 @@ interface PluginInterface extends PlayerComponent {
   searchArtists: (request: SearchRequest) => Promise<SearchArtistResult>;
   searchAlbums: (request: SearchRequest) => Promise<SearchAlbumResult>;
   searchPlaylists: (request: SearchRequest) => Promise<SearchPlaylistResult>;
-  onNowPlayingTracksAdded: (tracks: ISong[]) => Promise<void>;
-  onNowPlayingTracksRemoved: (tracks: ISong[]) => Promise<void>;
-  onNowPlayingTracksChanged: (tracks: ISong[]) => Promise<void>;
-  onNowPlayingTracksSet: (tracks: ISong[]) => Promise<void>;
-  getTrackUrl: (track: ISong) => Promise<string>;
+  onNowPlayingTracksAdded: (tracks: Song[]) => Promise<void>;
+  onNowPlayingTracksRemoved: (tracks: Song[]) => Promise<void>;
+  onNowPlayingTracksChanged: (tracks: Song[]) => Promise<void>;
+  onNowPlayingTracksSet: (tracks: Song[]) => Promise<void>;
+  getTrackUrl: (track: Song) => Promise<string>;
   onUiMessage: (message: any) => Promise<void>;
   onDeepLinkMessage: (message: string) => Promise<void>;
-  getAlbumTracks: (album: IAlbum) => Promise<ISong[]>;
+  getAlbumTracks: (album: Album) => Promise<Song[]>;
   getPlaylistTracks: (
     request: PlaylistTrackRequest
   ) => Promise<SearchTrackResult>;
-  getArtistAlbums: (artist: IArtist) => Promise<IAlbum[]>;
-  play: (song: ISong) => Promise<void>;
+  getArtistAlbums: (artist: Artist) => Promise<Album[]>;
+  play: (song: Song) => Promise<void>;
   setVolume: (volume: number) => Promise<void>;
   pause: () => Promise<void>;
   resume: () => Promise<void>;
@@ -69,8 +69,8 @@ interface ApplicationPluginInterface extends PluginFrameInterface {
   isNetworkRequestCorsDisabled: () => Promise<boolean>;
   endTrack: () => Promise<void>;
   setTrackTime: (currentTime: number) => Promise<void>;
-  getNowPlayingTracks: () => Promise<ISong[]>;
-  setNowPlayingTracks: (tracks: ISong[]) => Promise<void>;
+  getNowPlayingTracks: () => Promise<Song[]>;
+  setNowPlayingTracks: (tracks: Song[]) => Promise<void>;
   getPlaylists: () => Promise<IPlaylist[]>;
   addPlaylists: (playlists: IPlaylist[]) => Promise<void>;
   createNotification: (notification: NotificationMessage) => Promise<void>;
@@ -204,7 +204,7 @@ export const PluginsProvider: React.FC = (props) => {
       getNowPlayingTracks: async () => {
         return tracks;
       },
-      setNowPlayingTracks: async (tracks: ISong[]) => {
+      setNowPlayingTracks: async (tracks: Song[]) => {
         dispatch(setTracks(tracks));
       },
       createNotification: async (notification: NotificationMessage) => {

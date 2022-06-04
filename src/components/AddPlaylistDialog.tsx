@@ -8,13 +8,13 @@ import {
   TextField,
 } from "@mui/material";
 import React from "react";
-import { IPlaylist, ISong } from "../types";
+import { IPlaylist, Song } from "../types";
 import { useAppDispatch } from "../store/hooks";
 import { addPlaylist } from "../store/reducers/playlistReducer";
 
 interface AddPlaylistDialogProps {
   open: boolean;
-  songs?: ISong[];
+  songs?: Song[];
   handleClose: () => void;
 }
 

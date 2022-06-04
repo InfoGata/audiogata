@@ -1,15 +1,15 @@
 import { createSlice, nanoid, PayloadAction } from "@reduxjs/toolkit";
-import { ISong } from "../../types";
+import { Song } from "../../types";
 import { getPluginFrames } from "../../PluginsContext";
 import { filterAsync } from "../../utils";
 import { AppActionCreator } from "../store";
 
 interface SongState {
-  songs: ISong[];
+  songs: Song[];
   shuffleList: number[];
   shuffle: boolean;
   repeat: boolean;
-  currentSong?: ISong;
+  currentSong?: Song;
   elapsed?: number;
   isPlaying: boolean;
   volume: number;
@@ -40,7 +40,7 @@ const shuffleArray = (array: any[]) => {
     [array[i], array[j]] = [array[j], array[i]];
   }
 };
-const createShuffleArray = (tracks: ISong[]): number[] => {
+const createShuffleArray = (tracks: Song[]): number[] => {
   const indexArray = Object.keys(tracks).map(Number);
   shuffleArray(indexArray);
   return indexArray;
@@ -50,7 +50,7 @@ const songSlice = createSlice({
   name: "song",
   initialState,
   reducers: {
-    addTrack(state, action: PayloadAction<ISong>): SongState {
+    addTrack(state, action: PayloadAction<Song>): SongState {
       return {
         ...state,
         songs: [...state.songs, action.payload],
@@ -63,7 +63,7 @@ const songSlice = createSlice({
         songs: [],
       };
     },
-    deleteTrack(state, action: PayloadAction<ISong>): SongState {
+    deleteTrack(state, action: PayloadAction<Song>): SongState {
       const newPlaylist = state.songs.filter((s) => s.id !== action.payload.id);
       let currentSong = state.currentSong;
       if (currentSong && currentSong.id === action.payload.id) {
@@ -76,7 +76,7 @@ const songSlice = createSlice({
         songs: newPlaylist,
       };
     },
-    updateTrack(state, action: PayloadAction<ISong>): SongState {
+    updateTrack(state, action: PayloadAction<Song>): SongState {
       return {
         ...state,
         songs: state.songs.map((s) =>
@@ -94,7 +94,7 @@ const songSlice = createSlice({
         ),
       };
     },
-    setTracks(state, action: PayloadAction<ISong[]>): SongState {
+    setTracks(state, action: PayloadAction<Song[]>): SongState {
       return {
         ...state,
         shuffleList: [],
@@ -176,7 +176,7 @@ const songSlice = createSlice({
         elapsed: action.payload,
       };
     },
-    setTrack: (state, action: PayloadAction<ISong | undefined>): SongState => {
+    setTrack: (state, action: PayloadAction<Song | undefined>): SongState => {
       if (
         state.currentSong &&
         action.payload &&
@@ -237,22 +237,21 @@ const songSlice = createSlice({
   },
 });
 
-export const addTrack: AppActionCreator =
-  (track: ISong) => async (dispatch) => {
-    const plugins = getPluginFrames();
-    const id = nanoid();
-    track.id = id;
-    dispatch(songSlice.actions.addTrack(track));
-    const filteredPlugins = await filterAsync(plugins, (p) =>
-      p.hasDefined.onNowPlayingTracksAdded()
-    );
-    await Promise.all(
-      filteredPlugins.map((p) => p.remote.onNowPlayingTracksAdded([track]))
-    );
-  };
+export const addTrack: AppActionCreator = (track: Song) => async (dispatch) => {
+  const plugins = getPluginFrames();
+  const id = nanoid();
+  track.id = id;
+  dispatch(songSlice.actions.addTrack(track));
+  const filteredPlugins = await filterAsync(plugins, (p) =>
+    p.hasDefined.onNowPlayingTracksAdded()
+  );
+  await Promise.all(
+    filteredPlugins.map((p) => p.remote.onNowPlayingTracksAdded([track]))
+  );
+};
 
 export const deleteTrack: AppActionCreator =
-  (track: ISong) => async (dispatch) => {
+  (track: Song) => async (dispatch) => {
     const plugins = getPluginFrames();
     dispatch(songSlice.actions.deleteTrack(track));
     const filteredPlugins = await filterAsync(plugins, (p) =>
@@ -264,7 +263,7 @@ export const deleteTrack: AppActionCreator =
   };
 
 export const updateTrack: AppActionCreator =
-  (track: ISong) => async (dispatch) => {
+  (track: Song) => async (dispatch) => {
     const plugins = getPluginFrames();
     dispatch(songSlice.actions.updateTrack(track));
     const filteredPlugins = await filterAsync(plugins, (p) =>
@@ -291,7 +290,7 @@ export const clearTracks: AppActionCreator =
   };
 
 export const setTracks: AppActionCreator =
-  (tracks: ISong[]) => async (dispatch) => {
+  (tracks: Song[]) => async (dispatch) => {
     const plugins = getPluginFrames();
     dispatch(songSlice.actions.setTracks(tracks));
     const filteredPlugins = await filterAsync(plugins, (p) =>

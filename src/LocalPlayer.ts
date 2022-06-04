@@ -1,4 +1,4 @@
-import { PlayerComponent, ISong } from "./types";
+import { PlayerComponent, Song } from "./types";
 
 class LocalPlayer implements PlayerComponent {
   public name = "local";
@@ -39,7 +39,7 @@ class LocalPlayer implements PlayerComponent {
     }
   }
 
-  public async play(song: ISong) {
+  public async play(song: Song) {
     this.audio.src = song.source;
     this.audio.load();
     await this.audio.play();

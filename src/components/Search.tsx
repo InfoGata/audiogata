@@ -19,10 +19,10 @@ import {
 import React, { useEffect } from "react";
 import { useLocation } from "react-router";
 import {
-  IAlbum,
-  IArtist,
+  Album,
+  Artist,
   IPlaylist,
-  ISong,
+  Song,
   PageInfo,
   ResultType,
   SearchRequest,
@@ -64,13 +64,13 @@ const TabPanel: React.FC<TabPanelProps> = (props) => {
 const Search: React.FC = () => {
   const [searchQuery, setSearchQuery] = React.useState("");
   const [searchType, setSearchType] = React.useState("");
-  const [trackResults, setTrackResults] = React.useState<ISong[]>([]);
-  const [albumResults, setAlbumResults] = React.useState<IAlbum[]>([]);
-  const [artistResults, setArtistResults] = React.useState<IArtist[]>([]);
+  const [trackResults, setTrackResults] = React.useState<Song[]>([]);
+  const [albumResults, setAlbumResults] = React.useState<Album[]>([]);
+  const [artistResults, setArtistResults] = React.useState<Artist[]>([]);
   const [playlistResults, setPlaylistResults] = React.useState<IPlaylist[]>([]);
   const [tabValue, setTabValue] = React.useState<string | boolean>(false);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-  const [menuSong, setMenuSong] = React.useState<ISong>({} as ISong);
+  const [menuSong, setMenuSong] = React.useState<Song>({} as Song);
   const [options, setOptions] = React.useState<[string, string][]>();
   const [trackPage, setTrackPage] = React.useState<PageInfo>();
   const [albumPage, setAlbumPage] = React.useState<PageInfo>();
@@ -82,7 +82,7 @@ const Search: React.FC = () => {
     setSearchType(e.currentTarget.value);
   };
 
-  const onSetTrackResults = (tracks: ISong[]) => {
+  const onSetTrackResults = (tracks: Song[]) => {
     setTrackResults(tracks);
     setTabValue(ResultType.Tracks);
   };
@@ -122,9 +122,9 @@ const Search: React.FC = () => {
     resetPagination();
     const onSearch = async (search: string) => {
       setBackdropOpen(true);
-      let tracks: ISong[] | undefined = [];
-      let albums: IAlbum[] | undefined = [];
-      let artists: IArtist[] | undefined = [];
+      let tracks: Song[] | undefined = [];
+      let albums: Album[] | undefined = [];
+      let artists: Artist[] | undefined = [];
       let playlists: IPlaylist[] | undefined = [];
       const plugin = plugins.find((p) => p.id === searchType);
       if (plugin?.hasDefined.searchAll()) {
@@ -153,10 +153,7 @@ const Search: React.FC = () => {
     }
   }, [location.search, searchType, plugins]);
 
-  const openMenu = (
-    event: React.MouseEvent<HTMLButtonElement>,
-    song: ISong
-  ) => {
+  const openMenu = (event: React.MouseEvent<HTMLButtonElement>, song: Song) => {
     setAnchorEl(event.currentTarget);
     setMenuSong(song);
   };

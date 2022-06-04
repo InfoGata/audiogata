@@ -1,5 +1,5 @@
 import React from "react";
-import { ISong } from "../types";
+import { Song } from "../types";
 import {
   Menu,
   ListItemText,
@@ -34,14 +34,14 @@ import useSelected from "../hooks/useSelected";
 
 const PlayQueue: React.FC = () => {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-  const [menuSong, setMenuSong] = React.useState<ISong>({} as ISong);
+  const [menuSong, setMenuSong] = React.useState<Song>({} as Song);
   const [from, setFrom] = React.useState<string>("");
   const [queueMenuAnchorEl, setQueueMenuAnchorEl] =
     React.useState<null | HTMLElement>(null);
   const { plugins } = usePlugins();
   const openMenu = async (
     event: React.MouseEvent<HTMLButtonElement>,
-    song: ISong
+    song: Song
   ) => {
     const currentTarget = event.currentTarget;
     event.stopPropagation();
@@ -90,7 +90,7 @@ const PlayQueue: React.FC = () => {
   const playlists = useAppSelector((state) => state.playlist.playlists);
   const infoPath = `/track/${menuSong.id}`;
 
-  const onTrackClick = (song: ISong) => {
+  const onTrackClick = (song: Song) => {
     dispatch(setTrack(song));
   };
 
@@ -98,7 +98,7 @@ const PlayQueue: React.FC = () => {
     dispatch(clearTracks());
   };
 
-  const onDragOver = (newTrackList: ISong[]) => {
+  const onDragOver = (newTrackList: Song[]) => {
     dispatch(setTracks(newTrackList));
   };
 

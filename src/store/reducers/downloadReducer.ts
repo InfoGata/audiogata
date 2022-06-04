@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { AudioBlob, db } from "../../database";
-import { ISong } from "../../types";
+import { Song } from "../../types";
 import { AppActionCreator } from "../store";
 import { Capacitor } from "@capacitor/core";
 
@@ -22,7 +22,7 @@ const downloadsSlice = createSlice({
   name: "download",
   initialState,
   reducers: {
-    downloadTrack: (state, action: PayloadAction<ISong>) => {
+    downloadTrack: (state, action: PayloadAction<Song>) => {
       const trackId = action.payload.id || "";
       const newDownload: TrackProgress = {
         trackId: action.payload.id || "",
@@ -46,7 +46,7 @@ const downloadsSlice = createSlice({
 });
 
 export const downloadTrack: AppActionCreator =
-  (track: ISong, url: string) => async (dispatch) => {
+  (track: Song, url: string) => async (dispatch) => {
     dispatch(downloadsSlice.actions.downloadTrack(track));
     let response: Response | undefined = undefined;
     let blob: Blob;

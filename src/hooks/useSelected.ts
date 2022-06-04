@@ -1,7 +1,7 @@
 import React from "react";
-import { ISong } from "../types";
+import { Song } from "../types";
 
-const useSelected = (tracks: ISong[]) => {
+const useSelected = (tracks: Song[]) => {
   const [selected, setSelected] = React.useState<Set<string>>(new Set());
   const lastSelected = React.useRef<number | null>(null);
 
