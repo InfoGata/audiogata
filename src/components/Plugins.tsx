@@ -1,11 +1,12 @@
 import React from "react";
 import { Button, Grid, styled, TextField } from "@mui/material";
 import { nanoid } from "@reduxjs/toolkit";
-import { FileType, PluginInfo } from "../types";
+import { FileType } from "../types";
 import { usePlugins } from "../PluginsContext";
 import PluginContainer from "./PluginContainer";
 import { directoryProps, getPlugin } from "../utils";
 import ConfirmPluginDialog from "./ConfirmPluginDialog";
+import { PluginInfo } from "../plugintypes";
 
 const FileInput = styled("input")({
   display: "none",

@@ -1,7 +1,7 @@
 import { ListItemIcon, ListItemText, MenuItem } from "@mui/material";
 import { PlaylistAdd } from "@mui/icons-material";
 import React from "react";
-import { PlaylistInfo, Track } from "../types";
+import { PlaylistInfo, Track } from "../plugintypes";
 import { useAppDispatch } from "../store/hooks";
 import { addPlaylistTracks } from "../store/reducers/playlistReducer";
 

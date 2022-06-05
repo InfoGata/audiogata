@@ -9,7 +9,7 @@ import {
   ListItemText,
 } from "@mui/material";
 import React from "react";
-import { PluginInfo } from "../types";
+import { PluginInfo } from "../plugintypes";
 import { usePlugins } from "../PluginsContext";
 
 interface ConfirmPluginDialogProps {

@@ -1,5 +1,5 @@
 import dexie from "dexie";
-import { Playlist, PluginInfo } from "./types";
+import { Playlist, PluginInfo } from "./plugintypes";
 
 class AudioDatabase extends dexie {
   audioBlobs: Dexie.Table<AudioBlob, string>;

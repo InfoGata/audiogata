@@ -24,9 +24,8 @@ import {
   Playlist,
   Track,
   PageInfo,
-  ResultType,
   SearchRequest,
-} from "../types";
+} from "../plugintypes";
 import { filterAsync } from "../utils";
 import AlbumSearchResult from "./AlbumSearchResult";
 import ArtistSearchResult from "./ArtistSearchResult";
@@ -37,6 +36,7 @@ import PlaylistMenuItem from "./PlaylistMenuItem";
 import { addTrack } from "../store/reducers/trackReducer";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
 import { usePlugins } from "../PluginsContext";
+import { ResultType } from "../types";
 
 interface TabPanelProps {
   children?: React.ReactNode;

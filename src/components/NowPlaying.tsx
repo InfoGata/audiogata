@@ -1,5 +1,5 @@
 import React from "react";
-import { Track } from "../types";
+import { Track } from "../plugintypes";
 import {
   Menu,
   ListItemText,

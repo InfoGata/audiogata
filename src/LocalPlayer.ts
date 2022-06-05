@@ -1,4 +1,5 @@
-import { PlayerComponent, Track } from "./types";
+import { Track } from "./plugintypes";
+import { PlayerComponent } from "./types";
 
 class LocalPlayer implements PlayerComponent {
   public name = "local";

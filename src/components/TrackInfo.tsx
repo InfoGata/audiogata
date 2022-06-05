@@ -6,7 +6,7 @@ import {
   SelectChangeEvent,
 } from "@mui/material";
 import React from "react";
-import { Track } from "../types";
+import { Track } from "../plugintypes";
 import { usePlugins } from "../PluginsContext";
 import { useAppDispatch } from "../store/hooks";
 import { updateTrack } from "../store/reducers/trackReducer";

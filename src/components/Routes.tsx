@@ -2,7 +2,7 @@ import React from "react";
 import { Route, Routes } from "react-router-dom";
 import Home from "./Home";
 import NowPlaying from "./NowPlaying";
-import Playlist from "./Playlist";
+import PlaylistTracks from "./Playlist";
 import Playlists from "./Playlists";
 import Plugins from "./Plugins";
 import Search from "./Search";
@@ -32,7 +32,7 @@ const Routing: React.FC = () => {
         <Route path="/nowplaying" element={<NowPlaying />} />
         <Route path="/plugins" element={<Plugins />} />
         <Route path="/playlists" element={<Playlists />} />
-        <Route path="/playlists/:id" element={<Playlist />} />
+        <Route path="/playlists/:id" element={<PlaylistTracks />} />
         <Route path="/settings" element={<Settings />} />
         <Route path="/search" element={<Search />} />
         <Route path="/plugins/:id/playlists" element={<PluginPlaylists />} />

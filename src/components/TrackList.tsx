@@ -13,7 +13,7 @@ import {
   useTheme,
 } from "@mui/material";
 import React from "react";
-import { Track } from "../types";
+import { Track } from "../plugintypes";
 import PlaylistItem from "./PlaylistItem";
 import Sortable from "./Sortable";
 import SortableRow from "./SortableRow";

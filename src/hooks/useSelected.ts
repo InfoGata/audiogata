@@ -1,5 +1,5 @@
 import React from "react";
-import { Track } from "../types";
+import { Track } from "../plugintypes";
 
 const useSelected = (tracks: Track[]) => {
   const [selected, setSelected] = React.useState<Set<string>>(new Set());

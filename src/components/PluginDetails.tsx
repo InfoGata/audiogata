@@ -2,7 +2,7 @@ import React from "react";
 import { List, ListItem, ListItemText, Typography } from "@mui/material";
 import { useParams } from "react-router-dom";
 import { db } from "../database";
-import { PluginInfo } from "../types";
+import { PluginInfo } from "../plugintypes";
 
 const PluginDetails: React.FC = () => {
   const { id } = useParams<"id">();

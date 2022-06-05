@@ -1,6 +1,6 @@
 import { Avatar, ListItem, ListItemAvatar, ListItemText } from "@mui/material";
 import React from "react";
-import { Album, Artist } from "../types";
+import { Album, Artist } from "../plugintypes";
 import { usePlugins } from "../PluginsContext";
 import { getThumbnailImage, searchThumbnailSize } from "../utils";
 

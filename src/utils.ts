@@ -1,11 +1,6 @@
-import {
-  DirectoryFile,
-  FileType,
-  ImageInfo,
-  Manifest,
-  PluginInfo,
-} from "./types";
+import { DirectoryFile, FileType, Manifest } from "./types";
 import thumbnail from "./thumbnail.png";
+import { ImageInfo, PluginInfo } from "./plugintypes";
 
 export function formatSeconds(seconds?: number) {
   if (!seconds) {

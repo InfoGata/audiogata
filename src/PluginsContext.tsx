@@ -2,10 +2,8 @@ import React from "react";
 import {
   Album,
   Artist,
-  PlayerComponent,
   Playlist,
   Track,
-  NetworkRequest,
   NotificationMessage,
   PlaylistTrackRequest,
   PluginInfo,
@@ -16,7 +14,7 @@ import {
   SearchRequest,
   SearchTrackResult,
   UserPlaylistRequest,
-} from "./types";
+} from "./plugintypes";
 import {
   PluginFrame,
   PluginInterface as PluginFrameInterface,
@@ -34,6 +32,7 @@ import { Capacitor } from "@capacitor/core";
 import ConfirmPluginDialog from "./components/ConfirmPluginDialog";
 import { App, URLOpenListenerEvent } from "@capacitor/app";
 import { addPlaylists } from "./store/reducers/playlistReducer";
+import { NetworkRequest, PlayerComponent } from "./types";
 
 interface PluginInterface extends PlayerComponent {
   searchAll: (request: SearchRequest) => Promise<SearchAllResult>;

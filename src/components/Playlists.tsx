@@ -12,7 +12,7 @@ import {
   Button,
 } from "@mui/material";
 import React from "react";
-import { PlaylistInfo } from "../types";
+import { PlaylistInfo } from "../plugintypes";
 import { Link } from "react-router-dom";
 import { Delete, MoreHoriz } from "@mui/icons-material";
 import { deletePlaylist } from "../store/reducers/playlistReducer";

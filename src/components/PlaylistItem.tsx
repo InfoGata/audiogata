@@ -8,7 +8,7 @@ import {
   Typography,
 } from "@mui/material";
 import React from "react";
-import { Track } from "../types";
+import { Track } from "../plugintypes";
 import { formatSeconds } from "../utils";
 import { MoreHoriz } from "@mui/icons-material";
 import { useAppSelector } from "../store/hooks";

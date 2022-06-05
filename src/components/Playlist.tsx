@@ -16,7 +16,7 @@ import {
   setTracks,
 } from "../store/reducers/trackReducer";
 import { db } from "../database";
-import { Playlist, Track } from "../types";
+import { Playlist, Track } from "../plugintypes";
 import { useAppDispatch } from "../store/hooks";
 import { setPlaylistTracks } from "../store/reducers/playlistReducer";
 import { Delete, Info, PlayCircle } from "@mui/icons-material";
@@ -26,7 +26,7 @@ import { downloadTrack } from "../store/reducers/downloadReducer";
 import TrackList from "./TrackList";
 import useSelected from "../hooks/useSelected";
 
-const Playlist: React.FC = () => {
+const PlaylistTracks: React.FC = () => {
   const { id } = useParams<"id">();
   const dispatch = useAppDispatch();
   const [playlist, setPlaylist] = React.useState<Playlist | undefined>();
@@ -194,4 +194,4 @@ const Playlist: React.FC = () => {
   );
 };
 
-export default Playlist;
+export default PlaylistTracks;

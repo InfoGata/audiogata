@@ -1,5 +1,5 @@
 import { createSlice, nanoid, PayloadAction } from "@reduxjs/toolkit";
-import { Playlist, Track, PlaylistInfo } from "../../types";
+import { Playlist, Track, PlaylistInfo } from "../../plugintypes";
 import { AppActionCreator } from "../store";
 import { db } from "../../database";
 

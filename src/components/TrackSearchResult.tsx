@@ -8,7 +8,7 @@ import {
   IconButton,
 } from "@mui/material";
 import React from "react";
-import { Track } from "../types";
+import { Track } from "../plugintypes";
 import { addTrack, setTrack } from "../store/reducers/trackReducer";
 import { getThumbnailImage, searchThumbnailSize } from "../utils";
 import { MoreHoriz } from "@mui/icons-material";

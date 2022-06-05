@@ -16,7 +16,7 @@ import {
 } from "@mui/material";
 import React from "react";
 import { useParams } from "react-router";
-import { Track, PageInfo } from "../types";
+import { Track, PageInfo } from "../plugintypes";
 import { usePlugins } from "../PluginsContext";
 import { useAppDispatch } from "../store/hooks";
 import PlaylistItem from "./PlaylistItem";

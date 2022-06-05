@@ -1,7 +1,7 @@
 import React from "react";
 import { connect } from "react-redux";
 import { bindActionCreators, Dispatch } from "redux";
-import { PlayerComponent, Track, PlayerComponentType } from "../types";
+import { PlayerComponent, PlayerComponentType } from "../types";
 import LocalPlayer from "../LocalPlayer";
 import {
   nextTrack,
@@ -15,6 +15,7 @@ import { withSnackbar, ProviderContext } from "notistack";
 import PluginsContext from "../PluginsContext";
 import { db } from "../database";
 import { filterAsync } from "../utils";
+import { Track } from "../plugintypes";
 
 interface AudioComponentProps
   extends StateProps,
