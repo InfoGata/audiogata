@@ -16,7 +16,7 @@ import {
   setTracks,
 } from "../store/reducers/trackReducer";
 import { db } from "../database";
-import { IPlaylist, Track } from "../types";
+import { Playlist, Track } from "../types";
 import { useAppDispatch } from "../store/hooks";
 import { setPlaylistTracks } from "../store/reducers/playlistReducer";
 import { Delete, Info, PlayCircle } from "@mui/icons-material";
@@ -29,7 +29,7 @@ import useSelected from "../hooks/useSelected";
 const Playlist: React.FC = () => {
   const { id } = useParams<"id">();
   const dispatch = useAppDispatch();
-  const [playlist, setPlaylist] = React.useState<IPlaylist | undefined>();
+  const [playlist, setPlaylist] = React.useState<Playlist | undefined>();
   const [loaded, setLoaded] = React.useState(false);
   const [menuTrack, setMenuTrack] = React.useState<Track>({} as Track);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -142,7 +142,7 @@ const Playlist: React.FC = () => {
   const onDragOver = (trackList: Track[]) => {
     dispatch(setPlaylistTracks(playlist, trackList));
 
-    const newPlaylist: IPlaylist = { ...playlist, tracks: trackList };
+    const newPlaylist: Playlist = { ...playlist, tracks: trackList };
     setPlaylist(newPlaylist);
   };
 

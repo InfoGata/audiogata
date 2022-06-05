@@ -21,7 +21,7 @@ import { useLocation } from "react-router";
 import {
   Album,
   Artist,
-  IPlaylist,
+  Playlist,
   Track,
   PageInfo,
   ResultType,
@@ -67,7 +67,7 @@ const Search: React.FC = () => {
   const [trackResults, setTrackResults] = React.useState<Track[]>([]);
   const [albumResults, setAlbumResults] = React.useState<Album[]>([]);
   const [artistResults, setArtistResults] = React.useState<Artist[]>([]);
-  const [playlistResults, setPlaylistResults] = React.useState<IPlaylist[]>([]);
+  const [playlistResults, setPlaylistResults] = React.useState<Playlist[]>([]);
   const [tabValue, setTabValue] = React.useState<string | boolean>(false);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [menuTrack, setMenuTrack] = React.useState<Track>({} as Track);
@@ -125,7 +125,7 @@ const Search: React.FC = () => {
       let tracks: Track[] | undefined = [];
       let albums: Album[] | undefined = [];
       let artists: Artist[] | undefined = [];
-      let playlists: IPlaylist[] | undefined = [];
+      let playlists: Playlist[] | undefined = [];
       const plugin = plugins.find((p) => p.id === searchType);
       if (plugin?.hasDefined.searchAll()) {
         const searchAll = await plugin.remote.searchAll({ query: search });

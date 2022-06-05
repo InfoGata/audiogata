@@ -1,5 +1,5 @@
 import { createSlice, nanoid, PayloadAction } from "@reduxjs/toolkit";
-import { IPlaylist, Track, PlaylistInfo } from "../../types";
+import { Playlist, Track, PlaylistInfo } from "../../types";
 import { AppActionCreator } from "../store";
 import { db } from "../../database";
 
@@ -36,7 +36,7 @@ const playlistSlice = createSlice({
   },
 });
 
-const playlistToPlaylistInfo = (playlist: IPlaylist): PlaylistInfo => ({
+const playlistToPlaylistInfo = (playlist: Playlist): PlaylistInfo => ({
   id: playlist.id,
   name: playlist.name,
   images: playlist.images,
@@ -49,7 +49,7 @@ export const initializePlaylists: AppActionCreator = () => async (dispatch) => {
 };
 
 export const addPlaylist: AppActionCreator =
-  (playlist: IPlaylist) => async (dispatch) => {
+  (playlist: Playlist) => async (dispatch) => {
     const id = nanoid();
     playlist.id = id;
     await db.playlists.add(playlist);
@@ -58,7 +58,7 @@ export const addPlaylist: AppActionCreator =
   };
 
 export const addPlaylists: AppActionCreator =
-  (playlists: IPlaylist[]) => async (dispatch) => {
+  (playlists: Playlist[]) => async (dispatch) => {
     await db.playlists.bulkPut(playlists);
     const newPlaylists = await db.playlists.toArray();
     const info = newPlaylists.map(playlistToPlaylistInfo);
@@ -74,7 +74,7 @@ export const deletePlaylist: AppActionCreator =
   };
 
 export const setPlaylistTracks: AppActionCreator =
-  (playlist: IPlaylist, tracks: Track[]) => async (_dispatch) => {
+  (playlist: Playlist, tracks: Track[]) => async (_dispatch) => {
     playlist.tracks = tracks;
     await db.playlists.put(playlist);
   };

@@ -8,7 +8,7 @@ import {
   TextField,
 } from "@mui/material";
 import React from "react";
-import { IPlaylist, Track } from "../types";
+import { Playlist, Track } from "../types";
 import { useAppDispatch } from "../store/hooks";
 import { addPlaylist } from "../store/reducers/playlistReducer";
 
@@ -25,7 +25,7 @@ const AddPlaylistDialog: React.FC<AddPlaylistDialogProps> = (props) => {
 
   const confirm = () => {
     const tracks = props.tracks || [];
-    const playlist: IPlaylist = {
+    const playlist: Playlist = {
       name,
       tracks: tracks,
     };

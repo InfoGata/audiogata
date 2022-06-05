@@ -55,7 +55,7 @@ export interface Artist {
   images: ImageInfo[];
 }
 
-export interface IPlaylist extends PlaylistInfo {
+export interface Playlist extends PlaylistInfo {
   tracks: Track[];
   apiId?: string;
   from?: string;
@@ -136,7 +136,7 @@ export interface SearchRequest {
 }
 
 export interface PlaylistTrackRequest {
-  playlist: IPlaylist;
+  playlist: Playlist;
   page?: PageInfo;
 }
 
@@ -160,7 +160,7 @@ export interface SearchAlbumResult {
 }
 
 export interface SearchPlaylistResult {
-  items: IPlaylist[];
+  items: Playlist[];
   pageInfo?: PageInfo;
 }
 

@@ -2,7 +2,7 @@ import React from "react";
 import { usePlugins } from "../PluginsContext";
 import { useParams } from "react-router";
 import { Link } from "react-router-dom";
-import { IPlaylist } from "../types";
+import { Playlist } from "../types";
 import {
   Card,
   CardActionArea,
@@ -16,7 +16,7 @@ import { getThumbnailImage, playlistThumbnailSize } from "../utils";
 const PluginPlaylists: React.FC = () => {
   const { plugins } = usePlugins();
   const { id } = useParams<"id">();
-  const [playlists, setPlaylists] = React.useState<IPlaylist[]>([]);
+  const [playlists, setPlaylists] = React.useState<Playlist[]>([]);
   const plugin = plugins.find((p) => p.id === id);
 
   React.useEffect(() => {

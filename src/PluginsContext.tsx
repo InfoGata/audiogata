@@ -3,7 +3,7 @@ import {
   Album,
   Artist,
   PlayerComponent,
-  IPlaylist,
+  Playlist,
   Track,
   NetworkRequest,
   NotificationMessage,
@@ -75,8 +75,8 @@ interface ApplicationPluginInterface extends PluginFrameInterface {
   setTrackTime: (currentTime: number) => Promise<void>;
   getNowPlayingTracks: () => Promise<Track[]>;
   setNowPlayingTracks: (tracks: Track[]) => Promise<void>;
-  getPlaylists: () => Promise<IPlaylist[]>;
-  addPlaylists: (playlists: IPlaylist[]) => Promise<void>;
+  getPlaylists: () => Promise<Playlist[]>;
+  addPlaylists: (playlists: Playlist[]) => Promise<void>;
   createNotification: (notification: NotificationMessage) => Promise<void>;
   getCorsProxy: () => Promise<string>;
   installPlugins: (plugins: PluginInfo[]) => Promise<void>;
@@ -230,7 +230,7 @@ export const PluginsProvider: React.FC = (props) => {
       getPlaylists: async () => {
         return await db.playlists.toArray();
       },
-      addPlaylists: async (playlists: IPlaylist[]) => {
+      addPlaylists: async (playlists: Playlist[]) => {
         dispatch(addPlaylists(playlists));
       },
     };
