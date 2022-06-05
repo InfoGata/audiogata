@@ -28,7 +28,7 @@ declare global {
 export interface Track {
   id?: string;
   name: string;
-  source: string;
+  source?: string;
   from?: string;
   apiId?: string;
   duration?: number;

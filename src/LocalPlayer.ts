@@ -40,7 +40,9 @@ class LocalPlayer implements PlayerComponent {
   }
 
   public async play(track: Track) {
-    this.audio.src = track.source;
+    if (track.source) {
+      this.audio.src = track.source;
+    }
     this.audio.load();
     await this.audio.play();
   }
