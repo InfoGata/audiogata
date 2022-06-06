@@ -261,7 +261,7 @@ class AudioComponent extends React.Component<
       if (this.props.currentTrack) {
         navigator.mediaSession.metadata = new MediaMetadata({
           title: this.props.currentTrack.name,
-          artwork: this.props.currentTrack.images.map((i) => ({
+          artwork: this.props.currentTrack.images?.map((i) => ({
             src: i.url,
             sizes: `${i.height}x${i.width}`,
             type: this.getImageType(i.url),
