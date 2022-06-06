@@ -2,7 +2,7 @@ import React from "react";
 import { Route, Routes } from "react-router-dom";
 import Home from "./Home";
 import NowPlaying from "./NowPlaying";
-import PlaylistTracks from "./Playlist";
+import PlaylistTracks from "./PlaylistTracks";
 import Playlists from "./Playlists";
 import Plugins from "./Plugins";
 import Search from "./Search";

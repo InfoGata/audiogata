@@ -195,12 +195,12 @@ export const PluginsProvider: React.FC = (props) => {
         setPluginMessage({ pluginId: plugin.id, message });
       },
       endTrack: async () => {
-        if (currentTrack?.from === plugin.id) {
+        if (currentTrack?.pluginId === plugin.id) {
           dispatch(nextTrack());
         }
       },
       setTrackTime: async (currentTime: number) => {
-        if (currentTrack?.from === plugin.id) {
+        if (currentTrack?.pluginId === plugin.id) {
           dispatch(setElapsed(currentTime));
         }
       },
@@ -242,46 +242,46 @@ export const PluginsProvider: React.FC = (props) => {
     const completeMethods = {
       searchAll: (result: SearchAllResult) => {
         result.tracks?.items.forEach((i) => {
-          i.from = plugin.id;
+          i.pluginId = plugin.id;
         });
         result.albums?.items.forEach((i) => {
-          i.from = plugin.id;
+          i.pluginId = plugin.id;
         });
         result.artists?.items.forEach((i) => {
-          i.from = plugin.id;
+          i.pluginId = plugin.id;
         });
         result.playlists?.items.forEach((i) => {
-          i.from = plugin.id;
+          i.pluginId = plugin.id;
         });
         return result;
       },
       searchTracks: (result: SearchTrackResult) => {
         result.items.forEach((i) => {
-          i.from = plugin.id;
+          i.pluginId = plugin.id;
         });
         return result;
       },
       searchArtists: (result: SearchArtistResult) => {
         result.items.forEach((i) => {
-          i.from = plugin.id;
+          i.pluginId = plugin.id;
         });
         return result;
       },
       searchAlbums: (result: SearchAlbumResult) => {
         result.items.forEach((i) => {
-          i.from = plugin.id;
+          i.pluginId = plugin.id;
         });
         return result;
       },
       searchPlaylists: (result: SearchPlaylistResult) => {
         result.items.forEach((i) => {
-          i.from = plugin.id;
+          i.pluginId = plugin.id;
         });
         return result;
       },
       getPlaylistTracks: (result: SearchTrackResult) => {
         result.items.forEach((i) => {
-          i.from = plugin.id;
+          i.pluginId = plugin.id;
         });
         return result;
       },

@@ -72,10 +72,10 @@ const PlaylistTracks: React.FC = () => {
     setMenuTrack(track);
     setAnchorEl(currentTarget);
     // Check whether track can be played offline
-    if (track.id && track.from) {
+    if (track.id && track.pluginId) {
       // Check if this needs it's own player
       // Instead of being able to play locally
-      const pluginFrame = plugins.find((p) => p.id === track.from);
+      const pluginFrame = plugins.find((p) => p.id === track.pluginId);
       const canDownload =
         (await pluginFrame?.hasDefined.getTrackUrl()) || false;
       setCanOffline(canDownload);
@@ -98,8 +98,8 @@ const PlaylistTracks: React.FC = () => {
 
   const enablePlayingOffline = async () => {
     try {
-      if (menuTrack.from) {
-        const pluginFrame = plugins.find((p) => p.id === menuTrack.from);
+      if (menuTrack.pluginId) {
+        const pluginFrame = plugins.find((p) => p.id === menuTrack.pluginId);
         if (!(await pluginFrame?.hasDefined.getTrackUrl())) {
           return;
         }

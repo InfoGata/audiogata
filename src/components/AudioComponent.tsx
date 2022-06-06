@@ -46,12 +46,12 @@ class AudioComponent extends React.Component<
   public async componentDidMount() {
     this.setMediaSessionActions();
     let player = await this.getPlayerFromName(
-      this.props.currentTrack?.from || "",
+      this.props.currentTrack?.pluginId || "",
       "setVolume"
     );
     await player?.setVolume(this.props.volume);
     player = await this.getPlayerFromName(
-      this.props.currentTrack?.from || "",
+      this.props.currentTrack?.pluginId || "",
       "setPlaybackRate"
     );
     await player?.setPlaybackRate(this.props.playbackRate || 1.0);
@@ -112,7 +112,7 @@ class AudioComponent extends React.Component<
     newProps: AudioComponentProps
   ) {
     const player = await this.getPlayerFromName(
-      newProps.currentTrack?.from || ""
+      newProps.currentTrack?.pluginId || ""
     );
     if (prevProps.isPlaying !== newProps.isPlaying) {
       if (newProps.isPlaying) {
@@ -132,7 +132,7 @@ class AudioComponent extends React.Component<
   ) {
     if (prevProps.volume !== newProps.volume) {
       const player = await this.getPlayerFromName(
-        newProps.currentTrack?.from || "",
+        newProps.currentTrack?.pluginId || "",
         "setVolume"
       );
       await player?.setVolume(newProps.volume);
@@ -145,7 +145,7 @@ class AudioComponent extends React.Component<
   ) {
     if (prevProps.playbackRate !== newProps.playbackRate) {
       const player = await this.getPlayerFromName(
-        this.props.currentTrack?.from || "",
+        this.props.currentTrack?.pluginId || "",
         "setPlaybackRate"
       );
       await player?.setPlaybackRate(newProps.playbackRate || 1.0);
@@ -158,7 +158,7 @@ class AudioComponent extends React.Component<
   ) {
     if (prevProps.mute !== newProps.mute) {
       const player = await this.getPlayerFromName(
-        this.props.currentTrack?.from || "",
+        this.props.currentTrack?.pluginId || "",
         "setVolume"
       );
       if (newProps.mute) {
@@ -175,7 +175,7 @@ class AudioComponent extends React.Component<
   ) {
     if (newProps.seekTime != null && prevProps.seekTime !== newProps.seekTime) {
       const player = await this.getPlayerFromName(
-        newProps.currentTrack?.from || "",
+        newProps.currentTrack?.pluginId || "",
         "seek"
       );
       await player?.seek(newProps.seekTime);
@@ -200,17 +200,17 @@ class AudioComponent extends React.Component<
 
   private async playTrack(track: Track, time?: number) {
     const newTrack: Track = { ...track };
-    if (newTrack.from && newTrack.id) {
+    if (newTrack.pluginId && newTrack.id) {
       const audioBlob = await db.audioBlobs
         .where(":id")
         .equals(newTrack.id)
         .first();
       const pluginFrame = this.context.plugins.find(
-        (p) => p.id === newTrack.from
+        (p) => p.id === newTrack.pluginId
       );
       const hasPluginApi =
         (await pluginFrame?.hasDefined.getTrackUrl()) || false;
-      const player = await this.getPlayerFromName(newTrack.from || "");
+      const player = await this.getPlayerFromName(newTrack.pluginId || "");
       this.lastPlayer?.pause();
       try {
         if (audioBlob) {

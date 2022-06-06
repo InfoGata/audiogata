@@ -107,7 +107,7 @@ const PlayQueue: React.FC = () => {
     setFrom(value);
     if (value) {
       const filterdList = trackList
-        .filter((t) => t.from === value)
+        .filter((t) => t.pluginId === value)
         .map((t) => t.id) as string[];
       setSelected(new Set(filterdList));
     } else {

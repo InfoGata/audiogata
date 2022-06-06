@@ -1,56 +1,3 @@
-export interface Track {
-  id?: string;
-  name: string;
-  source?: string;
-  from?: string;
-  apiId?: string;
-  duration?: number;
-  albumId?: string;
-  artistId?: string;
-  artistName?: string;
-  hasBlob?: string;
-  images: ImageInfo[];
-}
-
-export interface Album {
-  name: string;
-  apiId: string;
-  from?: string;
-  artistName?: string;
-  artistId?: string;
-  images: ImageInfo[];
-}
-
-export interface Artist {
-  name: string;
-  apiId: string;
-  from?: string;
-  images: ImageInfo[];
-}
-
-export interface Playlist extends PlaylistInfo {
-  tracks: Track[];
-  apiId?: string;
-  from?: string;
-}
-
-export interface PlaylistInfo {
-  id?: string;
-  images?: ImageInfo[];
-  name?: string;
-  isUserPlaylist?: boolean;
-}
-
-export interface ImageInfo {
-  url: string;
-  height: number;
-  width: number;
-}
-export interface NotificationMessage {
-  message: string;
-  type?: "default" | "success" | "error" | "warning" | "info";
-}
-
 export interface PluginInfo {
   id?: string;
   name: string;
@@ -59,6 +6,60 @@ export interface PluginInfo {
   description?: string;
   optionsHtml?: string;
   optionsSameOrigin?: boolean;
+}
+
+export interface Track {
+  id?: string;
+  name: string;
+  source?: string;
+  pluginId?: string;
+  apiId?: string;
+  duration?: number;
+  albumApiId?: string;
+  albumName?: string;
+  artistApiId?: string;
+  artistName?: string;
+  images?: ImageInfo[];
+}
+
+export interface Album {
+  name: string;
+  apiId: string;
+  pluginId?: string;
+  artistName?: string;
+  artistApiId?: string;
+  images?: ImageInfo[];
+}
+
+export interface Artist {
+  name: string;
+  apiId: string;
+  pluginId?: string;
+  images?: ImageInfo[];
+}
+
+export interface PlaylistInfo {
+  id?: string;
+  images?: ImageInfo[];
+  name?: string;
+  isUserPlaylist?: boolean;
+  apiId?: string;
+  pluginId?: string;
+}
+
+export interface Playlist extends PlaylistInfo {
+  tracks: Track[];
+}
+
+export interface ImageInfo {
+  url: string;
+  height: number;
+  width: number;
+}
+
+export interface NotificationMessage {
+  message: string;
+  type?: "default" | "success" | "error" | "warning" | "info";
 }
 
 export interface PageInfo {

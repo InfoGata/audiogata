@@ -91,7 +91,7 @@ const trackSlice = createSlice({
         ...state,
         tracks: state.tracks.map((t) =>
           action.payload.updateIds.has(t.id || "")
-            ? { ...t, from: action.payload.from }
+            ? { ...t, pluginId: action.payload.from }
             : t
         ),
       };

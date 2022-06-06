@@ -23,7 +23,7 @@ const PlaylistSearchResult: React.FC<PlaylistSearchResultProps> = (props) => {
   const onClickPlaylist = async () => {
     clearSearch();
 
-    const plugin = plugins.find((p) => p.id === playlist.from);
+    const plugin = plugins.find((p) => p.id === playlist.pluginId);
     if (plugin && (await plugin.hasDefined.getPlaylistTracks())) {
       const tracks = await plugin.remote.getPlaylistTracks({ playlist });
       setTrackResults(tracks.items);

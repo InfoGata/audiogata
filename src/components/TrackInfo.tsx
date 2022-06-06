@@ -20,7 +20,7 @@ const TrackInfo: React.FC<TrackInfoProps> = (props) => {
   const dispatch = useAppDispatch();
   const { plugins } = usePlugins();
   const [editing, setEditing] = React.useState(false);
-  const [from, setFrom] = React.useState(track.from);
+  const [from, setFrom] = React.useState(track.pluginId);
   const options = plugins.map((p) => [p.id || "", p.name || ""]);
   const optionsComponents = options.map((option) => (
     <MenuItem key={option[0]} value={option[0]}>
@@ -28,12 +28,12 @@ const TrackInfo: React.FC<TrackInfoProps> = (props) => {
     </MenuItem>
   ));
   const onSave = () => {
-    const updatedTrack: Track = { ...track, from };
+    const updatedTrack: Track = { ...track, pluginId: from };
     dispatch(updateTrack(updatedTrack));
     setEditing(false);
   };
   const onCancel = () => {
-    setFrom(track.from);
+    setFrom(track.pluginId);
     setEditing(false);
   };
   const editComponent = (
@@ -45,7 +45,7 @@ const TrackInfo: React.FC<TrackInfoProps> = (props) => {
   const onFromChange = (e: SelectChangeEvent<string>) => {
     const newValue = e.target.value;
     setFrom(newValue);
-    setEditing(newValue !== track.from);
+    setEditing(newValue !== track.pluginId);
   };
   return (
     <>
