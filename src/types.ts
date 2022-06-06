@@ -64,12 +64,23 @@ export const ResultType = {
 export type ResultType = typeof ResultType[keyof typeof ResultType];
 
 export interface PlayerComponent {
-  setVolume: (volume: number) => Promise<void>;
-  pause: () => Promise<void>;
-  resume: () => Promise<void>;
-  seek: (time: number) => Promise<void>;
-  play: (track: Track) => Promise<void>;
-  setPlaybackRate: (rate: number) => Promise<void>;
+  onSetVolume: (volume: number) => Promise<void>;
+  onPause: () => Promise<void>;
+  onResume: () => Promise<void>;
+  onSeek: (time: number) => Promise<void>;
+  onPlay: (track: Track) => Promise<void>;
+  onSetPlaybackRate: (rate: number) => Promise<void>;
 }
 
 export type PlayerComponentType = keyof PlayerComponent;
+// eslint-disable-next-line @typescript-eslint/no-redeclare
+export const PlayerComponentType: {
+  [key in keyof PlayerComponent]: keyof PlayerComponent;
+} = {
+  onSetVolume: "onSetVolume",
+  onPause: "onPause",
+  onResume: "onResume",
+  onSeek: "onSeek",
+  onPlay: "onPlay",
+  onSetPlaybackRate: "onSetPlaybackRate",
+};

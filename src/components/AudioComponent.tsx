@@ -47,14 +47,14 @@ class AudioComponent extends React.Component<
     this.setMediaSessionActions();
     let player = await this.getPlayerFromName(
       this.props.currentTrack?.pluginId || "",
-      "setVolume"
+      PlayerComponentType.onSetVolume
     );
-    await player?.setVolume(this.props.volume);
+    await player?.onSetVolume(this.props.volume);
     player = await this.getPlayerFromName(
       this.props.currentTrack?.pluginId || "",
-      "setPlaybackRate"
+      PlayerComponentType.onSetPlaybackRate
     );
-    await player?.setPlaybackRate(this.props.playbackRate || 1.0);
+    await player?.onSetPlaybackRate(this.props.playbackRate || 1.0);
     if (this.props.playOnStartup && this.props.isPlaying) {
       await this.playCurrentTrack();
     } else if (this.props.isPlaying) {
@@ -78,11 +78,11 @@ class AudioComponent extends React.Component<
 
   private async getPlayerFromName(
     name: string,
-    method: PlayerComponentType = "play"
+    method: PlayerComponentType = PlayerComponentType.onPlay
   ): Promise<PlayerComponent | undefined> {
     // PlayerComponent must have play
     const playerPlugins = await filterAsync(this.context.plugins, (p) =>
-      p.hasDefined.play()
+      p.hasDefined.onPlay()
     );
     const plugin = playerPlugins.find((p) => p.id === name);
     if (plugin) {
@@ -116,12 +116,12 @@ class AudioComponent extends React.Component<
     );
     if (prevProps.isPlaying !== newProps.isPlaying) {
       if (newProps.isPlaying) {
-        player?.resume();
+        player?.onResume();
         if (!this.trackLoaded && newProps.currentTrack) {
           await this.playTrack(newProps.currentTrack, newProps.elapsed);
         }
       } else {
-        await player?.pause();
+        await player?.onPause();
       }
     }
   }
@@ -133,9 +133,9 @@ class AudioComponent extends React.Component<
     if (prevProps.volume !== newProps.volume) {
       const player = await this.getPlayerFromName(
         newProps.currentTrack?.pluginId || "",
-        "setVolume"
+        PlayerComponentType.onSetVolume
       );
-      await player?.setVolume(newProps.volume);
+      await player?.onSetVolume(newProps.volume);
     }
   }
 
@@ -146,9 +146,9 @@ class AudioComponent extends React.Component<
     if (prevProps.playbackRate !== newProps.playbackRate) {
       const player = await this.getPlayerFromName(
         this.props.currentTrack?.pluginId || "",
-        "setPlaybackRate"
+        PlayerComponentType.onSetPlaybackRate
       );
-      await player?.setPlaybackRate(newProps.playbackRate || 1.0);
+      await player?.onSetPlaybackRate(newProps.playbackRate || 1.0);
     }
   }
 
@@ -159,12 +159,12 @@ class AudioComponent extends React.Component<
     if (prevProps.mute !== newProps.mute) {
       const player = await this.getPlayerFromName(
         this.props.currentTrack?.pluginId || "",
-        "setVolume"
+        PlayerComponentType.onSetVolume
       );
       if (newProps.mute) {
-        await player?.setVolume(0);
+        await player?.onSetVolume(0);
       } else {
-        await player?.setVolume(newProps.volume);
+        await player?.onSetVolume(newProps.volume);
       }
     }
   }
@@ -176,9 +176,9 @@ class AudioComponent extends React.Component<
     if (newProps.seekTime != null && prevProps.seekTime !== newProps.seekTime) {
       const player = await this.getPlayerFromName(
         newProps.currentTrack?.pluginId || "",
-        "seek"
+        PlayerComponentType.onSeek
       );
-      await player?.seek(newProps.seekTime);
+      await player?.onSeek(newProps.seekTime);
       this.props.seek(undefined);
     }
   }
@@ -211,7 +211,7 @@ class AudioComponent extends React.Component<
       const hasPluginApi =
         (await pluginFrame?.hasDefined.getTrackUrl()) || false;
       const player = await this.getPlayerFromName(newTrack.pluginId || "");
-      this.lastPlayer?.pause();
+      this.lastPlayer?.onPause();
       try {
         if (audioBlob) {
           newTrack.source = URL.createObjectURL(audioBlob.blob);
@@ -219,7 +219,7 @@ class AudioComponent extends React.Component<
           newTrack.source = await pluginFrame.remote.getTrackUrl(newTrack);
         }
 
-        await player?.play(newTrack);
+        await player?.onPlay(newTrack);
         this.lastPlayer = player;
         this.trackLoaded = true;
         this.setState({
@@ -230,7 +230,7 @@ class AudioComponent extends React.Component<
         return;
       }
       if (time) {
-        await player?.seek(time);
+        await player?.onSeek(time);
       }
     }
   }

@@ -20,27 +20,27 @@ class LocalPlayer implements PlayerComponent {
     };
   }
 
-  public async setVolume(volume: number) {
+  public async onSetVolume(volume: number) {
     this.audio.volume = volume;
   }
 
-  public async setPlaybackRate(rate: number) {
+  public async onSetPlaybackRate(rate: number) {
     this.audio.playbackRate = rate;
   }
 
-  public async pause() {
+  public async onPause() {
     if (this.audio.readyState >= 3) {
       this.audio.pause();
     }
   }
 
-  public async resume() {
+  public async onResume() {
     if (this.audio.readyState >= 3) {
       this.audio.play();
     }
   }
 
-  public async play(track: Track) {
+  public async onPlay(track: Track) {
     if (track.source) {
       this.audio.src = track.source;
     }
@@ -48,7 +48,7 @@ class LocalPlayer implements PlayerComponent {
     await this.audio.play();
   }
 
-  public async seek(time: number) {
+  public async onSeek(time: number) {
     this.audio.currentTime = time;
   }
 }

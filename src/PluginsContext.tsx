@@ -52,12 +52,12 @@ interface PluginInterface extends PlayerComponent {
     request: PlaylistTrackRequest
   ) => Promise<SearchTrackResult>;
   getArtistAlbums: (artist: Artist) => Promise<Album[]>;
-  play: (track: Track) => Promise<void>;
-  setVolume: (volume: number) => Promise<void>;
-  pause: () => Promise<void>;
-  resume: () => Promise<void>;
-  seek: (time: number) => Promise<void>;
-  setPlaybackRate: (rate: number) => Promise<void>;
+  onPlay: (track: Track) => Promise<void>;
+  onSetVolume: (volume: number) => Promise<void>;
+  onPause: () => Promise<void>;
+  onResume: () => Promise<void>;
+  onSeek: (time: number) => Promise<void>;
+  onSetPlaybackRate: (rate: number) => Promise<void>;
   getUserPlaylists: (
     request: UserPlaylistRequest
   ) => Promise<SearchPlaylistResult>;
