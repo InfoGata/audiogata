@@ -83,7 +83,7 @@ export interface SearchRequest {
 }
 
 export interface PlaylistTrackRequest {
-  playlist: Playlist;
+  playlist: PlaylistInfo;
   page?: PageInfo;
 }
 
@@ -107,6 +107,6 @@ export interface SearchAlbumResult {
 }
 
 export interface SearchPlaylistResult {
-  items: Playlist[];
+  items: PlaylistInfo[];
   pageInfo?: PageInfo;
 }

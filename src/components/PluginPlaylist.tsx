@@ -42,7 +42,6 @@ const PluginPlaylist: React.FC = () => {
           playlist: {
             apiId: id,
             isUserPlaylist: true,
-            tracks: [],
           },
         });
         setPlaylistTracks(t.items);
@@ -82,7 +81,6 @@ const PluginPlaylist: React.FC = () => {
         playlist: {
           apiId: id,
           isUserPlaylist: true,
-          tracks: [],
         },
         page: newPage,
       });
@@ -108,7 +106,6 @@ const PluginPlaylist: React.FC = () => {
         playlist: {
           apiId: id,
           isUserPlaylist: true,
-          tracks: [],
         },
         page: newPage,
       });

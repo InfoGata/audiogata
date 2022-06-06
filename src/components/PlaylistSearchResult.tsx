@@ -6,12 +6,12 @@ import {
   Typography,
 } from "@mui/material";
 import React from "react";
-import { Playlist, Track } from "../plugintypes";
+import { PlaylistInfo, Track } from "../plugintypes";
 import { usePlugins } from "../PluginsContext";
 import { getThumbnailImage, searchThumbnailSize } from "../utils";
 
 interface PlaylistSearchResultProps {
-  playlist: Playlist;
+  playlist: PlaylistInfo;
   clearSearch: () => void;
   setTrackResults: (tracks: Track[]) => void;
 }
