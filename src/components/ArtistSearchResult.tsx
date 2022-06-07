@@ -18,8 +18,8 @@ const ArtistSearchResult: React.FC<ArtistSearchResultProps> = (props) => {
     clearSearch();
 
     const plugin = plugins.find((p) => p.id === artist.pluginId);
-    if (plugin && (await plugin.hasDefined.getArtistAlbums())) {
-      const albums = await plugin.remote.getArtistAlbums(artist);
+    if (plugin && (await plugin.hasDefined.onGetArtistAlbums())) {
+      const albums = await plugin.remote.onGetArtistAlbums(artist);
       setAlbumResults(albums);
     }
   };

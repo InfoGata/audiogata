@@ -101,7 +101,7 @@ const Search: React.FC = () => {
   useEffect(() => {
     const getOptions = async () => {
       const validPlugins = await filterAsync(plugins, (p) =>
-        p.hasDefined.searchAll()
+        p.hasDefined.onSearchAll()
       );
       setSearchType(validPlugins[0]?.id || "");
       const options: [string, string][] = validPlugins.map((p) => [
@@ -129,8 +129,8 @@ const Search: React.FC = () => {
       let artists: Artist[] | undefined = [];
       let playlists: PlaylistInfo[] | undefined = [];
       const plugin = plugins.find((p) => p.id === searchType);
-      if (plugin?.hasDefined.searchAll()) {
-        const searchAll = await plugin.remote.searchAll({ query: search });
+      if (plugin?.hasDefined.onSearchAll()) {
+        const searchAll = await plugin.remote.onSearchAll({ query: search });
         tracks = searchAll.tracks?.items;
         setTrackPage(searchAll.tracks?.pageInfo);
         albums = searchAll.albums?.items;
@@ -212,22 +212,22 @@ const Search: React.FC = () => {
     const request: SearchRequest = { query: searchQuery, page: newPage };
     switch (resultType) {
       case ResultType.Tracks:
-        const tracksResult = await plugin.remote.searchTracks(request);
+        const tracksResult = await plugin.remote.onSearchTracks(request);
         setTrackResults(tracksResult.items);
         setTrackPage(tracksResult.pageInfo);
         break;
       case ResultType.Albums:
-        const albumsResult = await plugin.remote.searchAlbums(request);
+        const albumsResult = await plugin.remote.onSearchAlbums(request);
         setAlbumResults(albumsResult.items);
         setAlbumPage(albumsResult.pageInfo);
         break;
       case ResultType.Artists:
-        const artistsResult = await plugin.remote.searchArtists(request);
+        const artistsResult = await plugin.remote.onSearchArtists(request);
         setArtistResults(artistsResult.items);
         setArtistPage(artistsResult.pageInfo);
         break;
       case ResultType.Playlists:
-        const playlistsResult = await plugin.remote.searchPlaylists(request);
+        const playlistsResult = await plugin.remote.onSearchPlaylists(request);
         setPlaylistResults(playlistsResult.items);
         setPlaylistPage(playlistsResult.pageInfo);
         break;

@@ -35,30 +35,30 @@ import { addPlaylists } from "./store/reducers/playlistReducer";
 import { NetworkRequest, PlayerComponent } from "./types";
 
 interface PluginInterface extends PlayerComponent {
-  searchAll: (request: SearchRequest) => Promise<SearchAllResult>;
-  searchTracks: (request: SearchRequest) => Promise<SearchTrackResult>;
-  searchArtists: (request: SearchRequest) => Promise<SearchArtistResult>;
-  searchAlbums: (request: SearchRequest) => Promise<SearchAlbumResult>;
-  searchPlaylists: (request: SearchRequest) => Promise<SearchPlaylistResult>;
+  onSearchAll: (request: SearchRequest) => Promise<SearchAllResult>;
+  onSearchTracks: (request: SearchRequest) => Promise<SearchTrackResult>;
+  onSearchArtists: (request: SearchRequest) => Promise<SearchArtistResult>;
+  onSearchAlbums: (request: SearchRequest) => Promise<SearchAlbumResult>;
+  onSearchPlaylists: (request: SearchRequest) => Promise<SearchPlaylistResult>;
   onNowPlayingTracksAdded: (tracks: Track[]) => Promise<void>;
   onNowPlayingTracksRemoved: (tracks: Track[]) => Promise<void>;
   onNowPlayingTracksChanged: (tracks: Track[]) => Promise<void>;
   onNowPlayingTracksSet: (tracks: Track[]) => Promise<void>;
-  getTrackUrl: (track: Track) => Promise<string>;
+  onGetTrackUrl: (track: Track) => Promise<string>;
   onUiMessage: (message: any) => Promise<void>;
   onDeepLinkMessage: (message: string) => Promise<void>;
-  getAlbumTracks: (album: Album) => Promise<Track[]>;
-  getPlaylistTracks: (
+  onGetAlbumTracks: (album: Album) => Promise<Track[]>;
+  onGetPlaylistTracks: (
     request: PlaylistTrackRequest
   ) => Promise<SearchTrackResult>;
-  getArtistAlbums: (artist: Artist) => Promise<Album[]>;
+  onGetArtistAlbums: (artist: Artist) => Promise<Album[]>;
   onPlay: (track: Track) => Promise<void>;
   onSetVolume: (volume: number) => Promise<void>;
   onPause: () => Promise<void>;
   onResume: () => Promise<void>;
   onSeek: (time: number) => Promise<void>;
   onSetPlaybackRate: (rate: number) => Promise<void>;
-  getUserPlaylists: (
+  onGetUserPlaylists: (
     request: UserPlaylistRequest
   ) => Promise<SearchPlaylistResult>;
 }

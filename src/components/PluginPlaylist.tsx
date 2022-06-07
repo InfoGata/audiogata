@@ -37,8 +37,8 @@ const PluginPlaylist: React.FC = () => {
   React.useEffect(() => {
     setBackdropOpen(true);
     const getPlaylistTracks = async () => {
-      if (plugin && plugin.hasDefined.getPlaylistTracks()) {
-        const t = await plugin.remote.getPlaylistTracks({
+      if (plugin && plugin.hasDefined.onGetPlaylistTracks()) {
+        const t = await plugin.remote.onGetPlaylistTracks({
           playlist: {
             apiId: id,
             isUserPlaylist: true,
@@ -77,7 +77,7 @@ const PluginPlaylist: React.FC = () => {
         resultsPerPage: page.resultsPerPage,
         prevPage: page.prevPage,
       };
-      const t = await plugin.remote.getPlaylistTracks({
+      const t = await plugin.remote.onGetPlaylistTracks({
         playlist: {
           apiId: id,
           isUserPlaylist: true,
@@ -102,7 +102,7 @@ const PluginPlaylist: React.FC = () => {
         nextPage: page.nextPage,
       };
 
-      const t = await plugin.remote.getPlaylistTracks({
+      const t = await plugin.remote.onGetPlaylistTracks({
         playlist: {
           apiId: id,
           isUserPlaylist: true,

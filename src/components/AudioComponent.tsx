@@ -209,14 +209,14 @@ class AudioComponent extends React.Component<
         (p) => p.id === newTrack.pluginId
       );
       const hasPluginApi =
-        (await pluginFrame?.hasDefined.getTrackUrl()) || false;
+        (await pluginFrame?.hasDefined.onGetTrackUrl()) || false;
       const player = await this.getPlayerFromName(newTrack.pluginId || "");
       this.lastPlayer?.onPause();
       try {
         if (audioBlob) {
           newTrack.source = URL.createObjectURL(audioBlob.blob);
         } else if (hasPluginApi && pluginFrame) {
-          newTrack.source = await pluginFrame.remote.getTrackUrl(newTrack);
+          newTrack.source = await pluginFrame.remote.onGetTrackUrl(newTrack);
         }
 
         await player?.onPlay(newTrack);

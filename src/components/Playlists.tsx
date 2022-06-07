@@ -62,8 +62,8 @@ const Playlists: React.FC = () => {
       const filteredPlugins = await filterAsync(
         plugins,
         async (p) =>
-          (await p.hasDefined.getUserPlaylists()) &&
-          (await p.hasDefined.getPlaylistTracks())
+          (await p.hasDefined.onGetUserPlaylists()) &&
+          (await p.hasDefined.onGetPlaylistTracks())
       );
       setPlaylistPlugins(filteredPlugins);
     };

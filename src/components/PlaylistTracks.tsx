@@ -77,7 +77,7 @@ const PlaylistTracks: React.FC = () => {
       // Instead of being able to play locally
       const pluginFrame = plugins.find((p) => p.id === track.pluginId);
       const canDownload =
-        (await pluginFrame?.hasDefined.getTrackUrl()) || false;
+        (await pluginFrame?.hasDefined.onGetTrackUrl()) || false;
       setCanOffline(canDownload);
 
       const primaryCount = await db.audioBlobs
@@ -100,11 +100,11 @@ const PlaylistTracks: React.FC = () => {
     try {
       if (menuTrack.pluginId) {
         const pluginFrame = plugins.find((p) => p.id === menuTrack.pluginId);
-        if (!(await pluginFrame?.hasDefined.getTrackUrl())) {
+        if (!(await pluginFrame?.hasDefined.onGetTrackUrl())) {
           return;
         }
 
-        const source = await pluginFrame?.remote.getTrackUrl(menuTrack);
+        const source = await pluginFrame?.remote.onGetTrackUrl(menuTrack);
         if (source) {
           dispatch(downloadTrack(menuTrack, source));
         }
