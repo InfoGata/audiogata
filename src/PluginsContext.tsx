@@ -34,7 +34,7 @@ import { App, URLOpenListenerEvent } from "@capacitor/app";
 import { addPlaylists } from "./store/reducers/playlistReducer";
 import { NetworkRequest, PlayerComponent } from "./types";
 
-interface PluginInterface extends PlayerComponent {
+export interface PluginInterface extends PlayerComponent {
   onSearchAll: (request: SearchRequest) => Promise<SearchAllResult>;
   onSearchTracks: (request: SearchRequest) => Promise<SearchTrackResult>;
   onSearchArtists: (request: SearchRequest) => Promise<SearchArtistResult>;
@@ -61,6 +61,7 @@ interface PluginInterface extends PlayerComponent {
   onGetUserPlaylists: (
     request: UserPlaylistRequest
   ) => Promise<SearchPlaylistResult>;
+  onGetTopItems: () => Promise<SearchAllResult>;
 }
 
 interface ApplicationPluginInterface extends PluginFrameInterface {

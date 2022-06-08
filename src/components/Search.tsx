@@ -11,12 +11,9 @@ import {
   ListItemText,
   Backdrop,
   CircularProgress,
-  FormControl,
-  InputLabel,
-  NativeSelect,
   Button,
 } from "@mui/material";
-import React, { useEffect } from "react";
+import React from "react";
 import { useLocation } from "react-router";
 import {
   Album,
@@ -26,7 +23,6 @@ import {
   SearchRequest,
   PlaylistInfo,
 } from "../plugintypes";
-import { filterAsync } from "../utils";
 import AlbumSearchResult from "./AlbumSearchResult";
 import ArtistSearchResult from "./ArtistSearchResult";
 import PlaylistSearchResult from "./PlaylistSearchResult";
@@ -37,6 +33,7 @@ import { addTrack } from "../store/reducers/trackReducer";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
 import { usePlugins } from "../PluginsContext";
 import { ResultType } from "../types";
+import SelectPlugin from "./SelectPlugin";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -63,7 +60,7 @@ const TabPanel: React.FC<TabPanelProps> = (props) => {
 
 const Search: React.FC = () => {
   const [searchQuery, setSearchQuery] = React.useState("");
-  const [searchType, setSearchType] = React.useState("");
+  const [pluginId, setPluginId] = React.useState("");
   const [trackResults, setTrackResults] = React.useState<Track[]>([]);
   const [albumResults, setAlbumResults] = React.useState<Album[]>([]);
   const [artistResults, setArtistResults] = React.useState<Artist[]>([]);
@@ -73,16 +70,12 @@ const Search: React.FC = () => {
   const [tabValue, setTabValue] = React.useState<string | boolean>(false);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [menuTrack, setMenuTrack] = React.useState<Track>({} as Track);
-  const [options, setOptions] = React.useState<[string, string][]>();
   const [trackPage, setTrackPage] = React.useState<PageInfo>();
   const [albumPage, setAlbumPage] = React.useState<PageInfo>();
   const [artistPage, setArtistPage] = React.useState<PageInfo>();
   const [playlistPage, setPlaylistPage] = React.useState<PageInfo>();
   const location = useLocation();
   const playlists = useAppSelector((state) => state.playlist.playlists);
-  const onSearchTypeChange = (e: React.FormEvent<HTMLSelectElement>) => {
-    setSearchType(e.currentTarget.value);
-  };
 
   const onSetTrackResults = (tracks: Track[]) => {
     setTrackResults(tracks);
@@ -98,20 +91,6 @@ const Search: React.FC = () => {
     setArtistResults([]);
     setPlaylistResults([]);
   };
-  useEffect(() => {
-    const getOptions = async () => {
-      const validPlugins = await filterAsync(plugins, (p) =>
-        p.hasDefined.onSearchAll()
-      );
-      setSearchType(validPlugins[0]?.id || "");
-      const options: [string, string][] = validPlugins.map((p) => [
-        p.id || "",
-        p.name || "",
-      ]);
-      setOptions(options);
-    };
-    getOptions();
-  }, [plugins]);
 
   const resetPagination = () => {
     setTrackPage(undefined);
@@ -120,7 +99,7 @@ const Search: React.FC = () => {
     setPlaylistPage(undefined);
   };
 
-  useEffect(() => {
+  React.useEffect(() => {
     resetPagination();
     const onSearch = async (search: string) => {
       setBackdropOpen(true);
@@ -128,7 +107,7 @@ const Search: React.FC = () => {
       let albums: Album[] | undefined = [];
       let artists: Artist[] | undefined = [];
       let playlists: PlaylistInfo[] | undefined = [];
-      const plugin = plugins.find((p) => p.id === searchType);
+      const plugin = plugins.find((p) => p.id === pluginId);
       if (plugin?.hasDefined.onSearchAll()) {
         const searchAll = await plugin.remote.onSearchAll({ query: search });
         tracks = searchAll.tracks?.items;
@@ -153,7 +132,7 @@ const Search: React.FC = () => {
       setSearchQuery(query);
       onSearch(query);
     }
-  }, [location.search, searchType, plugins]);
+  }, [location.search, pluginId, plugins]);
 
   const openMenu = (
     event: React.MouseEvent<HTMLButtonElement>,
@@ -197,14 +176,9 @@ const Search: React.FC = () => {
   const handleChange = (_event: React.ChangeEvent<{}>, newValue: string) => {
     setTabValue(newValue);
   };
-  const optionsComponents = options?.map((option) => (
-    <option key={option[0]} value={option[0]}>
-      {option[1]}
-    </option>
-  ));
 
   const pluginSearch = async (newPage: PageInfo, resultType: ResultType) => {
-    const plugin = plugins.find((p) => p.id === searchType);
+    const plugin = plugins.find((p) => p.id === pluginId);
     if (!plugin) {
       return;
     }
@@ -274,21 +248,11 @@ const Search: React.FC = () => {
 
   return (
     <>
-      <FormControl fullWidth>
-        <InputLabel variant="standard" htmlFor="uncontrolled-native">
-          Plugin
-        </InputLabel>
-        <NativeSelect
-          value={searchType}
-          onChange={onSearchTypeChange}
-          inputProps={{
-            name: "plugin",
-            id: "uncontrolled-native",
-          }}
-        >
-          {optionsComponents}
-        </NativeSelect>
-      </FormControl>
+      <SelectPlugin
+        pluginId={pluginId}
+        setPluginId={setPluginId}
+        methodName="onSearchAll"
+      />
       <AppBar position="static">
         <Backdrop open={backdropOpen}>
           <CircularProgress color="inherit" />
