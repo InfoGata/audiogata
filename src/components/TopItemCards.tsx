@@ -9,15 +9,15 @@ import {
 } from "@mui/material";
 import React from "react";
 import { usePlugins } from "../PluginsContext";
-import { Album, Artist, PlaylistInfo, Track } from "../plugintypes";
+import { Track } from "../plugintypes";
 import { getThumbnailImage, playlistThumbnailSize } from "../utils";
 import SelectPlugin from "./SelectPlugin";
 
 const TopItemCards: React.FC = () => {
   const [topTracks, setTopTracks] = React.useState<Track[]>();
-  const [topAlbums, setTopAlbums] = React.useState<Album[]>();
-  const [topArtists, setTopArtists] = React.useState<Artist[]>();
-  const [topPlaylists, setTopPlaylists] = React.useState<PlaylistInfo[]>();
+  // const [topAlbums, setTopAlbums] = React.useState<Album[]>();
+  // const [topArtists, setTopArtists] = React.useState<Artist[]>();
+  // const [topPlaylists, setTopPlaylists] = React.useState<PlaylistInfo[]>();
   const [pluginId, setPluginId] = React.useState("");
   const { plugins } = usePlugins();
   React.useEffect(() => {
@@ -25,10 +25,11 @@ const TopItemCards: React.FC = () => {
       const plugin = plugins.find((p) => p.id === pluginId);
       if (plugin) {
         const topItems = await plugin.remote.onGetTopItems();
+        console.log(topItems);
         setTopTracks(topItems.tracks?.items);
-        setTopAlbums(topItems.albums?.items);
-        setTopArtists(topItems.artists?.items);
-        setTopPlaylists(topItems.playlists?.items);
+        // setTopAlbums(topItems.albums?.items);
+        // setTopArtists(topItems.artists?.items);
+        // setTopPlaylists(topItems.playlists?.items);
       }
     };
 
