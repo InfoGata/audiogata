@@ -12,7 +12,7 @@ import { getThumbnailImage } from "../utils";
 import Controls from "./Controls";
 import Progress from "./Progress";
 
-const thumbnailSize = 75;
+const thumbnailSize = 70;
 const PlayerBar: React.FC = () => {
   const theme = useTheme();
   const currentTrack = useAppSelector((state) => state.track.currentTrack);
@@ -35,7 +35,7 @@ const PlayerBar: React.FC = () => {
           <Grid item={true} sm={2} xs={3}>
             <Box
               component="img"
-              sx={{ height: thumbnailSize, width: thumbnailSize }}
+              sx={{ height: thumbnailSize, width: "auto" }}
               alt="thumbnail"
               src={image}
             />
