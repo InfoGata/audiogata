@@ -26,6 +26,7 @@ const TopItemCards: React.FC = () => {
   React.useEffect(() => {
     const getTopItems = async () => {
       const plugin = plugins.find((p) => p.id === pluginId);
+      console.log(plugins);
       if (plugin) {
         const topItems = await plugin.remote.onGetTopItems();
         setTopTracks(topItems.tracks?.items);

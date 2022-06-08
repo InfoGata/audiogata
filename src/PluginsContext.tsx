@@ -152,7 +152,7 @@ export const PluginsProvider: React.FC = (props) => {
     PluginInfo[] | null
   >(null);
 
-  const loadPlugin = (plugin: PluginInfo, pluginFiles?: FileList) => {
+  const loadPlugin = async (plugin: PluginInfo, pluginFiles?: FileList) => {
     const api: ApplicationPluginInterface = {
       networkRequest: async (input: RequestInfo, init?: RequestInit) => {
         const hasExtension = typeof window.MediaGata !== "undefined";
@@ -314,16 +314,17 @@ export const PluginsProvider: React.FC = (props) => {
     host.version = plugin.version;
     host.hasOptions = !!plugin.optionsHtml;
     host.fileList = pluginFiles;
-    host.ready().then(async () => {
-      await host.executeCode(plugin.script);
-    });
+    await host.ready();
+    await host.executeCode(plugin.script);
     return host;
   };
 
   React.useEffect(() => {
     const getPlugins = async () => {
       const plugs = await db.plugins.toArray();
-      const frames = plugs.map((p) => loadPlugin(p));
+
+      const framePromises = plugs.map((p) => loadPlugin(p));
+      const frames = await Promise.all(framePromises);
       setPluginFrames(frames);
     };
     getPlugins();
@@ -349,7 +350,7 @@ export const PluginsProvider: React.FC = (props) => {
   }, [pluginFrames]);
 
   const addPlugin = async (plugin: PluginInfo) => {
-    const pluginFrame = loadPlugin(plugin);
+    const pluginFrame = await loadPlugin(plugin);
     setPluginFrames([...pluginFrames, pluginFrame]);
     await db.plugins.add(plugin);
   };
@@ -361,7 +362,7 @@ export const PluginsProvider: React.FC = (props) => {
   ) => {
     const oldPlugin = pluginFrames.find((p) => p.id === id);
     oldPlugin?.destroy();
-    const pluginFrame = loadPlugin(plugin, pluginFiles);
+    const pluginFrame = await loadPlugin(plugin, pluginFiles);
     setPluginFrames(pluginFrames.map((p) => (p.id === id ? pluginFrame : p)));
     await db.plugins.update(id, plugin);
   };
