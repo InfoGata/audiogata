@@ -10,6 +10,8 @@ import {
 import React from "react";
 import { usePlugins } from "../PluginsContext";
 import { Track } from "../plugintypes";
+import { useAppDispatch } from "../store/hooks";
+import { addTrack, setTrack } from "../store/reducers/trackReducer";
 import { getThumbnailImage, playlistThumbnailSize } from "../utils";
 import SelectPlugin from "./SelectPlugin";
 
@@ -20,12 +22,12 @@ const TopItemCards: React.FC = () => {
   // const [topPlaylists, setTopPlaylists] = React.useState<PlaylistInfo[]>();
   const [pluginId, setPluginId] = React.useState("");
   const { plugins } = usePlugins();
+  const dispatch = useAppDispatch();
   React.useEffect(() => {
     const getTopItems = async () => {
       const plugin = plugins.find((p) => p.id === pluginId);
       if (plugin) {
         const topItems = await plugin.remote.onGetTopItems();
-        console.log(topItems);
         setTopTracks(topItems.tracks?.items);
         // setTopAlbums(topItems.albums?.items);
         // setTopArtists(topItems.artists?.items);
@@ -38,6 +40,12 @@ const TopItemCards: React.FC = () => {
 
   const topTrackComponents = topTracks?.map((t) => {
     const image = getThumbnailImage(t.images, playlistThumbnailSize);
+
+    const onClickTrack = () => {
+      dispatch(addTrack(t));
+      dispatch(setTrack(t));
+    };
+
     return (
       <Card
         key={t.apiId}
@@ -49,7 +57,7 @@ const TopItemCards: React.FC = () => {
           whiteSpace: "pre-wrap",
         }}
       >
-        <CardActionArea>
+        <CardActionArea onClick={onClickTrack}>
           <CardMedia component="img" src={image} sx={{ height: 160 }} />
           <CardContent>
             <Typography gutterBottom variant="body2" component="p" noWrap>

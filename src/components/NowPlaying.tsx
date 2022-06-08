@@ -62,8 +62,8 @@ const PlayQueue: React.FC = () => {
     if (menuTrack.id) {
       await db.audioBlobs.delete(menuTrack.id);
     }
-    dispatch(deleteTrack(menuTrack));
     closeMenu();
+    dispatch(deleteTrack(menuTrack));
   };
   const [playlistDialogOpen, setPlaylistDialogOpen] = React.useState(false);
   const [queuePlaylistDialogOpen, setQueuePlaylistDialogOpen] =

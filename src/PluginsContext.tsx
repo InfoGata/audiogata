@@ -240,8 +240,8 @@ export const PluginsProvider: React.FC = (props) => {
       srcUrl = `https://${plugin.id}.audiogata.com/pluginframe.html`;
     }
 
-    const completeMethods = {
-      searchAll: (result: SearchAllResult) => {
+    const completeMethods: { [key in keyof PluginInterface]?: any } = {
+      onSearchAll: (result: SearchAllResult) => {
         result.tracks?.items.forEach((i) => {
           i.pluginId = plugin.id;
         });
@@ -256,32 +256,47 @@ export const PluginsProvider: React.FC = (props) => {
         });
         return result;
       },
-      searchTracks: (result: SearchTrackResult) => {
+      onSearchTracks: (result: SearchTrackResult) => {
         result.items.forEach((i) => {
           i.pluginId = plugin.id;
         });
         return result;
       },
-      searchArtists: (result: SearchArtistResult) => {
+      onSearchArtists: (result: SearchArtistResult) => {
         result.items.forEach((i) => {
           i.pluginId = plugin.id;
         });
         return result;
       },
-      searchAlbums: (result: SearchAlbumResult) => {
+      onSearchAlbums: (result: SearchAlbumResult) => {
         result.items.forEach((i) => {
           i.pluginId = plugin.id;
         });
         return result;
       },
-      searchPlaylists: (result: SearchPlaylistResult) => {
+      onSearchPlaylists: (result: SearchPlaylistResult) => {
         result.items.forEach((i) => {
           i.pluginId = plugin.id;
         });
         return result;
       },
-      getPlaylistTracks: (result: SearchTrackResult) => {
+      onGetPlaylistTracks: (result: SearchTrackResult) => {
         result.items.forEach((i) => {
+          i.pluginId = plugin.id;
+        });
+        return result;
+      },
+      onGetTopItems: (result: SearchAllResult) => {
+        result.tracks?.items.forEach((i) => {
+          i.pluginId = plugin.id;
+        });
+        result.albums?.items.forEach((i) => {
+          i.pluginId = plugin.id;
+        });
+        result.artists?.items.forEach((i) => {
+          i.pluginId = plugin.id;
+        });
+        result.playlists?.items.forEach((i) => {
           i.pluginId = plugin.id;
         });
         return result;
@@ -318,14 +333,10 @@ export const PluginsProvider: React.FC = (props) => {
 
   React.useEffect(() => {
     App.addListener("appUrlOpen", async (event: URLOpenListenerEvent) => {
-      console.log(event.url);
       if (event.url.startsWith("com.audiogata.app://message")) {
         const url = new URL(event.url);
         const pluginId = url.searchParams.get("pluginId");
-        console.log("pluginId:", pluginId);
-        console.log("plugins:", pluginFrames);
         const plugin = pluginFrames.find((p) => p.id === pluginId);
-        console.log("plugin:", plugin);
         if (plugin) {
           const message = url.searchParams.get("message");
           if (await plugin.hasDefined.onDeepLinkMessage()) {
