@@ -61,6 +61,7 @@ const trackSlice = createSlice({
         ...state,
         shuffleList: [],
         tracks: [],
+        currentTrack: undefined,
       };
     },
     deleteTrack(state, action: PayloadAction<Track>): TrackState {
