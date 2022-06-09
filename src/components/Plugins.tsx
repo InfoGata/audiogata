@@ -20,6 +20,7 @@ const Plugins: React.FC = () => {
   const [pendingPlugin, setPendingPlugin] = React.useState<PluginInfo | null>(
     null
   );
+  const [isCheckingUpdate, setIsCheckingUpdate] = React.useState(false);
 
   const onFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
@@ -80,8 +81,13 @@ const Plugins: React.FC = () => {
       key={plugin.id}
       plugin={plugin}
       deletePlugin={deletePlugin}
+      isCheckingUpdate={isCheckingUpdate}
     />
   ));
+
+  const onCheckUpdates = () => {
+    setIsCheckingUpdate(true);
+  };
 
   return (
     <Grid>
@@ -118,6 +124,11 @@ const Plugins: React.FC = () => {
           variant="outlined"
         />
         <Button onClick={onLoadUrl}>Load Url</Button>
+      </Grid>
+      <Grid>
+        <Button disabled={isCheckingUpdate} onClick={onCheckUpdates}>
+          Check For Updates
+        </Button>
       </Grid>
       <Grid>{pluginComponents}</Grid>
       <ConfirmPluginDialog

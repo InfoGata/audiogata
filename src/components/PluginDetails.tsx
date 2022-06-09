@@ -9,8 +9,7 @@ import {
 import { useParams } from "react-router-dom";
 import { db } from "../database";
 import { PluginInfo } from "../plugintypes";
-import { FileType } from "../types";
-import { getPlugin } from "../utils";
+import { getFileTypeFromPluginUrl, getPlugin } from "../utils";
 import { usePlugins } from "../PluginsContext";
 
 const PluginDetails: React.FC = () => {
@@ -36,24 +35,12 @@ const PluginDetails: React.FC = () => {
   }, [loadPluginFromDb]);
 
   const onUpdate = async () => {
-    if (plugin?.updateUrl) {
-      const headers = new Headers();
-      if (process.env.REACT_APP_GITLAB_ACCESS_TOKEN) {
-        headers.append(
-          "PRIVATE-TOKEN",
-          process.env.REACT_APP_GITLAB_ACCESS_TOKEN
-        );
-      }
-      const fileType: FileType = {
-        url: {
-          url: plugin.updateUrl,
-          headers: headers,
-        },
-      };
+    if (plugin?.manifestUrl) {
+      const fileType = getFileTypeFromPluginUrl(plugin.manifestUrl);
       const newPlugin = await getPlugin(fileType);
       if (newPlugin && plugin.id) {
         newPlugin.id = plugin.id;
-        newPlugin.updateUrl = plugin.updateUrl;
+        newPlugin.manifestUrl = plugin.manifestUrl;
         await updatePlugin(newPlugin, plugin.id);
         await loadPluginFromDb();
       }
@@ -92,10 +79,13 @@ const PluginDetails: React.FC = () => {
               />
             </ListItem>
             <ListItem>
-              <ListItemText primary="Update Url" secondary={plugin.updateUrl} />
+              <ListItemText
+                primary="Update Url"
+                secondary={plugin.manifestUrl}
+              />
             </ListItem>
           </List>
-          {plugin.updateUrl && <Button onClick={onUpdate}>Update</Button>}
+          {plugin.manifestUrl && <Button onClick={onUpdate}>Update</Button>}
         </div>
       ) : (
         <>Not Found</>

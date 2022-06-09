@@ -2,8 +2,13 @@ import { Button, Grid, Typography, styled } from "@mui/material";
 import React from "react";
 import { PluginFrameContainer, usePlugins } from "../PluginsContext";
 import { db } from "../database";
-import { directoryProps, getPlugin } from "../utils";
-import { FileType } from "../types";
+import {
+  directoryProps,
+  getFileText,
+  getFileTypeFromPluginUrl,
+  getPlugin,
+} from "../utils";
+import { FileType, Manifest } from "../types";
 import { Capacitor } from "@capacitor/core";
 import { Link } from "react-router-dom";
 
@@ -14,13 +19,15 @@ const FileInput = styled("input")({
 interface PluginContainerProps {
   plugin: PluginFrameContainer;
   deletePlugin: (plugin: PluginFrameContainer) => Promise<void>;
+  isCheckingUpdate: boolean;
 }
 
 const PluginContainer: React.FC<PluginContainerProps> = (props) => {
-  const { plugin, deletePlugin } = props;
+  const { plugin, deletePlugin, isCheckingUpdate } = props;
   const [optionsOpen, setOptionsOpen] = React.useState(false);
   const { pluginMessage, updatePlugin } = usePlugins();
   const [optionsHtml, setOptionsHtml] = React.useState<string>();
+  const [hasUpdate, setHasUpdate] = React.useState(false);
   const ref = React.useRef<HTMLIFrameElement>(null);
 
   const iframeListener = React.useCallback(
@@ -44,6 +51,24 @@ const PluginContainer: React.FC<PluginContainerProps> = (props) => {
       ref.current?.contentWindow?.postMessage(pluginMessage?.message, "*");
     }
   }, [pluginMessage, plugin.id]);
+
+  React.useEffect(() => {
+    const checkUpdate = async () => {
+      if (isCheckingUpdate && plugin.manifestUrl) {
+        const fileType = getFileTypeFromPluginUrl(plugin.manifestUrl);
+        const manifestText = await getFileText(fileType, "manifest.json");
+        if (manifestText) {
+          const manifest = JSON.parse(manifestText) as Manifest;
+          if (manifest.version !== plugin.version) {
+            setHasUpdate(true);
+          } else {
+            setHasUpdate(false);
+          }
+        }
+      }
+    };
+    checkUpdate();
+  }, [isCheckingUpdate, plugin]);
 
   const onOpenOptions = async () => {
     setOptionsOpen(true);
@@ -106,6 +131,19 @@ const PluginContainer: React.FC<PluginContainerProps> = (props) => {
     }
   };
 
+  const onUpdate = async () => {
+    if (plugin?.manifestUrl) {
+      const fileType = getFileTypeFromPluginUrl(plugin.manifestUrl);
+      const newPlugin = await getPlugin(fileType);
+
+      if (newPlugin && plugin.id) {
+        newPlugin.id = plugin.id;
+        newPlugin.manifestUrl = plugin.manifestUrl;
+        await updatePlugin(newPlugin, plugin.id);
+      }
+    }
+  };
+
   let srcUrl = `${window.location.protocol}//${plugin.id}.${window.location.host}/ui.html`;
   if (process.env.NODE_ENV === "production" || Capacitor.isNativePlatform()) {
     srcUrl = `https://${plugin.id}.audiogata.com/ui.html`;
@@ -159,6 +197,7 @@ const PluginContainer: React.FC<PluginContainerProps> = (props) => {
         Details
       </Button>
       {plugin.fileList && <Button onClick={onReload}>Reload</Button>}
+      {hasUpdate && <Button onClick={onUpdate}>Update</Button>}
       <Grid>{optionsOpen && pluginIframe}</Grid>
     </Grid>
   );

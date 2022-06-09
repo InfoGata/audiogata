@@ -8,9 +8,8 @@ import {
   Button,
 } from "@mui/material";
 import { nanoid } from "@reduxjs/toolkit";
-import { FileType } from "../types";
 import { usePlugins } from "../PluginsContext";
-import { getPlugin } from "../utils";
+import { getFileTypeFromPluginUrl, getPlugin } from "../utils";
 import { useNavigate } from "react-router";
 import { useSnackbar } from "notistack";
 
@@ -54,25 +53,13 @@ const PluginCards: React.FC = () => {
   const navigate = useNavigate();
 
   const onAddPlugin = async (description: PluginDescription) => {
-    const headers = new Headers();
-    if (process.env.REACT_APP_GITLAB_ACCESS_TOKEN) {
-      headers.append(
-        "PRIVATE-TOKEN",
-        process.env.REACT_APP_GITLAB_ACCESS_TOKEN
-      );
-    }
-    const fileType: FileType = {
-      url: {
-        url: description.url,
-        headers: headers,
-      },
-    };
+    const fileType = getFileTypeFromPluginUrl(description.url);
 
     const plugin = await getPlugin(fileType);
 
     if (plugin) {
       plugin.id = nanoid();
-      plugin.updateUrl = description.url;
+      plugin.manifestUrl = description.url;
       await addPlugin(plugin);
       enqueueSnackbar(`Successfully added plugin: ${plugin.name}`);
       navigate("/plugins");
