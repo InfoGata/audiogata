@@ -1,28 +1,64 @@
 import React from "react";
-import { List, ListItem, ListItemText, Typography } from "@mui/material";
+import {
+  Button,
+  List,
+  ListItem,
+  ListItemText,
+  Typography,
+} from "@mui/material";
 import { useParams } from "react-router-dom";
 import { db } from "../database";
 import { PluginInfo } from "../plugintypes";
+import { FileType } from "../types";
+import { getPlugin } from "../utils";
+import { usePlugins } from "../PluginsContext";
 
 const PluginDetails: React.FC = () => {
   const { id } = useParams<"id">();
   const [plugin, setPlugin] = React.useState<PluginInfo>();
   const [scriptSize, setScriptSize] = React.useState(0);
   const [optionSize, setOptionsSize] = React.useState(0);
+  const { updatePlugin } = usePlugins();
+
+  const loadPluginFromDb = React.useCallback(async () => {
+    const p = await db.plugins.get(id || "");
+    setPlugin(p);
+    const scriptBlob = new Blob([p?.script || ""]);
+    setScriptSize(scriptBlob.size);
+    if (p?.optionsHtml) {
+      const optionsBlob = new Blob([p?.optionsHtml]);
+      setOptionsSize(optionsBlob.size);
+    }
+  }, [id]);
 
   React.useEffect(() => {
-    const getPlugin = async () => {
-      const p = await db.plugins.get(id || "");
-      setPlugin(p);
-      const scriptBlob = new Blob([p?.script || ""]);
-      setScriptSize(scriptBlob.size);
-      if (p?.optionsHtml) {
-        const optionsBlob = new Blob([p?.optionsHtml]);
-        setOptionsSize(optionsBlob.size);
+    loadPluginFromDb();
+  }, [loadPluginFromDb]);
+
+  const onUpdate = async () => {
+    if (plugin?.updateUrl) {
+      const headers = new Headers();
+      if (process.env.REACT_APP_GITLAB_ACCESS_TOKEN) {
+        headers.append(
+          "PRIVATE-TOKEN",
+          process.env.REACT_APP_GITLAB_ACCESS_TOKEN
+        );
       }
-    };
-    getPlugin();
-  }, [id]);
+      const fileType: FileType = {
+        url: {
+          url: plugin.updateUrl,
+          headers: headers,
+        },
+      };
+      const newPlugin = await getPlugin(fileType);
+      if (newPlugin && plugin.id) {
+        newPlugin.id = plugin.id;
+        newPlugin.updateUrl = plugin.updateUrl;
+        await updatePlugin(newPlugin, plugin.id);
+        await loadPluginFromDb();
+      }
+    }
+  };
 
   return (
     <>
@@ -55,7 +91,11 @@ const PluginDetails: React.FC = () => {
                 secondary={`${optionSize / 1000} kb`}
               />
             </ListItem>
+            <ListItem>
+              <ListItemText primary="Update Url" secondary={plugin.updateUrl} />
+            </ListItem>
           </List>
+          {plugin.updateUrl && <Button onClick={onUpdate}>Update</Button>}
         </div>
       ) : (
         <>Not Found</>

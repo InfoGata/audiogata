@@ -6,6 +6,7 @@ export interface PluginInfo {
   description?: string;
   optionsHtml?: string;
   optionsSameOrigin?: boolean;
+  updateUrl?: string;
 }
 
 export interface Track {

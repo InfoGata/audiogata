@@ -5,8 +5,8 @@ import TopItemCards from "./TopItemCards";
 const Home: React.FC = () => {
   return (
     <>
-      <PluginCards />
       <TopItemCards />
+      <PluginCards />
     </>
   );
 };

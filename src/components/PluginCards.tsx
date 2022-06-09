@@ -50,12 +50,11 @@ const pluginDescriptions: PluginDescription[] = [
 
 const PluginCards: React.FC = () => {
   const { enqueueSnackbar } = useSnackbar();
-  const { addPlugin } = usePlugins();
+  const { plugins, addPlugin } = usePlugins();
   const navigate = useNavigate();
 
   const onAddPlugin = async (description: PluginDescription) => {
     const headers = new Headers();
-    console.log(process.env);
     if (process.env.REACT_APP_GITLAB_ACCESS_TOKEN) {
       headers.append(
         "PRIVATE-TOKEN",
@@ -73,32 +72,38 @@ const PluginCards: React.FC = () => {
 
     if (plugin) {
       plugin.id = nanoid();
+      plugin.updateUrl = description.url;
       await addPlugin(plugin);
       enqueueSnackbar(`Successfully added plugin: ${plugin.name}`);
       navigate("/plugins");
     }
   };
 
-  const pluginCards = pluginDescriptions.map((p, i) => (
-    <Grid item xs={4} key={i}>
-      <Card>
-        <CardContent>
-          <Typography>{p.name}</Typography>
-          <Typography color="text.secondary">{p.description}</Typography>
-        </CardContent>
-        <CardActions>
-          <Button size="small" onClick={() => onAddPlugin(p)}>
-            Add
-          </Button>
-        </CardActions>
-      </Card>
-    </Grid>
-  ));
+  const pluginCards = pluginDescriptions
+    .filter((pd) => !plugins.some((p) => pd.name === p.name))
+    .map((p, i) => (
+      <Grid item xs={4} key={i}>
+        <Card>
+          <CardContent>
+            <Typography>{p.name}</Typography>
+            <Typography color="text.secondary">{p.description}</Typography>
+          </CardContent>
+          <CardActions>
+            <Button size="small" onClick={() => onAddPlugin(p)}>
+              Add
+            </Button>
+          </CardActions>
+        </Card>
+      </Grid>
+    ));
 
   return (
-    <Grid container spacing={2}>
-      {pluginCards}
-    </Grid>
+    <>
+      <Typography variant="h6">Plugins</Typography>
+      <Grid container spacing={2}>
+        {pluginCards}
+      </Grid>
+    </>
   );
 };
 
