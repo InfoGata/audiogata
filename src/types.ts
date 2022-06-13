@@ -44,6 +44,7 @@ export interface FileType {
 export interface Manifest {
   name: string;
   script: string;
+  id?: string;
   version?: string;
   description?: string;
   options?: string | ManifestOptions;

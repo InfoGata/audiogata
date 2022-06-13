@@ -118,6 +118,7 @@ export async function getPlugin(
   if (!script) return null;
 
   const plugin: PluginInfo = {
+    id: manifest.id,
     name: manifest.name,
     script,
     description: manifest.description,

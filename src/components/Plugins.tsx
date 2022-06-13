@@ -32,7 +32,9 @@ const Plugins: React.FC = () => {
     const plugin = await getPlugin(fileType);
 
     if (plugin) {
-      plugin.id = nanoid();
+      if (!plugin.id) {
+        plugin.id = nanoid();
+      }
       setPendingPlugin(plugin);
     }
   };
@@ -71,7 +73,9 @@ const Plugins: React.FC = () => {
     const plugin = await getPlugin(fileType);
 
     if (plugin) {
-      plugin.id = nanoid();
+      if (!plugin.id) {
+        plugin.id = nanoid();
+      }
       setPendingPlugin(plugin);
     }
   };

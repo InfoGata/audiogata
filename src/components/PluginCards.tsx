@@ -58,7 +58,9 @@ const PluginCards: React.FC = () => {
     const plugin = await getPlugin(fileType);
 
     if (plugin) {
-      plugin.id = nanoid();
+      if (!plugin.id) {
+        plugin.id = nanoid();
+      }
       plugin.manifestUrl = description.url;
       await addPlugin(plugin);
       enqueueSnackbar(`Successfully added plugin: ${plugin.name}`);
