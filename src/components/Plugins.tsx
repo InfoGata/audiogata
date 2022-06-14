@@ -129,11 +129,13 @@ const Plugins: React.FC = () => {
         />
         <Button onClick={onLoadUrl}>Load Url</Button>
       </Grid>
-      <Grid>
-        <Button disabled={isCheckingUpdate} onClick={onCheckUpdates}>
-          Check For Updates
-        </Button>
-      </Grid>
+      {plugins.length > 0 && (
+        <Grid>
+          <Button disabled={isCheckingUpdate} onClick={onCheckUpdates}>
+            Check For Updates
+          </Button>
+        </Grid>
+      )}
       <Grid>{pluginComponents}</Grid>
       <ConfirmPluginDialog
         open={Boolean(pendingPlugin)}
