@@ -52,6 +52,7 @@ const PlayerBar: React.FC = () => {
                 noWrap={true}
                 variant="body2"
                 sx={{ maxWidth: "250px" }}
+                title={currentTrack && currentTrack.name}
                 dangerouslySetInnerHTML={{
                   __html: (currentTrack && currentTrack.name) || "",
                 }}

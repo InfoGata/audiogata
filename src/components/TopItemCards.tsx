@@ -60,7 +60,13 @@ const TopItemCards: React.FC = () => {
         <CardActionArea onClick={onClickTrack}>
           <CardMedia component="img" src={image} sx={{ height: 160 }} />
           <CardContent>
-            <Typography gutterBottom variant="body2" component="p" noWrap>
+            <Typography
+              title={t.name}
+              gutterBottom
+              variant="body2"
+              component="p"
+              noWrap
+            >
               {t.name}
             </Typography>
           </CardContent>

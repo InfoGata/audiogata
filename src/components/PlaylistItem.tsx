@@ -83,6 +83,7 @@ const PlaylistItem: React.FC<PlaylistItemsProps> = (props) => {
               color={currentTrack?.id === track.id ? "primary.main" : undefined}
               noWrap={true}
               dangerouslySetInnerHTML={{ __html: track.name }}
+              title={track.name}
               sx={{ overflow: "hidden", textOverflow: "ellipsis" }}
             />
             <Typography
