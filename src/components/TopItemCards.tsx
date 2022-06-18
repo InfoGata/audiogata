@@ -89,7 +89,13 @@ const TopItemCards: React.FC = () => {
           <Typography variant="h5" style={{ marginLeft: "15px" }}>
             Top Tracks
           </Typography>
-          <Grid sx={{ whiteSpace: "nowrap", overflowX: "scroll" }}>
+          <Grid
+            sx={{
+              whiteSpace: "nowrap",
+              overflowX: "scroll",
+              "&::-webkit-scrollbar": { display: "none" },
+            }}
+          >
             {topTrackComponents}
           </Grid>
         </Grid>
