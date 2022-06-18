@@ -1,7 +1,8 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 interface SettingsState {
   playOnStartup: boolean;
+  corsProxyUrl?: string;
 }
 
 const initialState: SettingsState = {
@@ -18,8 +19,14 @@ const settingsSlice = createSlice({
         playOnStartup: !state.playOnStartup,
       };
     },
+    saveCorsProxyUrl: (state, payload: PayloadAction<string | undefined>) => {
+      return {
+        ...state,
+        corsProxyUrl: payload.payload,
+      };
+    },
   },
 });
 
-export const { togglePlayOnStartup } = settingsSlice.actions;
+export const { togglePlayOnStartup, saveCorsProxyUrl } = settingsSlice.actions;
 export default settingsSlice.reducer;

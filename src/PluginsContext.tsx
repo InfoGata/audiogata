@@ -78,7 +78,7 @@ interface ApplicationPluginInterface extends PluginFrameInterface {
   getPlaylists: () => Promise<Playlist[]>;
   addPlaylists: (playlists: Playlist[]) => Promise<void>;
   createNotification: (notification: NotificationMessage) => Promise<void>;
-  getCorsProxy: () => Promise<string>;
+  getCorsProxy: () => Promise<string | undefined>;
   installPlugins: (plugins: PluginInfo[]) => Promise<void>;
   getPlugins: () => Promise<PluginInfo[]>;
   getPluginId: () => Promise<string>;
@@ -148,6 +148,7 @@ export const PluginsProvider: React.FC = (props) => {
   const dispatch = useAppDispatch();
   const currentTrack = useAppSelector((state) => state.track.currentTrack);
   const tracks = useAppSelector((state) => state.track.tracks);
+  const corsProxyUrl = useAppSelector((state) => state.settings.corsProxyUrl);
   const { enqueueSnackbar } = useSnackbar();
   const [pendingPlugins, setPendingPlugins] = React.useState<
     PluginInfo[] | null
@@ -216,7 +217,11 @@ export const PluginsProvider: React.FC = (props) => {
         enqueueSnackbar(notification.message, { variant: notification.type });
       },
       getCorsProxy: async () => {
-        return "http://localhost:8085";
+        if (process.env.NODE_ENV === "production" || corsProxyUrl) {
+          return corsProxyUrl;
+        } else {
+          return "http://localhost:8085";
+        }
       },
       getPlugins: async () => {
         const plugs = await db.plugins.toArray();
