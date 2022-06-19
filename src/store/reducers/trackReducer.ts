@@ -62,6 +62,7 @@ const trackSlice = createSlice({
         shuffleList: [],
         tracks: [],
         currentTrack: undefined,
+        elapsed: 0,
       };
     },
     deleteTrack(state, action: PayloadAction<Track>): TrackState {
@@ -121,11 +122,11 @@ const trackSlice = createSlice({
       if (newIndex > state.tracks.length) {
         newIndex = 0;
       }
-      const currentTrack = state.tracks[newIndex];
+      const nextTrack = state.tracks[newIndex];
       if (
-        currentTrack &&
+        nextTrack &&
         state.currentTrack &&
-        currentTrack.id === state.currentTrack.id
+        nextTrack.id === state.currentTrack.id
       ) {
         return {
           ...state,
@@ -134,10 +135,19 @@ const trackSlice = createSlice({
           seekTime: 0,
           shuffleList,
         };
+      } else if (!nextTrack) {
+        return {
+          ...state,
+          elapsed: 0,
+          isPlaying: false,
+          seekTime: 0,
+          shuffleList,
+          currentTrack: undefined,
+        };
       }
       return {
         ...state,
-        currentTrack: currentTrack,
+        currentTrack: nextTrack,
         elapsed: 0,
         shuffleList,
       };
