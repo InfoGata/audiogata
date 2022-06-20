@@ -37,7 +37,9 @@ export const getThumbnailImage = (
 
   const sortedImages = [...images].sort((a, b) => a.height - b.height);
   const thumbnailImage = sortedImages.find((i) => i.height >= size);
-  return thumbnailImage ? thumbnailImage.url : sortedImages[0].url;
+  return thumbnailImage
+    ? thumbnailImage.url
+    : sortedImages[0]?.url ?? thumbnail;
 };
 
 export const directoryProps = {
