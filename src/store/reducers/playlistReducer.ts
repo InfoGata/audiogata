@@ -33,6 +33,14 @@ const playlistSlice = createSlice({
         playlists: state.playlists.filter((p) => p.id !== action.payload.id),
       };
     },
+    updatePlaylist(state, action: PayloadAction<PlaylistInfo>) {
+      return {
+        ...state,
+        playlists: state.playlists.map((p) =>
+          p.id === action.payload.id ? action.payload : p
+        ),
+      };
+    },
   },
 });
 
@@ -87,6 +95,13 @@ export const addPlaylistTracks: AppActionCreator =
       playlist.tracks = newTracks;
       await db.playlists.put(playlist);
     }
+  };
+
+export const updatePlaylist: AppActionCreator =
+  (playlist: Playlist) => async (dispatch) => {
+    await db.playlists.put(playlist);
+    const info: PlaylistInfo = playlistToPlaylistInfo(playlist);
+    dispatch(playlistSlice.actions.updatePlaylist(info));
   };
 
 export default playlistSlice.reducer;

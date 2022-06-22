@@ -55,6 +55,7 @@ const AddPlaylistDialog: React.FC<AddPlaylistDialogProps> = (props) => {
             label="Name"
             type="text"
             fullWidth={true}
+            value={name}
             onChange={onChange}
           />
         </DialogContent>

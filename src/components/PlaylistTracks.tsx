@@ -7,6 +7,7 @@ import {
   MenuItem,
   ListItemIcon,
   ListItemText,
+  Grid,
 } from "@mui/material";
 import React from "react";
 import { useParams } from "react-router";
@@ -17,14 +18,15 @@ import {
 } from "../store/reducers/trackReducer";
 import { db } from "../database";
 import { Playlist, Track } from "../plugintypes";
-import { useAppDispatch } from "../store/hooks";
+import { useAppDispatch, useAppSelector } from "../store/hooks";
 import { setPlaylistTracks } from "../store/reducers/playlistReducer";
-import { Delete, Info, PlayCircle } from "@mui/icons-material";
+import { Delete, Edit, Info, PlayCircle } from "@mui/icons-material";
 import { Link } from "react-router-dom";
 import { usePlugins } from "../PluginsContext";
 import { downloadTrack } from "../store/reducers/downloadReducer";
 import TrackList from "./TrackList";
 import useSelected from "../hooks/useSelected";
+import EditPlaylistDialog from "./EditPlaylistDialog";
 
 const PlaylistTracks: React.FC = () => {
   const { id } = useParams<"id">();
@@ -35,12 +37,24 @@ const PlaylistTracks: React.FC = () => {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [hasBlob, setHasBlob] = React.useState(false);
   const [canOffline, setCanOffline] = React.useState(false);
+  const [openEditMenu, setOpenEditMenu] = React.useState(false);
   const { plugins } = usePlugins();
   const infoPath = `/track/${menuTrack.id}`;
   const closeMenu = () => setAnchorEl(null);
   const { onSelect, onSelectAll, isSelected, selected } = useSelected(
     playlist?.tracks || []
   );
+  const playlistInfo = useAppSelector((state) =>
+    state.playlist.playlists.find((p) => p.id === id)
+  );
+
+  const onEditMenuOpen = () => {
+    setOpenEditMenu(true);
+  };
+
+  const onEditMenuClose = () => {
+    setOpenEditMenu(false);
+  };
 
   React.useEffect(() => {
     const getPlaylist = async () => {
@@ -153,7 +167,12 @@ const PlaylistTracks: React.FC = () => {
       </Backdrop>
       {playlist ? (
         <>
-          <div>{playlist.name}</div>
+          <Grid sx={{ display: "flex" }}>
+            <Typography variant="h3">{playlistInfo?.name}</Typography>
+            <IconButton onClick={onEditMenuOpen}>
+              <Edit />
+            </IconButton>
+          </Grid>
           <IconButton size="large" onClick={playPlaylist}>
             <PlayCircle color="success" sx={{ fontSize: 45 }} />
           </IconButton>
@@ -186,6 +205,11 @@ const PlaylistTracks: React.FC = () => {
             </MenuItem>
             {offlineMenuItem}
           </Menu>
+          <EditPlaylistDialog
+            open={openEditMenu}
+            playlist={playlist}
+            handleClose={onEditMenuClose}
+          />
         </>
       ) : (
         <>{loaded && <Typography>Not Found</Typography>}</>
