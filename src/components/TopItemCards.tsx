@@ -1,3 +1,4 @@
+import { MoreHoriz, PlaylistAdd } from "@mui/icons-material";
 import {
   Card,
   CardActionArea,
@@ -5,17 +6,26 @@ import {
   CardMedia,
   Fade,
   Grid,
+  IconButton,
+  ListItemIcon,
+  ListItemText,
+  Menu,
+  MenuItem,
   Typography,
 } from "@mui/material";
 import React from "react";
 import { usePlugins } from "../PluginsContext";
 import { Track } from "../plugintypes";
-import { useAppDispatch } from "../store/hooks";
+import { useAppDispatch, useAppSelector } from "../store/hooks";
 import { addTrack, setTrack } from "../store/reducers/trackReducer";
 import { getThumbnailImage, playlistThumbnailSize } from "../utils";
+import AddPlaylistDialog from "./AddPlaylistDialog";
+import PlaylistMenuItem from "./PlaylistMenuItem";
 import SelectPlugin from "./SelectPlugin";
 
 const TopItemCards: React.FC = () => {
+  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const [menuTrack, setMenuTrack] = React.useState<Track>({} as Track);
   const [topTracks, setTopTracks] = React.useState<Track[]>();
   // const [topAlbums, setTopAlbums] = React.useState<Album[]>();
   // const [topArtists, setTopArtists] = React.useState<Artist[]>();
@@ -23,6 +33,22 @@ const TopItemCards: React.FC = () => {
   const [pluginId, setPluginId] = React.useState("");
   const { plugins } = usePlugins();
   const dispatch = useAppDispatch();
+  const closeMenu = () => setAnchorEl(null);
+  const playlists = useAppSelector((state) => state.playlist.playlists);
+  const [playlistDialogOpen, setPlaylistDialogOpen] = React.useState(false);
+  const closePlaylistDialog = () => setPlaylistDialogOpen(false);
+
+  const openMenu = async (
+    event: React.MouseEvent<HTMLButtonElement>,
+    track: Track
+  ) => {
+    const currentTarget = event.currentTarget;
+    event.stopPropagation();
+    event.preventDefault();
+    setMenuTrack(track);
+    setAnchorEl(currentTarget);
+  };
+
   React.useEffect(() => {
     const getTopItems = async () => {
       const plugin = plugins.find((p) => p.id === pluginId);
@@ -46,19 +72,37 @@ const TopItemCards: React.FC = () => {
       dispatch(setTrack(t));
     };
 
+    const openTrackMenu = (event: React.MouseEvent<HTMLButtonElement>) => {
+      openMenu(event, t);
+    };
+
     return (
       <Card
         key={t.apiId}
         sx={{
-          width: 300,
-          height: 236,
+          width: 280,
+          height: 250,
           display: "inline-block",
           margin: "10px",
           whiteSpace: "pre-wrap",
+          "& .optionsButton": { display: "none" },
+          "&:hover": {
+            ".optionsButton": {
+              display: "block",
+            },
+          },
         }}
       >
+        <IconButton
+          sx={{ position: "absolute", zIndex: 1 }}
+          className="optionsButton"
+          size="large"
+          onClick={openTrackMenu}
+        >
+          <MoreHoriz />
+        </IconButton>
         <CardActionArea onClick={onClickTrack}>
-          <CardMedia component="img" src={image} sx={{ height: 160 }} />
+          <CardMedia component="img" src={image} sx={{ height: 200 }} />
           <CardContent>
             <Typography
               title={t.name}
@@ -74,6 +118,12 @@ const TopItemCards: React.FC = () => {
       </Card>
     );
   });
+
+  const openPlaylistDialog = () => setPlaylistDialogOpen(true);
+  const addToNewPlaylist = () => {
+    openPlaylistDialog();
+    closeMenu();
+  };
 
   return (
     <>
@@ -100,6 +150,27 @@ const TopItemCards: React.FC = () => {
           </Grid>
         </Grid>
       </Fade>
+      <Menu open={Boolean(anchorEl)} onClose={closeMenu} anchorEl={anchorEl}>
+        <MenuItem onClick={addToNewPlaylist}>
+          <ListItemIcon>
+            <PlaylistAdd />
+          </ListItemIcon>
+          <ListItemText primary="Add To New Playlist" />
+        </MenuItem>
+        {playlists.map((p) => (
+          <PlaylistMenuItem
+            key={p.id}
+            playlist={p}
+            tracks={[menuTrack]}
+            closeMenu={closeMenu}
+          />
+        ))}
+      </Menu>
+      <AddPlaylistDialog
+        tracks={[menuTrack]}
+        open={playlistDialogOpen}
+        handleClose={closePlaylistDialog}
+      />
     </>
   );
 };
