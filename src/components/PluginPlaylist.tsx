@@ -1,26 +1,25 @@
-import { PlayCircle } from "@mui/icons-material";
+import { PlayCircle, PlaylistAdd } from "@mui/icons-material";
 import {
   Backdrop,
   Button,
   CircularProgress,
   IconButton,
-  Paper,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  useMediaQuery,
-  useTheme,
+  ListItemIcon,
+  ListItemText,
+  Menu,
+  MenuItem,
 } from "@mui/material";
 import React from "react";
 import { useParams } from "react-router";
 import { Track, PageInfo } from "../plugintypes";
 import { usePlugins } from "../PluginsContext";
-import { useAppDispatch } from "../store/hooks";
-import PlaylistItem from "./PlaylistItem";
-import { setTracks } from "../store/reducers/trackReducer";
+import { useAppDispatch, useAppSelector } from "../store/hooks";
+import TrackList from "./TrackList";
+import useSelected from "../hooks/useSelected";
+import { setTrack, setTracks } from "../store/reducers/trackReducer";
+import { nanoid } from "@reduxjs/toolkit";
+import PlaylistMenuItem from "./PlaylistMenuItem";
+import AddPlaylistDialog from "./AddPlaylistDialog";
 
 const PluginPlaylist: React.FC = () => {
   const { pluginid } = useParams<"pluginid">();
@@ -30,21 +29,38 @@ const PluginPlaylist: React.FC = () => {
   const [playlistTracks, setPlaylistTracks] = React.useState<Track[]>([]);
   const [page, setPage] = React.useState<PageInfo>();
   const [backdropOpen, setBackdropOpen] = React.useState(false);
-  const theme = useTheme();
-  const showTrackLength = useMediaQuery(theme.breakpoints.up("sm"));
+  const [menuTrack, setMenuTrack] = React.useState<Track>({} as Track);
+  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const dispatch = useAppDispatch();
+  const playlists = useAppSelector((state) => state.playlist.playlists);
+  const { onSelect, onSelectAll, isSelected, selected } = useSelected(
+    playlistTracks || []
+  );
+  const [playlistDialogOpen, setPlaylistDialogOpen] = React.useState(false);
+  const openPlaylistDialog = () => setPlaylistDialogOpen(true);
+  const closePlaylistDialog = () => setPlaylistDialogOpen(false);
+
+  const closeMenu = () => setAnchorEl(null);
+
+  const setPlaylistTracksWithIds = (tracks: Track[]) => {
+    tracks.forEach((t) => {
+      t.id = nanoid();
+    });
+    setPlaylistTracks(tracks);
+  };
 
   React.useEffect(() => {
     setBackdropOpen(true);
     const getPlaylistTracks = async () => {
-      if (plugin && plugin.hasDefined.onGetPlaylistTracks()) {
+      if (plugin && (await plugin.hasDefined.onGetPlaylistTracks())) {
         const t = await plugin.remote.onGetPlaylistTracks({
           playlist: {
             apiId: id,
             isUserPlaylist: true,
           },
         });
-        setPlaylistTracks(t.items);
+
+        setPlaylistTracksWithIds(t.items);
         setPage(t.pageInfo);
         setBackdropOpen(false);
       }
@@ -54,8 +70,23 @@ const PluginPlaylist: React.FC = () => {
   }, [plugin, id]);
 
   const onPlayClick = () => {
-    const tracksWithIds = playlistTracks.map((t) => ({ ...t, id: t.apiId }));
-    dispatch(setTracks(tracksWithIds));
+    dispatch(setTracks(playlistTracks));
+  };
+
+  const addToNewPlaylist = () => {
+    openPlaylistDialog();
+    closeMenu();
+  };
+
+  const openMenu = async (
+    event: React.MouseEvent<HTMLButtonElement>,
+    track: Track
+  ) => {
+    const currentTarget = event.currentTarget;
+    event.stopPropagation();
+    event.preventDefault();
+    setMenuTrack(track);
+    setAnchorEl(currentTarget);
   };
 
   const pageButtons = () => {
@@ -84,7 +115,7 @@ const PluginPlaylist: React.FC = () => {
         },
         page: newPage,
       });
-      setPlaylistTracks(t.items);
+      setPlaylistTracksWithIds(t.items);
       setPage(t.pageInfo);
 
       setBackdropOpen(false);
@@ -109,8 +140,7 @@ const PluginPlaylist: React.FC = () => {
         },
         page: newPage,
       });
-      console.log(t.items);
-      setPlaylistTracks(t.items);
+      setPlaylistTracksWithIds(t.items);
       setPage(t.pageInfo);
       setBackdropOpen(false);
     };
@@ -123,6 +153,11 @@ const PluginPlaylist: React.FC = () => {
     );
   };
 
+  const onTrackClick = (track: Track) => {
+    dispatch(setTracks(playlistTracks));
+    dispatch(setTrack(track));
+  };
+
   return (
     <>
       <Backdrop open={backdropOpen}>
@@ -131,26 +166,38 @@ const PluginPlaylist: React.FC = () => {
       <IconButton size="large" onClick={onPlayClick}>
         <PlayCircle color="success" sx={{ fontSize: 45 }} />
       </IconButton>
-      <TableContainer component={Paper}>
-        <Table size="small">
-          <TableHead>
-            <TableRow>
-              <TableCell></TableCell>
-              <TableCell>Title</TableCell>
-              {showTrackLength && <TableCell>Track Length</TableCell>}
-              <TableCell></TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {playlistTracks.map((track, index) => (
-              <TableRow hover={true} key={index}>
-                <PlaylistItem track={track} showTrackLength={showTrackLength} />
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
+      <TrackList
+        tracks={playlistTracks}
+        openMenu={openMenu}
+        onTrackClick={onTrackClick}
+        onSelect={onSelect}
+        isSelected={isSelected}
+        onSelectAll={onSelectAll}
+        selected={selected}
+        dragDisabled={true}
+      />
+      <AddPlaylistDialog
+        tracks={[menuTrack]}
+        open={playlistDialogOpen}
+        handleClose={closePlaylistDialog}
+      />
       {page && pageButtons()}
+      <Menu open={Boolean(anchorEl)} onClose={closeMenu} anchorEl={anchorEl}>
+        <MenuItem onClick={addToNewPlaylist}>
+          <ListItemIcon>
+            <PlaylistAdd />
+          </ListItemIcon>
+          <ListItemText primary="Add To New Playlist" />
+        </MenuItem>
+        {playlists.map((p) => (
+          <PlaylistMenuItem
+            key={p.id}
+            playlist={p}
+            tracks={[menuTrack]}
+            closeMenu={closeMenu}
+          />
+        ))}
+      </Menu>
     </>
   );
 };

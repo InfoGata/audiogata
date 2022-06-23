@@ -20,13 +20,13 @@ import SortableRow from "./SortableRow";
 
 interface TrackListProps {
   tracks: Track[];
-  onDragOver: (newTrackList: Track[]) => void;
   onTrackClick: (track: Track) => void;
   openMenu: (event: React.MouseEvent<HTMLButtonElement>, track: Track) => void;
   onSelect: (e: React.ChangeEvent<HTMLInputElement>, id: string) => void;
   onSelectAll: (event: React.ChangeEvent<HTMLInputElement>) => void;
   isSelected: (id: string) => boolean;
   selected: Set<string>;
+  onDragOver?: (newTrackList: Track[]) => void;
   dragDisabled?: boolean;
 }
 
@@ -56,7 +56,9 @@ const TrackList: React.FC<TrackListProps> = (props) => {
       const oldIndex = tracks.findIndex((item) => item.id === active.id);
       const newIndex = tracks.findIndex((item) => item.id === over?.id);
       const newList = arrayMove(tracks, oldIndex, newIndex);
-      onDragOver(newList);
+      if (onDragOver) {
+        onDragOver(newList);
+      }
     }
     setActiveId(null);
   };
@@ -95,7 +97,7 @@ const TrackList: React.FC<TrackListProps> = (props) => {
               <SortableRow
                 id={t.id || ""}
                 key={t.id}
-                onClick={onTrackClick}
+                onClick={() => onTrackClick(t)}
                 disabled={dragDisabled}
               >
                 <PlaylistItem
