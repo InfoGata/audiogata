@@ -1,7 +1,7 @@
-import dexie from "dexie";
+import Dexie from "dexie";
 import { Playlist, PluginInfo } from "./plugintypes";
 
-class AudioDatabase extends dexie {
+class AudioDatabase extends Dexie {
   audioBlobs: Dexie.Table<AudioBlob, string>;
   plugins: Dexie.Table<PluginInfo, string>;
   playlists: Dexie.Table<Playlist, string>;
