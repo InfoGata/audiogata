@@ -16,7 +16,7 @@ import { usePlugins } from "../PluginsContext";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
 import TrackList from "./TrackList";
 import useSelected from "../hooks/useSelected";
-import { setTrack, setTracks } from "../store/reducers/trackReducer";
+import { playQueue, setTrack, setTracks } from "../store/reducers/trackReducer";
 import { nanoid } from "@reduxjs/toolkit";
 import PlaylistMenuItem from "./PlaylistMenuItem";
 import AddPlaylistDialog from "./AddPlaylistDialog";
@@ -71,6 +71,7 @@ const PluginPlaylist: React.FC = () => {
 
   const onPlayClick = () => {
     dispatch(setTracks(playlistTracks));
+    dispatch(playQueue());
   };
 
   const addToNewPlaylist = () => {

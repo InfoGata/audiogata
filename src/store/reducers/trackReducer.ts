@@ -209,6 +209,24 @@ const trackSlice = createSlice({
         isPlaying: true,
       };
     },
+    playQueue: (state): TrackState => {
+      let newIndex = 0;
+      let shuffleList = [...state.shuffleList];
+      if (state.shuffle) {
+        if (shuffleList.length === 0) {
+          shuffleList = createShuffleArray(state.tracks);
+        }
+        newIndex = shuffleList.shift() || 0;
+      }
+      const track = state.tracks[newIndex];
+      return {
+        ...state,
+        currentTrack: track,
+        elapsed: 0,
+        isPlaying: true,
+        shuffleList,
+      };
+    },
     setVolume: (state, action: PayloadAction<number>): TrackState => {
       return {
         ...state,
@@ -328,5 +346,6 @@ export const {
   toggleIsPlaying,
   seek,
   updateFrom,
+  playQueue,
 } = trackSlice.actions;
 export default trackSlice.reducer;

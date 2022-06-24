@@ -13,6 +13,7 @@ import React from "react";
 import { useParams } from "react-router";
 import {
   deleteTrack,
+  playQueue,
   setTrack,
   setTracks,
 } from "../store/reducers/trackReducer";
@@ -71,9 +72,8 @@ const PlaylistTracks: React.FC = () => {
       return;
     }
 
-    const firstTrack = playlist.tracks[0];
-    dispatch(setTrack(firstTrack));
     dispatch(setTracks(playlist.tracks));
+    dispatch(playQueue());
   };
 
   const openMenu = async (
