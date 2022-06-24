@@ -4,10 +4,12 @@ import { useParams } from "react-router";
 import { Link } from "react-router-dom";
 import { PlaylistInfo } from "../plugintypes";
 import {
+  Backdrop,
   Card,
   CardActionArea,
   CardContent,
   CardMedia,
+  CircularProgress,
   Grid,
   Typography,
 } from "@mui/material";
@@ -17,14 +19,17 @@ const PluginPlaylists: React.FC = () => {
   const { plugins } = usePlugins();
   const { id } = useParams<"id">();
   const [playlists, setPlaylists] = React.useState<PlaylistInfo[]>([]);
+  const [backdropOpen, setBackdropOpen] = React.useState(false);
   const plugin = plugins.find((p) => p.id === id);
 
   React.useEffect(() => {
     const getPlaylists = async () => {
       if (plugin && (await plugin.hasDefined.onGetUserPlaylists())) {
+        setBackdropOpen(true);
         const request = {};
         const p = await plugin.remote.onGetUserPlaylists(request);
         setPlaylists(p.items);
+        setBackdropOpen(false);
       }
     };
     getPlaylists();
@@ -52,9 +57,14 @@ const PluginPlaylists: React.FC = () => {
     </Grid>
   ));
   return plugin ? (
-    <Grid container spacing={2}>
-      {playlistLinks}
-    </Grid>
+    <>
+      <Backdrop open={backdropOpen}>
+        <CircularProgress color="inherit" />
+      </Backdrop>
+      <Grid container spacing={2}>
+        {playlistLinks}
+      </Grid>
+    </>
   ) : (
     <>Not Found</>
   );
