@@ -14,6 +14,7 @@ import {
   SearchRequest,
   SearchTrackResult,
   UserPlaylistRequest,
+  PlaylistTracksResult,
 } from "./plugintypes";
 import {
   PluginFrame,
@@ -50,7 +51,7 @@ export interface PluginInterface extends PlayerComponent {
   onGetAlbumTracks: (album: Album) => Promise<Track[]>;
   onGetPlaylistTracks: (
     request: PlaylistTrackRequest
-  ) => Promise<SearchTrackResult>;
+  ) => Promise<PlaylistTracksResult>;
   onGetArtistAlbums: (artist: Artist) => Promise<Album[]>;
   onPlay: (track: Track) => Promise<void>;
   onSetVolume: (volume: number) => Promise<void>;

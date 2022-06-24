@@ -8,10 +8,11 @@ import {
   ListItemText,
   Menu,
   MenuItem,
+  Typography,
 } from "@mui/material";
 import React from "react";
 import { useParams } from "react-router";
-import { Track, PageInfo } from "../plugintypes";
+import { Track, PageInfo, PlaylistInfo } from "../plugintypes";
 import { usePlugins } from "../PluginsContext";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
 import TrackList from "./TrackList";
@@ -31,6 +32,7 @@ const PluginPlaylist: React.FC = () => {
   const [backdropOpen, setBackdropOpen] = React.useState(false);
   const [menuTrack, setMenuTrack] = React.useState<Track>({} as Track);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const [playlistInfo, setPlaylistInfo] = React.useState<PlaylistInfo>();
   const dispatch = useAppDispatch();
   const playlists = useAppSelector((state) => state.playlist.playlists);
   const { onSelect, onSelectAll, isSelected, selected } = useSelected(
@@ -61,6 +63,7 @@ const PluginPlaylist: React.FC = () => {
         });
 
         setPlaylistTracksWithIds(t.items);
+        setPlaylistInfo(t.playlist);
         setPage(t.pageInfo);
         setBackdropOpen(false);
       }
@@ -164,6 +167,7 @@ const PluginPlaylist: React.FC = () => {
       <Backdrop open={backdropOpen}>
         <CircularProgress color="inherit" />
       </Backdrop>
+      <Typography variant="h3">{playlistInfo?.name}</Typography>
       <IconButton size="large" onClick={onPlayClick}>
         <PlayCircle color="success" sx={{ fontSize: 45 }} />
       </IconButton>

@@ -97,6 +97,10 @@ export interface SearchTrackResult {
   pageInfo?: PageInfo;
 }
 
+export interface PlaylistTracksResult extends SearchTrackResult {
+  playlist?: PlaylistInfo;
+}
+
 export interface SearchArtistResult {
   items: Artist[];
   pageInfo?: PageInfo;
