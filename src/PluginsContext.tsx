@@ -141,7 +141,7 @@ const getHeaderEntries = (
   return iteratorFor(items);
 };
 
-export const PluginsProvider: React.FC = (props) => {
+export const PluginsProvider: React.FC<React.PropsWithChildren> = (props) => {
   const [pluginFrames, setPluginFrames] = React.useState<
     PluginFrameContainer[]
   >([]);

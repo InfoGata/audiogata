@@ -21,7 +21,7 @@ interface SortableProps {
   onDragStart: (event: DragStartEvent) => void;
   onDragEnd: (event: DragEndEvent) => void;
 }
-const Sortable: React.FC<SortableProps> = (props) => {
+const Sortable: React.FC<React.PropsWithChildren<SortableProps>> = (props) => {
   const { ids, onDragOver, onDragStart, onDragEnd } = props;
   const sensors = useSensors(
     useSensor(PointerSensor, {

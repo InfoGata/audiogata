@@ -8,7 +8,9 @@ interface SortableItemProps {
   disabled?: boolean;
   onClick?: (...args: any) => void;
 }
-const SortableRow: React.FC<SortableItemProps> = (props) => {
+const SortableRow: React.FC<React.PropsWithChildren<SortableItemProps>> = (
+  props
+) => {
   const { id, onClick, disabled } = props;
   const {
     isDragging,
