@@ -12,7 +12,6 @@ import {
   FormControl,
   Select,
   SelectChangeEvent,
-  Button,
   Tooltip,
 } from "@mui/material";
 import { Delete, Info, MoreHoriz, PlaylistAdd } from "@mui/icons-material";
@@ -28,7 +27,6 @@ import { Link } from "react-router-dom";
 import { db } from "../database";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
 import { usePlugins } from "../PluginsContext";
-import SelectionEditDialog from "./SelectionEditDialog";
 import TrackList from "./TrackList";
 import useSelected from "../hooks/useSelected";
 
@@ -68,14 +66,11 @@ const PlayQueue: React.FC = () => {
   const [playlistDialogOpen, setPlaylistDialogOpen] = React.useState(false);
   const [queuePlaylistDialogOpen, setQueuePlaylistDialogOpen] =
     React.useState(false);
-  const [editDialogOpen, setEditDialogOpen] = React.useState(false);
   const dispatch = useAppDispatch();
   const openPlaylistDialog = () => setPlaylistDialogOpen(true);
   const openQueuePlaylistDialog = () => setQueuePlaylistDialogOpen(true);
   const closePlaylistDialog = () => setPlaylistDialogOpen(false);
   const closeQueuePlaylistDialog = () => setQueuePlaylistDialogOpen(false);
-  const openEditDialog = () => setEditDialogOpen(true);
-  const closeEditDialog = () => setEditDialogOpen(false);
 
   const { onSelect, onSelectAll, isSelected, selected, setSelected } =
     useSelected(trackList);
@@ -122,10 +117,6 @@ const PlayQueue: React.FC = () => {
     </MenuItem>
   ));
 
-  const editSelection = () => {
-    openEditDialog();
-  };
-
   return (
     <>
       <Typography variant="h3" gutterBottom>
@@ -139,9 +130,6 @@ const PlayQueue: React.FC = () => {
       <IconButton aria-label="clear" onClick={openQueueMenu}>
         <MoreHoriz fontSize="large" />
       </IconButton>
-      {selected.size > 0 && (
-        <Button onClick={editSelection}>Edit Selection</Button>
-      )}
       <FormControl fullWidth>
         <InputLabel id="select-from">Select Plugin</InputLabel>
         <Select
@@ -228,11 +216,6 @@ const PlayQueue: React.FC = () => {
         tracks={trackList}
         open={queuePlaylistDialogOpen}
         handleClose={closeQueuePlaylistDialog}
-      />
-      <SelectionEditDialog
-        open={editDialogOpen}
-        trackIdSet={selected}
-        onClose={closeEditDialog}
       />
     </>
   );

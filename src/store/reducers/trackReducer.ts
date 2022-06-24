@@ -18,11 +18,6 @@ interface TrackState {
   playbackRate?: number;
 }
 
-interface UpdateFrom {
-  updateIds: Set<string>;
-  from: string;
-}
-
 const initialState: TrackState = {
   isPlaying: false,
   mute: false,
@@ -85,16 +80,6 @@ const trackSlice = createSlice({
         ...state,
         tracks: state.tracks.map((t) =>
           t.id === action.payload.id ? action.payload : t
-        ),
-      };
-    },
-    updateFrom(state, action: PayloadAction<UpdateFrom>): TrackState {
-      return {
-        ...state,
-        tracks: state.tracks.map((t) =>
-          action.payload.updateIds.has(t.id || "")
-            ? { ...t, pluginId: action.payload.from }
-            : t
         ),
       };
     },
@@ -345,7 +330,6 @@ export const {
   prevTrack,
   toggleIsPlaying,
   seek,
-  updateFrom,
   playQueue,
 } = trackSlice.actions;
 export default trackSlice.reducer;
