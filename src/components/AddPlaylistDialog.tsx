@@ -21,9 +21,11 @@ interface AddPlaylistDialogProps {
 const AddPlaylistDialog: React.FC<AddPlaylistDialogProps> = (props) => {
   const { open, handleClose } = props;
   const [name, setName] = React.useState("");
+  const formId = React.useId();
   const dispatch = useAppDispatch();
 
-  const confirm = () => {
+  const onSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
     const tracks = props.tracks || [];
     const playlist: Playlist = {
       name,
@@ -39,15 +41,15 @@ const AddPlaylistDialog: React.FC<AddPlaylistDialogProps> = (props) => {
   };
 
   return (
-    <form onSubmit={confirm}>
-      <Dialog
-        open={open}
-        onClose={handleClose}
-        aria-labelledby="form-dialog-title"
-      >
-        <DialogTitle id="form-dialog-title">Add Playlist</DialogTitle>
-        <DialogContent>
-          <DialogContentText>Give it a name</DialogContentText>
+    <Dialog
+      open={open}
+      onClose={handleClose}
+      aria-labelledby="form-dialog-title"
+    >
+      <DialogTitle id="form-dialog-title">Add Playlist</DialogTitle>
+      <DialogContent>
+        <DialogContentText>Give it a name</DialogContentText>
+        <form id={formId} onSubmit={onSubmit}>
           <TextField
             autoFocus={true}
             margin="dense"
@@ -58,13 +60,15 @@ const AddPlaylistDialog: React.FC<AddPlaylistDialogProps> = (props) => {
             value={name}
             onChange={onChange}
           />
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleClose}>Cancel</Button>
-          <Button onClick={confirm}>Add Playlist</Button>
-        </DialogActions>
-      </Dialog>
-    </form>
+        </form>
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={handleClose}>Cancel</Button>
+        <Button type="submit" form={formId}>
+          Add Playlist
+        </Button>
+      </DialogActions>
+    </Dialog>
   );
 };
 

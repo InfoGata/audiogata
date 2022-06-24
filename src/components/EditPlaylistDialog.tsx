@@ -21,13 +21,15 @@ const EditPlaylistDialog: React.FC<EditPlaylistDialogProps> = (props) => {
   const { open, playlist, handleClose } = props;
   const [name, setName] = React.useState(playlist.name);
   const dispatch = useAppDispatch();
+  const formId = React.useId();
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setName(value);
   };
 
-  const confirm = () => {
+  const onSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
     const editedPlaylist = { ...playlist, name: name };
     dispatch(updatePlaylist(editedPlaylist));
     handleClose();
@@ -35,14 +37,14 @@ const EditPlaylistDialog: React.FC<EditPlaylistDialogProps> = (props) => {
 
   return (
     <>
-      <form onSubmit={confirm}>
-        <Dialog
-          open={open}
-          onClose={handleClose}
-          aria-labelledby="form-dialog-title"
-        >
-          <DialogTitle id="form-dialog-title">Edit Playlist</DialogTitle>
-          <DialogContent>
+      <Dialog
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="form-dialog-title"
+      >
+        <DialogTitle id="form-dialog-title">Edit Playlist</DialogTitle>
+        <DialogContent>
+          <form onSubmit={onSubmit} id={formId}>
             <TextField
               autoFocus={true}
               margin="dense"
@@ -53,13 +55,15 @@ const EditPlaylistDialog: React.FC<EditPlaylistDialogProps> = (props) => {
               fullWidth={true}
               onChange={onChange}
             />
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={handleClose}>Cancel</Button>
-            <Button onClick={confirm}>Update Playlist</Button>
-          </DialogActions>
-        </Dialog>
-      </form>
+          </form>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose}>Cancel</Button>
+          <Button type="submit" form={formId}>
+            Update Playlist
+          </Button>
+        </DialogActions>
+      </Dialog>
     </>
   );
 };
