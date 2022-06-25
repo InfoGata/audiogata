@@ -14,7 +14,7 @@ import {
   SelectChangeEvent,
   Tooltip,
 } from "@mui/material";
-import { Delete, MoreHoriz, PlaylistAdd } from "@mui/icons-material";
+import { Delete, Info, MoreHoriz, PlaylistAdd } from "@mui/icons-material";
 import {
   clearTracks,
   deleteTrack,
@@ -29,6 +29,7 @@ import { useAppDispatch, useAppSelector } from "../store/hooks";
 import { usePlugins } from "../PluginsContext";
 import TrackList from "./TrackList";
 import useSelected from "../hooks/useSelected";
+import { Link } from "react-router-dom";
 
 const PlayQueue: React.FC = () => {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -99,6 +100,7 @@ const PlayQueue: React.FC = () => {
   };
 
   const playlists = useAppSelector((state) => state.playlist.playlists);
+  const infoPath = `/track/${menuTrack.id}`;
 
   const onTrackClick = (track: Track) => {
     dispatch(setTrack(track));
@@ -226,6 +228,12 @@ const PlayQueue: React.FC = () => {
             <Delete />
           </ListItemIcon>
           <ListItemText primary="Delete" />
+        </MenuItem>
+        <MenuItem component={Link} to={infoPath}>
+          <ListItemIcon>
+            <Info />
+          </ListItemIcon>
+          <ListItemText primary="Info" />
         </MenuItem>
         <Divider />
         <MenuItem onClick={addTrackToNewPlaylist}>
