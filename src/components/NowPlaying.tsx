@@ -14,16 +14,16 @@ import {
   SelectChangeEvent,
   Tooltip,
 } from "@mui/material";
-import { Delete, Info, MoreHoriz, PlaylistAdd } from "@mui/icons-material";
+import { Delete, MoreHoriz, PlaylistAdd } from "@mui/icons-material";
 import {
   clearTracks,
   deleteTrack,
+  deleteTracks,
   setTrack,
   setTracks,
 } from "../store/reducers/trackReducer";
 import AddPlaylistDialog from "./AddPlaylistDialog";
 import PlaylistMenuItem from "./PlaylistMenuItem";
-import { Link } from "react-router-dom";
 import { db } from "../database";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
 import { usePlugins } from "../PluginsContext";
@@ -34,9 +34,15 @@ const PlayQueue: React.FC = () => {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [menuTrack, setMenuTrack] = React.useState<Track>({} as Track);
   const [from, setFrom] = React.useState<string>("");
+  const [playlistDialogTracks, setPlaylistDialogTracks] = React.useState<
+    Track[]
+  >([]);
+  const [playlistDialogOpen, setPlaylistDialogOpen] = React.useState(false);
   const [queueMenuAnchorEl, setQueueMenuAnchorEl] =
     React.useState<null | HTMLElement>(null);
   const { plugins } = usePlugins();
+  const dispatch = useAppDispatch();
+
   const openMenu = async (
     event: React.MouseEvent<HTMLButtonElement>,
     track: Track
@@ -63,27 +69,36 @@ const PlayQueue: React.FC = () => {
     closeMenu();
     dispatch(deleteTrack(menuTrack));
   };
-  const [playlistDialogOpen, setPlaylistDialogOpen] = React.useState(false);
-  const [queuePlaylistDialogOpen, setQueuePlaylistDialogOpen] =
-    React.useState(false);
-  const dispatch = useAppDispatch();
-  const openPlaylistDialog = () => setPlaylistDialogOpen(true);
-  const openQueuePlaylistDialog = () => setQueuePlaylistDialogOpen(true);
   const closePlaylistDialog = () => setPlaylistDialogOpen(false);
-  const closeQueuePlaylistDialog = () => setQueuePlaylistDialogOpen(false);
 
   const { onSelect, onSelectAll, isSelected, selected, setSelected } =
     useSelected(trackList);
-  const addToNewPlaylist = () => {
-    openPlaylistDialog();
+
+  const addTrackToNewPlaylist = () => {
+    setPlaylistDialogTracks([menuTrack]);
+    setPlaylistDialogOpen(true);
     closeMenu();
   };
-  const addToNewPlaylistQueue = () => {
-    openQueuePlaylistDialog();
+  const addQueueToNewPlaylist = () => {
+    setPlaylistDialogTracks(trackList);
+    setPlaylistDialogOpen(true);
     closeQueueMenu();
   };
+
+  const selectedTracks = trackList.filter((t) => selected.has(t.id ?? ""));
+
+  const addSelectedToNewPlaylist = () => {
+    setPlaylistDialogTracks(selectedTracks);
+    setPlaylistDialogOpen(true);
+    closeQueueMenu();
+  };
+
+  const clearSelectedTracks = () => {
+    dispatch(deleteTracks(selected));
+    closeQueueMenu();
+  };
+
   const playlists = useAppSelector((state) => state.playlist.playlists);
-  const infoPath = `/track/${menuTrack.id}`;
 
   const onTrackClick = (track: Track) => {
     dispatch(setTrack(track));
@@ -163,11 +178,11 @@ const PlayQueue: React.FC = () => {
           </ListItemIcon>
           <ListItemText primary="Clear All Tracks" />
         </MenuItem>
-        <MenuItem onClick={addToNewPlaylistQueue}>
+        <MenuItem onClick={addQueueToNewPlaylist}>
           <ListItemIcon>
             <PlaylistAdd />
           </ListItemIcon>
-          <ListItemText primary="Add To New Playlist" />
+          <ListItemText primary="Add Queue To New Playlist" />
         </MenuItem>
         {playlists.map((p) => (
           <PlaylistMenuItem
@@ -175,8 +190,35 @@ const PlayQueue: React.FC = () => {
             playlist={p}
             tracks={trackList}
             closeMenu={closeQueueMenu}
+            namePrefix={"Add Queue to "}
           />
         ))}
+        {selected.size > 0 && (
+          <>
+            <Divider />
+            <MenuItem onClick={clearSelectedTracks}>
+              <ListItemIcon>
+                <Delete />
+              </ListItemIcon>
+              <ListItemText primary="Clear Selected Tracks" />
+            </MenuItem>
+            <MenuItem onClick={addSelectedToNewPlaylist}>
+              <ListItemIcon>
+                <PlaylistAdd />
+              </ListItemIcon>
+              <ListItemText primary="Add Selected To New Playlist" />
+            </MenuItem>
+            {playlists.map((p) => (
+              <PlaylistMenuItem
+                key={p.id}
+                playlist={p}
+                tracks={selectedTracks}
+                closeMenu={closeQueueMenu}
+                namePrefix={"Add Selected to "}
+              />
+            ))}
+          </>
+        )}
       </Menu>
       <Menu open={Boolean(anchorEl)} onClose={closeMenu} anchorEl={anchorEl}>
         <MenuItem onClick={deleteClick}>
@@ -185,14 +227,8 @@ const PlayQueue: React.FC = () => {
           </ListItemIcon>
           <ListItemText primary="Delete" />
         </MenuItem>
-        <MenuItem component={Link} to={infoPath}>
-          <ListItemIcon>
-            <Info />
-          </ListItemIcon>
-          <ListItemText primary="Info" />
-        </MenuItem>
         <Divider />
-        <MenuItem onClick={addToNewPlaylist}>
+        <MenuItem onClick={addTrackToNewPlaylist}>
           <ListItemIcon>
             <PlaylistAdd />
           </ListItemIcon>
@@ -208,14 +244,9 @@ const PlayQueue: React.FC = () => {
         ))}
       </Menu>
       <AddPlaylistDialog
-        tracks={[menuTrack]}
+        tracks={playlistDialogTracks}
         open={playlistDialogOpen}
         handleClose={closePlaylistDialog}
-      />
-      <AddPlaylistDialog
-        tracks={trackList}
-        open={queuePlaylistDialogOpen}
-        handleClose={closeQueuePlaylistDialog}
       />
     </>
   );

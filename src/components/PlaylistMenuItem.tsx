@@ -9,10 +9,11 @@ interface PlaylistMenuItemProps {
   playlist: PlaylistInfo;
   tracks: Track[];
   closeMenu: () => void;
+  namePrefix?: string;
 }
 
 const PlaylistMenuItem: React.FC<PlaylistMenuItemProps> = (props) => {
-  const { playlist, closeMenu, tracks } = props;
+  const { playlist, closeMenu, tracks, namePrefix } = props;
   const dispatch = useAppDispatch();
 
   const addToPlaylist = () => {
@@ -26,7 +27,7 @@ const PlaylistMenuItem: React.FC<PlaylistMenuItemProps> = (props) => {
       <ListItemIcon>
         <PlaylistAdd />
       </ListItemIcon>
-      <ListItemText primary={playlist.name} />
+      <ListItemText primary={`${namePrefix ?? ""}${playlist.name}`} />
     </MenuItem>
   );
 };

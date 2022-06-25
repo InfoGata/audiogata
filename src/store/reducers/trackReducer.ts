@@ -75,6 +75,21 @@ const trackSlice = createSlice({
         tracks: newPlaylist,
       };
     },
+    deleteTracks(state, action: PayloadAction<Set<string>>): TrackState {
+      const newPlaylist = state.tracks.filter(
+        (t) => !action.payload.has(t.id ?? "")
+      );
+      let currentTrack = state.currentTrack;
+      if (currentTrack && action.payload.has(currentTrack.id ?? "")) {
+        currentTrack = undefined;
+      }
+      return {
+        ...state,
+        currentTrack,
+        shuffleList: [],
+        tracks: newPlaylist,
+      };
+    },
     updateTrack(state, action: PayloadAction<Track>): TrackState {
       return {
         ...state,
@@ -277,6 +292,24 @@ export const deleteTrack: AppActionCreator =
     await Promise.all(
       filteredPlugins.map((p) => p.remote.onNowPlayingTracksRemoved([track]))
     );
+  };
+
+export const deleteTracks: AppActionCreator =
+  (tracksIds: Set<string>) => async (dispatch, getState) => {
+    const plugins = getPluginFrames();
+    dispatch(trackSlice.actions.deleteTracks(tracksIds));
+    const filteredPlugins = await filterAsync(plugins, (p) =>
+      p.hasDefined.onNowPlayingTracksRemoved()
+    );
+    if (filteredPlugins.length > 0) {
+      const state = getState();
+      const tracks = state.track.tracks.filter((t) =>
+        tracksIds.has(t.id ?? "")
+      );
+      await Promise.all(
+        filteredPlugins.map((p) => p.remote.onNowPlayingTracksRemoved(tracks))
+      );
+    }
   };
 
 export const updateTrack: AppActionCreator =
