@@ -1,4 +1,4 @@
-import { PlayCircle, PlaylistAdd } from "@mui/icons-material";
+import { Info, PlayCircle, PlaylistAdd } from "@mui/icons-material";
 import {
   Backdrop,
   Button,
@@ -21,6 +21,7 @@ import { playQueue, setTrack, setTracks } from "../store/reducers/trackReducer";
 import { nanoid } from "@reduxjs/toolkit";
 import PlaylistMenuItem from "./PlaylistMenuItem";
 import AddPlaylistDialog from "./AddPlaylistDialog";
+import { Link } from "react-router-dom";
 
 const PluginPlaylist: React.FC = () => {
   const { pluginid } = useParams<"pluginid">();
@@ -43,6 +44,7 @@ const PluginPlaylist: React.FC = () => {
   const closePlaylistDialog = () => setPlaylistDialogOpen(false);
 
   const closeMenu = () => setAnchorEl(null);
+  const infoPath = `/playlists/${id}/tracks/${menuTrack.id}`;
 
   const setPlaylistTracksWithIds = (tracks: Track[]) => {
     tracks.forEach((t) => {
@@ -188,6 +190,12 @@ const PluginPlaylist: React.FC = () => {
       />
       {page && pageButtons()}
       <Menu open={Boolean(anchorEl)} onClose={closeMenu} anchorEl={anchorEl}>
+        <MenuItem component={Link} to={infoPath}>
+          <ListItemIcon>
+            <Info />
+          </ListItemIcon>
+          <ListItemText primary="Info" />
+        </MenuItem>
         <MenuItem onClick={addToNewPlaylist}>
           <ListItemIcon>
             <PlaylistAdd />
