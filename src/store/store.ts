@@ -1,7 +1,6 @@
 import { persistReducer, persistStore } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 import {
-  ActionCreator,
   AnyAction,
   configureStore,
   getDefaultMiddleware,
@@ -34,7 +33,10 @@ if (process.env.NODE_ENV === "development" && module.hot) {
 export const persistor = persistStore(store);
 export type AppState = ReturnType<typeof persistedReducer>;
 export type AppDispatch = typeof store.dispatch;
-export type AppActionCreator = ActionCreator<
-  ThunkAction<void, AppState, unknown, AnyAction>
+export type AppThunk<ReturnType = void> = ThunkAction<
+  ReturnType,
+  AppState,
+  unknown,
+  AnyAction
 >;
 export default store;

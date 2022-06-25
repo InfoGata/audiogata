@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { AudioBlob, db } from "../../database";
 import { Track } from "../../plugintypes";
-import { AppActionCreator } from "../store";
+import { AppThunk } from "../store";
 import { Capacitor } from "@capacitor/core";
 
 interface TrackProgress {
@@ -45,8 +45,9 @@ const downloadsSlice = createSlice({
   },
 });
 
-export const downloadTrack: AppActionCreator =
-  (track: Track, url: string) => async (dispatch) => {
+export const downloadTrack =
+  (track: Track, url: string): AppThunk =>
+  async (dispatch) => {
     dispatch(downloadsSlice.actions.downloadTrack(track));
     let response: Response | undefined = undefined;
     let blob: Blob;

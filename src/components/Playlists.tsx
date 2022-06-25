@@ -79,7 +79,9 @@ const Playlists: React.FC = () => {
     setMenuPlaylist(playlist);
   };
   const deleteClick = () => {
-    dispatch(deletePlaylist(menuPlaylist));
+    if (menuPlaylist) {
+      dispatch(deletePlaylist(menuPlaylist));
+    }
     closeMenu();
   };
 

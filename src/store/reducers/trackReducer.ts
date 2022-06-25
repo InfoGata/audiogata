@@ -2,7 +2,7 @@ import { createSlice, nanoid, PayloadAction } from "@reduxjs/toolkit";
 import { Track } from "../../plugintypes";
 import { getPluginFrames } from "../../PluginsContext";
 import { filterAsync } from "../../utils";
-import { AppActionCreator } from "../store";
+import { AppThunk } from "../store";
 
 interface TrackState {
   tracks: Track[];
@@ -49,6 +49,13 @@ const trackSlice = createSlice({
       return {
         ...state,
         tracks: [...state.tracks, action.payload],
+      };
+    },
+    addTracks(state, action: PayloadAction<Track[]>): TrackState {
+      const newTracks = state.tracks.concat(action.payload);
+      return {
+        ...state,
+        tracks: newTracks,
       };
     },
     clearTracks(state): TrackState {
@@ -268,11 +275,14 @@ const trackSlice = createSlice({
   },
 });
 
-export const addTrack: AppActionCreator =
-  (track: Track) => async (dispatch) => {
+export const addTrack =
+  (track: Track): AppThunk =>
+  async (dispatch) => {
     const plugins = getPluginFrames();
-    const id = nanoid();
-    track.id = id;
+    if (!track.id) {
+      const id = nanoid();
+      track.id = id;
+    }
     dispatch(trackSlice.actions.addTrack(track));
     const filteredPlugins = await filterAsync(plugins, (p) =>
       p.hasDefined.onNowPlayingTracksAdded()
@@ -282,8 +292,22 @@ export const addTrack: AppActionCreator =
     );
   };
 
-export const deleteTrack: AppActionCreator =
-  (track: Track) => async (dispatch) => {
+export const addTracks =
+  (tracks: Track[]): AppThunk =>
+  async (dispatch) => {
+    const plugins = getPluginFrames();
+    dispatch(trackSlice.actions.addTracks(tracks));
+    const filteredPlugins = await filterAsync(plugins, (p) =>
+      p.hasDefined.onNowPlayingTracksAdded()
+    );
+    await Promise.all(
+      filteredPlugins.map((p) => p.remote.onNowPlayingTracksAdded(tracks))
+    );
+  };
+
+export const deleteTrack =
+  (track: Track): AppThunk =>
+  async (dispatch) => {
     const plugins = getPluginFrames();
     dispatch(trackSlice.actions.deleteTrack(track));
     const filteredPlugins = await filterAsync(plugins, (p) =>
@@ -294,8 +318,9 @@ export const deleteTrack: AppActionCreator =
     );
   };
 
-export const deleteTracks: AppActionCreator =
-  (tracksIds: Set<string>) => async (dispatch, getState) => {
+export const deleteTracks =
+  (tracksIds: Set<string>): AppThunk =>
+  async (dispatch, getState) => {
     const plugins = getPluginFrames();
     dispatch(trackSlice.actions.deleteTracks(tracksIds));
     const filteredPlugins = await filterAsync(plugins, (p) =>
@@ -312,8 +337,9 @@ export const deleteTracks: AppActionCreator =
     }
   };
 
-export const updateTrack: AppActionCreator =
-  (track: Track) => async (dispatch) => {
+export const updateTrack =
+  (track: Track): AppThunk =>
+  async (dispatch) => {
     const plugins = getPluginFrames();
     dispatch(trackSlice.actions.updateTrack(track));
     const filteredPlugins = await filterAsync(plugins, (p) =>
@@ -324,23 +350,23 @@ export const updateTrack: AppActionCreator =
     );
   };
 
-export const clearTracks: AppActionCreator =
-  () => async (dispatch, getState) => {
-    const state = getState();
-    const plugins = getPluginFrames();
-    dispatch(trackSlice.actions.clearTracks());
-    const filteredPlugins = await filterAsync(plugins, (p) =>
-      p.hasDefined.onNowPlayingTracksRemoved()
-    );
-    await Promise.all(
-      filteredPlugins.map((p) =>
-        p.remote.onNowPlayingTracksRemoved(state.track.tracks)
-      )
-    );
-  };
+export const clearTracks = (): AppThunk => async (dispatch, getState) => {
+  const state = getState();
+  const plugins = getPluginFrames();
+  dispatch(trackSlice.actions.clearTracks());
+  const filteredPlugins = await filterAsync(plugins, (p) =>
+    p.hasDefined.onNowPlayingTracksRemoved()
+  );
+  await Promise.all(
+    filteredPlugins.map((p) =>
+      p.remote.onNowPlayingTracksRemoved(state.track.tracks)
+    )
+  );
+};
 
-export const setTracks: AppActionCreator =
-  (tracks: Track[]) => async (dispatch) => {
+export const setTracks =
+  (tracks: Track[]): AppThunk =>
+  async (dispatch) => {
     const plugins = getPluginFrames();
     dispatch(trackSlice.actions.setTracks(tracks));
     const filteredPlugins = await filterAsync(plugins, (p) =>
