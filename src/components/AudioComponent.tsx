@@ -55,9 +55,7 @@ class AudioComponent extends React.Component<
       PlayerComponentType.onSetPlaybackRate
     );
     await player?.onSetPlaybackRate(this.props.playbackRate || 1.0);
-    if (this.props.playOnStartup && this.props.isPlaying) {
-      await this.playCurrentTrack();
-    } else if (this.props.isPlaying) {
+    if (this.props.isPlaying) {
       this.props.toggleIsPlaying();
     }
   }
