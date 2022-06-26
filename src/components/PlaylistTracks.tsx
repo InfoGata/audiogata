@@ -253,23 +253,21 @@ const PlaylistTracks: React.FC = () => {
               </ListItemIcon>
               <ListItemText primary="Add Tracks To Queue" />
             </MenuItem>
-            {selected.size > 0 && (
-              <>
-                <Divider />
-                <MenuItem onClick={addSelectedToQueue}>
-                  <ListItemIcon>
-                    <PlaylistPlay />
-                  </ListItemIcon>
-                  <ListItemText primary="Add Selected To Queue" />
-                </MenuItem>
-                <MenuItem onClick={clearSelectedTracks}>
-                  <ListItemIcon>
-                    <Delete />
-                  </ListItemIcon>
-                  <ListItemText primary="Delete Selected Tracks" />
-                </MenuItem>
-              </>
-            )}
+            {selected.size > 0 && [
+              <Divider key="divider" />,
+              <MenuItem onClick={addSelectedToQueue} key="add">
+                <ListItemIcon>
+                  <PlaylistPlay />
+                </ListItemIcon>
+                <ListItemText primary="Add Selected To Queue" />
+              </MenuItem>,
+              <MenuItem onClick={clearSelectedTracks} key="clear">
+                <ListItemIcon>
+                  <Delete />
+                </ListItemIcon>
+                <ListItemText primary="Delete Selected Tracks" />
+              </MenuItem>,
+            ]}
           </Menu>
           <Menu
             open={Boolean(anchorEl)}

@@ -195,32 +195,30 @@ const PlayQueue: React.FC = () => {
             namePrefix={"Add Queue to "}
           />
         ))}
-        {selected.size > 0 && (
-          <>
-            <Divider />
-            <MenuItem onClick={clearSelectedTracks}>
-              <ListItemIcon>
-                <Delete />
-              </ListItemIcon>
-              <ListItemText primary="Clear Selected Tracks" />
-            </MenuItem>
-            <MenuItem onClick={addSelectedToNewPlaylist}>
-              <ListItemIcon>
-                <PlaylistAdd />
-              </ListItemIcon>
-              <ListItemText primary="Add Selected To New Playlist" />
-            </MenuItem>
-            {playlists.map((p) => (
-              <PlaylistMenuItem
-                key={p.id}
-                playlist={p}
-                tracks={selectedTracks}
-                closeMenu={closeQueueMenu}
-                namePrefix={"Add Selected to "}
-              />
-            ))}
-          </>
-        )}
+        {selected.size > 0 && [
+          <Divider key="divider" />,
+          <MenuItem onClick={clearSelectedTracks} key="clear">
+            <ListItemIcon>
+              <Delete />
+            </ListItemIcon>
+            <ListItemText primary="Clear Selected Tracks" />
+          </MenuItem>,
+          <MenuItem onClick={addSelectedToNewPlaylist} key="newplaylist">
+            <ListItemIcon>
+              <PlaylistAdd />
+            </ListItemIcon>
+            <ListItemText primary="Add Selected To New Playlist" />
+          </MenuItem>,
+          playlists.map((p) => (
+            <PlaylistMenuItem
+              key={p.id}
+              playlist={p}
+              tracks={selectedTracks}
+              closeMenu={closeQueueMenu}
+              namePrefix={"Add Selected to "}
+            />
+          )),
+        ]}
       </Menu>
       <Menu open={Boolean(anchorEl)} onClose={closeMenu} anchorEl={anchorEl}>
         <MenuItem onClick={deleteClick}>
