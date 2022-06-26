@@ -99,9 +99,8 @@ class AudioComponent extends React.Component<
     newProps: AudioComponentProps
   ) {
     if (
-      prevProps.currentTrack &&
       newProps.currentTrack &&
-      prevProps.currentTrack.id !== newProps.currentTrack.id
+      prevProps.currentTrack?.id !== newProps.currentTrack.id
     ) {
       await this.playTrack(newProps.currentTrack);
     }
