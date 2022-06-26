@@ -1,11 +1,6 @@
 import { persistReducer, persistStore } from "redux-persist";
 import storage from "redux-persist/lib/storage";
-import {
-  AnyAction,
-  configureStore,
-  getDefaultMiddleware,
-  ThunkAction,
-} from "@reduxjs/toolkit";
+import { AnyAction, configureStore, ThunkAction } from "@reduxjs/toolkit";
 import rootReducer from "./rootReducer";
 
 const persistConfig = {
@@ -16,10 +11,11 @@ const persistConfig = {
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 const store = configureStore({
-  middleware: getDefaultMiddleware({
-    // Setting to false because it causes a warning when using redux-persist
-    serializableCheck: false,
-  }),
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      // Setting to false because it causes a warning when using redux-persist
+      serializableCheck: false,
+    }),
   reducer: persistedReducer,
 });
 
