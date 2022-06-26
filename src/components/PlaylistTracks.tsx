@@ -8,20 +8,29 @@ import {
   ListItemIcon,
   ListItemText,
   Grid,
+  Divider,
 } from "@mui/material";
 import React from "react";
 import { useParams } from "react-router";
 import {
-  deleteTrack,
+  addTrack,
+  addTracks,
   playQueue,
   setTrack,
   setTracks,
 } from "../store/reducers/trackReducer";
 import { db } from "../database";
-import { Playlist, Track } from "../plugintypes";
+import { PlaylistInfo, Track } from "../plugintypes";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
 import { setPlaylistTracks } from "../store/reducers/playlistReducer";
-import { Delete, Edit, Info, PlayCircle } from "@mui/icons-material";
+import {
+  Delete,
+  Edit,
+  Info,
+  MoreHoriz,
+  PlayCircle,
+  PlaylistPlay,
+} from "@mui/icons-material";
 import { Link } from "react-router-dom";
 import { usePlugins } from "../PluginsContext";
 import { downloadTrack } from "../store/reducers/downloadReducer";
@@ -32,7 +41,7 @@ import EditPlaylistDialog from "./EditPlaylistDialog";
 const PlaylistTracks: React.FC = () => {
   const { id } = useParams<"id">();
   const dispatch = useAppDispatch();
-  const [playlist, setPlaylist] = React.useState<Playlist | undefined>();
+  const [playlist, setPlaylist] = React.useState<PlaylistInfo | undefined>();
   const [loaded, setLoaded] = React.useState(false);
   const [menuTrack, setMenuTrack] = React.useState<Track>({} as Track);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -42,12 +51,24 @@ const PlaylistTracks: React.FC = () => {
   const { plugins } = usePlugins();
   const infoPath = `/track/${menuTrack.id}`;
   const closeMenu = () => setAnchorEl(null);
+  const [tracklist, setTracklist] = React.useState<Track[]>([]);
   const { onSelect, onSelectAll, isSelected, selected } = useSelected(
-    playlist?.tracks || []
+    tracklist || []
   );
   const playlistInfo = useAppSelector((state) =>
     state.playlist.playlists.find((p) => p.id === id)
   );
+
+  const openQueueMenu = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setQueueMenuAnchorEl(event.currentTarget);
+  };
+
+  const [queueMenuAnchorEl, setQueueMenuAnchorEl] =
+    React.useState<null | HTMLElement>(null);
+
+  const selectedTracks = tracklist.filter((t) => selected.has(t.id ?? ""));
+
+  const closeQueueMenu = () => setQueueMenuAnchorEl(null);
 
   const onEditMenuOpen = () => {
     setOpenEditMenu(true);
@@ -60,7 +81,9 @@ const PlaylistTracks: React.FC = () => {
   React.useEffect(() => {
     const getPlaylist = async () => {
       if (id) {
+        const playlist = await db.playlists.get(id);
         setPlaylist(await db.playlists.get(id));
+        setTracklist(playlist?.tracks ?? []);
         setLoaded(true);
       }
     };
@@ -72,7 +95,7 @@ const PlaylistTracks: React.FC = () => {
       return;
     }
 
-    dispatch(setTracks(playlist.tracks));
+    dispatch(setTracks(tracklist));
     dispatch(playQueue());
   };
 
@@ -106,8 +129,23 @@ const PlaylistTracks: React.FC = () => {
     if (menuTrack.id) {
       await db.audioBlobs.delete(menuTrack.id);
     }
-    dispatch(deleteTrack(menuTrack));
+    if (playlist) {
+      const newTracklist = tracklist.filter((t) => t.id !== menuTrack.id);
+      dispatch(setPlaylistTracks(playlist, newTracklist));
+      setTracklist(newTracklist);
+    }
+
     closeMenu();
+  };
+
+  const clearSelectedTracks = async () => {
+    await db.audioBlobs.bulkDelete(Array.from(selected));
+    if (playlist) {
+      const newTracklist = tracklist.filter((t) => !selected.has(t.id ?? ""));
+      dispatch(setPlaylistTracks(playlist, newTracklist));
+      setTracklist(newTracklist);
+    }
+    closeQueueMenu();
   };
 
   const enablePlayingOffline = async () => {
@@ -150,14 +188,29 @@ const PlaylistTracks: React.FC = () => {
 
   const onTrackClick = (track: Track) => {
     dispatch(setTrack(track));
-    dispatch(setTracks(playlist?.tracks || []));
+    dispatch(setTracks(tracklist));
   };
 
   const onDragOver = (trackList: Track[]) => {
-    dispatch(setPlaylistTracks(playlist, trackList));
+    if (playlist) {
+      dispatch(setPlaylistTracks(playlist, trackList));
+      setTracklist(tracklist);
+    }
+  };
 
-    const newPlaylist: Playlist = { ...playlist, tracks: trackList };
-    setPlaylist(newPlaylist);
+  const addTrackToQueue = () => {
+    dispatch(addTrack(menuTrack));
+    closeMenu();
+  };
+
+  const addSelectedToQueue = () => {
+    dispatch(addTracks(selectedTracks));
+    closeQueueMenu();
+  };
+
+  const addPlaylistToQueue = () => {
+    dispatch(addTracks(tracklist));
+    closeQueueMenu();
   };
 
   return (
@@ -176,8 +229,11 @@ const PlaylistTracks: React.FC = () => {
           <IconButton size="large" onClick={playPlaylist}>
             <PlayCircle color="success" sx={{ fontSize: 45 }} />
           </IconButton>
+          <IconButton onClick={openQueueMenu}>
+            <MoreHoriz fontSize="large" />
+          </IconButton>
           <TrackList
-            tracks={playlist.tracks}
+            tracks={tracklist}
             openMenu={openMenu}
             onTrackClick={onTrackClick}
             onDragOver={onDragOver}
@@ -187,10 +243,45 @@ const PlaylistTracks: React.FC = () => {
             selected={selected}
           />
           <Menu
+            open={Boolean(queueMenuAnchorEl)}
+            onClose={closeQueueMenu}
+            anchorEl={queueMenuAnchorEl}
+          >
+            <MenuItem onClick={addPlaylistToQueue}>
+              <ListItemIcon>
+                <PlaylistPlay />
+              </ListItemIcon>
+              <ListItemText primary="Add Tracks To Queue" />
+            </MenuItem>
+            {selected.size > 0 && (
+              <>
+                <Divider />
+                <MenuItem onClick={addSelectedToQueue}>
+                  <ListItemIcon>
+                    <PlaylistPlay />
+                  </ListItemIcon>
+                  <ListItemText primary="Add Selected To Queue" />
+                </MenuItem>
+                <MenuItem onClick={clearSelectedTracks}>
+                  <ListItemIcon>
+                    <Delete />
+                  </ListItemIcon>
+                  <ListItemText primary="Delete Selected Tracks" />
+                </MenuItem>
+              </>
+            )}
+          </Menu>
+          <Menu
             open={Boolean(anchorEl)}
             onClose={closeMenu}
             anchorEl={anchorEl}
           >
+            <MenuItem onClick={addTrackToQueue}>
+              <ListItemIcon>
+                <PlaylistPlay />
+              </ListItemIcon>
+              <ListItemText primary="Add to Queue" />
+            </MenuItem>
             <MenuItem onClick={deleteClick}>
               <ListItemIcon>
                 <Delete />

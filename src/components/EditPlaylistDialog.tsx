@@ -7,13 +7,13 @@ import {
   TextField,
 } from "@mui/material";
 import React from "react";
-import { Playlist } from "../plugintypes";
+import { PlaylistInfo } from "../plugintypes";
 import { useAppDispatch } from "../store/hooks";
 import { updatePlaylist } from "../store/reducers/playlistReducer";
 
 interface EditPlaylistDialogProps {
   open: boolean;
-  playlist: Playlist;
+  playlist: PlaylistInfo;
   handleClose: () => void;
 }
 

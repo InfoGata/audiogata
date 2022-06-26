@@ -144,7 +144,7 @@ const PlayQueue: React.FC = () => {
           <Delete fontSize="large" />
         </Tooltip>
       </IconButton>
-      <IconButton aria-label="clear" onClick={openQueueMenu}>
+      <IconButton onClick={openQueueMenu}>
         <MoreHoriz fontSize="large" />
       </IconButton>
       <FormControl fullWidth>

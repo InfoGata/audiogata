@@ -3,6 +3,8 @@ import { Track } from "../../plugintypes";
 import { getPluginFrames } from "../../PluginsContext";
 import { filterAsync } from "../../utils";
 import { AppThunk } from "../store";
+import unionBy from "lodash/unionBy";
+import intersectionBy from "lodash/intersectionBy";
 
 interface TrackState {
   tracks: Track[];
@@ -45,19 +47,6 @@ const trackSlice = createSlice({
   name: "track",
   initialState,
   reducers: {
-    addTrack(state, action: PayloadAction<Track>): TrackState {
-      return {
-        ...state,
-        tracks: [...state.tracks, action.payload],
-      };
-    },
-    addTracks(state, action: PayloadAction<Track[]>): TrackState {
-      const newTracks = state.tracks.concat(action.payload);
-      return {
-        ...state,
-        tracks: newTracks,
-      };
-    },
     clearTracks(state): TrackState {
       return {
         ...state,
@@ -277,32 +266,48 @@ const trackSlice = createSlice({
 
 export const addTrack =
   (track: Track): AppThunk =>
-  async (dispatch) => {
+  async (dispatch, getState) => {
+    const state = getState();
     const plugins = getPluginFrames();
     if (!track.id) {
       const id = nanoid();
       track.id = id;
     }
-    dispatch(trackSlice.actions.addTrack(track));
+    const newTracks = unionBy(state.track.tracks, [track], "id");
+    dispatch(trackSlice.actions.setTracks(newTracks));
     const filteredPlugins = await filterAsync(plugins, (p) =>
       p.hasDefined.onNowPlayingTracksAdded()
     );
-    await Promise.all(
-      filteredPlugins.map((p) => p.remote.onNowPlayingTracksAdded([track]))
-    );
+    if (filteredPlugins.length > 0) {
+      const addedTracks = intersectionBy(state.track.tracks, newTracks, "id");
+      if (addedTracks.length > 0) {
+        await Promise.all(
+          filteredPlugins.map((p) =>
+            p.remote.onNowPlayingTracksAdded(addedTracks)
+          )
+        );
+      }
+    }
   };
 
 export const addTracks =
   (tracks: Track[]): AppThunk =>
-  async (dispatch) => {
+  async (dispatch, getState) => {
     const plugins = getPluginFrames();
-    dispatch(trackSlice.actions.addTracks(tracks));
+    const state = getState();
+    const newTracks = unionBy(state.track.tracks, tracks, "id");
+    dispatch(trackSlice.actions.setTracks(newTracks));
     const filteredPlugins = await filterAsync(plugins, (p) =>
       p.hasDefined.onNowPlayingTracksAdded()
     );
-    await Promise.all(
-      filteredPlugins.map((p) => p.remote.onNowPlayingTracksAdded(tracks))
-    );
+    if (filteredPlugins.length > 0) {
+      const addedTracks = intersectionBy(state.track.tracks, newTracks, "id");
+      if (addedTracks.length > 0) {
+        await Promise.all(
+          filteredPlugins.map((p) => p.remote.onNowPlayingTracksAdded(tracks))
+        );
+      }
+    }
   };
 
 export const deleteTrack =

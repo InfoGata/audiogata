@@ -2,6 +2,7 @@ import { createSlice, nanoid, PayloadAction } from "@reduxjs/toolkit";
 import { Playlist, Track, PlaylistInfo } from "../../plugintypes";
 import { AppThunk } from "../store";
 import { db } from "../../database";
+import unionBy from "lodash/unionBy";
 
 interface PlaylistState {
   playlists: PlaylistInfo[];
@@ -85,10 +86,10 @@ export const deletePlaylist =
   };
 
 export const setPlaylistTracks =
-  (playlist: Playlist, tracks: Track[]): AppThunk =>
+  (playlistInfo: PlaylistInfo, tracks: Track[]): AppThunk =>
   async (_dispatch) => {
-    playlist.tracks = tracks;
-    await db.playlists.put(playlist);
+    const newPlaylist = { ...playlistInfo, tracks };
+    await db.playlists.put(newPlaylist);
   };
 
 export const addPlaylistTracks =
@@ -96,18 +97,26 @@ export const addPlaylistTracks =
   async (_dispatch) => {
     const playlist = await db.playlists.get(playlistInfo.id || "");
     if (playlist) {
-      const newTracks = playlist.tracks.concat(tracks);
+      const newTracks = unionBy(playlist.tracks, tracks, "id");
       playlist.tracks = newTracks;
       await db.playlists.put(playlist);
     }
   };
 
 export const updatePlaylist =
-  (playlist: Playlist): AppThunk =>
+  (playlistInfo: PlaylistInfo): AppThunk =>
   async (dispatch) => {
-    await db.playlists.put(playlist);
-    const info: PlaylistInfo = playlistToPlaylistInfo(playlist);
-    dispatch(playlistSlice.actions.updatePlaylist(info));
+    if (playlistInfo.id) {
+      const playlist = await db.playlists.get(playlistInfo.id);
+      if (playlist) {
+        const newPlaylist: Playlist = {
+          ...playlistInfo,
+          tracks: playlist.tracks,
+        };
+        await db.playlists.put(newPlaylist);
+        dispatch(playlistSlice.actions.updatePlaylist(playlistInfo));
+      }
+    }
   };
 
 export default playlistSlice.reducer;
