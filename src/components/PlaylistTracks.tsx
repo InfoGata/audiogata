@@ -37,6 +37,7 @@ import { downloadTrack } from "../store/reducers/downloadReducer";
 import TrackList from "./TrackList";
 import useSelected from "../hooks/useSelected";
 import EditPlaylistDialog from "./EditPlaylistDialog";
+import PlaylistMenuItem from "./PlaylistMenuItem";
 
 const PlaylistTracks: React.FC = () => {
   const { id } = useParams<"id">();
@@ -49,7 +50,7 @@ const PlaylistTracks: React.FC = () => {
   const [canOffline, setCanOffline] = React.useState(false);
   const [openEditMenu, setOpenEditMenu] = React.useState(false);
   const { plugins } = usePlugins();
-  const infoPath = `/track/${menuTrack.id}`;
+  const infoPath = `/playlists/${id}/tracks/${menuTrack.id}`;
   const closeMenu = () => setAnchorEl(null);
   const [tracklist, setTracklist] = React.useState<Track[]>([]);
   const { onSelect, onSelectAll, isSelected, selected } = useSelected(
@@ -66,6 +67,9 @@ const PlaylistTracks: React.FC = () => {
   const [queueMenuAnchorEl, setQueueMenuAnchorEl] =
     React.useState<null | HTMLElement>(null);
 
+  const playlists = useAppSelector((state) =>
+    state.playlist.playlists.filter((p) => p.id !== id)
+  );
   const selectedTracks = tracklist.filter((t) => selected.has(t.id ?? ""));
 
   const closeQueueMenu = () => setQueueMenuAnchorEl(null);
@@ -253,6 +257,15 @@ const PlaylistTracks: React.FC = () => {
               </ListItemIcon>
               <ListItemText primary="Add Tracks To Queue" />
             </MenuItem>
+            {playlists.map((p) => (
+              <PlaylistMenuItem
+                key={p.id}
+                playlist={p}
+                tracks={tracklist}
+                closeMenu={closeQueueMenu}
+                namePrefix="Add Tracks to "
+              />
+            ))}
             {selected.size > 0 && [
               <Divider key="divider" />,
               <MenuItem onClick={addSelectedToQueue} key="add">
@@ -267,6 +280,15 @@ const PlaylistTracks: React.FC = () => {
                 </ListItemIcon>
                 <ListItemText primary="Delete Selected Tracks" />
               </MenuItem>,
+              playlists.map((p) => (
+                <PlaylistMenuItem
+                  key={p.id}
+                  playlist={p}
+                  tracks={selectedTracks}
+                  closeMenu={closeQueueMenu}
+                  namePrefix="Add Selected to "
+                />
+              )),
             ]}
           </Menu>
           <Menu
@@ -292,6 +314,15 @@ const PlaylistTracks: React.FC = () => {
               </ListItemIcon>
               <ListItemText primary="Info" />
             </MenuItem>
+            {playlists.map((p) => (
+              <PlaylistMenuItem
+                key={p.id}
+                playlist={p}
+                tracks={[menuTrack]}
+                closeMenu={closeMenu}
+                namePrefix="Add track to "
+              />
+            ))}
             {offlineMenuItem}
           </Menu>
           <EditPlaylistDialog
