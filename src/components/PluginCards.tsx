@@ -6,6 +6,8 @@ import {
   Typography,
   CardActions,
   Button,
+  Backdrop,
+  CircularProgress,
 } from "@mui/material";
 import { nanoid } from "@reduxjs/toolkit";
 import { usePlugins } from "../PluginsContext";
@@ -50,9 +52,11 @@ const pluginDescriptions: PluginDescription[] = [
 const PluginCards: React.FC = () => {
   const { enqueueSnackbar } = useSnackbar();
   const { plugins, addPlugin } = usePlugins();
+  const [backdropOpen, setBackdropOpen] = React.useState(false);
   const navigate = useNavigate();
 
   const onAddPlugin = async (description: PluginDescription) => {
+    setBackdropOpen(true);
     const fileType = getFileTypeFromPluginUrl(description.url);
 
     const plugin = await getPlugin(fileType);
@@ -66,6 +70,7 @@ const PluginCards: React.FC = () => {
       enqueueSnackbar(`Successfully added plugin: ${plugin.name}`);
       navigate("/plugins");
     }
+    setBackdropOpen(false);
   };
 
   const pluginCards = pluginDescriptions
@@ -88,6 +93,9 @@ const PluginCards: React.FC = () => {
 
   return (
     <>
+      <Backdrop open={backdropOpen}>
+        <CircularProgress color="inherit" />
+      </Backdrop>
       <Typography variant="h6">Plugins</Typography>
       <Grid container spacing={2}>
         {pluginCards}
