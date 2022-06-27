@@ -147,185 +147,206 @@ export const PluginsProvider: React.FC<React.PropsWithChildren> = (props) => {
   >([]);
   const [pluginMessage, setPluginMessage] = React.useState<PluginMessage>();
   const dispatch = useAppDispatch();
+
+  // Store variables being used by plugin methods in refs
+  // in order to not get stale state
   const currentTrack = useAppSelector((state) => state.track.currentTrack);
+  const currentTrackRef = React.useRef(currentTrack);
+  currentTrackRef.current = currentTrack;
   const tracks = useAppSelector((state) => state.track.tracks);
+  const tracksRef = React.useRef(tracks);
+  tracksRef.current = tracks;
   const corsProxyUrl = useAppSelector((state) => state.settings.corsProxyUrl);
+  const corsProxyUrlRef = React.useRef(corsProxyUrl);
+  corsProxyUrlRef.current = corsProxyUrl;
+
   const { enqueueSnackbar } = useSnackbar();
   const [pendingPlugins, setPendingPlugins] = React.useState<
     PluginInfo[] | null
   >(null);
 
-  const loadPlugin = async (plugin: PluginInfo, pluginFiles?: FileList) => {
-    const api: ApplicationPluginInterface = {
-      networkRequest: async (input: RequestInfo, init?: RequestInit) => {
-        const hasExtension = typeof window.MediaGata !== "undefined";
-        if (hasExtension) {
-          return await window.MediaGata.networkRequest(input, init);
-        }
+  const loadPlugin = React.useCallback(
+    async (plugin: PluginInfo, pluginFiles?: FileList) => {
+      const api: ApplicationPluginInterface = {
+        networkRequest: async (input: RequestInfo, init?: RequestInit) => {
+          const hasExtension = typeof window.MediaGata !== "undefined";
+          if (hasExtension) {
+            return await window.MediaGata.networkRequest(input, init);
+          }
 
-        const response = Capacitor.isNativePlatform()
-          ? await window.cordovaFetch(input, init)
-          : await fetch(input, init);
+          const response = Capacitor.isNativePlatform()
+            ? await window.cordovaFetch(input, init)
+            : await fetch(input, init);
 
-        const body = await response.blob();
+          const body = await response.blob();
 
-        // cordova-plugin-fetch does not support Headers.entries
-        const responseHeaders = Capacitor.isNativePlatform()
-          ? Object.fromEntries(getHeaderEntries(response.headers))
-          : Object.fromEntries(response.headers.entries());
+          // cordova-plugin-fetch does not support Headers.entries
+          const responseHeaders = Capacitor.isNativePlatform()
+            ? Object.fromEntries(getHeaderEntries(response.headers))
+            : Object.fromEntries(response.headers.entries());
 
-        // Remove forbidden header
-        if (responseHeaders["set-cookie"]) {
-          delete responseHeaders["set-cookie"];
-        }
+          // Remove forbidden header
+          if (responseHeaders["set-cookie"]) {
+            delete responseHeaders["set-cookie"];
+          }
 
-        const result = {
-          body: body,
-          headers: responseHeaders,
-          status: response.status,
-          statusText: response.statusText,
-          url: response.url,
-        };
-        return result;
-      },
-      isNetworkRequestCorsDisabled: async () => {
-        const isDisabled =
-          typeof window.MediaGata !== "undefined" ||
-          isElectron() ||
-          Capacitor.isNativePlatform();
-        return isDisabled;
-      },
-      postUiMessage: async (message: any) => {
-        setPluginMessage({ pluginId: plugin.id, message });
-      },
-      endTrack: async () => {
-        if (currentTrack?.pluginId === plugin.id) {
-          dispatch(nextTrack());
-        }
-      },
-      setTrackTime: async (currentTime: number) => {
-        if (currentTrack?.pluginId === plugin.id) {
-          dispatch(setElapsed(currentTime));
-        }
-      },
-      getNowPlayingTracks: async () => {
-        return tracks;
-      },
-      setNowPlayingTracks: async (tracks: Track[]) => {
-        dispatch(setTracks(tracks));
-      },
-      createNotification: async (notification: NotificationMessage) => {
-        enqueueSnackbar(notification.message, { variant: notification.type });
-      },
-      getCorsProxy: async () => {
-        if (process.env.NODE_ENV === "production" || corsProxyUrl) {
-          return corsProxyUrl;
-        } else {
-          return "http://localhost:8085";
-        }
-      },
-      getPlugins: async () => {
-        const plugs = await db.plugins.toArray();
-        return plugs;
-      },
-      installPlugins: async (plugins: PluginInfo[]) => {
-        setPendingPlugins(plugins);
-      },
-      getPluginId: async () => {
-        return plugin.id || "";
-      },
-      getPlaylists: async () => {
-        return await db.playlists.toArray();
-      },
-      addPlaylists: async (playlists: Playlist[]) => {
-        dispatch(addPlaylists(playlists));
-      },
-    };
+          const result = {
+            body: body,
+            headers: responseHeaders,
+            status: response.status,
+            statusText: response.statusText,
+            url: response.url,
+          };
+          return result;
+        },
+        isNetworkRequestCorsDisabled: async () => {
+          const isDisabled =
+            typeof window.MediaGata !== "undefined" ||
+            isElectron() ||
+            Capacitor.isNativePlatform();
+          return isDisabled;
+        },
+        postUiMessage: async (message: any) => {
+          setPluginMessage({ pluginId: plugin.id, message });
+        },
+        endTrack: async () => {
+          const track = currentTrackRef.current;
+          if (track?.pluginId === plugin.id) {
+            dispatch(nextTrack());
+          }
+        },
+        setTrackTime: async (currentTime: number) => {
+          const track = currentTrackRef.current;
+          if (track?.pluginId === plugin.id) {
+            dispatch(setElapsed(currentTime));
+          }
+        },
+        getNowPlayingTracks: async () => {
+          return tracksRef.current;
+        },
+        setNowPlayingTracks: async (tracks: Track[]) => {
+          dispatch(setTracks(tracks));
+        },
+        createNotification: async (notification: NotificationMessage) => {
+          enqueueSnackbar(notification.message, { variant: notification.type });
+        },
+        getCorsProxy: async () => {
+          if (
+            process.env.NODE_ENV === "production" ||
+            corsProxyUrlRef.current
+          ) {
+            return corsProxyUrlRef.current;
+          } else {
+            return "http://localhost:8085";
+          }
+        },
+        getPlugins: async () => {
+          const plugs = await db.plugins.toArray();
+          return plugs;
+        },
+        installPlugins: async (plugins: PluginInfo[]) => {
+          setPendingPlugins(plugins);
+        },
+        getPluginId: async () => {
+          return plugin.id || "";
+        },
+        getPlaylists: async () => {
+          return await db.playlists.toArray();
+        },
+        addPlaylists: async (playlists: Playlist[]) => {
+          dispatch(addPlaylists(playlists));
+        },
+      };
 
-    let srcUrl = `${window.location.protocol}//${plugin.id}.${window.location.host}/pluginframe.html`;
-    if (process.env.NODE_ENV === "production" || Capacitor.isNativePlatform()) {
-      srcUrl = `https://${plugin.id}.audiogata.com/pluginframe.html`;
-    }
+      let srcUrl = `${window.location.protocol}//${plugin.id}.${window.location.host}/pluginframe.html`;
+      if (
+        process.env.NODE_ENV === "production" ||
+        Capacitor.isNativePlatform()
+      ) {
+        srcUrl = `https://${plugin.id}.audiogata.com/pluginframe.html`;
+      }
 
-    const completeMethods: { [key in keyof PluginInterface]?: any } = {
-      onSearchAll: (result: SearchAllResult) => {
-        result.tracks?.items.forEach((i) => {
-          i.pluginId = plugin.id;
-        });
-        result.albums?.items.forEach((i) => {
-          i.pluginId = plugin.id;
-        });
-        result.artists?.items.forEach((i) => {
-          i.pluginId = plugin.id;
-        });
-        result.playlists?.items.forEach((i) => {
-          i.pluginId = plugin.id;
-        });
-        return result;
-      },
-      onSearchTracks: (result: SearchTrackResult) => {
-        result.items.forEach((i) => {
-          i.pluginId = plugin.id;
-        });
-        return result;
-      },
-      onSearchArtists: (result: SearchArtistResult) => {
-        result.items.forEach((i) => {
-          i.pluginId = plugin.id;
-        });
-        return result;
-      },
-      onSearchAlbums: (result: SearchAlbumResult) => {
-        result.items.forEach((i) => {
-          i.pluginId = plugin.id;
-        });
-        return result;
-      },
-      onSearchPlaylists: (result: SearchPlaylistResult) => {
-        result.items.forEach((i) => {
-          i.pluginId = plugin.id;
-        });
-        return result;
-      },
-      onGetPlaylistTracks: (result: SearchTrackResult) => {
-        result.items.forEach((i) => {
-          i.pluginId = plugin.id;
-        });
-        return result;
-      },
-      onGetTopItems: (result: SearchAllResult) => {
-        result.tracks?.items.forEach((i) => {
-          i.pluginId = plugin.id;
-        });
-        result.albums?.items.forEach((i) => {
-          i.pluginId = plugin.id;
-        });
-        result.artists?.items.forEach((i) => {
-          i.pluginId = plugin.id;
-        });
-        result.playlists?.items.forEach((i) => {
-          i.pluginId = plugin.id;
-        });
-        return result;
-      },
-    };
+      const completeMethods: { [key in keyof PluginInterface]?: any } = {
+        onSearchAll: (result: SearchAllResult) => {
+          result.tracks?.items.forEach((i) => {
+            i.pluginId = plugin.id;
+          });
+          result.albums?.items.forEach((i) => {
+            i.pluginId = plugin.id;
+          });
+          result.artists?.items.forEach((i) => {
+            i.pluginId = plugin.id;
+          });
+          result.playlists?.items.forEach((i) => {
+            i.pluginId = plugin.id;
+          });
+          return result;
+        },
+        onSearchTracks: (result: SearchTrackResult) => {
+          result.items.forEach((i) => {
+            i.pluginId = plugin.id;
+          });
+          return result;
+        },
+        onSearchArtists: (result: SearchArtistResult) => {
+          result.items.forEach((i) => {
+            i.pluginId = plugin.id;
+          });
+          return result;
+        },
+        onSearchAlbums: (result: SearchAlbumResult) => {
+          result.items.forEach((i) => {
+            i.pluginId = plugin.id;
+          });
+          return result;
+        },
+        onSearchPlaylists: (result: SearchPlaylistResult) => {
+          result.items.forEach((i) => {
+            i.pluginId = plugin.id;
+          });
+          return result;
+        },
+        onGetPlaylistTracks: (result: SearchTrackResult) => {
+          result.items.forEach((i) => {
+            i.pluginId = plugin.id;
+          });
+          return result;
+        },
+        onGetTopItems: (result: SearchAllResult) => {
+          result.tracks?.items.forEach((i) => {
+            i.pluginId = plugin.id;
+          });
+          result.albums?.items.forEach((i) => {
+            i.pluginId = plugin.id;
+          });
+          result.artists?.items.forEach((i) => {
+            i.pluginId = plugin.id;
+          });
+          result.playlists?.items.forEach((i) => {
+            i.pluginId = plugin.id;
+          });
+          return result;
+        },
+      };
 
-    const host = new PluginFrameContainer(api, {
-      completeMethods,
-      frameSrc: new URL(srcUrl),
-      sandboxAttributes: ["allow-scripts", "allow-same-origin"],
-    });
-    host.id = plugin.id;
-    host.optionsSameOrigin = plugin.optionsSameOrigin;
-    host.name = plugin.name;
-    host.version = plugin.version;
-    host.hasOptions = !!plugin.optionsHtml;
-    host.fileList = pluginFiles;
-    host.manifestUrl = plugin.manifestUrl;
-    await host.ready();
-    await host.executeCode(plugin.script);
-    return host;
-  };
+      const host = new PluginFrameContainer(api, {
+        completeMethods,
+        frameSrc: new URL(srcUrl),
+        sandboxAttributes: ["allow-scripts", "allow-same-origin"],
+      });
+      host.id = plugin.id;
+      host.optionsSameOrigin = plugin.optionsSameOrigin;
+      host.name = plugin.name;
+      host.version = plugin.version;
+      host.hasOptions = !!plugin.optionsHtml;
+      host.fileList = pluginFiles;
+      host.manifestUrl = plugin.manifestUrl;
+      await host.ready();
+      await host.executeCode(plugin.script);
+      return host;
+    },
+    [dispatch, enqueueSnackbar]
+  );
 
   React.useEffect(() => {
     const getPlugins = async () => {
@@ -336,9 +357,7 @@ export const PluginsProvider: React.FC<React.PropsWithChildren> = (props) => {
       setPluginFrames(frames);
     };
     getPlugins();
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [loadPlugin]);
 
   React.useEffect(() => {
     App.addListener("appUrlOpen", async (event: URLOpenListenerEvent) => {
