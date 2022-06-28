@@ -3,6 +3,7 @@ import { usePlugins } from "../PluginsContext";
 import { useParams } from "react-router";
 import { Link } from "react-router-dom";
 import { PlaylistInfo } from "../plugintypes";
+import thumbnail from "../thumbnail.png";
 import {
   Backdrop,
   Card,
@@ -35,6 +36,10 @@ const PluginPlaylists: React.FC = () => {
     getPlaylists();
   }, [plugin]);
 
+  const onImageError = (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
+    e.currentTarget.src = thumbnail;
+  };
+
   const playlistLinks = playlists.map((p, i) => (
     <Grid item xs={2} key={i}>
       <Card>
@@ -46,6 +51,7 @@ const PluginPlaylists: React.FC = () => {
             component={"img"}
             image={getThumbnailImage(p.images, playlistThumbnailSize)}
             alt={p.name}
+            onError={onImageError}
           />
           <CardContent>
             <Typography gutterBottom variant="h6" component="div">
