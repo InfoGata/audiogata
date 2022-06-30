@@ -67,7 +67,10 @@ const PluginPlaylist: React.FC = () => {
     return [];
   };
 
-  const query = useQuery(["pluginplaylist", page], getPlaylistTracks);
+  const query = useQuery(
+    ["pluginplaylist", plugin, id, page],
+    getPlaylistTracks
+  );
   const tracklist = query.data ?? [];
   const { onSelect, onSelectAll, isSelected, selected } =
     useSelected(tracklist);
