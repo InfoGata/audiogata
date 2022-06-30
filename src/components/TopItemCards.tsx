@@ -14,6 +14,7 @@ import {
   Typography,
 } from "@mui/material";
 import React from "react";
+import { useQuery } from "react-query";
 import { usePlugins } from "../PluginsContext";
 import { Track } from "../plugintypes";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
@@ -26,10 +27,6 @@ import SelectPlugin from "./SelectPlugin";
 const TopItemCards: React.FC = () => {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [menuTrack, setMenuTrack] = React.useState<Track>({} as Track);
-  const [topTracks, setTopTracks] = React.useState<Track[]>();
-  // const [topAlbums, setTopAlbums] = React.useState<Album[]>();
-  // const [topArtists, setTopArtists] = React.useState<Artist[]>();
-  // const [topPlaylists, setTopPlaylists] = React.useState<PlaylistInfo[]>();
   const [pluginId, setPluginId] = React.useState("");
   const { plugins } = usePlugins();
   const dispatch = useAppDispatch();
@@ -49,22 +46,19 @@ const TopItemCards: React.FC = () => {
     setAnchorEl(currentTarget);
   };
 
-  React.useEffect(() => {
-    const getTopItems = async () => {
-      const plugin = plugins.find((p) => p.id === pluginId);
-      if (plugin) {
-        const topItems = await plugin.remote.onGetTopItems();
-        setTopTracks(topItems.tracks?.items);
-        // setTopAlbums(topItems.albums?.items);
-        // setTopArtists(topItems.artists?.items);
-        // setTopPlaylists(topItems.playlists?.items);
-      }
-    };
+  const getTopItems = async () => {
+    const plugin = plugins.find((p) => p.id === pluginId);
+    if (plugin) {
+      return await plugin.remote.onGetTopItems();
+    }
+  };
 
-    getTopItems();
-  }, [pluginId, plugins]);
+  const query = useQuery(["topitems", pluginId], getTopItems, {
+    // Keep query for 5 minutes
+    staleTime: 1000 * 60 * 5,
+  });
 
-  const topTrackComponents = topTracks?.map((t) => {
+  const topTrackComponents = query.data?.tracks?.items.map((t) => {
     const image = getThumbnailImage(t.images, playlistThumbnailSize);
 
     const onClickTrack = () => {
@@ -134,7 +128,7 @@ const TopItemCards: React.FC = () => {
           methodName="onGetTopItems"
         />
       </Grid>
-      <Fade in={!!topTracks}>
+      <Fade in={!!topTrackComponents}>
         <Grid>
           <Typography variant="h5" style={{ marginLeft: "15px" }}>
             Top Tracks

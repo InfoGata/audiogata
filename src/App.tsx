@@ -10,7 +10,15 @@ import TopBar from "./components/TopBar";
 import { PluginsProvider } from "./PluginsContext";
 import { useAppDispatch } from "./store/hooks";
 import { initializePlaylists } from "./store/reducers/playlistReducer";
+import { QueryClient, QueryClientProvider } from "react-query";
 
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: false,
+    },
+  },
+});
 const App: React.FC = () => {
   const dispatch = useAppDispatch();
   const notistackRef = React.createRef<SnackbarProvider>();
@@ -28,18 +36,20 @@ const App: React.FC = () => {
       ref={notistackRef}
       action={(key) => <Button onClick={onClickDismiss(key)}>Dismiss</Button>}
     >
-      <BrowserRouter>
-        <PluginsProvider>
-          <Box sx={{ display: "flex" }}>
-            <CssBaseline />
-            <TopBar />
-            <SideBar />
-            <Routes />
-            <PlayerBar />
-            <AudioComponent />
-          </Box>
-        </PluginsProvider>
-      </BrowserRouter>
+      <QueryClientProvider client={queryClient}>
+        <BrowserRouter>
+          <PluginsProvider>
+            <Box sx={{ display: "flex" }}>
+              <CssBaseline />
+              <TopBar />
+              <SideBar />
+              <Routes />
+              <PlayerBar />
+              <AudioComponent />
+            </Box>
+          </PluginsProvider>
+        </BrowserRouter>
+      </QueryClientProvider>
     </SnackbarProvider>
   );
 };
