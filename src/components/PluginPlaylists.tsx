@@ -2,7 +2,6 @@ import React from "react";
 import { usePlugins } from "../PluginsContext";
 import { useParams } from "react-router";
 import { Link } from "react-router-dom";
-import { PlaylistInfo } from "../plugintypes";
 import thumbnail from "../thumbnail.png";
 import {
   Backdrop,
@@ -15,26 +14,24 @@ import {
   Typography,
 } from "@mui/material";
 import { getThumbnailImage, playlistThumbnailSize } from "../utils";
+import { useQuery } from "react-query";
 
 const PluginPlaylists: React.FC = () => {
   const { plugins } = usePlugins();
   const { id } = useParams<"id">();
-  const [playlists, setPlaylists] = React.useState<PlaylistInfo[]>([]);
-  const [backdropOpen, setBackdropOpen] = React.useState(false);
   const plugin = plugins.find((p) => p.id === id);
 
-  React.useEffect(() => {
-    const getPlaylists = async () => {
-      if (plugin && (await plugin.hasDefined.onGetUserPlaylists())) {
-        setBackdropOpen(true);
-        const request = {};
-        const p = await plugin.remote.onGetUserPlaylists(request);
-        setPlaylists(p.items);
-        setBackdropOpen(false);
-      }
-    };
-    getPlaylists();
-  }, [plugin]);
+  const getPlaylists = async () => {
+    if (plugin && (await plugin.hasDefined.onGetUserPlaylists())) {
+      const request = {};
+      const p = await plugin.remote.onGetUserPlaylists(request);
+      return p.items;
+    }
+    return [];
+  };
+
+  const query = useQuery(["pluginplaylists", plugin], getPlaylists);
+  const playlists = query.data || [];
 
   const onImageError = (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
     e.currentTarget.src = thumbnail;
@@ -64,7 +61,7 @@ const PluginPlaylists: React.FC = () => {
   ));
   return plugin ? (
     <>
-      <Backdrop open={backdropOpen}>
+      <Backdrop open={query.isLoading}>
         <CircularProgress color="inherit" />
       </Backdrop>
       <Grid container spacing={2}>

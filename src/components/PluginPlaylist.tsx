@@ -32,23 +32,45 @@ import {
 import { nanoid } from "@reduxjs/toolkit";
 import PlaylistMenuItem from "./PlaylistMenuItem";
 import AddPlaylistDialog from "./AddPlaylistDialog";
+import { useQuery } from "react-query";
 
 const PluginPlaylist: React.FC = () => {
   const { pluginid } = useParams<"pluginid">();
   const { id } = useParams<"id">();
   const { plugins } = usePlugins();
   const plugin = plugins.find((p) => p.id === pluginid);
-  const [tracklist, setTracklist] = React.useState<Track[]>([]);
   const [page, setPage] = React.useState<PageInfo>();
-  const [backdropOpen, setBackdropOpen] = React.useState(false);
+  const [currentPage, setCurrentPage] = React.useState<PageInfo>();
   const [menuTrack, setMenuTrack] = React.useState<Track>({} as Track);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [playlistInfo, setPlaylistInfo] = React.useState<PlaylistInfo>();
   const dispatch = useAppDispatch();
   const playlists = useAppSelector((state) => state.playlist.playlists);
-  const { onSelect, onSelectAll, isSelected, selected } = useSelected(
-    tracklist || []
-  );
+
+  const getPlaylistTracks = async () => {
+    if (plugin && (await plugin.hasDefined.onGetPlaylistTracks())) {
+      const t = await plugin.remote.onGetPlaylistTracks({
+        playlist: {
+          apiId: id,
+          isUserPlaylist: true,
+        },
+        page,
+      });
+
+      setPlaylistInfo(t.playlist);
+      setCurrentPage(t.pageInfo);
+      t.items.forEach((t) => {
+        t.id = nanoid();
+      });
+      return t.items;
+    }
+    return [];
+  };
+
+  const query = useQuery(["pluginplaylist", page], getPlaylistTracks);
+  const tracklist = query.data ?? [];
+  const { onSelect, onSelectAll, isSelected, selected } =
+    useSelected(tracklist);
   const [playlistDialogOpen, setPlaylistDialogOpen] = React.useState(false);
   const openPlaylistDialog = () => setPlaylistDialogOpen(true);
   const closePlaylistDialog = () => setPlaylistDialogOpen(false);
@@ -76,34 +98,6 @@ const PluginPlaylist: React.FC = () => {
 
   const closeMenu = () => setAnchorEl(null);
 
-  const setPlaylistTracksWithIds = (tracks: Track[]) => {
-    tracks.forEach((t) => {
-      t.id = nanoid();
-    });
-    setTracklist(tracks);
-  };
-
-  React.useEffect(() => {
-    setBackdropOpen(true);
-    const getPlaylistTracks = async () => {
-      if (plugin && (await plugin.hasDefined.onGetPlaylistTracks())) {
-        const t = await plugin.remote.onGetPlaylistTracks({
-          playlist: {
-            apiId: id,
-            isUserPlaylist: true,
-          },
-        });
-
-        setPlaylistTracksWithIds(t.items);
-        setPlaylistInfo(t.playlist);
-        setPage(t.pageInfo);
-        setBackdropOpen(false);
-      }
-    };
-
-    getPlaylistTracks();
-  }, [plugin, id]);
-
   const onPlayClick = () => {
     dispatch(setTracks(tracklist));
     dispatch(playQueue());
@@ -126,59 +120,30 @@ const PluginPlaylist: React.FC = () => {
   };
 
   const pageButtons = () => {
-    if (!page) return;
-
-    const hasPrev = page.offset !== 0;
-    const nextOffset = page.offset + page.resultsPerPage;
-    const hasNext = nextOffset < page.totalResults;
+    if (!currentPage) return;
+    const hasPrev = currentPage.offset !== 0;
+    const nextOffset = currentPage.offset + currentPage.resultsPerPage;
+    const hasNext = nextOffset < currentPage.totalResults;
 
     const onPrev = async () => {
-      if (!plugin) {
-        return;
-      }
-      setBackdropOpen(true);
-      const prevOffset = page.offset - page.resultsPerPage;
+      const prevOffset = currentPage.offset - currentPage.resultsPerPage;
       const newPage: PageInfo = {
         offset: prevOffset,
-        totalResults: page.totalResults,
-        resultsPerPage: page.resultsPerPage,
-        prevPage: page.prevPage,
+        totalResults: currentPage.totalResults,
+        resultsPerPage: currentPage.resultsPerPage,
+        prevPage: currentPage.prevPage,
       };
-      const t = await plugin.remote.onGetPlaylistTracks({
-        playlist: {
-          apiId: id,
-          isUserPlaylist: true,
-        },
-        page: newPage,
-      });
-      setPlaylistTracksWithIds(t.items);
-      setPage(t.pageInfo);
-
-      setBackdropOpen(false);
+      setPage(newPage);
     };
 
     const onNext = async () => {
-      if (!plugin) {
-        return;
-      }
-      setBackdropOpen(true);
       const newPage: PageInfo = {
         offset: nextOffset,
-        totalResults: page.totalResults,
-        resultsPerPage: page.resultsPerPage,
-        nextPage: page.nextPage,
+        totalResults: currentPage.totalResults,
+        resultsPerPage: currentPage.resultsPerPage,
+        nextPage: currentPage.nextPage,
       };
-
-      const t = await plugin.remote.onGetPlaylistTracks({
-        playlist: {
-          apiId: id,
-          isUserPlaylist: true,
-        },
-        page: newPage,
-      });
-      setPlaylistTracksWithIds(t.items);
-      setPage(t.pageInfo);
-      setBackdropOpen(false);
+      setPage(newPage);
     };
 
     return (
@@ -196,7 +161,7 @@ const PluginPlaylist: React.FC = () => {
 
   return (
     <>
-      <Backdrop open={backdropOpen}>
+      <Backdrop open={query.isLoading}>
         <CircularProgress color="inherit" />
       </Backdrop>
       <Typography variant="h3">{playlistInfo?.name}</Typography>
@@ -221,7 +186,7 @@ const PluginPlaylist: React.FC = () => {
         open={playlistDialogOpen}
         handleClose={closePlaylistDialog}
       />
-      {page && pageButtons()}
+      {currentPage && pageButtons()}
       <Menu
         open={Boolean(queueMenuAnchorEl)}
         onClose={closeQueueMenu}
