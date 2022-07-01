@@ -3,6 +3,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 interface SettingsState {
   playOnStartup: boolean;
   corsProxyUrl?: string;
+  currentPluginId?: string;
 }
 
 const initialState: SettingsState = {
@@ -19,14 +20,21 @@ const settingsSlice = createSlice({
         playOnStartup: !state.playOnStartup,
       };
     },
-    saveCorsProxyUrl: (state, payload: PayloadAction<string | undefined>) => {
+    saveCorsProxyUrl: (state, action: PayloadAction<string | undefined>) => {
       return {
         ...state,
-        corsProxyUrl: payload.payload,
+        corsProxyUrl: action.payload,
+      };
+    },
+    setCurrentPluginId: (state, action: PayloadAction<string>) => {
+      return {
+        ...state,
+        currentPluginId: action.payload,
       };
     },
   },
 });
 
-export const { togglePlayOnStartup, saveCorsProxyUrl } = settingsSlice.actions;
+export const { togglePlayOnStartup, saveCorsProxyUrl, setCurrentPluginId } =
+  settingsSlice.actions;
 export default settingsSlice.reducer;
