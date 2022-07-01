@@ -30,7 +30,7 @@ const PluginPlaylists: React.FC = () => {
     return [];
   };
 
-  const query = useQuery(["pluginplaylists", plugin], getPlaylists);
+  const query = useQuery(["pluginplaylists", id], getPlaylists);
   const playlists = query.data || [];
 
   const onImageError = (e: React.SyntheticEvent<HTMLImageElement, Event>) => {

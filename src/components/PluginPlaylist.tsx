@@ -9,6 +9,7 @@ import {
   Button,
   CircularProgress,
   Divider,
+  Grid,
   IconButton,
   ListItemIcon,
   ListItemText,
@@ -33,19 +34,21 @@ import { nanoid } from "@reduxjs/toolkit";
 import PlaylistMenuItem from "./PlaylistMenuItem";
 import AddPlaylistDialog from "./AddPlaylistDialog";
 import { useQuery } from "react-query";
+import usePagination from "../hooks/usePagination";
 
 const PluginPlaylist: React.FC = () => {
   const { pluginid } = useParams<"pluginid">();
   const { id } = useParams<"id">();
   const { plugins } = usePlugins();
   const plugin = plugins.find((p) => p.id === pluginid);
-  const [page, setPage] = React.useState<PageInfo>();
   const [currentPage, setCurrentPage] = React.useState<PageInfo>();
   const [menuTrack, setMenuTrack] = React.useState<Track>({} as Track);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [playlistInfo, setPlaylistInfo] = React.useState<PlaylistInfo>();
   const dispatch = useAppDispatch();
   const playlists = useAppSelector((state) => state.playlist.playlists);
+  const { page, hasNextPage, hasPreviousPage, onPreviousPage, onNextPage } =
+    usePagination(currentPage);
 
   const getPlaylistTracks = async () => {
     if (plugin && (await plugin.hasDefined.onGetPlaylistTracks())) {
@@ -68,7 +71,7 @@ const PluginPlaylist: React.FC = () => {
   };
 
   const query = useQuery(
-    ["pluginplaylist", plugin, id, page],
+    ["pluginplaylist", pluginid, id, page],
     getPlaylistTracks
   );
   const tracklist = query.data ?? [];
@@ -122,41 +125,6 @@ const PluginPlaylist: React.FC = () => {
     setAnchorEl(currentTarget);
   };
 
-  const pageButtons = () => {
-    if (!currentPage) return;
-    const hasPrev = currentPage.offset !== 0;
-    const nextOffset = currentPage.offset + currentPage.resultsPerPage;
-    const hasNext = nextOffset < currentPage.totalResults;
-
-    const onPrev = async () => {
-      const prevOffset = currentPage.offset - currentPage.resultsPerPage;
-      const newPage: PageInfo = {
-        offset: prevOffset,
-        totalResults: currentPage.totalResults,
-        resultsPerPage: currentPage.resultsPerPage,
-        prevPage: currentPage.prevPage,
-      };
-      setPage(newPage);
-    };
-
-    const onNext = async () => {
-      const newPage: PageInfo = {
-        offset: nextOffset,
-        totalResults: currentPage.totalResults,
-        resultsPerPage: currentPage.resultsPerPage,
-        nextPage: currentPage.nextPage,
-      };
-      setPage(newPage);
-    };
-
-    return (
-      <>
-        {hasPrev && <Button onClick={onPrev}>Prev</Button>}
-        {hasNext && <Button onClick={onNext}>Next</Button>}
-      </>
-    );
-  };
-
   const onTrackClick = (track: Track) => {
     dispatch(setTracks(tracklist));
     dispatch(setTrack(track));
@@ -189,7 +157,10 @@ const PluginPlaylist: React.FC = () => {
         open={playlistDialogOpen}
         handleClose={closePlaylistDialog}
       />
-      {currentPage && pageButtons()}
+      <Grid>
+        {hasPreviousPage && <Button onClick={onPreviousPage}>Previous</Button>}
+        {hasNextPage && <Button onClick={onNextPage}>Next</Button>}
+      </Grid>
       <Menu
         open={Boolean(queueMenuAnchorEl)}
         onClose={closeQueueMenu}
