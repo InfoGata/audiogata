@@ -1,4 +1,5 @@
-import { IconButton, Popover, Slider, Box, useTheme } from "@mui/material";
+import { IconButton, Popover, Slider, Box } from "@mui/material";
+import { useTheme } from "@mui/material/styles";
 import { VolumeOff, VolumeUp } from "@mui/icons-material";
 import React from "react";
 import { setVolume } from "../store/reducers/trackReducer";

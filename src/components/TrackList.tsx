@@ -10,8 +10,8 @@ import {
   TableHead,
   TableRow,
   useMediaQuery,
-  useTheme,
 } from "@mui/material";
+import { useTheme } from "@mui/material/styles";
 import React from "react";
 import { Track } from "../plugintypes";
 import PlaylistItem from "./PlaylistItem";

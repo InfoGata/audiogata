@@ -1,4 +1,5 @@
-import { Button, Grid, Typography, styled } from "@mui/material";
+import { Button, Grid, Typography } from "@mui/material";
+import { styled } from "@mui/material/styles";
 import React from "react";
 import { PluginFrameContainer, usePlugins } from "../PluginsContext";
 import { db } from "../database";

@@ -1,14 +1,12 @@
 import {
-  alpha,
   AppBar,
   IconButton,
   InputAdornment,
   InputBase,
-  styled,
   Toolbar,
   Typography,
-  useTheme,
 } from "@mui/material";
+import { alpha, styled, useTheme } from "@mui/material/styles";
 import { Menu, Search, Clear } from "@mui/icons-material";
 import React from "react";
 import { useNavigate } from "react-router";

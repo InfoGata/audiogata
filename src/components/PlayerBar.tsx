@@ -1,11 +1,5 @@
-import {
-  AppBar,
-  Grid,
-  Toolbar,
-  Typography,
-  Box,
-  useTheme,
-} from "@mui/material";
+import { AppBar, Grid, Toolbar, Typography, Box } from "@mui/material";
+import { useTheme } from "@mui/material/styles";
 import React from "react";
 import { useAppSelector } from "../store/hooks";
 import { getThumbnailImage } from "../utils";
