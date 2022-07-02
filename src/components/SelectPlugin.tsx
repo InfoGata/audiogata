@@ -41,9 +41,7 @@ const SelectPlugin: React.FC<SelectPluginProps> = (props) => {
       ]);
       setOptions(options);
     };
-    console.log(setOptionLoaded);
     if (!setOptionLoaded.current) {
-      console.log("why");
       setOptionLoaded.current = true;
       getOptions();
     }

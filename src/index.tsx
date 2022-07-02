@@ -1,4 +1,3 @@
-import { createTheme, ThemeProvider } from "@mui/material/styles";
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { Provider } from "react-redux";
@@ -11,6 +10,7 @@ import App from "./App";
 import "./index.css";
 import store, { persistor } from "./store/store";
 import reportWebVitals from "./reportWebVitals";
+import { createTheme, ThemeProvider } from "@mui/material";
 
 const theme = createTheme({
   palette: {

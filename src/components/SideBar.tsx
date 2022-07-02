@@ -2,9 +2,9 @@ import MuiDrawer from "@mui/material/Drawer";
 import React from "react";
 import { navbarWidth } from "../utils";
 import Navigation from "./Navigation";
-import { CSSObject, styled, Theme } from "@mui/material/styles";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
 import { toggleNavbar } from "../store/reducers/uiReducer";
+import { CSSObject, styled, Theme } from "@mui/material";
 
 const openedMixin = (theme: Theme): CSSObject => ({
   width: navbarWidth,
