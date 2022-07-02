@@ -4,7 +4,7 @@ import React from "react";
 import { BrowserRouter } from "react-router-dom";
 import AudioComponent from "./components/AudioComponent";
 import PlayerBar from "./components/PlayerBar";
-import Routes from "./components/Routes";
+import Routing from "./components/Routing";
 import SideBar from "./components/SideBar";
 import TopBar from "./components/TopBar";
 import { PluginsProvider } from "./PluginsContext";
@@ -43,7 +43,7 @@ const App: React.FC = () => {
               <CssBaseline />
               <TopBar />
               <SideBar />
-              <Routes />
+              <Routing />
               <PlayerBar />
               <AudioComponent />
             </Box>
