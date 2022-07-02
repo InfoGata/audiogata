@@ -8,20 +8,12 @@ import Plugins from "./Plugins";
 import Search from "./Search";
 import Settings from "./Settings";
 import QueueTrackInfo from "./QueueTrackInfo";
-import { Box, styled } from "@mui/material";
+import { Box } from "@mui/material";
 import PluginPlaylists from "./PluginPlaylists";
 import PluginPlaylist from "./PluginPlaylist";
 import PluginDetails from "./PluginDetails";
 import PlaylistTrackInfo from "./PlaylistTrackInfo";
-
-const DrawerHeader = styled("div")(({ theme }) => ({
-  display: "flex",
-  alignItems: "center",
-  padding: theme.spacing(0, 1),
-  // necessary for content to be below app bar
-  ...theme.mixins.toolbar,
-  justifyContent: "flex-end",
-}));
+import DrawerHeader from "./DrawerHeader";
 
 const Routing: React.FC = () => {
   return (

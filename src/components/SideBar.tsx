@@ -5,6 +5,7 @@ import Navigation from "./Navigation";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
 import { toggleNavbar } from "../store/reducers/uiReducer";
 import { CSSObject, styled, Theme } from "@mui/material";
+import DrawerHeader from "./DrawerHeader";
 
 const openedMixin = (theme: Theme): CSSObject => ({
   width: navbarWidth,
@@ -42,15 +43,6 @@ const MiniDrawer = styled(MuiDrawer, {
     ...closedMixin(theme),
     "& .MuiDrawer-paper": closedMixin(theme),
   }),
-}));
-
-const DrawerHeader = styled("div")(({ theme }) => ({
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "flex-end",
-  padding: theme.spacing(0, 1),
-  // necessary for content to be below app bar
-  ...theme.mixins.toolbar,
 }));
 
 const SideBar: React.FC = () => {
