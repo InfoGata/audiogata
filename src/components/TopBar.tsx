@@ -88,7 +88,7 @@ const TopBar: React.FC = () => {
           noWrap={true}
           sx={{ display: { xs: "none", sm: "block" } }}
         >
-          Audio PWA
+          AudioGata
         </Typography>
         <form onSubmit={handleSubmit}>
           <SearchBar>
