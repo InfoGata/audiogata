@@ -108,7 +108,7 @@ const Search: React.FC = () => {
       let artists: Artist[] | undefined = [];
       let playlists: PlaylistInfo[] | undefined = [];
       const plugin = plugins.find((p) => p.id === pluginId);
-      if (plugin?.hasDefined.onSearchAll()) {
+      if (plugin && (await plugin.hasDefined.onSearchAll())) {
         const searchAll = await plugin.remote.onSearchAll({ query: search });
         tracks = searchAll.tracks?.items;
         setTrackPage(searchAll.tracks?.pageInfo);
