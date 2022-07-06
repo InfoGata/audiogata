@@ -93,7 +93,7 @@ const TrackList: React.FC<TrackListProps> = (props) => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {tracks.map((t) => (
+            {tracks.map((t, i) => (
               <SortableRow
                 id={t.id || ""}
                 key={t.id}
@@ -107,6 +107,7 @@ const TrackList: React.FC<TrackListProps> = (props) => {
                   openMenu={openMenu}
                   isSelected={isSelected}
                   onSelectClick={onSelect}
+                  index={i}
                 />
               </SortableRow>
             ))}
