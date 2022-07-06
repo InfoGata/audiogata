@@ -8,6 +8,7 @@ import {
   Button,
   Backdrop,
   CircularProgress,
+  Fade,
 } from "@mui/material";
 import { nanoid } from "@reduxjs/toolkit";
 import { usePlugins } from "../PluginsContext";
@@ -51,7 +52,7 @@ const pluginDescriptions: PluginDescription[] = [
 
 const PluginCards: React.FC = () => {
   const { enqueueSnackbar } = useSnackbar();
-  const { plugins, addPlugin } = usePlugins();
+  const { plugins, addPlugin, pluginsLoaded } = usePlugins();
   const [backdropOpen, setBackdropOpen] = React.useState(false);
   const navigate = useNavigate();
 
@@ -97,9 +98,11 @@ const PluginCards: React.FC = () => {
         <CircularProgress color="inherit" />
       </Backdrop>
       <Typography variant="h6">Plugins</Typography>
-      <Grid container spacing={2}>
-        {pluginCards}
-      </Grid>
+      <Fade in={pluginsLoaded}>
+        <Grid container spacing={2}>
+          {pluginCards}
+        </Grid>
+      </Fade>
     </>
   );
 };

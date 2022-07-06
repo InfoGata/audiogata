@@ -110,6 +110,7 @@ export interface PluginContextInterface {
   deletePlugin: (plugin: PluginFrameContainer) => Promise<void>;
   plugins: PluginFrameContainer[];
   pluginMessage?: PluginMessage;
+  pluginsLoaded: boolean;
 }
 
 const PluginsContext = React.createContext<PluginContextInterface>(undefined!);
@@ -142,6 +143,7 @@ const getHeaderEntries = (
 };
 
 export const PluginsProvider: React.FC<React.PropsWithChildren> = (props) => {
+  const [pluginsLoaded, setPluginsLoaded] = React.useState(false);
   const [pluginFrames, setPluginFrames] = React.useState<
     PluginFrameContainer[]
   >([]);
@@ -351,11 +353,15 @@ export const PluginsProvider: React.FC<React.PropsWithChildren> = (props) => {
 
   React.useEffect(() => {
     const getPlugins = async () => {
-      const plugs = await db.plugins.toArray();
+      try {
+        const plugs = await db.plugins.toArray();
 
-      const framePromises = plugs.map((p) => loadPlugin(p));
-      const frames = await Promise.all(framePromises);
-      setPluginFrames(frames);
+        const framePromises = plugs.map((p) => loadPlugin(p));
+        const frames = await Promise.all(framePromises);
+        setPluginFrames(frames);
+      } finally {
+        setPluginsLoaded(true);
+      }
     };
     getPlugins();
   }, [loadPlugin]);
@@ -407,6 +413,7 @@ export const PluginsProvider: React.FC<React.PropsWithChildren> = (props) => {
     updatePlugin: updatePlugin,
     plugins: pluginFrames,
     pluginMessage: pluginMessage,
+    pluginsLoaded,
   };
 
   const handleClose = () => {
