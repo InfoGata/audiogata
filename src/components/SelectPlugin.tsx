@@ -1,7 +1,7 @@
 import { FormControl, InputLabel, NativeSelect } from "@mui/material";
 import React from "react";
 import { PluginInterface, usePlugins } from "../PluginsContext";
-import { useAppDispatch, useAppSelector } from "../store/hooks";
+import { useAppDispatch, useAppStore } from "../store/hooks";
 import { setCurrentPluginId } from "../store/reducers/settingsReducer";
 import { filterAsync } from "../utils";
 
@@ -16,16 +16,14 @@ const SelectPlugin: React.FC<SelectPluginProps> = (props) => {
   const { plugins } = usePlugins();
   const [options, setOptions] = React.useState<[string, string][]>();
   const dispatch = useAppDispatch();
-  const currentPluginId = useAppSelector(
-    (state) => state.settings.currentPluginId
-  );
-  const setOptionLoaded = React.useRef(false);
+  const store = useAppStore();
 
   React.useEffect(() => {
     const getOptions = async () => {
       const validPlugins = await filterAsync(plugins, (p) =>
         p.methodDefined(methodName)
       );
+      const currentPluginId = store.getState().settings.currentPluginId;
       if (
         !currentPluginId ||
         !validPlugins.some((p) => p.id === currentPluginId)
@@ -41,11 +39,8 @@ const SelectPlugin: React.FC<SelectPluginProps> = (props) => {
       ]);
       setOptions(options);
     };
-    if (!setOptionLoaded.current) {
-      setOptionLoaded.current = true;
-      getOptions();
-    }
-  }, [plugins, methodName, setPluginId, currentPluginId]);
+    getOptions();
+  }, [plugins, methodName, setPluginId, store]);
 
   const optionsComponents = options?.map((option) => (
     <option key={option[0]} value={option[0]}>
