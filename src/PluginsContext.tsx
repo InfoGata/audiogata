@@ -333,6 +333,7 @@ export const PluginsProvider: React.FC<React.PropsWithChildren> = (props) => {
         completeMethods,
         frameSrc: new URL(srcUrl),
         sandboxAttributes: ["allow-scripts", "allow-same-origin"],
+        allow: "encrypted-media; autoplay;",
       });
       host.id = plugin.id;
       host.optionsSameOrigin = plugin.optionsSameOrigin;
