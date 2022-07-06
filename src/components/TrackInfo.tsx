@@ -22,6 +22,9 @@ const TrackInfo: React.FC<TrackInfoProps> = (props) => {
           <ListItemText primary="ID" secondary={track.id} />
         </ListItem>
         <ListItem>
+          <ListItemText primary="Plugin Id" secondary={track.pluginId} />
+        </ListItem>
+        <ListItem>
           <ListItemText primary="Plugin" secondary={plugin?.name} />
         </ListItem>
         <ListItem>
