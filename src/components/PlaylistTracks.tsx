@@ -38,6 +38,8 @@ import TrackList from "./TrackList";
 import useSelected from "../hooks/useSelected";
 import EditPlaylistDialog from "./EditPlaylistDialog";
 import PlaylistMenuItem from "./PlaylistMenuItem";
+import SelectTrackListPlugin from "./SelectTrackListPlugin";
+import SelectionEditDialog from "./SelectionEditDialog";
 
 const PlaylistTracks: React.FC = () => {
   const { id } = useParams<"id">();
@@ -49,16 +51,18 @@ const PlaylistTracks: React.FC = () => {
   const [hasBlob, setHasBlob] = React.useState(false);
   const [canOffline, setCanOffline] = React.useState(false);
   const [openEditMenu, setOpenEditMenu] = React.useState(false);
+  const [editSelectDialogOpen, setEditSelectDialogOpen] = React.useState(false);
   const { plugins } = usePlugins();
   const infoPath = `/playlists/${id}/tracks/${menuTrack.id}`;
   const closeMenu = () => setAnchorEl(null);
   const [tracklist, setTracklist] = React.useState<Track[]>([]);
-  const { onSelect, onSelectAll, isSelected, selected } = useSelected(
-    tracklist || []
-  );
+  const { onSelect, onSelectAll, isSelected, selected, setSelected } =
+    useSelected(tracklist || []);
   const playlistInfo = useAppSelector((state) =>
     state.playlist.playlists.find((p) => p.id === id)
   );
+
+  const openEditSelectDialog = () => setEditSelectDialogOpen(true);
 
   const openQueueMenu = (event: React.MouseEvent<HTMLButtonElement>) => {
     setQueueMenuAnchorEl(event.currentTarget);
@@ -73,6 +77,7 @@ const PlaylistTracks: React.FC = () => {
   const selectedTracks = tracklist.filter((t) => selected.has(t.id ?? ""));
 
   const closeQueueMenu = () => setQueueMenuAnchorEl(null);
+  const closeEditSelectDialog = () => setEditSelectDialogOpen(false);
 
   const onEditMenuOpen = () => {
     setOpenEditMenu(true);
@@ -217,6 +222,16 @@ const PlaylistTracks: React.FC = () => {
     closeQueueMenu();
   };
 
+  const onSelectedEdited = (pluginId?: string) => {
+    if (pluginId && playlist) {
+      const newTrackList = tracklist.map((t) =>
+        t.id && selected.has(t.id) ? { ...t, pluginId: pluginId } : t
+      );
+      dispatch(setPlaylistTracks(playlist, newTrackList));
+      setTracklist(newTrackList);
+    }
+  };
+
   return (
     <>
       <Backdrop open={!loaded}>
@@ -236,6 +251,10 @@ const PlaylistTracks: React.FC = () => {
           <IconButton onClick={openQueueMenu}>
             <MoreHoriz fontSize="large" />
           </IconButton>
+          <SelectTrackListPlugin
+            trackList={tracklist}
+            setSelected={setSelected}
+          />
           <TrackList
             tracks={tracklist}
             openMenu={openMenu}
@@ -268,17 +287,23 @@ const PlaylistTracks: React.FC = () => {
             ))}
             {selected.size > 0 && [
               <Divider key="divider" />,
-              <MenuItem onClick={addSelectedToQueue} key="add">
-                <ListItemIcon>
-                  <PlaylistPlay />
-                </ListItemIcon>
-                <ListItemText primary="Add Selected To Queue" />
-              </MenuItem>,
               <MenuItem onClick={clearSelectedTracks} key="clear">
                 <ListItemIcon>
                   <Delete />
                 </ListItemIcon>
                 <ListItemText primary="Delete Selected Tracks" />
+              </MenuItem>,
+              <MenuItem onClick={openEditSelectDialog} key="edit">
+                <ListItemIcon>
+                  <Edit />
+                </ListItemIcon>
+                <ListItemText primary="Edit Selected Tracks" />
+              </MenuItem>,
+              <MenuItem onClick={addSelectedToQueue} key="add">
+                <ListItemIcon>
+                  <PlaylistPlay />
+                </ListItemIcon>
+                <ListItemText primary="Add Selected To Queue" />
               </MenuItem>,
               playlists.map((p) => (
                 <PlaylistMenuItem
@@ -329,6 +354,11 @@ const PlaylistTracks: React.FC = () => {
             open={openEditMenu}
             playlist={playlist}
             handleClose={onEditMenuClose}
+          />
+          <SelectionEditDialog
+            open={editSelectDialogOpen}
+            onClose={closeEditSelectDialog}
+            onSave={onSelectedEdited}
           />
         </>
       ) : (
