@@ -5,11 +5,13 @@ import { useAppSelector } from "../store/hooks";
 import { getThumbnailImage } from "../utils";
 import Controls from "./Controls";
 import Progress from "./Progress";
+import DOMPurify from "dompurify";
 
 const thumbnailSize = 70;
 const PlayerBar: React.FC = () => {
   const theme = useTheme();
   const currentTrack = useAppSelector((state) => state.track.currentTrack);
+  const sanitizer = DOMPurify.sanitize;
 
   const image = getThumbnailImage(
     currentTrack && currentTrack.images,
@@ -48,7 +50,7 @@ const PlayerBar: React.FC = () => {
                 sx={{ maxWidth: "250px" }}
                 title={currentTrack && currentTrack.name}
                 dangerouslySetInnerHTML={{
-                  __html: (currentTrack && currentTrack.name) || "",
+                  __html: sanitizer(currentTrack?.name || ""),
                 }}
               />
             </Grid>

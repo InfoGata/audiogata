@@ -13,7 +13,7 @@ import { formatSeconds } from "../utils";
 import { MoreHoriz } from "@mui/icons-material";
 import { useAppSelector } from "../store/hooks";
 import { getThumbnailImage, searchThumbnailSize } from "../utils";
-
+import DOMPurify from "dompurify";
 interface PlaylistItemsProps {
   track: Track;
   showTrackLength: boolean;
@@ -29,6 +29,7 @@ interface PlaylistItemsProps {
 const PlaylistItem: React.FC<PlaylistItemsProps> = (props) => {
   const { track, showTrackLength, openMenu, onSelectClick, isSelected, index } =
     props;
+  const sanitizer = DOMPurify.sanitize;
   const currentTrack = useAppSelector((state) => state.track.currentTrack);
   const progress = useAppSelector(
     (state) => state.download.progress[track.id || ""]
@@ -82,7 +83,7 @@ const PlaylistItem: React.FC<PlaylistItemsProps> = (props) => {
             <Typography
               color={currentTrack?.id === track.id ? "primary.main" : undefined}
               noWrap={true}
-              dangerouslySetInnerHTML={{ __html: track.name }}
+              dangerouslySetInnerHTML={{ __html: sanitizer(track.name) }}
               title={track.name}
               sx={{ overflow: "hidden", textOverflow: "ellipsis" }}
             />
@@ -90,7 +91,9 @@ const PlaylistItem: React.FC<PlaylistItemsProps> = (props) => {
               variant="body2"
               color={currentTrack?.id === track.id ? "primary.main" : undefined}
               noWrap={true}
-              dangerouslySetInnerHTML={{ __html: track.artistName || "" }}
+              dangerouslySetInnerHTML={{
+                __html: sanitizer(track.artistName || ""),
+              }}
               sx={{ overflow: "hidden", textOverflow: "ellipsis" }}
             />
             <LinearProgress

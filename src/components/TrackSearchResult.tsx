@@ -13,6 +13,7 @@ import { addTrack, setTrack } from "../store/reducers/trackReducer";
 import { getThumbnailImage, searchThumbnailSize } from "../utils";
 import { MoreHoriz } from "@mui/icons-material";
 import { useAppDispatch } from "../store/hooks";
+import DOMPurify from "dompurify";
 
 interface TrackSearchResultProps {
   track: Track;
@@ -20,6 +21,7 @@ interface TrackSearchResultProps {
 }
 const TrackSearchResult: React.FC<TrackSearchResultProps> = (props) => {
   const { track, openMenu } = props;
+  const sanitizer = DOMPurify.sanitize;
   const dispatch = useAppDispatch();
   const openTrackMenu = (event: React.MouseEvent<HTMLButtonElement>) => {
     openMenu(event, track);
@@ -38,7 +40,9 @@ const TrackSearchResult: React.FC<TrackSearchResultProps> = (props) => {
       </ListItemAvatar>
       <ListItemText
         primary={
-          <Typography dangerouslySetInnerHTML={{ __html: track.name }} />
+          <Typography
+            dangerouslySetInnerHTML={{ __html: sanitizer(track.name) }}
+          />
         }
       />
       <ListItemSecondaryAction>

@@ -9,6 +9,7 @@ import React from "react";
 import { PlaylistInfo, Track } from "../plugintypes";
 import { usePlugins } from "../PluginsContext";
 import { getThumbnailImage, searchThumbnailSize } from "../utils";
+import DOMPurify from "dompurify";
 
 interface PlaylistSearchResultProps {
   playlist: PlaylistInfo;
@@ -19,6 +20,7 @@ interface PlaylistSearchResultProps {
 const PlaylistSearchResult: React.FC<PlaylistSearchResultProps> = (props) => {
   const { clearSearch, playlist, setTrackResults } = props;
   const { plugins } = usePlugins();
+  const sanitizer = DOMPurify.sanitize;
 
   const onClickPlaylist = async () => {
     clearSearch();
@@ -38,7 +40,9 @@ const PlaylistSearchResult: React.FC<PlaylistSearchResultProps> = (props) => {
       <ListItemText
         primary={
           <Typography
-            dangerouslySetInnerHTML={{ __html: playlist?.name || "" }}
+            dangerouslySetInnerHTML={{
+              __html: sanitizer(playlist?.name || ""),
+            }}
           />
         }
       />
