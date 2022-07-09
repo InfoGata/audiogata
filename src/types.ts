@@ -55,33 +55,27 @@ export interface ManifestOptions {
   sameOrigin?: boolean;
 }
 
-export const ResultType = {
-  Tracks: "tracks",
-  Albums: "albums",
-  Artists: "artists",
-  Playlists: "playlists",
-} as const;
-// eslint-disable-next-line @typescript-eslint/no-redeclare
-export type ResultType = typeof ResultType[keyof typeof ResultType];
-
-export interface PlayerComponent {
-  onSetVolume: (volume: number) => Promise<void>;
-  onPause: () => Promise<void>;
-  onResume: () => Promise<void>;
-  onSeek: (time: number) => Promise<void>;
-  onPlay: (track: Track) => Promise<void>;
-  onSetPlaybackRate: (rate: number) => Promise<void>;
+export const enum ResultType {
+  Tracks = "tracks",
+  Albums = "albums",
+  Artists = "artists",
+  Playlists = "playlists",
 }
 
-export type PlayerComponentType = keyof PlayerComponent;
-// eslint-disable-next-line @typescript-eslint/no-redeclare
-export const PlayerComponentType: {
-  [key in keyof PlayerComponent]: keyof PlayerComponent;
-} = {
-  onSetVolume: "onSetVolume",
-  onPause: "onPause",
-  onResume: "onResume",
-  onSeek: "onSeek",
-  onPlay: "onPlay",
-  onSetPlaybackRate: "onSetPlaybackRate",
-};
+export const enum PlayerComponentType {
+  onSetVolume = "onSetVolume",
+  onPause = "onPause",
+  onResume = "onResume",
+  onSeek = "onSeek",
+  onPlay = "onPlay",
+  onSetPlaybackRate = "onSetPlaybackRate",
+}
+
+export interface PlayerComponent {
+  [PlayerComponentType.onSetVolume]: (volume: number) => Promise<void>;
+  [PlayerComponentType.onPause]: () => Promise<void>;
+  [PlayerComponentType.onResume]: () => Promise<void>;
+  [PlayerComponentType.onSeek]: (time: number) => Promise<void>;
+  [PlayerComponentType.onPlay]: (track: Track) => Promise<void>;
+  [PlayerComponentType.onSetPlaybackRate]: (rate: number) => Promise<void>;
+}
