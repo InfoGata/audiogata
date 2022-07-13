@@ -16,6 +16,8 @@ import PluginsContext from "../PluginsContext";
 import { db } from "../database";
 import { filterAsync } from "../utils";
 import { Track } from "../plugintypes";
+import { Capacitor } from "@capacitor/core";
+import { MusicControls } from "@awesome-cordova-plugins/music-controls";
 
 interface AudioComponentProps
   extends StateProps,
@@ -38,6 +40,7 @@ class AudioComponent extends React.Component<
 
     LocalPlayer.onTrackEnd = this.onTrackEnd;
     LocalPlayer.setTime = this.setTrackTimes;
+
     this.state = {
       errorCount: 0,
     };
@@ -180,14 +183,7 @@ class AudioComponent extends React.Component<
     }
   }
 
-  private async playCurrentTrack() {
-    const currentTrack = this.props.currentTrack;
-    if (currentTrack) {
-      await this.playTrack(currentTrack, this.props.elapsed);
-      this.setMediaSessionMetaData();
-    }
-  }
-  private setTrackTimes = (currentTime: number, _: number) => {
+  private setTrackTimes = (currentTime: number) => {
     this.props.setElapsed(currentTime);
   };
 
@@ -217,6 +213,7 @@ class AudioComponent extends React.Component<
         }
 
         await player?.onPlay(newTrack);
+        this.setMediaSessionMetaData();
         this.lastPlayer = player;
         this.trackLoaded = true;
         this.setState({
@@ -254,17 +251,27 @@ class AudioComponent extends React.Component<
   };
 
   private setMediaSessionMetaData() {
+    if (!this.props.currentTrack) return;
+
     if (navigator && navigator.mediaSession) {
-      if (this.props.currentTrack) {
-        navigator.mediaSession.metadata = new MediaMetadata({
-          title: this.props.currentTrack.name,
-          artwork: this.props.currentTrack.images?.map((i) => ({
-            src: i.url,
-            sizes: `${i.height}x${i.width}`,
-            type: this.getImageType(i.url),
-          })),
-        });
-      }
+      navigator.mediaSession.metadata = new MediaMetadata({
+        title: this.props.currentTrack.name,
+        artwork: this.props.currentTrack.images?.map((i) => ({
+          src: i.url,
+          sizes: `${i.height}x${i.width}`,
+          type: this.getImageType(i.url),
+        })),
+      });
+    }
+
+    if (Capacitor.isNativePlatform()) {
+      MusicControls.create({
+        track: this.props.currentTrack.name,
+        artist: this.props.currentTrack.artistName,
+        cover:
+          this.props.currentTrack.images &&
+          this.props.currentTrack.images[0].url,
+      });
     }
   }
 
@@ -286,6 +293,31 @@ class AudioComponent extends React.Component<
       navigator.mediaSession.setActionHandler("nexttrack", () => {
         this.props.nextTrack();
       });
+    }
+
+    if (Capacitor.isNativePlatform()) {
+      MusicControls.subscribe().subscribe((action) => {
+        const message = JSON.parse(action).message;
+        switch (message) {
+          case "music-controls-next":
+            this.props.nextTrack();
+            break;
+          case "music-controls-previous":
+            this.props.prevTrack();
+            break;
+          case "music-controls-pause":
+            this.props.toggleIsPlaying();
+            MusicControls.updateIsPlaying(false);
+            break;
+          case "music-controls-play":
+            this.props.toggleIsPlaying();
+            MusicControls.updateIsPlaying(true);
+            break;
+          // case "music-controls-destroy":
+          //  break;
+        }
+      });
+      MusicControls.listen();
     }
   }
 }

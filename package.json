@@ -5,6 +5,7 @@
   "homepage": ".",
   "main": "build/electron/main.js",
   "dependencies": {
+    "@awesome-cordova-plugins/music-controls": "^5.44.0",
     "@capacitor/android": "3.6.0",
     "@capacitor/app": "^1.1.1",
     "@capacitor/core": "^3.6.0",
@@ -33,6 +34,7 @@
     "babel-plugin-import": "^1.13.3",
     "concurrently": "^6.0.0",
     "cordova-plugin-fetch": "git+https://git@github.com/aporat/cordova-plugin-fetch.git",
+    "cordova-plugin-music-controls2": "^3.0.6",
     "customize-cra": "^1.0.0",
     "dexie": "^3.0.3",
     "dompurify": "^2.3.8",

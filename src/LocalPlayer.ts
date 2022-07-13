@@ -4,13 +4,13 @@ import { PlayerComponent } from "./types";
 class LocalPlayer implements PlayerComponent {
   public name = "local";
   private audio: HTMLAudioElement;
-  public setTime?: (elapsed: number, total: number) => void;
+  public setTime?: (elapsed: number) => void;
   public onTrackEnd?: () => void;
   constructor() {
     this.audio = new Audio();
     this.audio.ontimeupdate = () => {
       if (this.setTime) {
-        this.setTime(this.audio.currentTime, this.audio.duration);
+        this.setTime(this.audio.currentTime);
       }
     };
     this.audio.onended = () => {
