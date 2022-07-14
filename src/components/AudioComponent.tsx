@@ -268,6 +268,7 @@ class AudioComponent extends React.Component<
       MusicControls.create({
         track: this.props.currentTrack.name,
         artist: this.props.currentTrack.artistName,
+        dismissable: true,
         cover:
           this.props.currentTrack.images &&
           this.props.currentTrack.images[0].url,
@@ -297,6 +298,7 @@ class AudioComponent extends React.Component<
 
     if (Capacitor.isNativePlatform()) {
       MusicControls.subscribe().subscribe((action) => {
+        console.log("action", action);
         const message = JSON.parse(action).message;
         switch (message) {
           case "music-controls-next":
