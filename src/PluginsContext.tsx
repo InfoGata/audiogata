@@ -16,10 +16,7 @@ import {
   UserPlaylistRequest,
   PlaylistTracksResult,
 } from "./plugintypes";
-import {
-  PluginFrame,
-  PluginInterface as PluginFrameInterface,
-} from "plugin-frame";
+import { PluginFrame, PluginInterface } from "plugin-frame";
 import { db } from "./database";
 import { useAppDispatch, useAppSelector } from "./store/hooks";
 import {
@@ -35,7 +32,7 @@ import { App, URLOpenListenerEvent } from "@capacitor/app";
 import { addPlaylists } from "./store/reducers/playlistReducer";
 import { NetworkRequest, PlayerComponent } from "./types";
 
-export interface PluginInterface extends PlayerComponent {
+export interface PluginMethodInterface extends PlayerComponent {
   onSearchAll: (request: SearchRequest) => Promise<SearchAllResult>;
   onSearchTracks: (request: SearchRequest) => Promise<SearchTrackResult>;
   onSearchArtists: (request: SearchRequest) => Promise<SearchArtistResult>;
@@ -65,7 +62,7 @@ export interface PluginInterface extends PlayerComponent {
   onGetTopItems: () => Promise<SearchAllResult>;
 }
 
-interface ApplicationPluginInterface extends PluginFrameInterface {
+interface ApplicationPluginInterface extends PluginInterface {
   networkRequest: (
     input: RequestInfo,
     init?: RequestInit
@@ -90,7 +87,7 @@ interface PluginMessage {
   message: any;
 }
 
-export class PluginFrameContainer extends PluginFrame<PluginInterface> {
+export class PluginFrameContainer extends PluginFrame<PluginMethodInterface> {
   name?: string;
   id?: string;
   hasOptions?: boolean;
@@ -268,7 +265,7 @@ export const PluginsProvider: React.FC<React.PropsWithChildren> = (props) => {
         srcUrl = `https://${plugin.id}.audiogata.com/pluginframe.html`;
       }
 
-      const completeMethods: { [key in keyof PluginInterface]?: any } = {
+      const completeMethods: { [key in keyof PluginMethodInterface]?: any } = {
         onSearchAll: (result: SearchAllResult) => {
           result.tracks?.items.forEach((i) => {
             i.pluginId = plugin.id;

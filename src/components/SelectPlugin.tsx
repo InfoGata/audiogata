@@ -1,12 +1,12 @@
 import { FormControl, InputLabel, NativeSelect } from "@mui/material";
 import React from "react";
-import { PluginInterface, usePlugins } from "../PluginsContext";
+import { PluginMethodInterface, usePlugins } from "../PluginsContext";
 import { useAppDispatch, useAppStore } from "../store/hooks";
 import { setCurrentPluginId } from "../store/reducers/settingsReducer";
 import { filterAsync } from "../utils";
 
 interface SelectPluginProps {
-  methodName: keyof PluginInterface;
+  methodName: keyof PluginMethodInterface;
   pluginId: string;
   setPluginId: (value: React.SetStateAction<string>) => void;
 }
