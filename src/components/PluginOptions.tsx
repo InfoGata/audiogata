@@ -81,8 +81,8 @@ const PluginOptions: React.FC = () => {
       src={srcUrl}
       onLoad={iframeOnload}
       width="100%"
-      height="80vh"
       frameBorder="0"
+      style={{ height: "80vh" }}
     />
   ) : (
     <iframe
@@ -92,8 +92,8 @@ const PluginOptions: React.FC = () => {
       sandbox={sandbox}
       srcDoc={optionsHtml}
       width="100%"
-      height="80vh"
       frameBorder="0"
+      style={{ height: "80vh" }}
     />
   );
 
