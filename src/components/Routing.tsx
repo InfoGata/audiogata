@@ -14,6 +14,7 @@ import PluginPlaylist from "./PluginPlaylist";
 import PluginDetails from "./PluginDetails";
 import PlaylistTrackInfo from "./PlaylistTrackInfo";
 import DrawerHeader from "./DrawerHeader";
+import PluginOptions from "./PluginOptions";
 
 const Routing: React.FC = () => {
   return (
@@ -38,6 +39,7 @@ const Routing: React.FC = () => {
           element={<PlaylistTrackInfo />}
         />
         <Route path="/plugins/:id" element={<PluginDetails />} />
+        <Route path="/plugins/:id/options" element={<PluginOptions />} />
       </Routes>
       <DrawerHeader />
     </Box>
