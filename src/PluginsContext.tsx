@@ -236,7 +236,7 @@ export const PluginsProvider: React.FC<React.PropsWithChildren> = (props) => {
           ) {
             return corsProxyUrlRef.current;
           } else {
-            return "http://localhost:8085";
+            return "http://localhost:8085/";
           }
         },
         getPlugins: async () => {
