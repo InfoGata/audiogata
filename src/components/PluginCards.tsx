@@ -29,14 +29,19 @@ const pluginDescriptions: PluginDescription[] = [
     url: "https://gitlab.com/api/v4/projects/26680847/repository/files/manifest.json/raw?ref=master",
   },
   {
-    name: "Plugin for Napster",
-    description: "Play music from napster. Requires napster login.",
-    url: "https://gitlab.com/api/v4/projects/35720504/repository/files/manifest.json/raw?ref=master",
+    name: "Plugin for SoundCloud",
+    description: "Play music from SoundCloud.",
+    url: "https://gitlab.com/api/v4/projects/38039113/repository/files/manifest.json/raw?ref=master",
   },
   {
     name: "Plugin for Spotify",
     description: "Play music from Spotify. Requires Spotify login.",
     url: "https://gitlab.com/api/v4/projects/35723151/repository/files/manifest.json/raw?ref=master",
+  },
+  {
+    name: "Plugin for Napster",
+    description: "Play music from napster. Requires napster login.",
+    url: "https://gitlab.com/api/v4/projects/35720504/repository/files/manifest.json/raw?ref=master",
   },
   {
     name: "Plugin for Google Drive",
