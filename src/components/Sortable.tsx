@@ -4,7 +4,8 @@ import {
   DragOverEvent,
   DragStartEvent,
   KeyboardSensor,
-  PointerSensor,
+  MouseSensor,
+  TouchSensor,
   useSensor,
   useSensors,
 } from "@dnd-kit/core";
@@ -24,9 +25,15 @@ interface SortableProps {
 const Sortable: React.FC<React.PropsWithChildren<SortableProps>> = (props) => {
   const { ids, onDragOver, onDragStart, onDragEnd } = props;
   const sensors = useSensors(
-    useSensor(PointerSensor, {
+    useSensor(MouseSensor, {
       activationConstraint: {
         distance: 3,
+      },
+    }),
+    useSensor(TouchSensor, {
+      activationConstraint: {
+        delay: 1000,
+        tolerance: 5,
       },
     }),
     useSensor(KeyboardSensor, {
