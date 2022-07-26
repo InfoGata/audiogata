@@ -1,4 +1,10 @@
-import { Button, Grid, Typography } from "@mui/material";
+import {
+  Backdrop,
+  Button,
+  CircularProgress,
+  Grid,
+  Typography,
+} from "@mui/material";
 import { styled } from "@mui/material/styles";
 import React from "react";
 import { PluginFrameContainer, usePlugins } from "../PluginsContext";
@@ -25,6 +31,7 @@ const PluginContainer: React.FC<PluginContainerProps> = (props) => {
   const { plugin, deletePlugin, isCheckingUpdate } = props;
   const { updatePlugin } = usePlugins();
   const [hasUpdate, setHasUpdate] = React.useState(false);
+  const [backdropOpen, setBackdropOpen] = React.useState(false);
 
   React.useEffect(() => {
     const checkUpdate = async () => {
@@ -69,14 +76,18 @@ const PluginContainer: React.FC<PluginContainerProps> = (props) => {
     const files = e.target.files;
     if (!files) return;
 
+    setBackdropOpen(true);
     await updatePluginFromFilelist(files);
+    setBackdropOpen(false);
   };
 
   const onReload = async () => {
     const files = plugin.fileList;
     if (!files) return;
 
+    setBackdropOpen(true);
     await updatePluginFromFilelist(files);
+    setBackdropOpen(false);
   };
 
   const onUpdate = async () => {
@@ -93,7 +104,10 @@ const PluginContainer: React.FC<PluginContainerProps> = (props) => {
   };
 
   return (
-    <Grid key={plugin.id}>
+    <Grid>
+      <Backdrop open={backdropOpen}>
+        <CircularProgress color="inherit" />
+      </Backdrop>
       <Typography>
         {plugin.name} {plugin.version}
       </Typography>
