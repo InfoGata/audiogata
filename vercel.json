@@ -1,14 +1,3 @@
 {
-  "routes": [{ "src": "/[^.]+", "dest": "/", "status": 200 }],
-  "headers": [
-    {
-      "source": "/[^.]+",
-      "headers": [
-        {
-          "key": "Content-Security-Policy",
-          "value": "frame-ancestors 'self' https://elijahgreen.gitlab.io"
-        }
-      ]
-    }
-  ]
+  "rewrites": [{ "source": "/(.*)", "destination": "/" }]
 }
