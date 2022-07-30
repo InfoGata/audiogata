@@ -168,9 +168,9 @@ export const PluginsProvider: React.FC<React.PropsWithChildren> = (props) => {
     async (plugin: PluginInfo, pluginFiles?: FileList) => {
       const api: ApplicationPluginInterface = {
         networkRequest: async (input: RequestInfo, init?: RequestInit) => {
-          const hasExtension = typeof window.MediaGata !== "undefined";
+          const hasExtension = typeof window.InfoGata !== "undefined";
           if (hasExtension) {
-            return await window.MediaGata.networkRequest(input, init);
+            return await window.InfoGata.networkRequest(input, init);
           }
 
           const response = Capacitor.isNativePlatform()
@@ -200,7 +200,7 @@ export const PluginsProvider: React.FC<React.PropsWithChildren> = (props) => {
         },
         isNetworkRequestCorsDisabled: async () => {
           const isDisabled =
-            typeof window.MediaGata !== "undefined" ||
+            typeof window.InfoGata !== "undefined" ||
             isElectron() ||
             Capacitor.isNativePlatform();
           return isDisabled;

@@ -8,7 +8,7 @@ export interface NetworkRequest {
   url: string;
 }
 
-export interface MediaGataExtension {
+export interface InfoGataExtension {
   networkRequest: (
     input: RequestInfo,
     init?: RequestInit
@@ -17,7 +17,7 @@ export interface MediaGataExtension {
 
 declare global {
   interface Window {
-    MediaGata: MediaGataExtension;
+    InfoGata: InfoGataExtension;
     cordovaFetch: typeof fetch;
   }
   namespace NodeJS {
