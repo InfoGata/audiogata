@@ -1,5 +1,5 @@
 import React from "react";
-import { Button, Grid, TextField } from "@mui/material";
+import { Button, Grid } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { nanoid } from "@reduxjs/toolkit";
 import { FileType } from "../types";
@@ -8,6 +8,7 @@ import PluginContainer from "./PluginContainer";
 import { directoryProps, getPlugin } from "../utils";
 import ConfirmPluginDialog from "./ConfirmPluginDialog";
 import { PluginInfo } from "../plugintypes";
+import AddPluginUrlDialog from "./AddPluginUrlDialog";
 
 const FileInput = styled("input")({
   display: "none",
@@ -15,13 +16,19 @@ const FileInput = styled("input")({
 
 const Plugins: React.FC = () => {
   const { plugins, deletePlugin } = usePlugins();
-  const [pluginUrl, setPluginUrl] = React.useState("");
-  const [headerKey, setHeaderKey] = React.useState("");
-  const [headerValue, setHeaderValue] = React.useState("");
   const [pendingPlugin, setPendingPlugin] = React.useState<PluginInfo | null>(
     null
   );
   const [isCheckingUpdate, setIsCheckingUpdate] = React.useState(false);
+  const [openUrlDialog, setOpenUrlDialog] = React.useState(false);
+
+  const onCloseUrlDialog = () => setOpenUrlDialog(false);
+  const onOpenUrlDialog = () => setOpenUrlDialog(true);
+
+  const onConfirmUrlDialog = (plugin: PluginInfo) => {
+    onCloseUrlDialog();
+    setPendingPlugin(plugin);
+  };
 
   const onFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
@@ -40,45 +47,8 @@ const Plugins: React.FC = () => {
     }
   };
 
-  const onChangePluginUrl = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setPluginUrl(event.target.value);
-  };
-  const onChangeHeaderKey = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setHeaderKey(event.target.value);
-  };
-  const onChangeHeaderValue = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setHeaderValue(event.target.value);
-  };
-
   const onConfirmPluginClose = () => {
     setPendingPlugin(null);
-  };
-
-  const onLoadUrl = async () => {
-    if (!pluginUrl.includes("manifest.json")) {
-      alert("The filename 'manifest.json' must be in the url");
-      return;
-    }
-    const headers = new Headers();
-    if (headerKey) {
-      headers.append(headerKey, headerValue);
-    }
-
-    const fileType: FileType = {
-      url: {
-        url: pluginUrl,
-        headers: headers,
-      },
-    };
-
-    const plugin = await getPlugin(fileType);
-
-    if (plugin) {
-      if (!plugin.id) {
-        plugin.id = nanoid();
-      }
-      setPendingPlugin(plugin);
-    }
   };
 
   const pluginComponents = plugins.map((plugin) => (
@@ -95,7 +65,7 @@ const Plugins: React.FC = () => {
   };
 
   return (
-    <Grid>
+    <Grid sx={{ "& button": { m: 1 } }}>
       <Grid>
         <label htmlFor="contained-button-file">
           <FileInput
@@ -110,25 +80,9 @@ const Plugins: React.FC = () => {
         </label>
       </Grid>
       <Grid>
-        <TextField
-          onChange={onChangePluginUrl}
-          value={pluginUrl}
-          placeholder="manifest.json url"
-          variant="outlined"
-        />
-        <TextField
-          onChange={onChangeHeaderKey}
-          value={headerKey}
-          placeholder="Header key"
-          variant="outlined"
-        />
-        <TextField
-          onChange={onChangeHeaderValue}
-          value={headerValue}
-          placeholder="Header Value"
-          variant="outlined"
-        />
-        <Button onClick={onLoadUrl}>Load Url</Button>
+        <Button variant="contained" onClick={onOpenUrlDialog}>
+          Load plugin From Url
+        </Button>
       </Grid>
       {plugins.length > 0 && (
         <Grid>
@@ -142,6 +96,11 @@ const Plugins: React.FC = () => {
         open={Boolean(pendingPlugin)}
         plugins={pendingPlugin ? [pendingPlugin] : []}
         handleClose={onConfirmPluginClose}
+      />
+      <AddPluginUrlDialog
+        open={openUrlDialog}
+        handleConfirm={onConfirmUrlDialog}
+        handleClose={onCloseUrlDialog}
       />
     </Grid>
   );
