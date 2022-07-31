@@ -2,7 +2,7 @@
   "name": "AudioGata",
   "version": "0.1.0",
   "private": true,
-  "homepage": ".",
+  "homepage": "",
   "main": "build/electron/main.js",
   "dependencies": {
     "@awesome-cordova-plugins/music-controls": "^5.44.0",
