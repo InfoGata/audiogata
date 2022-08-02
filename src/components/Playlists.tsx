@@ -86,7 +86,11 @@ const Playlists: React.FC = () => {
   };
 
   const pluginPlaylists = playlistPlugins.map((p) => (
-    <Button component={Link} to={`/plugins/${p.id}/playlists`} key={p.id}>
+    <Button
+      component={Link}
+      to={`/plugins/${p.id}/playlists?isuserplaylist`}
+      key={p.id}
+    >
       {p.name}
     </Button>
   ));

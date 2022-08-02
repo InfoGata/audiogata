@@ -1,7 +1,5 @@
 import React from "react";
 import {
-  Album,
-  Artist,
   Playlist,
   Track,
   NotificationMessage,
@@ -15,6 +13,10 @@ import {
   SearchTrackResult,
   UserPlaylistRequest,
   PlaylistTracksResult,
+  ArtistAlbumsResult,
+  AlbumTracksResult,
+  AlbumTrackRequest,
+  ArtistAlbumRequest,
 } from "./plugintypes";
 import { PluginFrame, PluginInterface } from "plugin-frame";
 import { db } from "./database";
@@ -45,11 +47,13 @@ export interface PluginMethodInterface extends PlayerComponent {
   onGetTrackUrl: (track: Track) => Promise<string>;
   onUiMessage: (message: any) => Promise<void>;
   onDeepLinkMessage: (message: string) => Promise<void>;
-  onGetAlbumTracks: (album: Album) => Promise<Track[]>;
+  onGetAlbumTracks: (album: AlbumTrackRequest) => Promise<AlbumTracksResult>;
   onGetPlaylistTracks: (
     request: PlaylistTrackRequest
   ) => Promise<PlaylistTracksResult>;
-  onGetArtistAlbums: (artist: Artist) => Promise<Album[]>;
+  onGetArtistAlbums: (
+    request: ArtistAlbumRequest
+  ) => Promise<ArtistAlbumsResult>;
   onPlay: (track: Track) => Promise<void>;
   onSetVolume: (volume: number) => Promise<void>;
   onPause: () => Promise<void>;
@@ -322,6 +326,30 @@ export const PluginsProvider: React.FC<React.PropsWithChildren> = (props) => {
             i.pluginId = plugin.id;
           });
           result.playlists?.items.forEach((i) => {
+            i.pluginId = plugin.id;
+          });
+          return result;
+        },
+        onGetUserPlaylists: (result: SearchPlaylistResult) => {
+          result.items.forEach((i) => {
+            i.pluginId = plugin.id;
+          });
+          return result;
+        },
+        onGetAlbumTracks: (result: AlbumTracksResult) => {
+          if (result.album) {
+            result.album.pluginId = plugin.id;
+          }
+          result.items.forEach((i) => {
+            i.pluginId = plugin.id;
+          });
+          return result;
+        },
+        onGetArtistAlbums: (result: ArtistAlbumsResult) => {
+          if (result.artist) {
+            result.artist.pluginId = plugin.id;
+          }
+          result.items.forEach((i) => {
             i.pluginId = plugin.id;
           });
           return result;

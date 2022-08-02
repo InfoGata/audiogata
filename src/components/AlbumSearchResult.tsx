@@ -1,33 +1,25 @@
 import { Avatar, ListItem, ListItemAvatar, ListItemText } from "@mui/material";
 import React from "react";
-import { Album, Track } from "../plugintypes";
-import { usePlugins } from "../PluginsContext";
+import { Link } from "react-router-dom";
+import { Album } from "../plugintypes";
 import { getThumbnailImage, searchThumbnailSize } from "../utils";
 
 interface AlbumSearchResultProps {
   album: Album;
-  clearSearch: () => void;
-  setTrackResults: (tracks: Track[]) => void;
+  pluginId: string;
 }
 
 const AlbumSearchResult: React.FC<AlbumSearchResultProps> = (props) => {
-  const { plugins } = usePlugins();
-  const { album, clearSearch, setTrackResults } = props;
-
-  const onClickAlbum = async () => {
-    clearSearch();
-
-    const plugin = plugins.find((p) => p.id === album.pluginId);
-    if (plugin && (await plugin.hasDefined.onGetAlbumTracks())) {
-      const tracks = await plugin.remote.onGetAlbumTracks(album);
-      setTrackResults(tracks);
-    }
-  };
+  const { album, pluginId } = props;
 
   const image = getThumbnailImage(album.images, searchThumbnailSize);
 
   return (
-    <ListItem button={true} onClick={onClickAlbum}>
+    <ListItem
+      button={true}
+      component={Link}
+      to={`/plugins/${pluginId}/albums/${album.apiId}`}
+    >
       <ListItemAvatar>
         <Avatar alt={album.name} src={image} style={{ borderRadius: 0 }} />
       </ListItemAvatar>

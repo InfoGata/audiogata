@@ -14,6 +14,7 @@ import { MoreHoriz } from "@mui/icons-material";
 import { useAppSelector } from "../store/hooks";
 import { getThumbnailImage, searchThumbnailSize } from "../utils";
 import DOMPurify from "dompurify";
+
 interface PlaylistItemsProps {
   track: Track;
   showTrackLength: boolean;

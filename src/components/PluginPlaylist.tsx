@@ -35,6 +35,7 @@ import PlaylistMenuItem from "./PlaylistMenuItem";
 import AddPlaylistDialog from "./AddPlaylistDialog";
 import { useQuery } from "react-query";
 import usePagination from "../hooks/usePagination";
+import { useLocation } from "react-router-dom";
 
 const PluginPlaylist: React.FC = () => {
   const { pluginid } = useParams<"pluginid">();
@@ -49,13 +50,15 @@ const PluginPlaylist: React.FC = () => {
   const playlists = useAppSelector((state) => state.playlist.playlists);
   const { page, hasNextPage, hasPreviousPage, onPreviousPage, onNextPage } =
     usePagination(currentPage);
+  const location = useLocation();
+  const params = new URLSearchParams(location.search);
 
   const getPlaylistTracks = async () => {
     if (plugin && (await plugin.hasDefined.onGetPlaylistTracks())) {
       const t = await plugin.remote.onGetPlaylistTracks({
         playlist: {
           apiId: id,
-          isUserPlaylist: true,
+          isUserPlaylist: params.has("isuserplaylist"),
         },
         page,
       });

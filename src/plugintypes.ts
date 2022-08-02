@@ -24,8 +24,8 @@ export interface Track {
 }
 
 export interface Album {
-  name: string;
-  apiId: string;
+  name?: string;
+  apiId?: string;
   pluginId?: string;
   artistName?: string;
   artistApiId?: string;
@@ -33,8 +33,8 @@ export interface Album {
 }
 
 export interface Artist {
-  name: string;
-  apiId: string;
+  name?: string;
+  apiId?: string;
   pluginId?: string;
   images?: ImageInfo[];
 }
@@ -88,6 +88,16 @@ export interface PlaylistTrackRequest {
   page?: PageInfo;
 }
 
+export interface AlbumTrackRequest {
+  album: Album;
+  page?: PageInfo;
+}
+
+export interface ArtistAlbumRequest {
+  artist: Artist;
+  page?: PageInfo;
+}
+
 export interface UserPlaylistRequest {
   page?: PageInfo;
 }
@@ -99,6 +109,14 @@ export interface SearchTrackResult {
 
 export interface PlaylistTracksResult extends SearchTrackResult {
   playlist?: PlaylistInfo;
+}
+
+export interface ArtistAlbumsResult extends SearchAlbumResult {
+  artist?: Artist;
+}
+
+export interface AlbumTracksResult extends SearchTrackResult {
+  album?: Album;
 }
 
 export interface SearchArtistResult {

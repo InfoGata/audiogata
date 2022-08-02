@@ -6,34 +6,27 @@ import {
   Typography,
 } from "@mui/material";
 import React from "react";
-import { PlaylistInfo, Track } from "../plugintypes";
-import { usePlugins } from "../PluginsContext";
+import { PlaylistInfo } from "../plugintypes";
 import { getThumbnailImage, searchThumbnailSize } from "../utils";
 import DOMPurify from "dompurify";
+import { Link } from "react-router-dom";
 
 interface PlaylistSearchResultProps {
   playlist: PlaylistInfo;
-  clearSearch: () => void;
-  setTrackResults: (tracks: Track[]) => void;
+  pluginId: string;
 }
 
 const PlaylistSearchResult: React.FC<PlaylistSearchResultProps> = (props) => {
-  const { clearSearch, playlist, setTrackResults } = props;
-  const { plugins } = usePlugins();
+  const { playlist, pluginId } = props;
   const sanitizer = DOMPurify.sanitize;
 
-  const onClickPlaylist = async () => {
-    clearSearch();
-
-    const plugin = plugins.find((p) => p.id === playlist.pluginId);
-    if (plugin && (await plugin.hasDefined.onGetPlaylistTracks())) {
-      const tracks = await plugin.remote.onGetPlaylistTracks({ playlist });
-      setTrackResults(tracks.items);
-    }
-  };
   const image = getThumbnailImage(playlist.images, searchThumbnailSize);
   return (
-    <ListItem button={true} onClick={onClickPlaylist}>
+    <ListItem
+      button={true}
+      component={Link}
+      to={`/plugins/${pluginId}/playlists/${playlist.apiId}`}
+    >
       <ListItemAvatar>
         <Avatar alt={playlist.name} src={image} style={{ borderRadius: 0 }} />
       </ListItemAvatar>

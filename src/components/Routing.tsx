@@ -15,6 +15,8 @@ import PluginDetails from "./PluginDetails";
 import PlaylistTrackInfo from "./PlaylistTrackInfo";
 import DrawerHeader from "./DrawerHeader";
 import PluginOptions from "./PluginOptions";
+import ArtistPage from "./ArtistPage";
+import AlbumPage from "./AlbumPage";
 
 const Routing: React.FC = () => {
   return (
@@ -33,6 +35,8 @@ const Routing: React.FC = () => {
           path="/plugins/:pluginid/playlists/:id"
           element={<PluginPlaylist />}
         />
+        <Route path="/plugins/:pluginid/artists/:id" element={<ArtistPage />} />
+        <Route path="/plugins/:pluginid/albums/:id" element={<AlbumPage />} />
         <Route path="/track/:id" element={<QueueTrackInfo />} />
         <Route
           path="/playlists/:playlistid/tracks/:id"

@@ -96,13 +96,12 @@ const TrackList: React.FC<TrackListProps> = (props) => {
             {tracks.map((t, i) => (
               <SortableRow
                 id={t.id || ""}
-                key={t.id}
+                key={t.id || t.apiId}
                 onClick={() => onTrackClick(t)}
                 disabled={dragDisabled}
               >
                 <PlaylistItem
                   showTrackLength={showTrackLength}
-                  key={t.id}
                   track={t}
                   openMenu={openMenu}
                   isSelected={isSelected}
