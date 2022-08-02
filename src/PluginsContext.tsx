@@ -33,6 +33,7 @@ import ConfirmPluginDialog from "./components/ConfirmPluginDialog";
 import { App, URLOpenListenerEvent } from "@capacitor/app";
 import { addPlaylists } from "./store/reducers/playlistReducer";
 import { NetworkRequest, PlayerComponent } from "./types";
+import { nanoid } from "@reduxjs/toolkit";
 
 export interface PluginMethodInterface extends PlayerComponent {
   onSearchAll: (request: SearchRequest) => Promise<SearchAllResult>;
@@ -318,6 +319,7 @@ export const PluginsProvider: React.FC<React.PropsWithChildren> = (props) => {
         onGetTopItems: (result: SearchAllResult) => {
           result.tracks?.items.forEach((i) => {
             i.pluginId = plugin.id;
+            i.id = nanoid();
           });
           result.albums?.items.forEach((i) => {
             i.pluginId = plugin.id;
