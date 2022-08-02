@@ -25,12 +25,15 @@ import PlaylistMenuItem from "./PlaylistMenuItem";
 import SelectPlugin from "./SelectPlugin";
 
 const TopItemCards: React.FC = () => {
-  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const [anchorPosition, setAnchorPosition] = React.useState<{
+    xPosition: number;
+    yPosition: number;
+  } | null>(null);
   const [menuTrack, setMenuTrack] = React.useState<Track>({} as Track);
   const [pluginId, setPluginId] = React.useState("");
   const { plugins } = usePlugins();
   const dispatch = useAppDispatch();
-  const closeMenu = () => setAnchorEl(null);
+  const closeMenu = () => setAnchorPosition(null);
   const playlists = useAppSelector((state) => state.playlist.playlists);
   const [playlistDialogOpen, setPlaylistDialogOpen] = React.useState(false);
   const closePlaylistDialog = () => setPlaylistDialogOpen(false);
@@ -43,7 +46,8 @@ const TopItemCards: React.FC = () => {
     event.stopPropagation();
     event.preventDefault();
     setMenuTrack(track);
-    setAnchorEl(currentTarget);
+    const box = currentTarget.getBoundingClientRect();
+    setAnchorPosition({ xPosition: box.left, yPosition: box.top });
   };
 
   const getTopItems = async () => {
@@ -144,7 +148,16 @@ const TopItemCards: React.FC = () => {
           </Grid>
         </Grid>
       </Fade>
-      <Menu open={Boolean(anchorEl)} onClose={closeMenu} anchorEl={anchorEl}>
+      <Menu
+        open={Boolean(anchorPosition)}
+        onClose={closeMenu}
+        anchorReference="anchorPosition"
+        anchorPosition={
+          anchorPosition !== null
+            ? { top: anchorPosition.yPosition, left: anchorPosition.xPosition }
+            : undefined
+        }
+      >
         <MenuItem onClick={addToNewPlaylist}>
           <ListItemIcon>
             <PlaylistAdd />
