@@ -6,7 +6,11 @@ import {
 } from "@mui/icons-material";
 import {
   Backdrop,
+  Box,
   Button,
+  Card,
+  CardContent,
+  CardMedia,
   CircularProgress,
   Divider,
   Grid,
@@ -36,11 +40,13 @@ import AddPlaylistDialog from "./AddPlaylistDialog";
 import { useQuery } from "react-query";
 import usePagination from "../hooks/usePagination";
 import { useLocation } from "react-router-dom";
+import thumbnail from "../thumbnail.png";
+import { getThumbnailImage, playlistThumbnailSize } from "../utils";
 
 const PluginPlaylist: React.FC = () => {
   const { pluginid } = useParams<"pluginid">();
   const { id } = useParams<"id">();
-  const { plugins } = usePlugins();
+  const { plugins, pluginsLoaded } = usePlugins();
   const plugin = plugins.find((p) => p.id === pluginid);
   const [currentPage, setCurrentPage] = React.useState<PageInfo>();
   const [menuTrack, setMenuTrack] = React.useState<Track>({} as Track);
@@ -75,7 +81,8 @@ const PluginPlaylist: React.FC = () => {
 
   const query = useQuery(
     ["pluginplaylist", pluginid, id, page],
-    getPlaylistTracks
+    getPlaylistTracks,
+    { enabled: pluginsLoaded }
   );
   const tracklist = query.data ?? [];
   const { onSelect, onSelectAll, isSelected, selected } =
@@ -133,12 +140,35 @@ const PluginPlaylist: React.FC = () => {
     dispatch(setTrack(track));
   };
 
+  const onImageError = (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
+    e.currentTarget.src = thumbnail;
+  };
+
+  const playlistCard = (
+    <Card sx={{ display: "flex" }}>
+      <CardMedia
+        component="img"
+        alt={playlistInfo?.name}
+        image={getThumbnailImage(playlistInfo?.images, playlistThumbnailSize)}
+        onError={onImageError}
+        sx={{ height: "200px", width: "200px" }}
+      />
+      <Box sx={{ display: "flex", flexDirection: "column" }}>
+        <CardContent sx={{ flex: "1 0 auto" }}>
+          <Typography component="div" variant="h5">
+            {playlistInfo?.name}
+          </Typography>
+        </CardContent>
+      </Box>
+    </Card>
+  );
+
   return (
     <>
       <Backdrop open={query.isLoading}>
         <CircularProgress color="inherit" />
       </Backdrop>
-      <Typography variant="h3">{playlistInfo?.name}</Typography>
+      {playlistInfo && playlistCard}
       <IconButton size="large" onClick={onPlayClick}>
         <PlayCircle color="success" sx={{ fontSize: 45 }} />
       </IconButton>
