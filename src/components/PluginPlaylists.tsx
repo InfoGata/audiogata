@@ -42,7 +42,7 @@ const PluginPlaylists: React.FC = () => {
       <Card>
         <CardActionArea
           component={Link}
-          to={`/plugins/${id}/playlists/${p.apiId}`}
+          to={`/plugins/${id}/playlists/${p.apiId}?isuserplaylist`}
         >
           <CardMedia
             component={"img"}
