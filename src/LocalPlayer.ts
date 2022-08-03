@@ -1,4 +1,4 @@
-import { Track } from "./plugintypes";
+import { PlayTrackRequest } from "./plugintypes";
 import { PlayerComponent } from "./types";
 
 class LocalPlayer implements PlayerComponent {
@@ -40,9 +40,9 @@ class LocalPlayer implements PlayerComponent {
     }
   }
 
-  public async onPlay(track: Track) {
-    if (track.source) {
-      this.audio.src = track.source;
+  public async onPlay(request: PlayTrackRequest) {
+    if (request.source) {
+      this.audio.src = request.source;
     }
     this.audio.load();
     await this.audio.play();

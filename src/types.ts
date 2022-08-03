@@ -1,4 +1,4 @@
-import { Track } from "./plugintypes";
+import { PlayTrackRequest } from "./plugintypes";
 
 export interface NetworkRequest {
   body: Blob;
@@ -76,6 +76,6 @@ export interface PlayerComponent {
   [PlayerComponentType.onPause]: () => Promise<void>;
   [PlayerComponentType.onResume]: () => Promise<void>;
   [PlayerComponentType.onSeek]: (time: number) => Promise<void>;
-  [PlayerComponentType.onPlay]: (track: Track) => Promise<void>;
+  [PlayerComponentType.onPlay]: (request: PlayTrackRequest) => Promise<void>;
   [PlayerComponentType.onSetPlaybackRate]: (rate: number) => Promise<void>;
 }

@@ -214,7 +214,10 @@ class AudioComponent extends React.Component<
           });
         }
 
-        await player?.onPlay(newTrack);
+        await player?.onPlay({
+          apiId: newTrack.apiId,
+          source: newTrack.source,
+        });
         this.setMediaSessionMetaData();
         this.lastPlayer = player;
         this.trackLoaded = true;

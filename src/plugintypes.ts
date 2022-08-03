@@ -138,3 +138,8 @@ export interface SearchPlaylistResult {
 export interface GetTrackUrlRequest {
   apiId?: string;
 }
+
+export interface PlayTrackRequest {
+  apiId?: string;
+  source?: string;
+}

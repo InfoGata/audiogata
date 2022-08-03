@@ -18,6 +18,7 @@ import {
   AlbumTrackRequest,
   ArtistAlbumRequest,
   GetTrackUrlRequest,
+  PlayTrackRequest,
 } from "./plugintypes";
 import { PluginFrame, PluginInterface } from "plugin-frame";
 import { db } from "./database";
@@ -56,7 +57,7 @@ export interface PluginMethodInterface extends PlayerComponent {
   onGetArtistAlbums: (
     request: ArtistAlbumRequest
   ) => Promise<ArtistAlbumsResult>;
-  onPlay: (track: Track) => Promise<void>;
+  onPlay: (request: PlayTrackRequest) => Promise<void>;
   onSetVolume: (volume: number) => Promise<void>;
   onPause: () => Promise<void>;
   onResume: () => Promise<void>;
