@@ -134,3 +134,7 @@ export interface SearchPlaylistResult {
   items: PlaylistInfo[];
   pageInfo?: PageInfo;
 }
+
+export interface GetTrackUrlRequest {
+  apiId?: string;
+}

@@ -17,6 +17,7 @@ import {
   AlbumTracksResult,
   AlbumTrackRequest,
   ArtistAlbumRequest,
+  GetTrackUrlRequest,
 } from "./plugintypes";
 import { PluginFrame, PluginInterface } from "plugin-frame";
 import { db } from "./database";
@@ -45,10 +46,10 @@ export interface PluginMethodInterface extends PlayerComponent {
   onNowPlayingTracksRemoved: (tracks: Track[]) => Promise<void>;
   onNowPlayingTracksChanged: (tracks: Track[]) => Promise<void>;
   onNowPlayingTracksSet: (tracks: Track[]) => Promise<void>;
-  onGetTrackUrl: (track: Track) => Promise<string>;
+  onGetTrackUrl: (request: GetTrackUrlRequest) => Promise<string>;
   onUiMessage: (message: any) => Promise<void>;
   onDeepLinkMessage: (message: string) => Promise<void>;
-  onGetAlbumTracks: (album: AlbumTrackRequest) => Promise<AlbumTracksResult>;
+  onGetAlbumTracks: (request: AlbumTrackRequest) => Promise<AlbumTracksResult>;
   onGetPlaylistTracks: (
     request: PlaylistTrackRequest
   ) => Promise<PlaylistTracksResult>;

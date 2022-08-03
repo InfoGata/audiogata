@@ -209,7 +209,9 @@ class AudioComponent extends React.Component<
         if (audioBlob) {
           newTrack.source = URL.createObjectURL(audioBlob.blob);
         } else if (hasPluginApi && pluginFrame) {
-          newTrack.source = await pluginFrame.remote.onGetTrackUrl(newTrack);
+          newTrack.source = await pluginFrame.remote.onGetTrackUrl({
+            apiId: newTrack.apiId,
+          });
         }
 
         await player?.onPlay(newTrack);
