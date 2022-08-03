@@ -35,7 +35,7 @@ const AlbumPage: React.FC = () => {
     const plugin = plugins.find((p) => p.id === pluginid);
     if (plugin && (await plugin.hasDefined.onGetAlbumTracks())) {
       const albumData = await plugin.remote.onGetAlbumTracks({
-        album: { apiId: id },
+        apiId: id,
       });
       setAlbumInfo(albumData.album);
 

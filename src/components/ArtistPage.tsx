@@ -15,9 +15,7 @@ const ArtistPage: React.FC = () => {
   const onGetArtist = async () => {
     const plugin = plugins.find((p) => p.id === pluginid);
     if (plugin && (await plugin.hasDefined.onGetArtistAlbums())) {
-      const artistData = await plugin.remote.onGetArtistAlbums({
-        artist: { apiId: id },
-      });
+      const artistData = await plugin.remote.onGetArtistAlbums({ apiId: id });
       setArtistInfo(artistData.artist);
       return artistData.items;
     }

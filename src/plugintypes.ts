@@ -84,17 +84,18 @@ export interface SearchRequest {
 }
 
 export interface PlaylistTrackRequest {
-  playlist: PlaylistInfo;
+  apiId?: string;
+  isUserPlaylist: boolean;
   page?: PageInfo;
 }
 
 export interface AlbumTrackRequest {
-  album: Album;
+  apiId?: string;
   page?: PageInfo;
 }
 
 export interface ArtistAlbumRequest {
-  artist: Artist;
+  apiId?: string;
   page?: PageInfo;
 }
 
