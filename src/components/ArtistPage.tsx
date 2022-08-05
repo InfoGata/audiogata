@@ -5,6 +5,7 @@ import { useParams } from "react-router";
 import { usePlugins } from "../PluginsContext";
 import { Artist } from "../plugintypes";
 import AlbumSearchResult from "./AlbumSearchResult";
+import PlaylistInfoCard from "./PlaylistInfoCard";
 
 const ArtistPage: React.FC = () => {
   const { pluginid } = useParams<"pluginid">();
@@ -34,6 +35,12 @@ const ArtistPage: React.FC = () => {
       <Backdrop open={query.isLoading}>
         <CircularProgress color="inherit" />
       </Backdrop>
+      {artistInfo && (
+        <PlaylistInfoCard
+          name={artistInfo.name || ""}
+          images={artistInfo.images}
+        />
+      )}
       <Typography variant="h3">{artistInfo?.name}</Typography>
       <List>{albumsList}</List>
     </>
