@@ -6,11 +6,7 @@ import {
 } from "@mui/icons-material";
 import {
   Backdrop,
-  Box,
   Button,
-  Card,
-  CardContent,
-  CardMedia,
   CircularProgress,
   Divider,
   Grid,
@@ -19,7 +15,6 @@ import {
   ListItemText,
   Menu,
   MenuItem,
-  Typography,
 } from "@mui/material";
 import React from "react";
 import { useParams } from "react-router";
@@ -40,8 +35,7 @@ import AddPlaylistDialog from "./AddPlaylistDialog";
 import { useQuery } from "react-query";
 import usePagination from "../hooks/usePagination";
 import { useLocation } from "react-router-dom";
-import thumbnail from "../thumbnail.png";
-import { getThumbnailImage, playlistThumbnailSize } from "../utils";
+import PlaylistInfoCard from "./PlaylistInfoCard";
 
 const PluginPlaylist: React.FC = () => {
   const { pluginid } = useParams<"pluginid">();
@@ -138,35 +132,17 @@ const PluginPlaylist: React.FC = () => {
     dispatch(setTrack(track));
   };
 
-  const onImageError = (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
-    e.currentTarget.src = thumbnail;
-  };
-
-  const playlistCard = (
-    <Card sx={{ display: "flex" }}>
-      <CardMedia
-        component="img"
-        alt={playlistInfo?.name}
-        image={getThumbnailImage(playlistInfo?.images, playlistThumbnailSize)}
-        onError={onImageError}
-        sx={{ height: "200px", width: "200px" }}
-      />
-      <Box sx={{ display: "flex", flexDirection: "column" }}>
-        <CardContent sx={{ flex: "1 0 auto" }}>
-          <Typography component="div" variant="h5">
-            {playlistInfo?.name}
-          </Typography>
-        </CardContent>
-      </Box>
-    </Card>
-  );
-
   return (
     <>
       <Backdrop open={query.isLoading}>
         <CircularProgress color="inherit" />
       </Backdrop>
-      {playlistInfo && playlistCard}
+      {playlistInfo && (
+        <PlaylistInfoCard
+          name={playlistInfo.name || ""}
+          images={playlistInfo.images}
+        />
+      )}
       <IconButton size="large" onClick={onPlayClick}>
         <PlayCircle color="success" sx={{ fontSize: 45 }} />
       </IconButton>

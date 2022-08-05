@@ -2,7 +2,6 @@ import { PlayCircle, PlaylistAdd } from "@mui/icons-material";
 import {
   Backdrop,
   CircularProgress,
-  Typography,
   Menu,
   MenuItem,
   ListItemIcon,
@@ -19,6 +18,7 @@ import { Album, Track } from "../plugintypes";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
 import { setTracks, setTrack, playQueue } from "../store/reducers/trackReducer";
 import AddPlaylistDialog from "./AddPlaylistDialog";
+import PlaylistInfoCard from "./PlaylistInfoCard";
 import PlaylistMenuItem from "./PlaylistMenuItem";
 import TrackList from "./TrackList";
 
@@ -92,7 +92,17 @@ const AlbumPage: React.FC = () => {
       <Backdrop open={query.isLoading}>
         <CircularProgress color="inherit" />
       </Backdrop>
-      <Typography variant="h3">{albumInfo?.name}</Typography>
+      {albumInfo && (
+        <PlaylistInfoCard
+          name={albumInfo.name || ""}
+          subtitle={albumInfo.artistName}
+          subtitleLink={
+            albumInfo.artistApiId &&
+            `/plugins/${pluginid}/artists/${albumInfo.artistApiId}`
+          }
+          images={albumInfo.images}
+        />
+      )}
       <IconButton size="large" onClick={onPlayClick}>
         <PlayCircle color="success" sx={{ fontSize: 45 }} />
       </IconButton>
