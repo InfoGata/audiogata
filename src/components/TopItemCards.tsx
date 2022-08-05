@@ -11,6 +11,7 @@ import {
   ListItemText,
   Menu,
   MenuItem,
+  Stack,
   Typography,
 } from "@mui/material";
 import React from "react";
@@ -25,15 +26,12 @@ import PlaylistMenuItem from "./PlaylistMenuItem";
 import SelectPlugin from "./SelectPlugin";
 
 const TopItemCards: React.FC = () => {
-  const [anchorPosition, setAnchorPosition] = React.useState<{
-    xPosition: number;
-    yPosition: number;
-  } | null>(null);
+  const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null);
   const [menuTrack, setMenuTrack] = React.useState<Track>({} as Track);
   const [pluginId, setPluginId] = React.useState("");
   const { plugins } = usePlugins();
   const dispatch = useAppDispatch();
-  const closeMenu = () => setAnchorPosition(null);
+  const closeMenu = () => setAnchorEl(null);
   const playlists = useAppSelector((state) => state.playlist.playlists);
   const [playlistDialogOpen, setPlaylistDialogOpen] = React.useState(false);
   const closePlaylistDialog = () => setPlaylistDialogOpen(false);
@@ -46,8 +44,7 @@ const TopItemCards: React.FC = () => {
     event.stopPropagation();
     event.preventDefault();
     setMenuTrack(track);
-    const box = currentTarget.getBoundingClientRect();
-    setAnchorPosition({ xPosition: box.left, yPosition: box.top });
+    setAnchorEl(currentTarget);
   };
 
   const getTopItems = async () => {
@@ -83,34 +80,25 @@ const TopItemCards: React.FC = () => {
           display: "inline-block",
           margin: "10px",
           whiteSpace: "pre-wrap",
-          "& .optionsButton": { display: "none" },
-          "&:hover": {
-            ".optionsButton": {
-              display: "block",
-            },
-          },
         }}
       >
-        <IconButton
-          sx={{ position: "absolute", zIndex: 1 }}
-          className="optionsButton"
-          size="large"
-          onClick={openTrackMenu}
-        >
-          <MoreHoriz />
-        </IconButton>
         <CardActionArea onClick={onClickTrack}>
           <CardMedia component="img" src={image} sx={{ height: 200 }} />
-          <CardContent>
-            <Typography
-              title={t.name}
-              gutterBottom
-              variant="body2"
-              component="p"
-              noWrap
-            >
-              {t.name}
-            </Typography>
+          <CardContent sx={{ padding: "8px" }}>
+            <Stack direction="row" alignItems="center" gap={1}>
+              <IconButton size="small" onClick={openTrackMenu}>
+                <MoreHoriz />
+              </IconButton>
+              <Typography
+                title={t.name}
+                gutterBottom
+                variant="body2"
+                component="span"
+                noWrap
+              >
+                {t.name}
+              </Typography>
+            </Stack>
           </CardContent>
         </CardActionArea>
       </Card>
@@ -148,16 +136,7 @@ const TopItemCards: React.FC = () => {
           </Grid>
         </Grid>
       </Fade>
-      <Menu
-        open={Boolean(anchorPosition)}
-        onClose={closeMenu}
-        anchorReference="anchorPosition"
-        anchorPosition={
-          anchorPosition !== null
-            ? { top: anchorPosition.yPosition, left: anchorPosition.xPosition }
-            : undefined
-        }
-      >
+      <Menu open={Boolean(anchorEl)} onClose={closeMenu} anchorEl={anchorEl}>
         <MenuItem onClick={addToNewPlaylist}>
           <ListItemIcon>
             <PlaylistAdd />
