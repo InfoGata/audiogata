@@ -4,6 +4,7 @@ import { ImageInfo } from "../plugintypes";
 import { getThumbnailImage, playlistThumbnailSize } from "../utils";
 import thumbnail from "../thumbnail.png";
 import { Link } from "react-router-dom";
+import DOMPurify from "dompurify";
 
 interface PlaylistInfoCardProps {
   name: string;
@@ -14,6 +15,7 @@ interface PlaylistInfoCardProps {
 
 const PlaylistInfoCard: React.FC<PlaylistInfoCardProps> = (props) => {
   const { name, subtitle, images, subtitleLink } = props;
+  const sanitizer = DOMPurify.sanitize;
 
   const onImageError = (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
     e.currentTarget.src = thumbnail;
@@ -30,18 +32,23 @@ const PlaylistInfoCard: React.FC<PlaylistInfoCardProps> = (props) => {
       />
       <Box sx={{ display: "flex", flexDirection: "column" }}>
         <CardContent sx={{ flex: "1 0 auto" }}>
-          <Typography component="div" variant="h5">
-            {name}
-          </Typography>
+          <Typography
+            component="div"
+            variant="h5"
+            dangerouslySetInnerHTML={{
+              __html: sanitizer(name),
+            }}
+          />
           {subtitle && (
             <Typography
               component={subtitleLink ? Link : "div"}
               to={subtitleLink ? subtitleLink : undefined}
               variant="subtitle1"
               color="text.secondary"
-            >
-              {subtitle}
-            </Typography>
+              dangerouslySetInnerHTML={{
+                __html: sanitizer(subtitle || ""),
+              }}
+            />
           )}
         </CardContent>
       </Box>

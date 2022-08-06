@@ -45,15 +45,19 @@ const PluginPlaylist: React.FC = () => {
   const [currentPage, setCurrentPage] = React.useState<PageInfo>();
   const [menuTrack, setMenuTrack] = React.useState<Track>({} as Track);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-  const [playlistInfo, setPlaylistInfo] = React.useState<PlaylistInfo>();
+  const location = useLocation();
+  const state = location.state as PlaylistInfo | null;
+  const [playlistInfo, setPlaylistInfo] = React.useState<PlaylistInfo | null>(
+    state
+  );
   const dispatch = useAppDispatch();
   const playlists = useAppSelector((state) => state.playlist.playlists);
   const { page, hasNextPage, hasPreviousPage, onPreviousPage, onNextPage } =
     usePagination(currentPage);
-  const location = useLocation();
   const params = new URLSearchParams(location.search);
 
   const getPlaylistTracks = async () => {
+    console.log(location);
     if (plugin && (await plugin.hasDefined.onGetPlaylistTracks())) {
       const t = await plugin.remote.onGetPlaylistTracks({
         apiId: id,
@@ -61,7 +65,9 @@ const PluginPlaylist: React.FC = () => {
         page,
       });
 
-      setPlaylistInfo(t.playlist);
+      if (t.playlist) {
+        setPlaylistInfo(t.playlist);
+      }
       setCurrentPage(t.pageInfo);
       t.items.forEach((t) => {
         t.id = nanoid();

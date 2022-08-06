@@ -26,6 +26,7 @@ const PlaylistSearchResult: React.FC<PlaylistSearchResultProps> = (props) => {
       button={true}
       component={Link}
       to={`/plugins/${pluginId}/playlists/${playlist.apiId}`}
+      state={playlist}
     >
       <ListItemAvatar>
         <Avatar alt={playlist.name} src={image} style={{ borderRadius: 0 }} />
