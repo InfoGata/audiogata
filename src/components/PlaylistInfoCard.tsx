@@ -42,7 +42,7 @@ const PlaylistInfoCard: React.FC<PlaylistInfoCardProps> = (props) => {
           {subtitle && (
             <Typography
               component={subtitleLink ? Link : "div"}
-              to={subtitleLink ? subtitleLink : undefined}
+              to={subtitleLink}
               variant="subtitle1"
               color="text.secondary"
               dangerouslySetInnerHTML={{

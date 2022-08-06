@@ -11,7 +11,7 @@ import {
 import { nanoid } from "@reduxjs/toolkit";
 import React from "react";
 import { useQuery } from "react-query";
-import { useParams } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 import useSelected from "../hooks/useSelected";
 import { usePlugins } from "../PluginsContext";
 import { Album, Track } from "../plugintypes";
@@ -26,7 +26,8 @@ const AlbumPage: React.FC = () => {
   const { pluginid } = useParams<"pluginid">();
   const { id } = useParams<"id">();
   const { plugins, pluginsLoaded } = usePlugins();
-  const [albumInfo, setAlbumInfo] = React.useState<Album>();
+  const state = useLocation().state as Album | null;
+  const [albumInfo, setAlbumInfo] = React.useState<Album | null>(state);
   const [menuTrack, setMenuTrack] = React.useState<Track>({} as Track);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const playlists = useAppSelector((state) => state.playlist.playlists);
@@ -37,7 +38,9 @@ const AlbumPage: React.FC = () => {
       const albumData = await plugin.remote.onGetAlbumTracks({
         apiId: id,
       });
-      setAlbumInfo(albumData.album);
+      if (albumData.album) {
+        setAlbumInfo(albumData.album);
+      }
 
       albumData.items.forEach((t) => {
         t.id = nanoid();

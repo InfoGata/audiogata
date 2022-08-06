@@ -18,6 +18,7 @@ const ArtistSearchResult: React.FC<ArtistSearchResultProps> = (props) => {
       button={true}
       component={Link}
       to={`/plugins/${pluginId}/artists/${artist.apiId}`}
+      state={artist}
     >
       <ListItemAvatar>
         <Avatar alt={artist.name} src={image} style={{ borderRadius: 0 }} />

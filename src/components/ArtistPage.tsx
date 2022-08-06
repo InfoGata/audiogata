@@ -2,6 +2,7 @@ import { Backdrop, CircularProgress, List, Typography } from "@mui/material";
 import React from "react";
 import { useQuery } from "react-query";
 import { useParams } from "react-router";
+import { useLocation } from "react-router-dom";
 import { usePlugins } from "../PluginsContext";
 import { Artist } from "../plugintypes";
 import AlbumSearchResult from "./AlbumSearchResult";
@@ -11,13 +12,16 @@ const ArtistPage: React.FC = () => {
   const { pluginid } = useParams<"pluginid">();
   const { id } = useParams<"id">();
   const { plugins, pluginsLoaded } = usePlugins();
-  const [artistInfo, setArtistInfo] = React.useState<Artist>();
+  const state = useLocation().state as Artist | null;
+  const [artistInfo, setArtistInfo] = React.useState<Artist | null>(state);
 
   const onGetArtist = async () => {
     const plugin = plugins.find((p) => p.id === pluginid);
     if (plugin && (await plugin.hasDefined.onGetArtistAlbums())) {
       const artistData = await plugin.remote.onGetArtistAlbums({ apiId: id });
-      setArtistInfo(artistData.artist);
+      if (artistData.artist) {
+        setArtistInfo(artistData.artist);
+      }
       return artistData.items;
     }
     return [];

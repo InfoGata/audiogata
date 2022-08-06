@@ -19,6 +19,7 @@ const AlbumSearchResult: React.FC<AlbumSearchResultProps> = (props) => {
       button={true}
       component={Link}
       to={`/plugins/${pluginId}/albums/${album.apiId}`}
+      state={album}
     >
       <ListItemAvatar>
         <Avatar alt={album.name} src={image} style={{ borderRadius: 0 }} />
