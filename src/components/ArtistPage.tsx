@@ -45,7 +45,6 @@ const ArtistPage: React.FC = () => {
           images={artistInfo.images}
         />
       )}
-      <Typography variant="h3">{artistInfo?.name}</Typography>
       <List>{albumsList}</List>
     </>
   );
