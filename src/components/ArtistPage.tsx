@@ -1,4 +1,4 @@
-import { Backdrop, CircularProgress, List, Typography } from "@mui/material";
+import { Backdrop, CircularProgress, List } from "@mui/material";
 import React from "react";
 import { useQuery } from "react-query";
 import { useParams } from "react-router";
