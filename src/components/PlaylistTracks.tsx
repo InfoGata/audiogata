@@ -42,7 +42,7 @@ import SelectTrackListPlugin from "./SelectTrackListPlugin";
 import SelectionEditDialog from "./SelectionEditDialog";
 
 const PlaylistTracks: React.FC = () => {
-  const { id } = useParams<"id">();
+  const { playlistId } = useParams<"playlistId">();
   const dispatch = useAppDispatch();
   const [playlist, setPlaylist] = React.useState<PlaylistInfo | undefined>();
   const [loaded, setLoaded] = React.useState(false);
@@ -53,13 +53,13 @@ const PlaylistTracks: React.FC = () => {
   const [openEditMenu, setOpenEditMenu] = React.useState(false);
   const [editSelectDialogOpen, setEditSelectDialogOpen] = React.useState(false);
   const { plugins } = usePlugins();
-  const infoPath = `/playlists/${id}/tracks/${menuTrack.id}`;
+  const infoPath = `/playlists/${playlistId}/tracks/${menuTrack.id}`;
   const closeMenu = () => setAnchorEl(null);
   const [tracklist, setTracklist] = React.useState<Track[]>([]);
   const { onSelect, onSelectAll, isSelected, selected, setSelected } =
     useSelected(tracklist || []);
   const playlistInfo = useAppSelector((state) =>
-    state.playlist.playlists.find((p) => p.id === id)
+    state.playlist.playlists.find((p) => p.id === playlistId)
   );
 
   const openEditSelectDialog = () => setEditSelectDialogOpen(true);
@@ -72,7 +72,7 @@ const PlaylistTracks: React.FC = () => {
     React.useState<null | HTMLElement>(null);
 
   const playlists = useAppSelector((state) =>
-    state.playlist.playlists.filter((p) => p.id !== id)
+    state.playlist.playlists.filter((p) => p.id !== playlistId)
   );
   const selectedTracks = tracklist.filter((t) => selected.has(t.id ?? ""));
 
@@ -89,15 +89,15 @@ const PlaylistTracks: React.FC = () => {
 
   React.useEffect(() => {
     const getPlaylist = async () => {
-      if (id) {
-        const playlist = await db.playlists.get(id);
-        setPlaylist(await db.playlists.get(id));
+      if (playlistId) {
+        const playlist = await db.playlists.get(playlistId);
+        setPlaylist(await db.playlists.get(playlistId));
         setTracklist(playlist?.tracks ?? []);
         setLoaded(true);
       }
     };
     getPlaylist();
-  }, [id]);
+  }, [playlistId]);
 
   const playPlaylist = () => {
     if (!playlist) {

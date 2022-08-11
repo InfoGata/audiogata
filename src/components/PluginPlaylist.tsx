@@ -38,10 +38,10 @@ import { useLocation } from "react-router-dom";
 import PlaylistInfoCard from "./PlaylistInfoCard";
 
 const PluginPlaylist: React.FC = () => {
-  const { pluginid } = useParams<"pluginid">();
-  const { id } = useParams<"id">();
+  const { pluginId } = useParams<"pluginId">();
+  const { apiId } = useParams<"apiId">();
   const { plugins, pluginsLoaded } = usePlugins();
-  const plugin = plugins.find((p) => p.id === pluginid);
+  const plugin = plugins.find((p) => p.id === pluginId);
   const [currentPage, setCurrentPage] = React.useState<PageInfo>();
   const [menuTrack, setMenuTrack] = React.useState<Track>({} as Track);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -59,7 +59,7 @@ const PluginPlaylist: React.FC = () => {
   const getPlaylistTracks = async () => {
     if (plugin && (await plugin.hasDefined.onGetPlaylistTracks())) {
       const t = await plugin.remote.onGetPlaylistTracks({
-        apiId: id,
+        apiId: apiId,
         isUserPlaylist: params.has("isuserplaylist"),
         page,
       });
@@ -77,7 +77,7 @@ const PluginPlaylist: React.FC = () => {
   };
 
   const query = useQuery(
-    ["pluginplaylist", pluginid, id, page],
+    ["pluginplaylist", pluginId, apiId, page],
     getPlaylistTracks,
     { enabled: pluginsLoaded }
   );

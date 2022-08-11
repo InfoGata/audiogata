@@ -23,8 +23,8 @@ import PlaylistMenuItem from "./PlaylistMenuItem";
 import TrackList from "./TrackList";
 
 const AlbumPage: React.FC = () => {
-  const { pluginid } = useParams<"pluginid">();
-  const { id } = useParams<"id">();
+  const { pluginId } = useParams<"pluginId">();
+  const { apiId } = useParams<"apiId">();
   const { plugins, pluginsLoaded } = usePlugins();
   const state = useLocation().state as Album | null;
   const [albumInfo, setAlbumInfo] = React.useState<Album | null>(state);
@@ -33,10 +33,10 @@ const AlbumPage: React.FC = () => {
   const playlists = useAppSelector((state) => state.playlist.playlists);
   const dispatch = useAppDispatch();
   const onGetAlbum = async () => {
-    const plugin = plugins.find((p) => p.id === pluginid);
+    const plugin = plugins.find((p) => p.id === pluginId);
     if (plugin && (await plugin.hasDefined.onGetAlbumTracks())) {
       const albumData = await plugin.remote.onGetAlbumTracks({
-        apiId: id,
+        apiId: apiId,
       });
       if (albumData.album) {
         setAlbumInfo(albumData.album);
@@ -54,7 +54,7 @@ const AlbumPage: React.FC = () => {
   const openPlaylistDialog = () => setPlaylistDialogOpen(true);
   const closePlaylistDialog = () => setPlaylistDialogOpen(false);
 
-  const query = useQuery(["albumpage", pluginid, id], onGetAlbum, {
+  const query = useQuery(["albumpage", pluginId, apiId], onGetAlbum, {
     enabled: pluginsLoaded,
   });
   const tracklist = query.data || [];
@@ -101,7 +101,7 @@ const AlbumPage: React.FC = () => {
           subtitle={albumInfo.artistName}
           subtitleLink={
             albumInfo.artistApiId &&
-            `/plugins/${pluginid}/artists/${albumInfo.artistApiId}`
+            `/plugins/${pluginId}/artists/${albumInfo.artistApiId}`
           }
           images={albumInfo.images}
         />

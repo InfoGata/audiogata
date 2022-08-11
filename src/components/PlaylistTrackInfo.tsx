@@ -6,23 +6,25 @@ import { Track } from "../plugintypes";
 import TrackInfo from "./TrackInfo";
 
 const PlaylistTrackInfo: React.FC = () => {
-  const { id } = useParams<"id">();
-  const { playlistid } = useParams<"playlistid">();
+  const { trackId } = useParams<"trackId">();
+  const { playlistId } = useParams<"playlistId">();
   const [backdropOpen, setBackdropOpen] = React.useState(false);
   const [track, setTrack] = React.useState<Track>();
+
   React.useEffect(() => {
     const getTrack = async () => {
       setBackdropOpen(true);
-      if (playlistid) {
-        const playlist = await db.playlists.get(playlistid);
-        const track = playlist?.tracks.find((t) => t.id === id);
+      if (playlistId) {
+        const playlist = await db.playlists.get(playlistId);
+        const track = playlist?.tracks.find((t) => t.id === trackId);
         setTrack(track);
       }
       setBackdropOpen(false);
     };
 
     getTrack();
-  }, [id, playlistid]);
+  }, [trackId, playlistId]);
+
   return (
     <>
       <Backdrop open={backdropOpen}>

@@ -13,22 +13,22 @@ import { getFileTypeFromPluginUrl, getPlugin } from "../utils";
 import { usePlugins } from "../PluginsContext";
 
 const PluginDetails: React.FC = () => {
-  const { id } = useParams<"id">();
+  const { pluginId } = useParams<"pluginId">();
   const [plugin, setPlugin] = React.useState<PluginInfo>();
   const [scriptSize, setScriptSize] = React.useState(0);
   const [optionSize, setOptionsSize] = React.useState(0);
   const { updatePlugin } = usePlugins();
 
   const loadPluginFromDb = React.useCallback(async () => {
-    const p = await db.plugins.get(id || "");
+    const p = await db.plugins.get(pluginId || "");
     setPlugin(p);
     const scriptBlob = new Blob([p?.script || ""]);
     setScriptSize(scriptBlob.size);
     if (p?.optionsHtml) {
-      const optionsBlob = new Blob([p?.optionsHtml]);
+      const optionsBlob = new Blob([p.optionsHtml]);
       setOptionsSize(optionsBlob.size);
     }
-  }, [id]);
+  }, [pluginId]);
 
   React.useEffect(() => {
     loadPluginFromDb();

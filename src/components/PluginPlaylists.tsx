@@ -18,8 +18,8 @@ import { useQuery } from "react-query";
 
 const PluginPlaylists: React.FC = () => {
   const { plugins } = usePlugins();
-  const { id } = useParams<"id">();
-  const plugin = plugins.find((p) => p.id === id);
+  const { pluginId } = useParams<"pluginId">();
+  const plugin = plugins.find((p) => p.id === pluginId);
 
   const getPlaylists = async () => {
     if (plugin && (await plugin.hasDefined.onGetUserPlaylists())) {
@@ -30,7 +30,7 @@ const PluginPlaylists: React.FC = () => {
     return [];
   };
 
-  const query = useQuery(["pluginplaylists", id], getPlaylists);
+  const query = useQuery(["pluginplaylists", pluginId], getPlaylists);
   const playlists = query.data || [];
 
   const onImageError = (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
@@ -42,7 +42,7 @@ const PluginPlaylists: React.FC = () => {
       <Card>
         <CardActionArea
           component={Link}
-          to={`/plugins/${id}/playlists/${p.apiId}?isuserplaylist`}
+          to={`/plugins/${pluginId}/playlists/${p.apiId}?isuserplaylist`}
         >
           <CardMedia
             component={"img"}

@@ -27,23 +27,32 @@ const Routing: React.FC = () => {
         <Route path="/nowplaying" element={<NowPlaying />} />
         <Route path="/plugins" element={<Plugins />} />
         <Route path="/playlists" element={<Playlists />} />
-        <Route path="/playlists/:id" element={<PlaylistTracks />} />
+        <Route path="/playlists/:playlistId" element={<PlaylistTracks />} />
         <Route path="/settings" element={<Settings />} />
         <Route path="/search" element={<Search />} />
-        <Route path="/plugins/:id/playlists" element={<PluginPlaylists />} />
         <Route
-          path="/plugins/:pluginid/playlists/:id"
+          path="/plugins/:pluginId/playlists"
+          element={<PluginPlaylists />}
+        />
+        <Route
+          path="/plugins/:pluginId/playlists/:apiId"
           element={<PluginPlaylist />}
         />
-        <Route path="/plugins/:pluginid/artists/:id" element={<ArtistPage />} />
-        <Route path="/plugins/:pluginid/albums/:id" element={<AlbumPage />} />
-        <Route path="/track/:id" element={<QueueTrackInfo />} />
         <Route
-          path="/playlists/:playlistid/tracks/:id"
+          path="/plugins/:pluginId/artists/:apiId"
+          element={<ArtistPage />}
+        />
+        <Route
+          path="/plugins/:pluginId/albums/:apiId"
+          element={<AlbumPage />}
+        />
+        <Route path="/track/:trackId" element={<QueueTrackInfo />} />
+        <Route
+          path="/playlists/:playlistId/tracks/:trackId"
           element={<PlaylistTrackInfo />}
         />
-        <Route path="/plugins/:id" element={<PluginDetails />} />
-        <Route path="/plugins/:id/options" element={<PluginOptions />} />
+        <Route path="/plugins/:pluginId" element={<PluginDetails />} />
+        <Route path="/plugins/:pluginId/options" element={<PluginOptions />} />
       </Routes>
       <DrawerHeader />
     </Box>

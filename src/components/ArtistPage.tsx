@@ -9,16 +9,18 @@ import AlbumSearchResult from "./AlbumSearchResult";
 import PlaylistInfoCard from "./PlaylistInfoCard";
 
 const ArtistPage: React.FC = () => {
-  const { pluginid } = useParams<"pluginid">();
-  const { id } = useParams<"id">();
+  const { pluginId } = useParams<"pluginId">();
+  const { apiId } = useParams<"apiId">();
   const { plugins, pluginsLoaded } = usePlugins();
   const state = useLocation().state as Artist | null;
   const [artistInfo, setArtistInfo] = React.useState<Artist | null>(state);
 
   const onGetArtist = async () => {
-    const plugin = plugins.find((p) => p.id === pluginid);
+    const plugin = plugins.find((p) => p.id === pluginId);
     if (plugin && (await plugin.hasDefined.onGetArtistAlbums())) {
-      const artistData = await plugin.remote.onGetArtistAlbums({ apiId: id });
+      const artistData = await plugin.remote.onGetArtistAlbums({
+        apiId: apiId,
+      });
       if (artistData.artist) {
         setArtistInfo(artistData.artist);
       }
@@ -27,13 +29,14 @@ const ArtistPage: React.FC = () => {
     return [];
   };
 
-  const query = useQuery(["artistpage", pluginid, id], onGetArtist, {
+  const query = useQuery(["artistpage", pluginId, apiId], onGetArtist, {
     enabled: pluginsLoaded,
   });
 
   const albumsList = query.data?.map((a) => (
-    <AlbumSearchResult key={a.apiId} album={a} pluginId={pluginid || ""} />
+    <AlbumSearchResult key={a.apiId} album={a} pluginId={pluginId || ""} />
   ));
+
   return (
     <>
       <Backdrop open={query.isLoading}>

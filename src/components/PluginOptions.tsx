@@ -6,10 +6,10 @@ import { db } from "../database";
 import { Grid, Typography } from "@mui/material";
 
 const PluginOptions: React.FC = () => {
-  const { id } = useParams<"id">();
+  const { pluginId } = useParams<"pluginId">();
   const { plugins, pluginMessage } = usePlugins();
   const ref = React.useRef<HTMLIFrameElement>(null);
-  const plugin = plugins.find((p) => p.id === id);
+  const plugin = plugins.find((p) => p.id === pluginId);
   const [optionsHtml, setOptionsHtml] = React.useState<string>();
 
   const iframeListener = React.useCallback(
