@@ -24,7 +24,7 @@ import PlaylistMenuItem from "./PlaylistMenuItem";
 import { addTrack } from "../store/reducers/trackReducer";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
 import { usePlugins } from "../PluginsContext";
-import { ResultType } from "../types";
+import { SearchResultType } from "../types";
 import SelectPlugin from "./SelectPlugin";
 import { useQuery } from "react-query";
 
@@ -79,13 +79,13 @@ const Search: React.FC = () => {
     }
 
     if (tracks) {
-      setTabValue(ResultType.Tracks);
+      setTabValue(SearchResultType.Tracks);
     } else if (albums) {
-      setTabValue(ResultType.Albums);
+      setTabValue(SearchResultType.Albums);
     } else if (artists) {
-      setTabValue(ResultType.Artists);
+      setTabValue(SearchResultType.Artists);
     } else if (playlists) {
-      setTabValue(ResultType.Playlists);
+      setTabValue(SearchResultType.Playlists);
     }
 
     return {
@@ -222,29 +222,29 @@ const Search: React.FC = () => {
           variant="fullWidth"
         >
           {trackList && trackList.length > 0 ? (
-            <Tab label="Tracks" value={ResultType.Tracks} />
+            <Tab label="Tracks" value={SearchResultType.Tracks} />
           ) : null}
           {albumList && albumList.length > 0 ? (
-            <Tab label="Albums" value={ResultType.Albums} />
+            <Tab label="Albums" value={SearchResultType.Albums} />
           ) : null}
           {artistList && artistList.length > 0 ? (
-            <Tab label="Artists" value={ResultType.Artists} />
+            <Tab label="Artists" value={SearchResultType.Artists} />
           ) : null}
           {playlistList && playlistList.length > 0 ? (
-            <Tab label="Playlists" value={ResultType.Playlists} />
+            <Tab label="Playlists" value={SearchResultType.Playlists} />
           ) : null}
         </Tabs>
       </AppBar>
-      <TabPanel value={tabValue} index={ResultType.Tracks}>
+      <TabPanel value={tabValue} index={SearchResultType.Tracks}>
         <List dense={true}>{trackList}</List>
       </TabPanel>
-      <TabPanel value={tabValue} index={ResultType.Albums}>
+      <TabPanel value={tabValue} index={SearchResultType.Albums}>
         <List dense={true}>{albumList}</List>
       </TabPanel>
-      <TabPanel value={tabValue} index={ResultType.Artists}>
+      <TabPanel value={tabValue} index={SearchResultType.Artists}>
         <List dense={true}>{artistList}</List>
       </TabPanel>
-      <TabPanel value={tabValue} index={ResultType.Playlists}>
+      <TabPanel value={tabValue} index={SearchResultType.Playlists}>
         <List dense={true}>{playlistList}</List>
       </TabPanel>
       <Menu open={Boolean(anchorEl)} onClose={closeMenu} anchorEl={anchorEl}>

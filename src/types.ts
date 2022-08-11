@@ -55,7 +55,7 @@ export interface ManifestOptions {
   sameOrigin?: boolean;
 }
 
-export const enum ResultType {
+export const enum SearchResultType {
   Tracks = "tracks",
   Albums = "albums",
   Artists = "artists",

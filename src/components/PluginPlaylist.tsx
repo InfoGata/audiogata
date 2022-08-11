@@ -57,7 +57,6 @@ const PluginPlaylist: React.FC = () => {
   const params = new URLSearchParams(location.search);
 
   const getPlaylistTracks = async () => {
-    console.log(location);
     if (plugin && (await plugin.hasDefined.onGetPlaylistTracks())) {
       const t = await plugin.remote.onGetPlaylistTracks({
         apiId: id,
