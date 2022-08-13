@@ -46,14 +46,14 @@ const PlaylistTracks: React.FC = () => {
   const dispatch = useAppDispatch();
   const [playlist, setPlaylist] = React.useState<PlaylistInfo | undefined>();
   const [loaded, setLoaded] = React.useState(false);
-  const [menuTrack, setMenuTrack] = React.useState<Track>({} as Track);
+  const [menuTrack, setMenuTrack] = React.useState<Track>();
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [hasBlob, setHasBlob] = React.useState(false);
   const [canOffline, setCanOffline] = React.useState(false);
   const [openEditMenu, setOpenEditMenu] = React.useState(false);
   const [editSelectDialogOpen, setEditSelectDialogOpen] = React.useState(false);
   const { plugins } = usePlugins();
-  const infoPath = `/playlists/${playlistId}/tracks/${menuTrack.id}`;
+  const infoPath = `/playlists/${playlistId}/tracks/${menuTrack?.id}`;
   const closeMenu = () => setAnchorEl(null);
   const [tracklist, setTracklist] = React.useState<Track[]>([]);
   const { onSelect, onSelectAll, isSelected, selected, setSelected } =
@@ -135,10 +135,10 @@ const PlaylistTracks: React.FC = () => {
   };
 
   const deleteClick = async () => {
-    if (menuTrack.id) {
+    if (menuTrack?.id) {
       await db.audioBlobs.delete(menuTrack.id);
     }
-    if (playlist) {
+    if (playlist && menuTrack) {
       const newTracklist = tracklist.filter((t) => t.id !== menuTrack.id);
       dispatch(setPlaylistTracks(playlist, newTracklist));
       setTracklist(newTracklist);
@@ -159,7 +159,7 @@ const PlaylistTracks: React.FC = () => {
 
   const enablePlayingOffline = async () => {
     try {
-      if (menuTrack.pluginId) {
+      if (menuTrack && menuTrack.pluginId) {
         const pluginFrame = plugins.find((p) => p.id === menuTrack.pluginId);
         if (!(await pluginFrame?.hasDefined.onGetTrackUrl())) {
           return;
@@ -177,7 +177,7 @@ const PlaylistTracks: React.FC = () => {
   };
 
   const disablePlayingOffline = async () => {
-    if (menuTrack.id) {
+    if (menuTrack?.id) {
       await db.audioBlobs.delete(menuTrack.id);
     }
     closeMenu();
@@ -208,7 +208,9 @@ const PlaylistTracks: React.FC = () => {
   };
 
   const addTrackToQueue = () => {
-    dispatch(addTrack(menuTrack));
+    if (menuTrack) {
+      dispatch(addTrack(menuTrack));
+    }
     closeMenu();
   };
 
@@ -343,7 +345,7 @@ const PlaylistTracks: React.FC = () => {
               <PlaylistMenuItem
                 key={p.id}
                 playlist={p}
-                tracks={[menuTrack]}
+                tracks={menuTrack ? [menuTrack] : []}
                 closeMenu={closeMenu}
                 namePrefix="Add track to "
               />

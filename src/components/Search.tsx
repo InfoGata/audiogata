@@ -55,7 +55,7 @@ const Search: React.FC = () => {
   const [pluginId, setPluginId] = React.useState("");
   const [tabValue, setTabValue] = React.useState<string | boolean>(false);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-  const [menuTrack, setMenuTrack] = React.useState<Track>({} as Track);
+  const [menuTrack, setMenuTrack] = React.useState<Track>();
   const location = useLocation();
   const playlists = useAppSelector((state) => state.playlist.playlists);
   const params = new URLSearchParams(location.search);
@@ -107,7 +107,9 @@ const Search: React.FC = () => {
   };
   const closeMenu = () => setAnchorEl(null);
   const addTrackToQueue = () => {
-    dispatch(addTrack(menuTrack));
+    if (menuTrack) {
+      dispatch(addTrack(menuTrack));
+    }
     closeMenu();
   };
   const trackList = query.data?.tracks.map((track) => (
@@ -258,7 +260,7 @@ const Search: React.FC = () => {
           <PlaylistMenuItem
             key={p.id}
             playlist={p}
-            tracks={[menuTrack]}
+            tracks={menuTrack ? [menuTrack] : []}
             closeMenu={closeMenu}
           />
         ))}

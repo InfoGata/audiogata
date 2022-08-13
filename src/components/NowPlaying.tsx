@@ -37,7 +37,7 @@ import SelectionEditDialog from "./SelectionEditDialog";
 
 const PlayQueue: React.FC = () => {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-  const [menuTrack, setMenuTrack] = React.useState<Track>({} as Track);
+  const [menuTrack, setMenuTrack] = React.useState<Track>();
   const [playlistDialogTracks, setPlaylistDialogTracks] = React.useState<
     Track[]
   >([]);
@@ -70,11 +70,13 @@ const PlayQueue: React.FC = () => {
 
   const trackList = useAppSelector((state) => state.track.tracks);
   const deleteClick = async () => {
-    if (menuTrack.id) {
+    if (menuTrack?.id) {
       await db.audioBlobs.delete(menuTrack.id);
     }
     closeMenu();
-    dispatch(deleteTrack(menuTrack));
+    if (menuTrack) {
+      dispatch(deleteTrack(menuTrack));
+    }
   };
   const closePlaylistDialog = () => setPlaylistDialogOpen(false);
 
@@ -82,7 +84,7 @@ const PlayQueue: React.FC = () => {
     useSelected(trackList);
 
   const addTrackToNewPlaylist = () => {
-    setPlaylistDialogTracks([menuTrack]);
+    setPlaylistDialogTracks(menuTrack ? [menuTrack] : []);
     setPlaylistDialogOpen(true);
     closeMenu();
   };
@@ -106,7 +108,7 @@ const PlayQueue: React.FC = () => {
   };
 
   const playlists = useAppSelector((state) => state.playlist.playlists);
-  const infoPath = `/track/${menuTrack.id}`;
+  const infoPath = `/track/${menuTrack?.id}`;
 
   const onTrackClick = (track: Track) => {
     dispatch(setTrack(track));
@@ -231,7 +233,7 @@ const PlayQueue: React.FC = () => {
           <PlaylistMenuItem
             key={p.id}
             playlist={p}
-            tracks={[menuTrack]}
+            tracks={menuTrack ? [menuTrack] : []}
             closeMenu={closeMenu}
           />
         ))}

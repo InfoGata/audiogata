@@ -43,7 +43,7 @@ const PluginPlaylist: React.FC = () => {
   const { plugins, pluginsLoaded } = usePlugins();
   const plugin = plugins.find((p) => p.id === pluginId);
   const [currentPage, setCurrentPage] = React.useState<PageInfo>();
-  const [menuTrack, setMenuTrack] = React.useState<Track>({} as Track);
+  const [menuTrack, setMenuTrack] = React.useState<Track>();
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const location = useLocation();
   const state = location.state as PlaylistInfo | null;
@@ -165,7 +165,7 @@ const PluginPlaylist: React.FC = () => {
         dragDisabled={true}
       />
       <AddPlaylistDialog
-        tracks={[menuTrack]}
+        tracks={menuTrack ? [menuTrack] : []}
         open={playlistDialogOpen}
         handleClose={closePlaylistDialog}
       />
@@ -223,7 +223,7 @@ const PluginPlaylist: React.FC = () => {
           <PlaylistMenuItem
             key={p.id}
             playlist={p}
-            tracks={[menuTrack]}
+            tracks={menuTrack ? [menuTrack] : []}
             closeMenu={closeMenu}
             namePrefix="Add track to "
           />

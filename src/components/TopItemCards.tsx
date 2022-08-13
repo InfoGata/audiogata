@@ -27,7 +27,7 @@ import SelectPlugin from "./SelectPlugin";
 
 const TopItemCards: React.FC = () => {
   const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null);
-  const [menuTrack, setMenuTrack] = React.useState<Track>({} as Track);
+  const [menuTrack, setMenuTrack] = React.useState<Track>();
   const [pluginId, setPluginId] = React.useState("");
   const { plugins } = usePlugins();
   const dispatch = useAppDispatch();
@@ -147,13 +147,13 @@ const TopItemCards: React.FC = () => {
           <PlaylistMenuItem
             key={p.id}
             playlist={p}
-            tracks={[menuTrack]}
+            tracks={menuTrack ? [menuTrack] : []}
             closeMenu={closeMenu}
           />
         ))}
       </Menu>
       <AddPlaylistDialog
-        tracks={[menuTrack]}
+        tracks={menuTrack ? [menuTrack] : []}
         open={playlistDialogOpen}
         handleClose={closePlaylistDialog}
       />

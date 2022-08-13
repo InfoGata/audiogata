@@ -28,7 +28,7 @@ const AlbumPage: React.FC = () => {
   const { plugins, pluginsLoaded } = usePlugins();
   const state = useLocation().state as Album | null;
   const [albumInfo, setAlbumInfo] = React.useState<Album | null>(state);
-  const [menuTrack, setMenuTrack] = React.useState<Track>({} as Track);
+  const [menuTrack, setMenuTrack] = React.useState<Track>();
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const playlists = useAppSelector((state) => state.playlist.playlists);
   const dispatch = useAppDispatch();
@@ -130,14 +130,14 @@ const AlbumPage: React.FC = () => {
           <PlaylistMenuItem
             key={p.apiId}
             playlist={p}
-            tracks={[menuTrack]}
+            tracks={menuTrack ? [menuTrack] : []}
             closeMenu={closeMenu}
             namePrefix="Add track to "
           />
         ))}
       </Menu>
       <AddPlaylistDialog
-        tracks={[menuTrack]}
+        tracks={menuTrack ? [menuTrack] : []}
         open={playlistDialogOpen}
         handleClose={closePlaylistDialog}
       />
