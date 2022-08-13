@@ -36,7 +36,7 @@ const PlaylistsItem: React.FC<PlaylistsItemProps> = (props) => {
   };
   return (
     <ListItem button={true} component={Link} to={playlistPath}>
-      <ListItemText>{props.playlist.name}</ListItemText>
+      <ListItemText>{playlist.name}</ListItemText>
       <ListItemSecondaryAction>
         <IconButton onClick={openPlaylistMenu} size="large">
           <MoreHoriz />
