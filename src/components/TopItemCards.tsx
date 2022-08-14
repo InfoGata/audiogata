@@ -16,8 +16,8 @@ import {
 } from "@mui/material";
 import React from "react";
 import { useQuery } from "react-query";
+import useTrackMenu from "../hooks/useTrackMenu";
 import { usePlugins } from "../PluginsContext";
-import { Track } from "../plugintypes";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
 import { addTrack, setTrack } from "../store/reducers/trackReducer";
 import { getThumbnailImage, playlistThumbnailSize } from "../utils";
@@ -26,26 +26,13 @@ import PlaylistMenuItem from "./PlaylistMenuItem";
 import SelectPlugin from "./SelectPlugin";
 
 const TopItemCards: React.FC = () => {
-  const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null);
-  const [menuTrack, setMenuTrack] = React.useState<Track>();
   const [pluginId, setPluginId] = React.useState("");
   const { plugins } = usePlugins();
   const dispatch = useAppDispatch();
-  const closeMenu = () => setAnchorEl(null);
   const playlists = useAppSelector((state) => state.playlist.playlists);
   const [playlistDialogOpen, setPlaylistDialogOpen] = React.useState(false);
   const closePlaylistDialog = () => setPlaylistDialogOpen(false);
-
-  const openMenu = async (
-    event: React.MouseEvent<HTMLButtonElement>,
-    track: Track
-  ) => {
-    const currentTarget = event.currentTarget;
-    event.stopPropagation();
-    event.preventDefault();
-    setMenuTrack(track);
-    setAnchorEl(currentTarget);
-  };
+  const { closeMenu, openMenu, anchorEl, menuTrack } = useTrackMenu();
 
   const getTopItems = async () => {
     const plugin = plugins.find((p) => p.id === pluginId);

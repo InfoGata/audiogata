@@ -27,6 +27,7 @@ import { usePlugins } from "../PluginsContext";
 import { SearchResultType } from "../types";
 import SelectPlugin from "./SelectPlugin";
 import { useQuery } from "react-query";
+import useTrackMenu from "../hooks/useTrackMenu";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -54,12 +55,11 @@ const TabPanel: React.FC<TabPanelProps> = (props) => {
 const Search: React.FC = () => {
   const [pluginId, setPluginId] = React.useState("");
   const [tabValue, setTabValue] = React.useState<string | boolean>(false);
-  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-  const [menuTrack, setMenuTrack] = React.useState<Track>();
   const location = useLocation();
   const playlists = useAppSelector((state) => state.playlist.playlists);
   const params = new URLSearchParams(location.search);
   const searchQuery = params.get("q") || "";
+  const { closeMenu, openMenu, anchorEl, menuTrack } = useTrackMenu();
 
   const dispatch = useAppDispatch();
   const { plugins } = usePlugins();
@@ -98,14 +98,6 @@ const Search: React.FC = () => {
 
   const query = useQuery(["search", pluginId, searchQuery], onSearch);
 
-  const openMenu = (
-    event: React.MouseEvent<HTMLButtonElement>,
-    track: Track
-  ) => {
-    setAnchorEl(event.currentTarget);
-    setMenuTrack(track);
-  };
-  const closeMenu = () => setAnchorEl(null);
   const addTrackToQueue = () => {
     if (menuTrack) {
       dispatch(addTrack(menuTrack));

@@ -34,10 +34,9 @@ import useSelected from "../hooks/useSelected";
 import { Link } from "react-router-dom";
 import SelectTrackListPlugin from "./SelectTrackListPlugin";
 import SelectionEditDialog from "./SelectionEditDialog";
+import useTrackMenu from "../hooks/useTrackMenu";
 
 const PlayQueue: React.FC = () => {
-  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-  const [menuTrack, setMenuTrack] = React.useState<Track>();
   const [playlistDialogTracks, setPlaylistDialogTracks] = React.useState<
     Track[]
   >([]);
@@ -46,17 +45,7 @@ const PlayQueue: React.FC = () => {
   const [queueMenuAnchorEl, setQueueMenuAnchorEl] =
     React.useState<null | HTMLElement>(null);
   const dispatch = useAppDispatch();
-
-  const openMenu = async (
-    event: React.MouseEvent<HTMLButtonElement>,
-    track: Track
-  ) => {
-    const currentTarget = event.currentTarget;
-    event.stopPropagation();
-    event.preventDefault();
-    setMenuTrack(track);
-    setAnchorEl(currentTarget);
-  };
+  const { closeMenu, openMenu, anchorEl, menuTrack } = useTrackMenu();
 
   const openQueueMenu = (event: React.MouseEvent<HTMLButtonElement>) => {
     setQueueMenuAnchorEl(event.currentTarget);
@@ -64,7 +53,6 @@ const PlayQueue: React.FC = () => {
 
   const openEditSelectDialog = () => setEditSelectDialogOpen(true);
 
-  const closeMenu = () => setAnchorEl(null);
   const closeQueueMenu = () => setQueueMenuAnchorEl(null);
   const closeEditSelectDialog = () => setEditSelectDialogOpen(false);
 

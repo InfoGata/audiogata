@@ -32,29 +32,23 @@ import {
   PlaylistPlay,
 } from "@mui/icons-material";
 import { Link } from "react-router-dom";
-import { usePlugins } from "../PluginsContext";
-import { downloadTrack } from "../store/reducers/downloadReducer";
 import TrackList from "./TrackList";
 import useSelected from "../hooks/useSelected";
 import EditPlaylistDialog from "./EditPlaylistDialog";
 import PlaylistMenuItem from "./PlaylistMenuItem";
 import SelectTrackListPlugin from "./SelectTrackListPlugin";
 import SelectionEditDialog from "./SelectionEditDialog";
+import useTrackMenu from "../hooks/useTrackMenu";
 
 const PlaylistTracks: React.FC = () => {
   const { playlistId } = useParams<"playlistId">();
   const dispatch = useAppDispatch();
   const [playlist, setPlaylist] = React.useState<PlaylistInfo | undefined>();
   const [loaded, setLoaded] = React.useState(false);
-  const [menuTrack, setMenuTrack] = React.useState<Track>();
-  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-  const [hasBlob, setHasBlob] = React.useState(false);
-  const [canOffline, setCanOffline] = React.useState(false);
   const [openEditMenu, setOpenEditMenu] = React.useState(false);
   const [editSelectDialogOpen, setEditSelectDialogOpen] = React.useState(false);
-  const { plugins } = usePlugins();
+  const { closeMenu, openMenu, anchorEl, menuTrack } = useTrackMenu();
   const infoPath = `/playlists/${playlistId}/tracks/${menuTrack?.id}`;
-  const closeMenu = () => setAnchorEl(null);
   const [tracklist, setTracklist] = React.useState<Track[]>([]);
   const { onSelect, onSelectAll, isSelected, selected, setSelected } =
     useSelected(tracklist || []);
@@ -108,32 +102,6 @@ const PlaylistTracks: React.FC = () => {
     dispatch(playQueue());
   };
 
-  const openMenu = async (
-    event: React.MouseEvent<HTMLButtonElement>,
-    track: Track
-  ) => {
-    const currentTarget = event.currentTarget;
-    event.stopPropagation();
-    event.preventDefault();
-    setMenuTrack(track);
-    setAnchorEl(currentTarget);
-    // Check whether track can be played offline
-    if (track.id && track.pluginId) {
-      // Check if this needs it's own player
-      // Instead of being able to play locally
-      const pluginFrame = plugins.find((p) => p.id === track.pluginId);
-      const canDownload =
-        (await pluginFrame?.hasDefined.onGetTrackUrl()) || false;
-      setCanOffline(canDownload);
-
-      const primaryCount = await db.audioBlobs
-        .where(":id")
-        .equals(track.id)
-        .count();
-      setHasBlob(primaryCount > 0);
-    }
-  };
-
   const deleteClick = async () => {
     if (menuTrack?.id) {
       await db.audioBlobs.delete(menuTrack.id);
@@ -156,44 +124,6 @@ const PlaylistTracks: React.FC = () => {
     }
     closeQueueMenu();
   };
-
-  const enablePlayingOffline = async () => {
-    try {
-      if (menuTrack && menuTrack.pluginId) {
-        const pluginFrame = plugins.find((p) => p.id === menuTrack.pluginId);
-        if (!(await pluginFrame?.hasDefined.onGetTrackUrl())) {
-          return;
-        }
-
-        const source = await pluginFrame?.remote.onGetTrackUrl(menuTrack);
-        if (source) {
-          dispatch(downloadTrack(menuTrack, source));
-        }
-      }
-    } catch (e) {
-      console.log(e);
-    }
-    closeMenu();
-  };
-
-  const disablePlayingOffline = async () => {
-    if (menuTrack?.id) {
-      await db.audioBlobs.delete(menuTrack.id);
-    }
-    closeMenu();
-  };
-
-  const offlineMenuItem = canOffline ? (
-    hasBlob ? (
-      <MenuItem onClick={disablePlayingOffline}>
-        <ListItemText primary="Disable Playing Offline"></ListItemText>
-      </MenuItem>
-    ) : (
-      <MenuItem onClick={enablePlayingOffline}>
-        <ListItemText primary="Enable Playing Offline"></ListItemText>
-      </MenuItem>
-    )
-  ) : null;
 
   const onTrackClick = (track: Track) => {
     dispatch(setTrack(track));
@@ -350,7 +280,6 @@ const PlaylistTracks: React.FC = () => {
                 namePrefix="Add track to "
               />
             ))}
-            {offlineMenuItem}
           </Menu>
           <EditPlaylistDialog
             open={openEditMenu}

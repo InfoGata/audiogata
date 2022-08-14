@@ -36,6 +36,7 @@ import { useQuery } from "react-query";
 import usePagination from "../hooks/usePagination";
 import { useLocation } from "react-router-dom";
 import PlaylistInfoCard from "./PlaylistInfoCard";
+import useTrackMenu from "../hooks/useTrackMenu";
 
 const PluginPlaylist: React.FC = () => {
   const { pluginId } = useParams<"pluginId">();
@@ -43,8 +44,6 @@ const PluginPlaylist: React.FC = () => {
   const { plugins, pluginsLoaded } = usePlugins();
   const plugin = plugins.find((p) => p.id === pluginId);
   const [currentPage, setCurrentPage] = React.useState<PageInfo>();
-  const [menuTrack, setMenuTrack] = React.useState<Track>();
-  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const location = useLocation();
   const state = location.state as PlaylistInfo | null;
   const [playlistInfo, setPlaylistInfo] = React.useState<PlaylistInfo | null>(
@@ -55,6 +54,7 @@ const PluginPlaylist: React.FC = () => {
   const { page, hasNextPage, hasPreviousPage, onPreviousPage, onNextPage } =
     usePagination(currentPage);
   const params = new URLSearchParams(location.search);
+  const { closeMenu, openMenu, anchorEl, menuTrack } = useTrackMenu();
 
   const getPlaylistTracks = async () => {
     if (plugin && (await plugin.hasDefined.onGetPlaylistTracks())) {
@@ -109,8 +109,6 @@ const PluginPlaylist: React.FC = () => {
     closeQueueMenu();
   };
 
-  const closeMenu = () => setAnchorEl(null);
-
   const onPlayClick = () => {
     dispatch(setTracks(tracklist));
     dispatch(playQueue());
@@ -119,17 +117,6 @@ const PluginPlaylist: React.FC = () => {
   const addToNewPlaylist = () => {
     openPlaylistDialog();
     closeMenu();
-  };
-
-  const openMenu = async (
-    event: React.MouseEvent<HTMLButtonElement>,
-    track: Track
-  ) => {
-    const currentTarget = event.currentTarget;
-    event.stopPropagation();
-    event.preventDefault();
-    setMenuTrack(track);
-    setAnchorEl(currentTarget);
   };
 
   const onTrackClick = (track: Track) => {

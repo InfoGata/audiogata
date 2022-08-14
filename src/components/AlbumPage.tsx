@@ -13,6 +13,7 @@ import React from "react";
 import { useQuery } from "react-query";
 import { useLocation, useParams } from "react-router-dom";
 import useSelected from "../hooks/useSelected";
+import useTrackMenu from "../hooks/useTrackMenu";
 import { usePlugins } from "../PluginsContext";
 import { Album, Track } from "../plugintypes";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
@@ -28,10 +29,9 @@ const AlbumPage: React.FC = () => {
   const { plugins, pluginsLoaded } = usePlugins();
   const state = useLocation().state as Album | null;
   const [albumInfo, setAlbumInfo] = React.useState<Album | null>(state);
-  const [menuTrack, setMenuTrack] = React.useState<Track>();
-  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const playlists = useAppSelector((state) => state.playlist.playlists);
   const dispatch = useAppDispatch();
+  const { closeMenu, openMenu, anchorEl, menuTrack } = useTrackMenu();
   const onGetAlbum = async () => {
     const plugin = plugins.find((p) => p.id === pluginId);
     if (plugin && (await plugin.hasDefined.onGetAlbumTracks())) {
@@ -67,8 +67,6 @@ const AlbumPage: React.FC = () => {
     dispatch(setTrack(track));
   };
 
-  const closeMenu = () => setAnchorEl(null);
-
   const onPlayClick = () => {
     dispatch(setTracks(tracklist));
     dispatch(playQueue());
@@ -77,17 +75,6 @@ const AlbumPage: React.FC = () => {
   const addToNewPlaylist = () => {
     openPlaylistDialog();
     closeMenu();
-  };
-
-  const openMenu = async (
-    event: React.MouseEvent<HTMLButtonElement>,
-    track: Track
-  ) => {
-    const currentTarget = event.currentTarget;
-    event.stopPropagation();
-    event.preventDefault();
-    setMenuTrack(track);
-    setAnchorEl(currentTarget);
   };
 
   return (
