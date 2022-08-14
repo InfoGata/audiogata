@@ -1,7 +1,9 @@
 import { MoreHoriz, PlaylistAdd } from "@mui/icons-material";
 import {
+  Button,
   Card,
   CardActionArea,
+  CardActions,
   CardContent,
   CardMedia,
   Fade,
@@ -71,23 +73,24 @@ const TopItemCards: React.FC = () => {
       >
         <CardActionArea onClick={onClickTrack}>
           <CardMedia component="img" src={image} sx={{ height: 200 }} />
-          <CardContent sx={{ padding: "8px" }}>
-            <Stack direction="row" alignItems="center" gap={1}>
-              <IconButton size="small" onClick={openTrackMenu}>
-                <MoreHoriz />
-              </IconButton>
-              <Typography
-                title={t.name}
-                gutterBottom
-                variant="body2"
-                component="span"
-                noWrap
-              >
-                {t.name}
-              </Typography>
-            </Stack>
-          </CardContent>
         </CardActionArea>
+        <CardActions>
+          <Stack direction="row" alignItems="center" gap={1}>
+            <IconButton size="small" onClick={openTrackMenu}>
+              <MoreHoriz />
+            </IconButton>
+            <Typography
+              title={t.name}
+              gutterBottom
+              variant="body2"
+              component="span"
+              width={230}
+              noWrap
+            >
+              {t.name}
+            </Typography>
+          </Stack>
+        </CardActions>
       </Card>
     );
   });
