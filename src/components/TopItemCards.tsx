@@ -1,10 +1,8 @@
 import { MoreHoriz, PlaylistAdd } from "@mui/icons-material";
 import {
-  Button,
   Card,
   CardActionArea,
   CardActions,
-  CardContent,
   CardMedia,
   Fade,
   Grid,
