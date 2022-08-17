@@ -35,8 +35,10 @@ export const getThumbnailImage = (
     return thumbnail;
   }
 
-  const sortedImages = [...images].sort((a, b) => a.height - b.height);
-  const thumbnailImage = sortedImages.find((i) => i.height >= size);
+  const sortedImages = [...images].sort(
+    (a, b) => (a.height || 0) - (b.height || 0)
+  );
+  const thumbnailImage = sortedImages.find((i) => (i.height || 0) >= size);
   return thumbnailImage
     ? thumbnailImage.url
     : sortedImages[0]?.url ?? thumbnail;

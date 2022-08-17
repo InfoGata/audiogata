@@ -54,8 +54,8 @@ export interface Playlist extends PlaylistInfo {
 
 export interface ImageInfo {
   url: string;
-  height: number;
-  width: number;
+  height?: number;
+  width?: number;
 }
 
 export interface NotificationMessage {
