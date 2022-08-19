@@ -99,15 +99,19 @@ const PluginCards: React.FC = () => {
 
   return (
     <>
-      <Backdrop open={backdropOpen}>
-        <CircularProgress color="inherit" />
-      </Backdrop>
-      <Typography variant="h6">Plugins</Typography>
-      <Fade in={pluginsLoaded}>
-        <Grid container spacing={2}>
-          {pluginCards}
+      {pluginCards.length > 0 && (
+        <Grid>
+          <Backdrop open={backdropOpen}>
+            <CircularProgress color="inherit" />
+          </Backdrop>
+          <Typography variant="h6">Plugins</Typography>
+          <Fade in={pluginsLoaded}>
+            <Grid container spacing={2}>
+              {pluginCards}
+            </Grid>
+          </Fade>
         </Grid>
-      </Fade>
+      )}
     </>
   );
 };
