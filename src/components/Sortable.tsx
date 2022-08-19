@@ -1,7 +1,6 @@
 import {
   DndContext,
   DragEndEvent,
-  DragOverEvent,
   DragStartEvent,
   KeyboardSensor,
   MouseSensor,
@@ -18,12 +17,11 @@ import React from "react";
 
 interface SortableProps {
   ids: string[];
-  onDragOver?: (event: DragOverEvent) => void;
   onDragStart: (event: DragStartEvent) => void;
   onDragEnd: (event: DragEndEvent) => void;
 }
 const Sortable: React.FC<React.PropsWithChildren<SortableProps>> = (props) => {
-  const { ids, onDragOver, onDragStart, onDragEnd } = props;
+  const { ids, onDragStart, onDragEnd } = props;
   const sensors = useSensors(
     useSensor(MouseSensor, {
       activationConstraint: {
@@ -44,7 +42,6 @@ const Sortable: React.FC<React.PropsWithChildren<SortableProps>> = (props) => {
   return (
     <DndContext
       sensors={sensors}
-      onDragOver={onDragOver}
       onDragStart={onDragStart}
       onDragEnd={onDragEnd}
     >
