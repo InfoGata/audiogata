@@ -433,7 +433,7 @@ export const PluginsProvider: React.FC<React.PropsWithChildren> = (props) => {
     oldPlugin?.destroy();
     const pluginFrame = await loadPlugin(plugin, pluginFiles);
     setPluginFrames(pluginFrames.map((p) => (p.id === id ? pluginFrame : p)));
-    await db.plugins.update(id, plugin);
+    await db.plugins.put(plugin);
   };
 
   const deletePlugin = async (pluginFrame: PluginFrameContainer) => {
