@@ -17,6 +17,7 @@ import DrawerHeader from "./DrawerHeader";
 import PluginOptions from "./PluginOptions";
 import ArtistPage from "./ArtistPage";
 import AlbumPage from "./AlbumPage";
+import AboutPage from "./AboutPage";
 
 const Routing: React.FC = () => {
   return (
@@ -28,6 +29,7 @@ const Routing: React.FC = () => {
         <Route path="/plugins" element={<Plugins />} />
         <Route path="/playlists" element={<Playlists />} />
         <Route path="/playlists/:playlistId" element={<PlaylistTracks />} />
+        <Route path="/about" element={<AboutPage />} />
         <Route path="/settings" element={<Settings />} />
         <Route path="/search" element={<Search />} />
         <Route

@@ -8,6 +8,7 @@ import {
 import {
   Extension,
   Home,
+  Info,
   Menu,
   PlaylistAdd,
   PlaylistPlay,
@@ -72,6 +73,14 @@ const Navigation: React.FC = () => {
           </Tooltip>
         </ListItemIcon>
         <ListItemText>Settings</ListItemText>
+      </ListItem>
+      <ListItem button={true} component={Link} to="/about" key="About">
+        <ListItemIcon>
+          <Tooltip title="About" placement="right">
+            <Info />
+          </Tooltip>
+        </ListItemIcon>
+        <ListItemText>About</ListItemText>
       </ListItem>
       <ListItem button={true} key="AddPlaylist" onClick={openDialog}>
         <ListItemIcon>
