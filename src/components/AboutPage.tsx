@@ -1,4 +1,4 @@
-import { Email, Language } from "@mui/icons-material";
+import { Email, Language, Lock } from "@mui/icons-material";
 import {
   Avatar,
   Box,
@@ -13,6 +13,7 @@ import React from "react";
 const AboutPage: React.FC = () => {
   const email = "contact@audiogata.com";
   const website = "https://www.infogata.com";
+  const privacyPolicy = `${website}/privacy.html`;
   return (
     <Box>
       <List>
@@ -38,6 +39,16 @@ const AboutPage: React.FC = () => {
               </Avatar>
             </ListItemAvatar>
             <ListItemText primary="Email" secondary={email} />
+          </ListItemButton>
+        </ListItem>
+        <ListItem disablePadding>
+          <ListItemButton component="a" href={privacyPolicy} target="_blank">
+            <ListItemAvatar>
+              <Avatar>
+                <Lock />
+              </Avatar>
+            </ListItemAvatar>
+            <ListItemText primary="Privacy Policy" />
           </ListItemButton>
         </ListItem>
       </List>
