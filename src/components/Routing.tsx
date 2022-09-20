@@ -12,6 +12,7 @@ import { Box } from "@mui/material";
 import PluginPlaylists from "./PluginPlaylists";
 import PluginPlaylist from "./PluginPlaylist";
 import PluginDetails from "./PluginDetails";
+import PluginInstall from "./PluginInstall";
 import PlaylistTrackInfo from "./PlaylistTrackInfo";
 import DrawerHeader from "./DrawerHeader";
 import PluginOptions from "./PluginOptions";
@@ -27,6 +28,7 @@ const Routing: React.FC = () => {
         <Route path="/" element={<Home />} />
         <Route path="/nowplaying" element={<NowPlaying />} />
         <Route path="/plugins" element={<Plugins />} />
+        <Route path="/plugininstall" element={<PluginInstall />} />
         <Route path="/playlists" element={<Playlists />} />
         <Route path="/playlists/:playlistId" element={<PlaylistTracks />} />
         <Route path="/about" element={<AboutPage />} />

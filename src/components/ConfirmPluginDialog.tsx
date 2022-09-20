@@ -16,10 +16,12 @@ interface ConfirmPluginDialogProps {
   open: boolean;
   plugins: PluginInfo[];
   handleClose: () => void;
+  afterConfirm?: () => void;
+  afterCancel?: () => void;
 }
 
 const ConfirmPluginDialog: React.FC<ConfirmPluginDialogProps> = (props) => {
-  const { open, plugins, handleClose } = props;
+  const { open, plugins, handleClose, afterConfirm, afterCancel } = props;
   const [checked, setChecked] = React.useState<Set<string>>(new Set());
   const { addPlugin } = usePlugins();
 
@@ -35,6 +37,9 @@ const ConfirmPluginDialog: React.FC<ConfirmPluginDialogProps> = (props) => {
       }
     }
 
+    if (afterConfirm) {
+      afterConfirm();
+    }
     handleClose();
   };
 
@@ -64,6 +69,13 @@ const ConfirmPluginDialog: React.FC<ConfirmPluginDialogProps> = (props) => {
     </ListItem>
   ));
 
+  const onCancel = () => {
+    if (afterCancel) {
+      afterCancel();
+    }
+    handleClose();
+  };
+
   return (
     <Dialog
       open={open}
@@ -73,7 +85,7 @@ const ConfirmPluginDialog: React.FC<ConfirmPluginDialogProps> = (props) => {
       <DialogTitle id="form-dialog-title">Add Plugins</DialogTitle>
       <List>{info}</List>
       <DialogActions>
-        <Button onClick={handleClose}>Cancel</Button>
+        <Button onClick={onCancel}>Cancel</Button>
         <Button onClick={onConfirm}>Confirm</Button>
       </DialogActions>
     </Dialog>
