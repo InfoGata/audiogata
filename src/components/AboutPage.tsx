@@ -52,6 +52,11 @@ const AboutPage: React.FC = () => {
           </ListItemButton>
         </ListItem>
       </List>
+      <iframe
+        title="out-opt"
+        style={{ border: 0, height: "200px", width: "600px" }}
+        src="https://matomo.infogata.com/index.php?module=CoreAdminHome&action=optOut&language=en&backgroundColor=121212&fontColor=ffffff&fontSize=16px"
+      ></iframe>
     </Box>
   );
 };
