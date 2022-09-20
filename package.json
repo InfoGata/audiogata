@@ -9,6 +9,7 @@
     "@capacitor/android": "3.6.0",
     "@capacitor/app": "^1.1.1",
     "@capacitor/core": "^3.6.0",
+    "@datapunt/matomo-tracker-react": "^0.5.1",
     "@dnd-kit/core": "^5.0.1",
     "@dnd-kit/sortable": "^6.0.0",
     "@dnd-kit/utilities": "^3.1.0",
