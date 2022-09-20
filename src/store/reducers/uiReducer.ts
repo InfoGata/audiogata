@@ -1,10 +1,10 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-interface SettingsState {
+interface UiState {
   navbarOpen: boolean;
 }
 
-const initialState: SettingsState = {
+const initialState: UiState = {
   navbarOpen: false,
 };
 
