@@ -14,6 +14,7 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
+import { nanoid } from "@reduxjs/toolkit";
 import React from "react";
 import { useQuery } from "react-query";
 import useTrackMenu from "../hooks/useTrackMenu";
@@ -37,7 +38,11 @@ const TopItemCards: React.FC = () => {
   const getTopItems = async () => {
     const plugin = plugins.find((p) => p.id === pluginId);
     if (plugin) {
-      return await plugin.remote.onGetTopItems();
+      const results = await plugin.remote.onGetTopItems();
+      results.tracks?.items.forEach((i) => {
+        i.id = nanoid();
+      });
+      return results;
     }
   };
 
