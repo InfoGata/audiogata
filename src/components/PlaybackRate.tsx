@@ -4,14 +4,37 @@ import { SlowMotionVideo } from "@mui/icons-material";
 import React from "react";
 import { setPlaybackRate } from "../store/reducers/trackReducer";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
+import { usePlugins } from "../PluginsContext";
 
 const PlaybackRate: React.FC = () => {
   const theme = useTheme();
   const dispatch = useAppDispatch();
   const playbackRate = useAppSelector((state) => state.track.playbackRate);
+  const currentPluginId = useAppSelector(
+    (state) => state.track.currentTrack?.pluginId
+  );
+  const { plugins } = usePlugins();
+  const plugin = plugins.find((p) => p.id === currentPluginId);
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(
     null
   );
+  const [enabled, setEnabled] = React.useState(true);
+
+  React.useEffect(() => {
+    const enablePlaybackrate = async () => {
+      if (plugin) {
+        if (
+          (await plugin.hasDefined.onPlay()) &&
+          !(await plugin.hasDefined.onSetPlaybackRate())
+        ) {
+          setEnabled(false);
+        } else {
+          setEnabled(true);
+        }
+      }
+    };
+    enablePlaybackrate();
+  }, [plugin, currentPluginId]);
 
   const onPlaybackRate = (_: Event, newRate: number | number[]) => {
     const actualRate = (newRate as number) / 100;
@@ -30,7 +53,7 @@ const PlaybackRate: React.FC = () => {
   const currentRate = (playbackRate || 1.0) * 100;
   return (
     <>
-      <IconButton size="small" onClick={onRateButtonClick}>
+      <IconButton disabled={!enabled} size="small" onClick={onRateButtonClick}>
         <SlowMotionVideo />
       </IconButton>
       <Popover
