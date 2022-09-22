@@ -142,4 +142,5 @@ export interface GetTrackUrlRequest {
 export interface PlayTrackRequest {
   apiId?: string;
   source?: string;
+  seekTime?: number;
 }

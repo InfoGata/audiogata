@@ -116,9 +116,10 @@ class AudioComponent extends React.Component<
     );
     if (prevProps.isPlaying !== newProps.isPlaying) {
       if (newProps.isPlaying) {
-        player?.onResume();
         if (!this.trackLoaded && newProps.currentTrack) {
           await this.playTrack(newProps.currentTrack, newProps.elapsed);
+        } else {
+          player?.onResume();
         }
       } else {
         await player?.onPause();
@@ -217,6 +218,7 @@ class AudioComponent extends React.Component<
         await player?.onPlay({
           apiId: newTrack.apiId,
           source: newTrack.source,
+          seekTime: time,
         });
         this.setMediaSessionMetaData();
         this.lastPlayer = player;
