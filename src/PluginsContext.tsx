@@ -38,55 +38,53 @@ import { NetworkRequest, PlayerComponent } from "./types";
 import { nanoid } from "@reduxjs/toolkit";
 
 export interface PluginMethodInterface extends PlayerComponent {
-  onSearchAll: (request: SearchRequest) => Promise<SearchAllResult>;
-  onSearchTracks: (request: SearchRequest) => Promise<SearchTrackResult>;
-  onSearchArtists: (request: SearchRequest) => Promise<SearchArtistResult>;
-  onSearchAlbums: (request: SearchRequest) => Promise<SearchAlbumResult>;
-  onSearchPlaylists: (request: SearchRequest) => Promise<SearchPlaylistResult>;
-  onNowPlayingTracksAdded: (tracks: Track[]) => Promise<void>;
-  onNowPlayingTracksRemoved: (tracks: Track[]) => Promise<void>;
-  onNowPlayingTracksChanged: (tracks: Track[]) => Promise<void>;
-  onNowPlayingTracksSet: (tracks: Track[]) => Promise<void>;
-  onGetTrackUrl: (request: GetTrackUrlRequest) => Promise<string>;
-  onUiMessage: (message: any) => Promise<void>;
-  onDeepLinkMessage: (message: string) => Promise<void>;
-  onGetAlbumTracks: (request: AlbumTrackRequest) => Promise<AlbumTracksResult>;
-  onGetPlaylistTracks: (
+  onSearchAll(request: SearchRequest): Promise<SearchAllResult>;
+  onSearchTracks(request: SearchRequest): Promise<SearchTrackResult>;
+  onSearchArtists(request: SearchRequest): Promise<SearchArtistResult>;
+  onSearchAlbums(request: SearchRequest): Promise<SearchAlbumResult>;
+  onSearchPlaylists(request: SearchRequest): Promise<SearchPlaylistResult>;
+  onNowPlayingTracksAdded(tracks: Track[]): Promise<void>;
+  onNowPlayingTracksRemoved(tracks: Track[]): Promise<void>;
+  onNowPlayingTracksChanged(tracks: Track[]): Promise<void>;
+  onNowPlayingTracksSet(tracks: Track[]): Promise<void>;
+  onGetTrackUrl(request: GetTrackUrlRequest): Promise<string>;
+  onUiMessage(message: any): Promise<void>;
+  onDeepLinkMessage(message: string): Promise<void>;
+  onGetAlbumTracks(request: AlbumTrackRequest): Promise<AlbumTracksResult>;
+  onGetPlaylistTracks(
     request: PlaylistTrackRequest
-  ) => Promise<PlaylistTracksResult>;
-  onGetArtistAlbums: (
-    request: ArtistAlbumRequest
-  ) => Promise<ArtistAlbumsResult>;
-  onPlay: (request: PlayTrackRequest) => Promise<void>;
-  onSetVolume: (volume: number) => Promise<void>;
-  onPause: () => Promise<void>;
-  onResume: () => Promise<void>;
-  onSeek: (time: number) => Promise<void>;
-  onSetPlaybackRate: (rate: number) => Promise<void>;
-  onGetUserPlaylists: (
+  ): Promise<PlaylistTracksResult>;
+  onGetArtistAlbums(request: ArtistAlbumRequest): Promise<ArtistAlbumsResult>;
+  onPlay(request: PlayTrackRequest): Promise<void>;
+  onSetVolume(volume: number): Promise<void>;
+  onPause(): Promise<void>;
+  onResume(): Promise<void>;
+  onSeek(time: number): Promise<void>;
+  onSetPlaybackRate(rate: number): Promise<void>;
+  onGetUserPlaylists(
     request: UserPlaylistRequest
-  ) => Promise<SearchPlaylistResult>;
-  onGetTopItems: () => Promise<SearchAllResult>;
+  ): Promise<SearchPlaylistResult>;
+  onGetTopItems(): Promise<SearchAllResult>;
 }
 
 interface ApplicationPluginInterface extends PluginInterface {
-  networkRequest: (
+  networkRequest(
     input: RequestInfo,
     init?: RequestInit
-  ) => Promise<NetworkRequest>;
-  postUiMessage: (message: any) => Promise<void>;
-  isNetworkRequestCorsDisabled: () => Promise<boolean>;
-  endTrack: () => Promise<void>;
-  setTrackTime: (currentTime: number) => Promise<void>;
-  getNowPlayingTracks: () => Promise<Track[]>;
-  setNowPlayingTracks: (tracks: Track[]) => Promise<void>;
-  getPlaylists: () => Promise<Playlist[]>;
-  addPlaylists: (playlists: Playlist[]) => Promise<void>;
-  createNotification: (notification: NotificationMessage) => Promise<void>;
-  getCorsProxy: () => Promise<string | undefined>;
-  installPlugins: (plugins: PluginInfo[]) => Promise<void>;
-  getPlugins: () => Promise<PluginInfo[]>;
-  getPluginId: () => Promise<string>;
+  ): Promise<NetworkRequest>;
+  postUiMessage(message: any): Promise<void>;
+  isNetworkRequestCorsDisabled(): Promise<boolean>;
+  endTrack(): Promise<void>;
+  setTrackTime(currentTime: number): Promise<void>;
+  getNowPlayingTracks(): Promise<Track[]>;
+  setNowPlayingTracks(tracks: Track[]): Promise<void>;
+  getPlaylists(): Promise<Playlist[]>;
+  addPlaylists(playlists: Playlist[]): Promise<void>;
+  createNotification(notification: NotificationMessage): Promise<void>;
+  getCorsProxy(): Promise<string | undefined>;
+  installPlugins(plugins: PluginInfo[]): Promise<void>;
+  getPlugins(): Promise<PluginInfo[]>;
+  getPluginId(): Promise<string>;
 }
 
 interface PluginMessage {
