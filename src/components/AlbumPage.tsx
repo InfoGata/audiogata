@@ -7,15 +7,18 @@ import {
   ListItemIcon,
   ListItemText,
   IconButton,
+  Button,
+  Grid,
 } from "@mui/material";
 import { nanoid } from "@reduxjs/toolkit";
 import React from "react";
 import { useQuery } from "react-query";
 import { useLocation, useParams } from "react-router-dom";
+import usePagination from "../hooks/usePagination";
 import useSelected from "../hooks/useSelected";
 import useTrackMenu from "../hooks/useTrackMenu";
 import { usePlugins } from "../PluginsContext";
-import { Album, Track } from "../plugintypes";
+import { Album, PageInfo, Track } from "../plugintypes";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
 import { setTracks, setTrack, playQueue } from "../store/reducers/trackReducer";
 import AddPlaylistDialog from "./AddPlaylistDialog";
@@ -32,19 +35,24 @@ const AlbumPage: React.FC = () => {
   const playlists = useAppSelector((state) => state.playlist.playlists);
   const dispatch = useAppDispatch();
   const { closeMenu, openMenu, anchorEl, menuTrack } = useTrackMenu();
+
+  const [currentPage, setCurrentPage] = React.useState<PageInfo>();
+  const { page, hasNextPage, hasPreviousPage, onPreviousPage, onNextPage } =
+    usePagination(currentPage);
   const onGetAlbum = async () => {
     const plugin = plugins.find((p) => p.id === pluginId);
     if (plugin && (await plugin.hasDefined.onGetAlbumTracks())) {
       const albumData = await plugin.remote.onGetAlbumTracks({
         apiId: apiId,
+        page,
       });
       if (albumData.album) {
         setAlbumInfo(albumData.album);
       }
-
       albumData.items.forEach((t) => {
         t.id = nanoid();
       });
+      setCurrentPage(albumData.pageInfo);
       return albumData.items;
     }
     return [];
@@ -106,6 +114,10 @@ const AlbumPage: React.FC = () => {
         selected={selected}
         dragDisabled={true}
       />
+      <Grid>
+        {hasPreviousPage && <Button onClick={onPreviousPage}>Previous</Button>}
+        {hasNextPage && <Button onClick={onNextPage}>Next</Button>}
+      </Grid>
       <Menu open={Boolean(anchorEl)} onClose={closeMenu} anchorEl={anchorEl}>
         <MenuItem onClick={addToNewPlaylist}>
           <ListItemIcon>
