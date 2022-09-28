@@ -46,7 +46,6 @@ const TrackSearchResults: React.FC<TrackSearchResultsProps> = (props) => {
         query: searchQuery,
         page: page,
       });
-      console.log(searchTracks);
       setCurrentPage(searchTracks.pageInfo);
       return searchTracks.items;
     }
