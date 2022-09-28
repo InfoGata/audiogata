@@ -55,11 +55,11 @@ const Search: React.FC = () => {
   const params = new URLSearchParams(location.search);
   const searchQuery = params.get("q") || "";
   const { plugins } = usePlugins();
-  const plugin = plugins.find((p) => p.id === pluginId);
   const queryClient = useQueryClient();
 
   const onSearch = async () => {
     let searchAll: SearchAllResult | undefined;
+    const plugin = plugins.find((p) => p.id === pluginId);
     if (plugin && (await plugin.hasDefined.onSearchAll())) {
       searchAll = await plugin.remote.onSearchAll({ query: searchQuery });
     }
