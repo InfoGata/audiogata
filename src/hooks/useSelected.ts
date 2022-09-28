@@ -6,7 +6,6 @@ const useSelected = (tracks: Track[]) => {
   const lastSelected = React.useRef<number | null>(null);
 
   const onSelect = (e: React.ChangeEvent<HTMLInputElement>, id: string) => {
-    console.log(e.target.dataset.index);
     const index = Number(e.target.dataset.index);
     if (
       lastSelected.current !== null &&

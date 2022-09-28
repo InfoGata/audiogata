@@ -15,7 +15,10 @@ const usePagination = (currentPage?: PageInfo) => {
 
   const hasPreviousPage = currentPage.offset !== 0;
   const nextOffset = currentPage.offset + currentPage.resultsPerPage;
-  const hasNextPage = nextOffset < currentPage.totalResults;
+  // If no totalResults just check if nextPage exists
+  const hasNextPage = currentPage.totalResults
+    ? nextOffset < currentPage.totalResults
+    : !!currentPage.nextPage;
 
   const onPreviousPage = () => {
     const prevOffset = currentPage.offset - currentPage.resultsPerPage;

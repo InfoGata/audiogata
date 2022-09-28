@@ -1,33 +1,23 @@
 import {
   AppBar,
   Box,
-  List,
   Tab,
   Tabs,
   Typography,
-  Menu,
-  MenuItem,
-  ListItemIcon,
-  ListItemText,
   Backdrop,
   CircularProgress,
 } from "@mui/material";
 import React from "react";
 import { useLocation } from "react-router";
-import { Album, Artist, Track, PlaylistInfo } from "../plugintypes";
-import AlbumSearchResult from "./AlbumSearchResult";
-import ArtistSearchResult from "./ArtistSearchResult";
-import PlaylistSearchResult from "./PlaylistSearchResult";
-import TrackSearchResult from "./TrackSearchResult";
-import { PlaylistPlay } from "@mui/icons-material";
-import PlaylistMenuItem from "./PlaylistMenuItem";
-import { addTrack } from "../store/reducers/trackReducer";
-import { useAppDispatch, useAppSelector } from "../store/hooks";
+import { SearchAllResult } from "../plugintypes";
 import { usePlugins } from "../PluginsContext";
 import { SearchResultType } from "../types";
 import SelectPlugin from "./SelectPlugin";
 import { useQuery } from "react-query";
-import useTrackMenu from "../hooks/useTrackMenu";
+import TrackSearchResults from "./TrackSearchResults";
+import AlbumSearchResults from "./AlbumSearchResults";
+import ArtistSearchResults from "./ArtistSearchResults";
+import PlaylistSearchResults from "./PlaylistSearchResults";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -56,74 +46,36 @@ const Search: React.FC = () => {
   const [pluginId, setPluginId] = React.useState("");
   const [tabValue, setTabValue] = React.useState<string | boolean>(false);
   const location = useLocation();
-  const playlists = useAppSelector((state) => state.playlist.playlists);
   const params = new URLSearchParams(location.search);
   const searchQuery = params.get("q") || "";
-  const { closeMenu, openMenu, anchorEl, menuTrack } = useTrackMenu();
-
-  const dispatch = useAppDispatch();
   const { plugins } = usePlugins();
+  const plugin = plugins.find((p) => p.id === pluginId);
 
   const onSearch = async () => {
-    let tracks: Track[] | undefined = [];
-    let albums: Album[] | undefined = [];
-    let artists: Artist[] | undefined = [];
-    let playlists: PlaylistInfo[] | undefined = [];
-    const plugin = plugins.find((p) => p.id === pluginId);
+    let searchAll: SearchAllResult | undefined;
     if (plugin && (await plugin.hasDefined.onSearchAll())) {
-      const searchAll = await plugin.remote.onSearchAll({ query: searchQuery });
-      tracks = searchAll.tracks?.items || [];
-      albums = searchAll.albums?.items || [];
-      artists = searchAll.artists?.items || [];
-      playlists = searchAll.playlists?.items || [];
+      searchAll = await plugin.remote.onSearchAll({ query: searchQuery });
     }
 
-    if (tracks) {
+    if (searchAll?.tracks) {
       setTabValue(SearchResultType.Tracks);
-    } else if (albums) {
+    } else if (searchAll?.albums) {
       setTabValue(SearchResultType.Albums);
-    } else if (artists) {
+    } else if (searchAll?.artists) {
       setTabValue(SearchResultType.Artists);
-    } else if (playlists) {
+    } else if (searchAll?.playlists) {
       setTabValue(SearchResultType.Playlists);
     }
 
-    return {
-      albums,
-      artists,
-      tracks,
-      playlists,
-    };
+    return searchAll;
   };
 
   const query = useQuery(["search", pluginId, searchQuery], onSearch);
+  const trackList = query?.data?.tracks?.items || [];
+  const albumList = query?.data?.albums?.items || [];
+  const artistList = query?.data?.artists?.items || [];
+  const playlistList = query?.data?.playlists?.items || [];
 
-  const addTrackToQueue = () => {
-    if (menuTrack) {
-      dispatch(addTrack(menuTrack));
-    }
-    closeMenu();
-  };
-  const trackList = query.data?.tracks.map((track) => (
-    <TrackSearchResult key={track.apiId} track={track} openMenu={openMenu} />
-  ));
-  const albumList = query.data?.albums.map((album) => (
-    <AlbumSearchResult key={album.apiId} album={album} pluginId={pluginId} />
-  ));
-  const artistList = query.data?.artists.map((artist) => (
-    <ArtistSearchResult
-      key={artist.apiId}
-      artist={artist}
-      pluginId={pluginId}
-    />
-  ));
-  const playlistList = query.data?.playlists.map((playlist) => (
-    <PlaylistSearchResult
-      key={playlist.apiId}
-      playlist={playlist}
-      pluginId={pluginId}
-    />
-  ));
   const handleChange = (_event: React.ChangeEvent<{}>, newValue: string) => {
     setTabValue(newValue);
   };
@@ -215,10 +167,10 @@ const Search: React.FC = () => {
           textColor="primary"
           variant="fullWidth"
         >
-          {trackList && trackList.length > 0 ? (
+          {trackList.length > 0 ? (
             <Tab label="Tracks" value={SearchResultType.Tracks} />
           ) : null}
-          {albumList && albumList.length > 0 ? (
+          {albumList.length > 0 ? (
             <Tab label="Albums" value={SearchResultType.Albums} />
           ) : null}
           {artistList && artistList.length > 0 ? (
@@ -230,33 +182,45 @@ const Search: React.FC = () => {
         </Tabs>
       </AppBar>
       <TabPanel value={tabValue} index={SearchResultType.Tracks}>
-        <List dense={true}>{trackList}</List>
+        {trackList.length > 0 ? (
+          <TrackSearchResults
+            tracks={trackList}
+            pluginId={pluginId}
+            searchQuery={searchQuery}
+            initialPage={query.data?.tracks?.pageInfo}
+          />
+        ) : null}
       </TabPanel>
       <TabPanel value={tabValue} index={SearchResultType.Albums}>
-        <List dense={true}>{albumList}</List>
+        {albumList.length > 0 ? (
+          <AlbumSearchResults
+            albums={albumList}
+            pluginId={pluginId}
+            searchQuery={searchQuery}
+            initialPage={query.data?.albums?.pageInfo}
+          />
+        ) : null}
       </TabPanel>
       <TabPanel value={tabValue} index={SearchResultType.Artists}>
-        <List dense={true}>{artistList}</List>
+        {artistList.length > 0 ? (
+          <ArtistSearchResults
+            artists={artistList}
+            pluginId={pluginId}
+            searchQuery={searchQuery}
+            initialPage={query.data?.artists?.pageInfo}
+          />
+        ) : null}
       </TabPanel>
       <TabPanel value={tabValue} index={SearchResultType.Playlists}>
-        <List dense={true}>{playlistList}</List>
-      </TabPanel>
-      <Menu open={Boolean(anchorEl)} onClose={closeMenu} anchorEl={anchorEl}>
-        <MenuItem onClick={addTrackToQueue}>
-          <ListItemIcon>
-            <PlaylistPlay />
-          </ListItemIcon>
-          <ListItemText primary="Add To Queue" />
-        </MenuItem>
-        {playlists.map((p) => (
-          <PlaylistMenuItem
-            key={p.id}
-            playlist={p}
-            tracks={menuTrack ? [menuTrack] : []}
-            closeMenu={closeMenu}
+        {playlistList.length > 0 ? (
+          <PlaylistSearchResults
+            playlists={playlistList}
+            pluginId={pluginId}
+            searchQuery={searchQuery}
+            initialPage={query.data?.playlists?.pageInfo}
           />
-        ))}
-      </Menu>
+        ) : null}
+      </TabPanel>
     </>
   );
 };

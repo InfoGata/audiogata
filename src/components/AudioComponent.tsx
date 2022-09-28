@@ -305,7 +305,6 @@ class AudioComponent extends React.Component<
 
     if (Capacitor.isNativePlatform()) {
       MusicControls.subscribe().subscribe((action) => {
-        console.log("action", action);
         const message = JSON.parse(action).message;
         switch (message) {
           case "music-controls-next":
