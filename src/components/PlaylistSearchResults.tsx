@@ -3,18 +3,17 @@ import React from "react";
 import { useQuery } from "react-query";
 import usePagination from "../hooks/usePagination";
 import { usePlugins } from "../PluginsContext";
-import { PlaylistInfo, PageInfo } from "../plugintypes";
+import { PageInfo } from "../plugintypes";
 import PlaylistSearchResult from "./PlaylistSearchResult";
 
 interface PlaylistSearchResultsProps {
-  playlists: PlaylistInfo[];
   pluginId: string;
   searchQuery: string;
   initialPage?: PageInfo;
 }
 
 const PlaylistSearchResults: React.FC<PlaylistSearchResultsProps> = (props) => {
-  const { playlists, pluginId, searchQuery, initialPage } = props;
+  const { pluginId, searchQuery, initialPage } = props;
 
   const { plugins } = usePlugins();
   const plugin = plugins.find((p) => p.id === pluginId);
@@ -34,17 +33,12 @@ const PlaylistSearchResults: React.FC<PlaylistSearchResultsProps> = (props) => {
       setCurrentPage(searchPlaylists.pageInfo);
       return searchPlaylists.items;
     }
-
-    return playlists;
   };
 
   const query = useQuery(
     ["searchPlaylists", pluginId, searchQuery, page],
     search,
-    {
-      initialData: playlists,
-      staleTime: 1000,
-    }
+    { staleTime: 60 * 1000 }
   );
 
   const playlistList = query.data?.map((playlist) => (

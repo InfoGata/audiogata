@@ -13,7 +13,7 @@ import {
 import React from "react";
 import { useQuery } from "react-query";
 import useTrackMenu from "../hooks/useTrackMenu";
-import { PageInfo, Track } from "../plugintypes";
+import { PageInfo } from "../plugintypes";
 import TrackSearchResult from "./TrackSearchResult";
 import { addTrack } from "../store/reducers/trackReducer";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
@@ -22,14 +22,13 @@ import usePagination from "../hooks/usePagination";
 import { usePlugins } from "../PluginsContext";
 
 interface TrackSearchResultsProps {
-  tracks: Track[];
   pluginId: string;
   searchQuery: string;
   initialPage?: PageInfo;
 }
 
 const TrackSearchResults: React.FC<TrackSearchResultsProps> = (props) => {
-  const { tracks, pluginId, searchQuery, initialPage } = props;
+  const { pluginId, searchQuery, initialPage } = props;
   const { plugins } = usePlugins();
   const plugin = plugins.find((p) => p.id === pluginId);
   const { closeMenu, openMenu, anchorEl, menuTrack } = useTrackMenu();
@@ -47,22 +46,17 @@ const TrackSearchResults: React.FC<TrackSearchResultsProps> = (props) => {
         query: searchQuery,
         page: page,
       });
+      console.log(searchTracks);
       setCurrentPage(searchTracks.pageInfo);
       return searchTracks.items;
     }
-
-    return tracks;
   };
 
   const query = useQuery(
     ["searchTracks", pluginId, searchQuery, page],
     search,
-    {
-      initialData: tracks,
-      staleTime: 1000,
-    }
+    { staleTime: 60 * 1000 }
   );
-  console.log(page);
 
   const trackList = query.data?.map((track) => (
     <TrackSearchResult key={track.apiId} track={track} openMenu={openMenu} />

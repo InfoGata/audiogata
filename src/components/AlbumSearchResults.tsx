@@ -3,18 +3,17 @@ import React from "react";
 import { useQuery } from "react-query";
 import usePagination from "../hooks/usePagination";
 import { usePlugins } from "../PluginsContext";
-import { Album, PageInfo } from "../plugintypes";
+import { PageInfo } from "../plugintypes";
 import AlbumSearchResult from "./AlbumSearchResult";
 
 interface AlbumSearchResultsProps {
-  albums: Album[];
   pluginId: string;
   searchQuery: string;
   initialPage?: PageInfo;
 }
 
 const AlbumSearchResults: React.FC<AlbumSearchResultsProps> = (props) => {
-  const { albums, pluginId, searchQuery, initialPage } = props;
+  const { pluginId, searchQuery, initialPage } = props;
 
   const { plugins } = usePlugins();
   const plugin = plugins.find((p) => p.id === pluginId);
@@ -34,17 +33,12 @@ const AlbumSearchResults: React.FC<AlbumSearchResultsProps> = (props) => {
       setCurrentPage(searchAlbums.pageInfo);
       return searchAlbums.items;
     }
-
-    return albums;
   };
 
   const query = useQuery(
     ["searchAlbums", pluginId, searchQuery, page],
     search,
-    {
-      initialData: albums,
-      staleTime: 1000,
-    }
+    { staleTime: 60 * 1000 }
   );
 
   const albumList = query.data?.map((album) => (

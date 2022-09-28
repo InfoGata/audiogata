@@ -3,18 +3,17 @@ import React from "react";
 import { useQuery } from "react-query";
 import usePagination from "../hooks/usePagination";
 import { usePlugins } from "../PluginsContext";
-import { Artist, PageInfo } from "../plugintypes";
+import { PageInfo } from "../plugintypes";
 import ArtistSearchResult from "./ArtistSearchResult";
 
 interface ArtistSearchResultsProps {
-  artists: Artist[];
   pluginId: string;
   searchQuery: string;
   initialPage?: PageInfo;
 }
 
 const ArtistSearchResults: React.FC<ArtistSearchResultsProps> = (props) => {
-  const { artists, pluginId, searchQuery, initialPage } = props;
+  const { pluginId, searchQuery, initialPage } = props;
 
   const { plugins } = usePlugins();
   const plugin = plugins.find((p) => p.id === pluginId);
@@ -34,16 +33,13 @@ const ArtistSearchResults: React.FC<ArtistSearchResultsProps> = (props) => {
       setCurrentPage(searchArtists.pageInfo);
       return searchArtists.items;
     }
-
-    return artists;
   };
 
   const query = useQuery(
     ["searchArtists", pluginId, searchQuery, page],
     search,
     {
-      initialData: artists,
-      staleTime: 1000,
+      staleTime: 60 * 1000,
     }
   );
 
