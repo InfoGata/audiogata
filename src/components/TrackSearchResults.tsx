@@ -1,4 +1,4 @@
-import { PlaylistPlay } from "@mui/icons-material";
+import { PlaylistAdd, PlaylistPlay } from "@mui/icons-material";
 import {
   Backdrop,
   Button,
@@ -13,13 +13,14 @@ import {
 import React from "react";
 import { useQuery } from "react-query";
 import useTrackMenu from "../hooks/useTrackMenu";
-import { PageInfo } from "../plugintypes";
+import { PageInfo, Track } from "../plugintypes";
 import TrackSearchResult from "./TrackSearchResult";
 import { addTrack } from "../store/reducers/trackReducer";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
 import PlaylistMenuItem from "./PlaylistMenuItem";
 import usePagination from "../hooks/usePagination";
 import { usePlugins } from "../PluginsContext";
+import AddPlaylistDialog from "./AddPlaylistDialog";
 
 interface TrackSearchResultsProps {
   pluginId: string;
@@ -28,12 +29,18 @@ interface TrackSearchResultsProps {
 }
 
 const TrackSearchResults: React.FC<TrackSearchResultsProps> = (props) => {
+  const [playlistDialogTracks, setPlaylistDialogTracks] = React.useState<
+    Track[]
+  >([]);
+  const [playlistDialogOpen, setPlaylistDialogOpen] = React.useState(false);
   const { pluginId, searchQuery, initialPage } = props;
   const { plugins } = usePlugins();
   const plugin = plugins.find((p) => p.id === pluginId);
   const { closeMenu, openMenu, anchorEl, menuTrack } = useTrackMenu();
   const dispatch = useAppDispatch();
   const playlists = useAppSelector((state) => state.playlist.playlists);
+
+  const closePlaylistDialog = () => setPlaylistDialogOpen(false);
   const [currentPage, setCurrentPage] = React.useState<PageInfo | undefined>(
     initialPage
   );
@@ -68,6 +75,12 @@ const TrackSearchResults: React.FC<TrackSearchResultsProps> = (props) => {
     closeMenu();
   };
 
+  const addTrackToNewPlaylist = () => {
+    setPlaylistDialogTracks(menuTrack ? [menuTrack] : []);
+    setPlaylistDialogOpen(true);
+    closeMenu();
+  };
+
   return (
     <>
       <Backdrop open={query.isLoading}>
@@ -85,6 +98,12 @@ const TrackSearchResults: React.FC<TrackSearchResultsProps> = (props) => {
           </ListItemIcon>
           <ListItemText primary="Add To Queue" />
         </MenuItem>
+        <MenuItem onClick={addTrackToNewPlaylist}>
+          <ListItemIcon>
+            <PlaylistAdd />
+          </ListItemIcon>
+          <ListItemText primary="Add To New Playlist" />
+        </MenuItem>
         {playlists.map((p) => (
           <PlaylistMenuItem
             key={p.id}
@@ -94,6 +113,11 @@ const TrackSearchResults: React.FC<TrackSearchResultsProps> = (props) => {
           />
         ))}
       </Menu>
+      <AddPlaylistDialog
+        tracks={playlistDialogTracks}
+        open={playlistDialogOpen}
+        handleClose={closePlaylistDialog}
+      />
     </>
   );
 };

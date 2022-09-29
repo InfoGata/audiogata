@@ -29,6 +29,7 @@ import {
   Info,
   MoreHoriz,
   PlayCircle,
+  PlaylistAdd,
   PlaylistPlay,
 } from "@mui/icons-material";
 import { Link } from "react-router-dom";
@@ -39,10 +40,15 @@ import PlaylistMenuItem from "./PlaylistMenuItem";
 import SelectTrackListPlugin from "./SelectTrackListPlugin";
 import SelectionEditDialog from "./SelectionEditDialog";
 import useTrackMenu from "../hooks/useTrackMenu";
+import AddPlaylistDialog from "./AddPlaylistDialog";
 
 const PlaylistTracks: React.FC = () => {
   const { playlistId } = useParams<"playlistId">();
   const dispatch = useAppDispatch();
+  const [playlistDialogTracks, setPlaylistDialogTracks] = React.useState<
+    Track[]
+  >([]);
+  const [playlistDialogOpen, setPlaylistDialogOpen] = React.useState(false);
   const [playlist, setPlaylist] = React.useState<PlaylistInfo | undefined>();
   const [loaded, setLoaded] = React.useState(false);
   const [openEditMenu, setOpenEditMenu] = React.useState(false);
@@ -55,6 +61,12 @@ const PlaylistTracks: React.FC = () => {
   const playlistInfo = useAppSelector((state) =>
     state.playlist.playlists.find((p) => p.id === playlistId)
   );
+
+  const addTrackToNewPlaylist = () => {
+    setPlaylistDialogTracks(menuTrack ? [menuTrack] : []);
+    setPlaylistDialogOpen(true);
+    closeMenu();
+  };
 
   const openEditSelectDialog = () => setEditSelectDialogOpen(true);
 
@@ -70,6 +82,7 @@ const PlaylistTracks: React.FC = () => {
   );
   const selectedTracks = tracklist.filter((t) => selected.has(t.id ?? ""));
 
+  const closePlaylistDialog = () => setPlaylistDialogOpen(false);
   const closeQueueMenu = () => setQueueMenuAnchorEl(null);
   const closeEditSelectDialog = () => setEditSelectDialogOpen(false);
 
@@ -271,6 +284,12 @@ const PlaylistTracks: React.FC = () => {
               </ListItemIcon>
               <ListItemText primary="Info" />
             </MenuItem>
+            <MenuItem onClick={addTrackToNewPlaylist}>
+              <ListItemIcon>
+                <PlaylistAdd />
+              </ListItemIcon>
+              <ListItemText primary="Add To New Playlist" />
+            </MenuItem>
             {playlists.map((p) => (
               <PlaylistMenuItem
                 key={p.id}
@@ -290,6 +309,12 @@ const PlaylistTracks: React.FC = () => {
             open={editSelectDialogOpen}
             onClose={closeEditSelectDialog}
             onSave={onSelectedEdited}
+          />
+
+          <AddPlaylistDialog
+            tracks={playlistDialogTracks}
+            open={playlistDialogOpen}
+            handleClose={closePlaylistDialog}
           />
         </>
       ) : (
