@@ -45,9 +45,6 @@ import AddPlaylistDialog from "./AddPlaylistDialog";
 const PlaylistTracks: React.FC = () => {
   const { playlistId } = useParams<"playlistId">();
   const dispatch = useAppDispatch();
-  const [playlistDialogTracks, setPlaylistDialogTracks] = React.useState<
-    Track[]
-  >([]);
   const [playlistDialogOpen, setPlaylistDialogOpen] = React.useState(false);
   const [playlist, setPlaylist] = React.useState<PlaylistInfo | undefined>();
   const [loaded, setLoaded] = React.useState(false);
@@ -63,7 +60,6 @@ const PlaylistTracks: React.FC = () => {
   );
 
   const addTrackToNewPlaylist = () => {
-    setPlaylistDialogTracks(menuTrack ? [menuTrack] : []);
     setPlaylistDialogOpen(true);
     closeMenu();
   };
@@ -310,9 +306,8 @@ const PlaylistTracks: React.FC = () => {
             onClose={closeEditSelectDialog}
             onSave={onSelectedEdited}
           />
-
           <AddPlaylistDialog
-            tracks={playlistDialogTracks}
+            tracks={menuTrack ? [menuTrack] : []}
             open={playlistDialogOpen}
             handleClose={closePlaylistDialog}
           />

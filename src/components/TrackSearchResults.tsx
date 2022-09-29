@@ -13,7 +13,7 @@ import {
 import React from "react";
 import { useQuery } from "react-query";
 import useTrackMenu from "../hooks/useTrackMenu";
-import { PageInfo, Track } from "../plugintypes";
+import { PageInfo } from "../plugintypes";
 import TrackSearchResult from "./TrackSearchResult";
 import { addTrack } from "../store/reducers/trackReducer";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
@@ -29,9 +29,6 @@ interface TrackSearchResultsProps {
 }
 
 const TrackSearchResults: React.FC<TrackSearchResultsProps> = (props) => {
-  const [playlistDialogTracks, setPlaylistDialogTracks] = React.useState<
-    Track[]
-  >([]);
   const [playlistDialogOpen, setPlaylistDialogOpen] = React.useState(false);
   const { pluginId, searchQuery, initialPage } = props;
   const { plugins } = usePlugins();
@@ -76,7 +73,6 @@ const TrackSearchResults: React.FC<TrackSearchResultsProps> = (props) => {
   };
 
   const addTrackToNewPlaylist = () => {
-    setPlaylistDialogTracks(menuTrack ? [menuTrack] : []);
     setPlaylistDialogOpen(true);
     closeMenu();
   };
@@ -114,7 +110,7 @@ const TrackSearchResults: React.FC<TrackSearchResultsProps> = (props) => {
         ))}
       </Menu>
       <AddPlaylistDialog
-        tracks={playlistDialogTracks}
+        tracks={menuTrack ? [menuTrack] : []}
         open={playlistDialogOpen}
         handleClose={closePlaylistDialog}
       />
