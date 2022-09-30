@@ -80,7 +80,7 @@ export const TrackMenuProvider: React.FC<React.PropsWithChildren> = (props) => {
           <ListItemIcon>
             <PlaylistAdd />
           </ListItemIcon>
-          <ListItemText primary="Add To New Playlist" />
+          <ListItemText primary="Add to New Playlist" />
         </MenuItem>
         {playlists.map((p) => (
           <PlaylistMenuItem
@@ -88,6 +88,7 @@ export const TrackMenuProvider: React.FC<React.PropsWithChildren> = (props) => {
             playlist={p}
             tracks={menuTrack ? [menuTrack] : []}
             closeMenu={closeMenu}
+            namePrefix="Add to "
           />
         ))}
       </Menu>
