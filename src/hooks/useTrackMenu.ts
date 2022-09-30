@@ -1,23 +1,35 @@
 import React from "react";
-import { Track } from "../plugintypes";
+import { PlaylistInfo, Track } from "../plugintypes";
+import { useAppSelector } from "../store/hooks";
+import TrackMenuContext from "../TrackMenuContext";
+interface TrackMenuArgs {
+  playlists?: PlaylistInfo[];
+  listItems?: JSX.Element[];
+  noQueueItem?: boolean;
+}
 
-const useTrackMenu = () => {
-  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-  const [menuTrack, setMenuTrack] = React.useState<Track>();
+const useTrackMenu = (args?: TrackMenuArgs) => {
+  const {
+    openTrackMenu,
+    closeMenu,
+    menuTrack,
+    setPlaylists,
+    setListElements,
+    setNoQueue,
+  } = React.useContext(TrackMenuContext);
+  const playlists = useAppSelector((state) => state.playlist.playlists);
 
   const openMenu = (
     event: React.MouseEvent<HTMLButtonElement>,
-    track: Track
+    video: Track
   ) => {
-    const currentTarget = event.currentTarget;
-    event.stopPropagation();
-    event.preventDefault();
-    setAnchorEl(currentTarget);
-    setMenuTrack(track);
+    setNoQueue(!!args?.noQueueItem);
+    setPlaylists(args?.playlists ?? playlists);
+    setListElements(args?.listItems ?? []);
+    openTrackMenu(event, video);
   };
-  const closeMenu = () => setAnchorEl(null);
 
-  return { closeMenu, openMenu, anchorEl, menuTrack };
+  return { openMenu, closeMenu, menuTrack };
 };
 
 export default useTrackMenu;

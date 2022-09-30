@@ -1,9 +1,4 @@
-import {
-  MoreHoriz,
-  PlayCircle,
-  PlaylistAdd,
-  PlaylistPlay,
-} from "@mui/icons-material";
+import { MoreHoriz, PlayCircle, PlaylistPlay } from "@mui/icons-material";
 import {
   Backdrop,
   Button,
@@ -31,7 +26,6 @@ import {
 } from "../store/reducers/trackReducer";
 import { nanoid } from "@reduxjs/toolkit";
 import PlaylistMenuItem from "./PlaylistMenuItem";
-import AddPlaylistDialog from "./AddPlaylistDialog";
 import { useQuery } from "react-query";
 import usePagination from "../hooks/usePagination";
 import { useLocation } from "react-router-dom";
@@ -54,7 +48,7 @@ const PluginPlaylist: React.FC = () => {
   const { page, hasNextPage, hasPreviousPage, onPreviousPage, onNextPage } =
     usePagination(currentPage);
   const params = new URLSearchParams(location.search);
-  const { closeMenu, openMenu, anchorEl, menuTrack } = useTrackMenu();
+  const { openMenu } = useTrackMenu();
 
   const getPlaylistTracks = async () => {
     if (plugin && (await plugin.hasDefined.onGetPlaylistTracks())) {
@@ -84,9 +78,6 @@ const PluginPlaylist: React.FC = () => {
   const tracklist = query.data ?? [];
   const { onSelect, onSelectAll, isSelected, selected } =
     useSelected(tracklist);
-  const [playlistDialogOpen, setPlaylistDialogOpen] = React.useState(false);
-  const openPlaylistDialog = () => setPlaylistDialogOpen(true);
-  const closePlaylistDialog = () => setPlaylistDialogOpen(false);
 
   const [queueMenuAnchorEl, setQueueMenuAnchorEl] =
     React.useState<null | HTMLElement>(null);
@@ -112,11 +103,6 @@ const PluginPlaylist: React.FC = () => {
   const onPlayClick = () => {
     dispatch(setTracks(tracklist));
     dispatch(playQueue());
-  };
-
-  const addToNewPlaylist = () => {
-    openPlaylistDialog();
-    closeMenu();
   };
 
   const onTrackClick = (track: Track) => {
@@ -150,11 +136,6 @@ const PluginPlaylist: React.FC = () => {
         onSelectAll={onSelectAll}
         selected={selected}
         dragDisabled={true}
-      />
-      <AddPlaylistDialog
-        tracks={menuTrack ? [menuTrack] : []}
-        open={playlistDialogOpen}
-        handleClose={closePlaylistDialog}
       />
       <Grid>
         {hasPreviousPage && <Button onClick={onPreviousPage}>Previous</Button>}
@@ -198,23 +179,6 @@ const PluginPlaylist: React.FC = () => {
             />
           )),
         ]}
-      </Menu>
-      <Menu open={Boolean(anchorEl)} onClose={closeMenu} anchorEl={anchorEl}>
-        <MenuItem onClick={addToNewPlaylist}>
-          <ListItemIcon>
-            <PlaylistAdd />
-          </ListItemIcon>
-          <ListItemText primary="Add To New Playlist" />
-        </MenuItem>
-        {playlists.map((p) => (
-          <PlaylistMenuItem
-            key={p.id}
-            playlist={p}
-            tracks={menuTrack ? [menuTrack] : []}
-            closeMenu={closeMenu}
-            namePrefix="Add track to "
-          />
-        ))}
       </Menu>
     </>
   );

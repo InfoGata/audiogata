@@ -31,12 +31,12 @@ import { db } from "../database";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
 import TrackList from "./TrackList";
 import useSelected from "../hooks/useSelected";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import SelectTrackListPlugin from "./SelectTrackListPlugin";
 import SelectionEditDialog from "./SelectionEditDialog";
 import useTrackMenu from "../hooks/useTrackMenu";
 
-const PlayQueue: React.FC = () => {
+const NowPlaying: React.FC = () => {
   const [playlistDialogTracks, setPlaylistDialogTracks] = React.useState<
     Track[]
   >([]);
@@ -45,7 +45,39 @@ const PlayQueue: React.FC = () => {
   const [queueMenuAnchorEl, setQueueMenuAnchorEl] =
     React.useState<null | HTMLElement>(null);
   const dispatch = useAppDispatch();
-  const { closeMenu, openMenu, anchorEl, menuTrack } = useTrackMenu();
+  const navigate = useNavigate();
+
+  const deleteClick = async () => {
+    if (menuTrack?.id) {
+      await db.audioBlobs.delete(menuTrack.id);
+    }
+    closeMenu();
+    if (menuTrack) {
+      dispatch(deleteTrack(menuTrack));
+    }
+  };
+
+  const infoClick = () => {
+    const url = `/track/${menuTrack?.id}`;
+    navigate(url);
+  };
+
+  const listItems = [
+    <MenuItem onClick={deleteClick} key="Delete">
+      <ListItemIcon>
+        <Delete />
+      </ListItemIcon>
+      <ListItemText primary="Delete" />
+    </MenuItem>,
+    <MenuItem onClick={infoClick} key="Info">
+      <ListItemIcon>
+        <Info />
+      </ListItemIcon>
+      <ListItemText primary="Info" />
+    </MenuItem>,
+  ];
+
+  const { closeMenu, openMenu, menuTrack } = useTrackMenu({ listItems });
 
   const openQueueMenu = (event: React.MouseEvent<HTMLButtonElement>) => {
     setQueueMenuAnchorEl(event.currentTarget);
@@ -57,25 +89,11 @@ const PlayQueue: React.FC = () => {
   const closeEditSelectDialog = () => setEditSelectDialogOpen(false);
 
   const trackList = useAppSelector((state) => state.track.tracks);
-  const deleteClick = async () => {
-    if (menuTrack?.id) {
-      await db.audioBlobs.delete(menuTrack.id);
-    }
-    closeMenu();
-    if (menuTrack) {
-      dispatch(deleteTrack(menuTrack));
-    }
-  };
   const closePlaylistDialog = () => setPlaylistDialogOpen(false);
 
   const { onSelect, onSelectAll, isSelected, selected, setSelected } =
     useSelected(trackList);
 
-  const addTrackToNewPlaylist = () => {
-    setPlaylistDialogTracks(menuTrack ? [menuTrack] : []);
-    setPlaylistDialogOpen(true);
-    closeMenu();
-  };
   const addQueueToNewPlaylist = () => {
     setPlaylistDialogTracks(trackList);
     setPlaylistDialogOpen(true);
@@ -96,7 +114,6 @@ const PlayQueue: React.FC = () => {
   };
 
   const playlists = useAppSelector((state) => state.playlist.playlists);
-  const infoPath = `/track/${menuTrack?.id}`;
 
   const onTrackClick = (track: Track) => {
     dispatch(setTrack(track));
@@ -197,35 +214,6 @@ const PlayQueue: React.FC = () => {
           )),
         ]}
       </Menu>
-      <Menu open={Boolean(anchorEl)} onClose={closeMenu} anchorEl={anchorEl}>
-        <MenuItem onClick={deleteClick}>
-          <ListItemIcon>
-            <Delete />
-          </ListItemIcon>
-          <ListItemText primary="Delete" />
-        </MenuItem>
-        <MenuItem component={Link} to={infoPath}>
-          <ListItemIcon>
-            <Info />
-          </ListItemIcon>
-          <ListItemText primary="Info" />
-        </MenuItem>
-        <Divider />
-        <MenuItem onClick={addTrackToNewPlaylist}>
-          <ListItemIcon>
-            <PlaylistAdd />
-          </ListItemIcon>
-          <ListItemText primary="Add To New Playlist" />
-        </MenuItem>
-        {playlists.map((p) => (
-          <PlaylistMenuItem
-            key={p.id}
-            playlist={p}
-            tracks={menuTrack ? [menuTrack] : []}
-            closeMenu={closeMenu}
-          />
-        ))}
-      </Menu>
       <AddPlaylistDialog
         tracks={playlistDialogTracks}
         open={playlistDialogOpen}
@@ -240,4 +228,4 @@ const PlayQueue: React.FC = () => {
   );
 };
 
-export default React.memo(PlayQueue);
+export default React.memo(NowPlaying);

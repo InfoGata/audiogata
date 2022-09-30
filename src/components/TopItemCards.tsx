@@ -1,4 +1,4 @@
-import { MoreHoriz, PlaylistAdd } from "@mui/icons-material";
+import { MoreHoriz } from "@mui/icons-material";
 import {
   Card,
   CardActionArea,
@@ -7,10 +7,6 @@ import {
   Fade,
   Grid,
   IconButton,
-  ListItemIcon,
-  ListItemText,
-  Menu,
-  MenuItem,
   Stack,
   Typography,
 } from "@mui/material";
@@ -19,21 +15,16 @@ import React from "react";
 import { useQuery } from "react-query";
 import useTrackMenu from "../hooks/useTrackMenu";
 import { usePlugins } from "../PluginsContext";
-import { useAppDispatch, useAppSelector } from "../store/hooks";
+import { useAppDispatch } from "../store/hooks";
 import { addTrack, setTrack } from "../store/reducers/trackReducer";
 import { getThumbnailImage, playlistThumbnailSize } from "../utils";
-import AddPlaylistDialog from "./AddPlaylistDialog";
-import PlaylistMenuItem from "./PlaylistMenuItem";
 import SelectPlugin from "./SelectPlugin";
 
 const TopItemCards: React.FC = () => {
   const [pluginId, setPluginId] = React.useState("");
   const { plugins } = usePlugins();
   const dispatch = useAppDispatch();
-  const playlists = useAppSelector((state) => state.playlist.playlists);
-  const [playlistDialogOpen, setPlaylistDialogOpen] = React.useState(false);
-  const closePlaylistDialog = () => setPlaylistDialogOpen(false);
-  const { closeMenu, openMenu, anchorEl, menuTrack } = useTrackMenu();
+  const { openMenu } = useTrackMenu();
 
   const getTopItems = async () => {
     const plugin = plugins.find((p) => p.id === pluginId);
@@ -98,12 +89,6 @@ const TopItemCards: React.FC = () => {
     );
   });
 
-  const openPlaylistDialog = () => setPlaylistDialogOpen(true);
-  const addToNewPlaylist = () => {
-    openPlaylistDialog();
-    closeMenu();
-  };
-
   return (
     <>
       <Grid sx={{ display: pluginId ? "block" : "none" }}>
@@ -129,27 +114,6 @@ const TopItemCards: React.FC = () => {
           </Grid>
         </Grid>
       </Fade>
-      <Menu open={Boolean(anchorEl)} onClose={closeMenu} anchorEl={anchorEl}>
-        <MenuItem onClick={addToNewPlaylist}>
-          <ListItemIcon>
-            <PlaylistAdd />
-          </ListItemIcon>
-          <ListItemText primary="Add To New Playlist" />
-        </MenuItem>
-        {playlists.map((p) => (
-          <PlaylistMenuItem
-            key={p.id}
-            playlist={p}
-            tracks={menuTrack ? [menuTrack] : []}
-            closeMenu={closeMenu}
-          />
-        ))}
-      </Menu>
-      <AddPlaylistDialog
-        tracks={menuTrack ? [menuTrack] : []}
-        open={playlistDialogOpen}
-        handleClose={closePlaylistDialog}
-      />
     </>
   );
 };
