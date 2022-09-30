@@ -88,7 +88,6 @@ const PlaylistTracks: React.FC = () => {
   const { closeMenu, openMenu, menuTrack } = useTrackMenu({
     playlists,
     listItems,
-    noQueueItem: true,
   });
   const [tracklist, setTracklist] = React.useState<Track[]>([]);
   const { onSelect, onSelectAll, isSelected, selected, setSelected } =

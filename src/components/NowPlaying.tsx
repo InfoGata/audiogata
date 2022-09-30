@@ -77,7 +77,10 @@ const NowPlaying: React.FC = () => {
     </MenuItem>,
   ];
 
-  const { closeMenu, openMenu, menuTrack } = useTrackMenu({ listItems });
+  const { closeMenu, openMenu, menuTrack } = useTrackMenu({
+    listItems,
+    noQueueItem: true,
+  });
 
   const openQueueMenu = (event: React.MouseEvent<HTMLButtonElement>) => {
     setQueueMenuAnchorEl(event.currentTarget);
