@@ -3,7 +3,6 @@ import {
   Card,
   CardActionArea,
   CardActions,
-  CardMedia,
   Fade,
   Grid,
   IconButton,
@@ -19,6 +18,7 @@ import { useAppDispatch } from "../store/hooks";
 import { addTrack, setTrack } from "../store/reducers/trackReducer";
 import { getThumbnailImage, playlistThumbnailSize } from "../utils";
 import SelectPlugin from "./SelectPlugin";
+import { Image } from "mui-image";
 
 const TopItemCards: React.FC = () => {
   const [pluginId, setPluginId] = React.useState("");
@@ -66,7 +66,7 @@ const TopItemCards: React.FC = () => {
         }}
       >
         <CardActionArea onClick={onClickTrack}>
-          <CardMedia component="img" src={image} sx={{ height: 200 }} />
+          <Image src={image} height={200} />
         </CardActionArea>
         <CardActions>
           <Stack direction="row" alignItems="center" gap={1}>
