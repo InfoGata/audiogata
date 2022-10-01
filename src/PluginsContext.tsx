@@ -152,6 +152,8 @@ export const PluginsProvider: React.FC<React.PropsWithChildren> = (props) => {
   const [pluginMessage, setPluginMessage] = React.useState<PluginMessage>();
   const dispatch = useAppDispatch();
 
+  const loadingPlugin = React.useRef(false);
+
   // Store variables being used by plugin methods in refs
   // in order to not get stale state
   const currentTrack = useAppSelector((state) => state.track.currentTrack);
@@ -390,6 +392,9 @@ export const PluginsProvider: React.FC<React.PropsWithChildren> = (props) => {
         setPluginsLoaded(true);
       }
     };
+
+    if (loadingPlugin.current) return;
+    loadingPlugin.current = true;
     getPlugins();
   }, [loadPlugin]);
 
