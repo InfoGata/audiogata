@@ -1,4 +1,4 @@
-import { Email, Language, Lock } from "@mui/icons-material";
+import { Email, Language, Lock, Twitter } from "@mui/icons-material";
 import {
   Avatar,
   Box,
@@ -20,6 +20,7 @@ const AboutPage: React.FC = () => {
   const btcDonation = "bc1q3jdf0xpy2m2m2vuvvuqrzzaqt6g8h4lspv49j0";
   const xmrDonation =
     "485HGRVmzC4XK3Tm6vq2v7hXg32qVJLaeK15GjUpsWvGHQ7nyrV3UA2PJGTE4rCTPzCQxqwnkMWF6WRafjg3KTuAAGvi6wJ";
+  const twitterUrl = "https://twitter.com/info_gata";
   return (
     <Box>
       <List>
@@ -40,6 +41,16 @@ const AboutPage: React.FC = () => {
             </Avatar>
           </ListItemAvatar>
           <ListItemText primary="Email" secondary={email} />
+        </ListItem>
+        <ListItem disablePadding>
+          <ListItemButton component="a" href={twitterUrl} target="_blank">
+            <ListItemAvatar>
+              <Avatar>
+                <Twitter />
+              </Avatar>
+            </ListItemAvatar>
+            <ListItemText primary="Twitter" secondary="@info_gata" />
+          </ListItemButton>
         </ListItem>
         <ListItem>
           <ListItemAvatar>
