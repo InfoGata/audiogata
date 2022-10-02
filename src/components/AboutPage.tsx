@@ -12,6 +12,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMonero } from "@fortawesome/free-brands-svg-icons/faMonero";
 import { faBitcoin } from "@fortawesome/free-brands-svg-icons/faBitcoin";
 import { faPaypal } from "@fortawesome/free-brands-svg-icons/faPaypal";
+import { faMastodon } from "@fortawesome/free-brands-svg-icons/faMastodon";
 import React from "react";
 
 const AboutPage: React.FC = () => {
@@ -22,8 +23,11 @@ const AboutPage: React.FC = () => {
   const xmrDonation =
     "485HGRVmzC4XK3Tm6vq2v7hXg32qVJLaeK15GjUpsWvGHQ7nyrV3UA2PJGTE4rCTPzCQxqwnkMWF6WRafjg3KTuAAGvi6wJ";
   const twitterUrl = "https://twitter.com/info_gata";
+  const twitterAt = "@info_gata";
   const paypalUrl =
     "https://www.paypal.com/donate/?hosted_button_id=VYJRQP387NF4S";
+  const mastodonUrl = "https://mastodon.online/@InfoGata";
+  const mastodonAt = "@InfoGata@mastodon.online";
   return (
     <Box>
       <List>
@@ -52,7 +56,17 @@ const AboutPage: React.FC = () => {
                 <Twitter />
               </Avatar>
             </ListItemAvatar>
-            <ListItemText primary="Twitter" secondary="@info_gata" />
+            <ListItemText primary="Twitter" secondary={twitterAt} />
+          </ListItemButton>
+        </ListItem>
+        <ListItem disablePadding>
+          <ListItemButton component="a" href={mastodonUrl} target="_blank">
+            <ListItemAvatar>
+              <Avatar>
+                <FontAwesomeIcon icon={faMastodon} />
+              </Avatar>
+            </ListItemAvatar>
+            <ListItemText primary="Mastodon" secondary={mastodonAt} />
           </ListItemButton>
         </ListItem>
         <ListItem disablePadding>
