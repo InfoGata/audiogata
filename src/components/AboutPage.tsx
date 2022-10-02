@@ -11,6 +11,7 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMonero } from "@fortawesome/free-brands-svg-icons/faMonero";
 import { faBitcoin } from "@fortawesome/free-brands-svg-icons/faBitcoin";
+import { faPaypal } from "@fortawesome/free-brands-svg-icons/faPaypal";
 import React from "react";
 
 const AboutPage: React.FC = () => {
@@ -21,6 +22,8 @@ const AboutPage: React.FC = () => {
   const xmrDonation =
     "485HGRVmzC4XK3Tm6vq2v7hXg32qVJLaeK15GjUpsWvGHQ7nyrV3UA2PJGTE4rCTPzCQxqwnkMWF6WRafjg3KTuAAGvi6wJ";
   const twitterUrl = "https://twitter.com/info_gata";
+  const paypalUrl =
+    "https://www.paypal.com/donate/?hosted_button_id=VYJRQP387NF4S";
   return (
     <Box>
       <List>
@@ -52,13 +55,23 @@ const AboutPage: React.FC = () => {
             <ListItemText primary="Twitter" secondary="@info_gata" />
           </ListItemButton>
         </ListItem>
+        <ListItem disablePadding>
+          <ListItemButton component="a" href={paypalUrl} target="_blank">
+            <ListItemAvatar>
+              <Avatar>
+                <FontAwesomeIcon icon={faPaypal} />
+              </Avatar>
+            </ListItemAvatar>
+            <ListItemText primary="Donate - Paypal" />
+          </ListItemButton>
+        </ListItem>
         <ListItem>
           <ListItemAvatar>
             <Avatar>
               <FontAwesomeIcon icon={faBitcoin} />
             </Avatar>
           </ListItemAvatar>
-          <ListItemText primary="Donate BTC" secondary={btcDonation} />
+          <ListItemText primary="Donate - BTC" secondary={btcDonation} />
         </ListItem>
         <ListItem>
           <ListItemAvatar>
@@ -66,7 +79,7 @@ const AboutPage: React.FC = () => {
               <FontAwesomeIcon icon={faMonero} />
             </Avatar>
           </ListItemAvatar>
-          <ListItemText primary="Donate XMR" secondary={xmrDonation} />
+          <ListItemText primary="Donate - XMR" secondary={xmrDonation} />
         </ListItem>
         <ListItem disablePadding>
           <ListItemButton component="a" href={privacyPolicy} target="_blank">
