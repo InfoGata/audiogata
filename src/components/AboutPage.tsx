@@ -93,7 +93,11 @@ const AboutPage: React.FC = () => {
               <FontAwesomeIcon icon={faMonero} />
             </Avatar>
           </ListItemAvatar>
-          <ListItemText primary="Donate - XMR" secondary={xmrDonation} />
+          <ListItemText
+            primary="Donate - XMR"
+            secondary={xmrDonation}
+            secondaryTypographyProps={{ style: { wordWrap: "break-word" } }}
+          />
         </ListItem>
         <ListItem disablePadding>
           <ListItemButton component="a" href={privacyPolicy} target="_blank">
