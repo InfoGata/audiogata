@@ -1,4 +1,9 @@
-import { MoreHoriz, PlayCircle, PlaylistPlay } from "@mui/icons-material";
+import {
+  MoreHoriz,
+  PlayCircle,
+  PlaylistAdd,
+  PlaylistPlay,
+} from "@mui/icons-material";
 import {
   Backdrop,
   Button,
@@ -31,6 +36,7 @@ import usePagination from "../hooks/usePagination";
 import { useLocation } from "react-router-dom";
 import PlaylistInfoCard from "./PlaylistInfoCard";
 import useTrackMenu from "../hooks/useTrackMenu";
+import AddPlaylistDialog from "./AddPlaylistDialog";
 
 const PluginPlaylist: React.FC = () => {
   const { pluginId } = useParams<"pluginId">();
@@ -49,6 +55,12 @@ const PluginPlaylist: React.FC = () => {
     usePagination(currentPage);
   const params = new URLSearchParams(location.search);
   const { openMenu } = useTrackMenu();
+
+  const [playlistDialogTracks, setPlaylistDialogTracks] = React.useState<
+    Track[]
+  >([]);
+  const [playlistDialogOpen, setPlaylistDialogOpen] = React.useState(false);
+  const closePlaylistDialog = () => setPlaylistDialogOpen(false);
 
   const getPlaylistTracks = async () => {
     if (plugin && (await plugin.hasDefined.onGetPlaylistTracks())) {
@@ -110,6 +122,18 @@ const PluginPlaylist: React.FC = () => {
     dispatch(setTrack(track));
   };
 
+  const addSelectedToNewPlaylist = () => {
+    setPlaylistDialogTracks(selectedTracks);
+    setPlaylistDialogOpen(true);
+    closeQueueMenu();
+  };
+
+  const addToNewPlaylist = () => {
+    setPlaylistDialogTracks(tracklist);
+    setPlaylistDialogOpen(true);
+    closeQueueMenu();
+  };
+
   return (
     <>
       <Backdrop open={query.isLoading}>
@@ -152,6 +176,12 @@ const PluginPlaylist: React.FC = () => {
           </ListItemIcon>
           <ListItemText primary="Add Tracks To Queue" />
         </MenuItem>
+        <MenuItem onClick={addToNewPlaylist}>
+          <ListItemIcon>
+            <PlaylistAdd />
+          </ListItemIcon>
+          <ListItemText primary="Add Tracks to To New Playlist" />
+        </MenuItem>
         {playlists.map((p) => (
           <PlaylistMenuItem
             key={p.id}
@@ -169,6 +199,12 @@ const PluginPlaylist: React.FC = () => {
             </ListItemIcon>
             <ListItemText primary="Add Selected To Queue" />
           </MenuItem>,
+          <MenuItem onClick={addSelectedToNewPlaylist}>
+            <ListItemIcon>
+              <PlaylistAdd />
+            </ListItemIcon>
+            <ListItemText primary="Add Selected to To New Playlist" />
+          </MenuItem>,
           playlists.map((p) => (
             <PlaylistMenuItem
               key={p.id}
@@ -180,6 +216,11 @@ const PluginPlaylist: React.FC = () => {
           )),
         ]}
       </Menu>
+      <AddPlaylistDialog
+        tracks={playlistDialogTracks}
+        open={playlistDialogOpen}
+        handleClose={closePlaylistDialog}
+      />
     </>
   );
 };
