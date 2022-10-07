@@ -4,6 +4,7 @@ import {
   Checkbox,
   IconButton,
   LinearProgress,
+  Link,
   TableCell,
   Typography,
 } from "@mui/material";
@@ -14,6 +15,7 @@ import { MoreHoriz } from "@mui/icons-material";
 import { useAppSelector } from "../store/hooks";
 import { getThumbnailImage, searchThumbnailSize } from "../utils";
 import DOMPurify from "dompurify";
+import { Link as RouterLink } from "react-router-dom";
 
 interface PlaylistItemsProps {
   track: Track;
@@ -88,15 +90,27 @@ const PlaylistItem: React.FC<PlaylistItemsProps> = (props) => {
               title={track.name}
               sx={{ overflow: "hidden", textOverflow: "ellipsis" }}
             />
-            <Typography
-              variant="body2"
-              color={currentTrack?.id === track.id ? "primary.main" : undefined}
-              noWrap={true}
-              dangerouslySetInnerHTML={{
-                __html: sanitizer(track.artistName || ""),
-              }}
-              sx={{ overflow: "hidden", textOverflow: "ellipsis" }}
-            />
+            {track.artistApiId ? (
+              <Link
+                component={RouterLink}
+                to={`/plugins/${track.pluginId}/artists/${track.artistApiId}`}
+                onClick={stopPropagation}
+              >
+                {track.artistName}
+              </Link>
+            ) : (
+              <Typography
+                variant="body2"
+                color={
+                  currentTrack?.id === track.id ? "primary.main" : undefined
+                }
+                noWrap={true}
+                dangerouslySetInnerHTML={{
+                  __html: sanitizer(track.artistName || ""),
+                }}
+                sx={{ overflow: "hidden", textOverflow: "ellipsis" }}
+              />
+            )}
             <LinearProgress
               variant="determinate"
               value={progress?.progress || 0}
