@@ -23,10 +23,10 @@ const useTrackMenu = (args?: TrackMenuArgs) => {
     event: React.MouseEvent<HTMLButtonElement>,
     video: Track
   ) => {
+    openTrackMenu(event, video);
     setNoQueue(!!args?.noQueueItem);
     setPlaylists(args?.playlists ?? playlists);
     setListElements(args?.listItems ?? []);
-    openTrackMenu(event, video);
   };
 
   return { openMenu, closeMenu, menuTrack };
