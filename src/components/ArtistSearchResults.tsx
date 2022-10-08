@@ -18,6 +18,17 @@ const ArtistSearchResults: React.FC<ArtistSearchResultsProps> = (props) => {
   const { plugins } = usePlugins();
   const plugin = plugins.find((p) => p.id === pluginId);
 
+  const [hasSearch, setHasSearch] = React.useState(false);
+  React.useEffect(() => {
+    const getHasSearch = async () => {
+      if (plugin) {
+        const hasSearch = await plugin.hasDefined.onSearchPlaylists();
+        setHasSearch(hasSearch);
+      }
+    };
+    getHasSearch();
+  }, [plugin]);
+
   const [currentPage, setCurrentPage] = React.useState<PageInfo | undefined>(
     initialPage
   );
@@ -57,10 +68,14 @@ const ArtistSearchResults: React.FC<ArtistSearchResultsProps> = (props) => {
         <CircularProgress color="inherit" />
       </Backdrop>
       <List>{artistList}</List>
-      <Grid>
-        {hasPreviousPage && <Button onClick={onPreviousPage}>Previous</Button>}
-        {hasNextPage && <Button onClick={onNextPage}>Next</Button>}
-      </Grid>
+      {hasSearch && (
+        <Grid>
+          {hasPreviousPage && (
+            <Button onClick={onPreviousPage}>Previous</Button>
+          )}
+          {hasNextPage && <Button onClick={onNextPage}>Next</Button>}
+        </Grid>
+      )}
     </>
   );
 };

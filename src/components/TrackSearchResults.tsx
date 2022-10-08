@@ -17,6 +17,18 @@ const TrackSearchResults: React.FC<TrackSearchResultsProps> = (props) => {
   const { pluginId, searchQuery, initialPage } = props;
   const { plugins } = usePlugins();
   const plugin = plugins.find((p) => p.id === pluginId);
+
+  const [hasSearch, setHasSearch] = React.useState(false);
+  React.useEffect(() => {
+    const getHasSearch = async () => {
+      if (plugin) {
+        const hasSearch = await plugin.hasDefined.onSearchPlaylists();
+        setHasSearch(hasSearch);
+      }
+    };
+    getHasSearch();
+  }, [plugin]);
+
   const { openMenu } = useTrackMenu();
   const [currentPage, setCurrentPage] = React.useState<PageInfo | undefined>(
     initialPage
@@ -51,10 +63,14 @@ const TrackSearchResults: React.FC<TrackSearchResultsProps> = (props) => {
         <CircularProgress color="inherit" />
       </Backdrop>
       <List>{trackList}</List>
-      <Grid>
-        {hasPreviousPage && <Button onClick={onPreviousPage}>Previous</Button>}
-        {hasNextPage && <Button onClick={onNextPage}>Next</Button>}
-      </Grid>
+      {hasSearch && (
+        <Grid>
+          {hasPreviousPage && (
+            <Button onClick={onPreviousPage}>Previous</Button>
+          )}
+          {hasNextPage && <Button onClick={onNextPage}>Next</Button>}
+        </Grid>
+      )}
     </>
   );
 };
