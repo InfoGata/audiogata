@@ -22,7 +22,7 @@ const TrackSearchResults: React.FC<TrackSearchResultsProps> = (props) => {
   React.useEffect(() => {
     const getHasSearch = async () => {
       if (plugin) {
-        const hasSearch = await plugin.hasDefined.onSearchPlaylists();
+        const hasSearch = await plugin.hasDefined.onSearchTracks();
         setHasSearch(hasSearch);
       }
     };

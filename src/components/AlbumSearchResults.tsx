@@ -22,7 +22,7 @@ const AlbumSearchResults: React.FC<AlbumSearchResultsProps> = (props) => {
   React.useEffect(() => {
     const getHasSearch = async () => {
       if (plugin) {
-        const hasSearch = await plugin.hasDefined.onSearchPlaylists();
+        const hasSearch = await plugin.hasDefined.onSearchAlbums();
         setHasSearch(hasSearch);
       }
     };

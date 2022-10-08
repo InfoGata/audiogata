@@ -22,7 +22,7 @@ const ArtistSearchResults: React.FC<ArtistSearchResultsProps> = (props) => {
   React.useEffect(() => {
     const getHasSearch = async () => {
       if (plugin) {
-        const hasSearch = await plugin.hasDefined.onSearchPlaylists();
+        const hasSearch = await plugin.hasDefined.onSearchArtists();
         setHasSearch(hasSearch);
       }
     };
