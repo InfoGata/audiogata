@@ -80,27 +80,27 @@ export interface SearchAllResult {
 
 export interface SearchRequest {
   query: string;
-  page?: PageInfo;
+  pageInfo?: PageInfo;
 }
 
 export interface PlaylistTrackRequest {
   apiId?: string;
   isUserPlaylist: boolean;
-  page?: PageInfo;
+  pageInfo?: PageInfo;
 }
 
 export interface AlbumTrackRequest {
   apiId?: string;
-  page?: PageInfo;
+  pageInfo?: PageInfo;
 }
 
 export interface ArtistAlbumRequest {
   apiId?: string;
-  page?: PageInfo;
+  pageInfo?: PageInfo;
 }
 
 export interface UserPlaylistRequest {
-  page?: PageInfo;
+  pageInfo?: PageInfo;
 }
 
 export interface SearchTrackResult {

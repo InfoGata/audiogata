@@ -39,7 +39,7 @@ const PlaylistSearchResults: React.FC<PlaylistSearchResultsProps> = (props) => {
     if (plugin && (await plugin.hasDefined.onSearchPlaylists())) {
       const searchPlaylists = await plugin.remote.onSearchPlaylists({
         query: searchQuery,
-        page: page,
+        pageInfo: page,
       });
       setCurrentPage(searchPlaylists.pageInfo);
       return searchPlaylists.items;

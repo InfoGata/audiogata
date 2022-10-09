@@ -39,7 +39,7 @@ const ArtistSearchResults: React.FC<ArtistSearchResultsProps> = (props) => {
     if (plugin && (await plugin.hasDefined.onSearchArtists())) {
       const searchArtists = await plugin.remote.onSearchArtists({
         query: searchQuery,
-        page: page,
+        pageInfo: page,
       });
       setCurrentPage(searchArtists.pageInfo);
       return searchArtists.items;

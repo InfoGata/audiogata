@@ -67,7 +67,7 @@ const PluginPlaylist: React.FC = () => {
       const t = await plugin.remote.onGetPlaylistTracks({
         apiId: apiId,
         isUserPlaylist: params.has("isuserplaylist"),
-        page,
+        pageInfo: page,
       });
 
       if (t.playlist) {

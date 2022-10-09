@@ -39,7 +39,7 @@ const AlbumSearchResults: React.FC<AlbumSearchResultsProps> = (props) => {
     if (plugin && (await plugin.hasDefined.onSearchAlbums())) {
       const searchAlbums = await plugin.remote.onSearchAlbums({
         query: searchQuery,
-        page: page,
+        pageInfo: page,
       });
       setCurrentPage(searchAlbums.pageInfo);
       return searchAlbums.items;

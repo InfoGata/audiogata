@@ -40,7 +40,7 @@ const TrackSearchResults: React.FC<TrackSearchResultsProps> = (props) => {
     if (plugin && (await plugin.hasDefined.onSearchTracks())) {
       const searchTracks = await plugin.remote.onSearchTracks({
         query: searchQuery,
-        page: page,
+        pageInfo: page,
       });
       setCurrentPage(searchTracks.pageInfo);
       return searchTracks.items;
