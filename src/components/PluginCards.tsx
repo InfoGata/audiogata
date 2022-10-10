@@ -15,45 +15,7 @@ import { usePlugins } from "../PluginsContext";
 import { getFileTypeFromPluginUrl, getPlugin } from "../utils";
 import { useNavigate } from "react-router";
 import { useSnackbar } from "notistack";
-
-interface PluginDescription {
-  name: string;
-  url: string;
-  description: string;
-}
-
-const pluginDescriptions: PluginDescription[] = [
-  {
-    name: "Plugin for Youtube",
-    description: "Plugin for playing music from youtube.com",
-    url: "https://gitlab.com/api/v4/projects/26680847/repository/files/manifest.json/raw?ref=master",
-  },
-  {
-    name: "Plugin for SoundCloud",
-    description: "Play music from SoundCloud.",
-    url: "https://gitlab.com/api/v4/projects/38039113/repository/files/manifest.json/raw?ref=master",
-  },
-  {
-    name: "Plugin for Spotify",
-    description: "Play music from Spotify. Requires Spotify login.",
-    url: "https://gitlab.com/api/v4/projects/35723151/repository/files/manifest.json/raw?ref=master",
-  },
-  {
-    name: "Plugin for Napster",
-    description: "Play music from napster. Requires napster login.",
-    url: "https://gitlab.com/api/v4/projects/35720504/repository/files/manifest.json/raw?ref=master",
-  },
-  {
-    name: "Plugin for Google Drive",
-    description: "Store and retrieve playlists from Google Drive",
-    url: "https://gitlab.com/api/v4/projects/35748829/repository/files/manifest.json/raw?ref=master",
-  },
-  {
-    name: "Plugin for Dropbox",
-    description: "Store and retreive playlists from Dropbox",
-    url: "https://gitlab.com/api/v4/projects/35751390/repository/files/manifest.json/raw?ref=master",
-  },
-];
+import { defaultPlugins, PluginDescription } from "../default-plugins";
 
 const PluginCards: React.FC = () => {
   const { enqueueSnackbar } = useSnackbar();
@@ -79,8 +41,8 @@ const PluginCards: React.FC = () => {
     setBackdropOpen(false);
   };
 
-  const pluginCards = pluginDescriptions
-    .filter((pd) => !plugins.some((p) => pd.name === p.name))
+  const pluginCards = defaultPlugins
+    .filter((dp) => !plugins.some((p) => dp.name === p.name))
     .map((p, i) => (
       <Grid item xs={4} key={i}>
         <Card>
