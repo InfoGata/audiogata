@@ -42,7 +42,7 @@ const PluginCards: React.FC = () => {
   };
 
   const pluginCards = defaultPlugins
-    .filter((dp) => !plugins.some((p) => dp.name === p.name))
+    .filter((dp) => !plugins.some((p) => dp.id === p.id))
     .map((p, i) => (
       <Grid item xs={4} key={i}>
         <Card>
