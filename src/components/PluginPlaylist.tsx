@@ -37,6 +37,8 @@ import { useLocation } from "react-router-dom";
 import PlaylistInfoCard from "./PlaylistInfoCard";
 import useTrackMenu from "../hooks/useTrackMenu";
 import AddPlaylistDialog from "./AddPlaylistDialog";
+import useFindPlugin from "../hooks/useFindPlugin";
+import ConfirmPluginDialog from "./ConfirmPluginDialog";
 
 const PluginPlaylist: React.FC = () => {
   const { pluginId } = useParams<"pluginId">();
@@ -61,6 +63,11 @@ const PluginPlaylist: React.FC = () => {
   >([]);
   const [playlistDialogOpen, setPlaylistDialogOpen] = React.useState(false);
   const closePlaylistDialog = () => setPlaylistDialogOpen(false);
+  const { isLoading, pendingPlugin, removePendingPlugin } = useFindPlugin({
+    pluginsLoaded,
+    pluginId,
+    plugin,
+  });
 
   const getPlaylistTracks = async () => {
     if (plugin && (await plugin.hasDefined.onGetPlaylistTracks())) {
@@ -85,7 +92,7 @@ const PluginPlaylist: React.FC = () => {
   const query = useQuery(
     ["pluginplaylist", pluginId, apiId, page],
     getPlaylistTracks,
-    { enabled: pluginsLoaded }
+    { enabled: pluginsLoaded && !!plugin }
   );
   const tracklist = query.data ?? [];
   const { onSelect, onSelectAll, isSelected, selected } =
@@ -136,7 +143,7 @@ const PluginPlaylist: React.FC = () => {
 
   return (
     <>
-      <Backdrop open={query.isLoading}>
+      <Backdrop open={query.isLoading || isLoading}>
         <CircularProgress color="inherit" />
       </Backdrop>
       {playlistInfo && (
@@ -220,6 +227,11 @@ const PluginPlaylist: React.FC = () => {
         tracks={playlistDialogTracks}
         open={playlistDialogOpen}
         handleClose={closePlaylistDialog}
+      />
+      <ConfirmPluginDialog
+        open={Boolean(pendingPlugin)}
+        plugins={pendingPlugin ? [pendingPlugin] : []}
+        handleClose={removePendingPlugin}
       />
     </>
   );

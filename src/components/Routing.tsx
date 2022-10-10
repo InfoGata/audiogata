@@ -34,6 +34,11 @@ const Routing: React.FC = () => {
         <Route path="/about" element={<AboutPage />} />
         <Route path="/settings" element={<Settings />} />
         <Route path="/search" element={<Search />} />
+        <Route path="/track/:trackId" element={<QueueTrackInfo />} />
+        <Route
+          path="/playlists/:playlistId/tracks/:trackId"
+          element={<PlaylistTrackInfo />}
+        />
         <Route
           path="/plugins/:pluginId/playlists"
           element={<PluginPlaylists />}
@@ -49,11 +54,6 @@ const Routing: React.FC = () => {
         <Route
           path="/plugins/:pluginId/albums/:apiId"
           element={<AlbumPage />}
-        />
-        <Route path="/track/:trackId" element={<QueueTrackInfo />} />
-        <Route
-          path="/playlists/:playlistId/tracks/:trackId"
-          element={<PlaylistTrackInfo />}
         />
         <Route path="/plugins/:pluginId" element={<PluginDetails />} />
         <Route path="/plugins/:pluginId/options" element={<PluginOptions />} />

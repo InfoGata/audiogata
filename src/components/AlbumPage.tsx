@@ -10,6 +10,7 @@ import { nanoid } from "@reduxjs/toolkit";
 import React from "react";
 import { useQuery } from "react-query";
 import { useLocation, useParams } from "react-router-dom";
+import useFindPlugin from "../hooks/useFindPlugin";
 import usePagination from "../hooks/usePagination";
 import useSelected from "../hooks/useSelected";
 import useTrackMenu from "../hooks/useTrackMenu";
@@ -17,6 +18,7 @@ import { usePlugins } from "../PluginsContext";
 import { Album, PageInfo, Track } from "../plugintypes";
 import { useAppDispatch } from "../store/hooks";
 import { setTracks, setTrack, playQueue } from "../store/reducers/trackReducer";
+import ConfirmPluginDialog from "./ConfirmPluginDialog";
 import PlaylistInfoCard from "./PlaylistInfoCard";
 import TrackList from "./TrackList";
 
@@ -28,12 +30,17 @@ const AlbumPage: React.FC = () => {
   const [albumInfo, setAlbumInfo] = React.useState<Album | null>(state);
   const dispatch = useAppDispatch();
   const { openMenu } = useTrackMenu();
+  const plugin = plugins.find((p) => p.id === pluginId);
+  const { isLoading, pendingPlugin, removePendingPlugin } = useFindPlugin({
+    pluginsLoaded,
+    pluginId,
+    plugin,
+  });
 
   const [currentPage, setCurrentPage] = React.useState<PageInfo>();
   const { page, hasNextPage, hasPreviousPage, onPreviousPage, onNextPage } =
     usePagination(currentPage);
   const onGetAlbum = async () => {
-    const plugin = plugins.find((p) => p.id === pluginId);
     if (plugin && (await plugin.hasDefined.onGetAlbumTracks())) {
       const albumData = await plugin.remote.onGetAlbumTracks({
         apiId: apiId,
@@ -52,7 +59,7 @@ const AlbumPage: React.FC = () => {
   };
 
   const query = useQuery(["albumpage", pluginId, apiId], onGetAlbum, {
-    enabled: pluginsLoaded,
+    enabled: pluginsLoaded && !!plugin,
   });
   const tracklist = query.data || [];
   const { onSelect, onSelectAll, isSelected, selected } = useSelected(
@@ -71,7 +78,7 @@ const AlbumPage: React.FC = () => {
 
   return (
     <>
-      <Backdrop open={query.isLoading}>
+      <Backdrop open={query.isLoading || isLoading}>
         <CircularProgress color="inherit" />
       </Backdrop>
       {albumInfo && (
@@ -102,6 +109,11 @@ const AlbumPage: React.FC = () => {
         {hasPreviousPage && <Button onClick={onPreviousPage}>Previous</Button>}
         {hasNextPage && <Button onClick={onNextPage}>Next</Button>}
       </Grid>
+      <ConfirmPluginDialog
+        open={Boolean(pendingPlugin)}
+        plugins={pendingPlugin ? [pendingPlugin] : []}
+        handleClose={removePendingPlugin}
+      />
     </>
   );
 };

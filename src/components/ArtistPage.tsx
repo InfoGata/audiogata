@@ -3,10 +3,12 @@ import React from "react";
 import { useQuery } from "react-query";
 import { useParams } from "react-router";
 import { useLocation } from "react-router-dom";
+import useFindPlugin from "../hooks/useFindPlugin";
 import usePagination from "../hooks/usePagination";
 import { usePlugins } from "../PluginsContext";
 import { Artist, PageInfo } from "../plugintypes";
 import AlbumSearchResult from "./AlbumSearchResult";
+import ConfirmPluginDialog from "./ConfirmPluginDialog";
 import PlaylistInfoCard from "./PlaylistInfoCard";
 
 const ArtistPage: React.FC = () => {
@@ -15,12 +17,17 @@ const ArtistPage: React.FC = () => {
   const { plugins, pluginsLoaded } = usePlugins();
   const state = useLocation().state as Artist | null;
   const [artistInfo, setArtistInfo] = React.useState<Artist | null>(state);
+  const plugin = plugins.find((p) => p.id === pluginId);
+  const { isLoading, pendingPlugin, removePendingPlugin } = useFindPlugin({
+    pluginsLoaded,
+    pluginId,
+    plugin,
+  });
 
   const [currentPage, setCurrentPage] = React.useState<PageInfo>();
   const { page, hasNextPage, hasPreviousPage, onPreviousPage, onNextPage } =
     usePagination(currentPage);
   const onGetArtist = async () => {
-    const plugin = plugins.find((p) => p.id === pluginId);
     if (plugin && (await plugin.hasDefined.onGetArtistAlbums())) {
       const artistData = await plugin.remote.onGetArtistAlbums({
         apiId: apiId,
@@ -36,7 +43,7 @@ const ArtistPage: React.FC = () => {
   };
 
   const query = useQuery(["artistpage", pluginId, apiId, page], onGetArtist, {
-    enabled: pluginsLoaded,
+    enabled: pluginsLoaded && !!plugin,
   });
 
   const albumsList = query.data?.map((a) => (
@@ -45,7 +52,7 @@ const ArtistPage: React.FC = () => {
 
   return (
     <>
-      <Backdrop open={query.isLoading}>
+      <Backdrop open={query.isLoading || isLoading}>
         <CircularProgress color="inherit" />
       </Backdrop>
       {artistInfo && (
@@ -59,6 +66,11 @@ const ArtistPage: React.FC = () => {
         {hasPreviousPage && <Button onClick={onPreviousPage}>Previous</Button>}
         {hasNextPage && <Button onClick={onNextPage}>Next</Button>}
       </Grid>
+      <ConfirmPluginDialog
+        open={Boolean(pendingPlugin)}
+        plugins={pendingPlugin ? [pendingPlugin] : []}
+        handleClose={removePendingPlugin}
+      />
     </>
   );
 };
