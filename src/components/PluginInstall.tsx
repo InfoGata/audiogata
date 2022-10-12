@@ -1,6 +1,5 @@
 import { Typography } from "@mui/material";
 import { nanoid } from "@reduxjs/toolkit";
-import { useSnackbar } from "notistack";
 import React from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { PluginInfo } from "../plugintypes";
@@ -14,7 +13,6 @@ const PluginInstall: React.FC = () => {
   const [pendingPlugin, setPendingPlugin] = React.useState<PluginInfo | null>(
     null
   );
-  const { enqueueSnackbar } = useSnackbar();
   const navigate = useNavigate();
   const params = new URLSearchParams(location.search);
   const manifestUrl = params.get("manifestUrl") || "";
@@ -23,6 +21,9 @@ const PluginInstall: React.FC = () => {
 
   React.useEffect(() => {
     const installPlugin = async () => {
+      if (!manifestUrl) {
+        return;
+      }
       if (!manifestUrl.includes("manifest.json")) {
         alert("The filename 'manifest.json' must be in the url");
         setIsInstalling(false);
@@ -49,9 +50,7 @@ const PluginInstall: React.FC = () => {
         setPendingPlugin(plugin);
       }
     };
-    if (manifestUrl) {
-      installPlugin();
-    }
+    installPlugin();
   }, [manifestUrl, headerKey, headerValue]);
 
   const onConfirmPluginClose = () => {
@@ -59,7 +58,6 @@ const PluginInstall: React.FC = () => {
   };
 
   const onAfterConfirm = () => {
-    enqueueSnackbar("Succuessfully Installed Plugin");
     navigate("/plugins");
   };
 

@@ -417,11 +417,10 @@ export const PluginsProvider: React.FC<React.PropsWithChildren> = (props) => {
 
   const addPlugin = async (plugin: PluginInfo) => {
     if (pluginFrames.some((p) => p.id === plugin.id)) {
-      enqueueSnackbar(`Plugin with id ${plugin.id} already exists`, {
-        variant: "error",
-      });
+      enqueueSnackbar(`A plugin with Id ${plugin.id} is already installed`);
       return;
     }
+
     const pluginFrame = await loadPlugin(plugin);
     setPluginFrames([...pluginFrames, pluginFrame]);
     await db.plugins.add(plugin);
