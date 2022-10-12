@@ -20,11 +20,6 @@ declare global {
     InfoGata: InfoGataExtension;
     cordovaFetch: typeof fetch;
   }
-  namespace NodeJS {
-    interface ProcessEnv {
-      REACT_APP_GITLAB_ACCESS_TOKEN: string;
-    }
-  }
 }
 
 export interface DirectoryFile extends File {
@@ -33,7 +28,7 @@ export interface DirectoryFile extends File {
 
 export interface UrlInfo {
   url: string;
-  headers: Headers;
+  headers?: Headers;
 }
 
 export interface FileType {
