@@ -30,7 +30,7 @@ const AboutPage: React.FC = () => {
   const mastodonAt = "@InfoGata@mastodon.online";
   return (
     <Box>
-      <List>
+      <List dense>
         <ListItem disablePadding>
           <ListItemButton component="a" href={website} target="_blank">
             <ListItemAvatar>
