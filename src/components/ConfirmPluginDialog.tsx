@@ -3,7 +3,10 @@ import {
   Checkbox,
   Dialog,
   DialogActions,
+  DialogContent,
   DialogTitle,
+  Grid,
+  Link,
   List,
   ListItem,
   ListItemText,
@@ -82,8 +85,20 @@ const ConfirmPluginDialog: React.FC<ConfirmPluginDialogProps> = (props) => {
       onClose={handleClose}
       aria-labelledby="form-dialog-title"
     >
-      <DialogTitle id="form-dialog-title">Add Plugins</DialogTitle>
-      <List>{info}</List>
+      <DialogTitle id="form-dialog-title">
+        Add Plugin{plugins.length > 1 && "s"}
+      </DialogTitle>
+      <DialogContent>
+        <List>{info}</List>
+        {plugins.length === 1 && plugins[0].manifestUrl && (
+          <Grid>
+            Manifest Url:{" "}
+            <Link href={plugins[0].manifestUrl} target="_blank">
+              {plugins[0].manifestUrl}
+            </Link>
+          </Grid>
+        )}
+      </DialogContent>
       <DialogActions>
         <Button onClick={onCancel}>Cancel</Button>
         <Button onClick={onConfirm}>Confirm</Button>
