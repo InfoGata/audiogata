@@ -1,5 +1,6 @@
 import {
   AppBar,
+  Box,
   IconButton,
   InputAdornment,
   InputBase,
@@ -7,7 +8,7 @@ import {
   Typography,
 } from "@mui/material";
 import { alpha, styled, useTheme } from "@mui/material/styles";
-import { Menu, Search, Clear } from "@mui/icons-material";
+import { Menu, Search, Clear, GitHub } from "@mui/icons-material";
 import React from "react";
 import { useNavigate } from "react-router";
 import { toggleNavbar } from "../store/reducers/uiReducer";
@@ -111,6 +112,18 @@ const TopBar: React.FC = () => {
             />
           </SearchBar>
         </form>
+        <Box sx={{ flexGrow: 1 }} />
+        <Box sx={{ display: { xs: "none", sm: "flex" } }}>
+          <IconButton
+            size="large"
+            edge="end"
+            color="inherit"
+            href="https://github.com/InfoGata/audiogata"
+            target="_blank"
+          >
+            <GitHub />
+          </IconButton>
+        </Box>
       </Toolbar>
     </AppBar>
   );
