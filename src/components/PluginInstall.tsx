@@ -1,4 +1,4 @@
-import { Typography } from "@mui/material";
+import { Backdrop, CircularProgress, Typography } from "@mui/material";
 import { nanoid } from "@reduxjs/toolkit";
 import React from "react";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -18,6 +18,7 @@ const PluginInstall: React.FC = () => {
   const manifestUrl = params.get("manifestUrl") || "";
   const headerKey = params.get("headerKey") || "";
   const headerValue = params.get("headerValue") || "";
+  const [isLoading, setIsLoading] = React.useState(true);
 
   React.useEffect(() => {
     const installPlugin = async () => {
@@ -48,6 +49,7 @@ const PluginInstall: React.FC = () => {
           plugin.id = nanoid();
         }
         setPendingPlugin(plugin);
+        setIsLoading(false);
       }
     };
     installPlugin();
@@ -67,6 +69,9 @@ const PluginInstall: React.FC = () => {
 
   return (
     <>
+      <Backdrop open={isLoading}>
+        <CircularProgress color="inherit" />
+      </Backdrop>
       {isInstalling ? (
         <Typography variant="h4">
           Installing Plugin from {manifestUrl}
