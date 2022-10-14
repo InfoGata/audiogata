@@ -5,14 +5,16 @@ import {
   InputAdornment,
   InputBase,
   Toolbar,
+  Tooltip,
   Typography,
 } from "@mui/material";
 import { alpha, styled, useTheme } from "@mui/material/styles";
-import { Menu, Search, Clear, GitHub } from "@mui/icons-material";
+import { Menu, Search, Clear, GitHub, Favorite } from "@mui/icons-material";
 import React from "react";
 import { useNavigate } from "react-router";
 import { toggleNavbar } from "../store/reducers/uiReducer";
 import { useAppDispatch } from "../store/hooks";
+import { Link } from "react-router-dom";
 
 const SearchBar = styled("div")(({ theme }) => ({
   position: "relative",
@@ -114,6 +116,11 @@ const TopBar: React.FC = () => {
         </form>
         <Box sx={{ flexGrow: 1 }} />
         <Box sx={{ display: { xs: "none", sm: "flex" } }}>
+          <IconButton component={Link} to="/donate">
+            <Tooltip title="Donate" placement="bottom">
+              <Favorite />
+            </Tooltip>
+          </IconButton>
           <IconButton
             size="large"
             edge="end"
@@ -121,7 +128,9 @@ const TopBar: React.FC = () => {
             href="https://github.com/InfoGata/audiogata"
             target="_blank"
           >
-            <GitHub />
+            <Tooltip title="Github" placement="bottom">
+              <GitHub />
+            </Tooltip>
           </IconButton>
         </Box>
       </Toolbar>

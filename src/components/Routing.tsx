@@ -19,6 +19,7 @@ import PluginOptions from "./PluginOptions";
 import ArtistPage from "./ArtistPage";
 import AlbumPage from "./AlbumPage";
 import AboutPage from "./AboutPage";
+import Donate from "./Donate";
 
 const Routing: React.FC = () => {
   return (
@@ -32,6 +33,7 @@ const Routing: React.FC = () => {
         <Route path="/playlists" element={<Playlists />} />
         <Route path="/playlists/:playlistId" element={<PlaylistTracks />} />
         <Route path="/about" element={<AboutPage />} />
+        <Route path="/donate" element={<Donate />} />
         <Route path="/settings" element={<Settings />} />
         <Route path="/search" element={<Search />} />
         <Route path="/track/:trackId" element={<QueueTrackInfo />} />
