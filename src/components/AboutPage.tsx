@@ -14,6 +14,7 @@ import { faMonero } from "@fortawesome/free-brands-svg-icons/faMonero";
 import { faBitcoin } from "@fortawesome/free-brands-svg-icons/faBitcoin";
 import { faPaypal } from "@fortawesome/free-brands-svg-icons/faPaypal";
 import { faMastodon } from "@fortawesome/free-brands-svg-icons/faMastodon";
+import { faGitAlt } from "@fortawesome/free-brands-svg-icons/faGitAlt";
 import { ReactComponent as Liberapay } from "../liberapay_logo.svg";
 import React from "react";
 
@@ -31,6 +32,7 @@ const AboutPage: React.FC = () => {
   const mastodonUrl = "https://mastodon.online/@InfoGata";
   const mastodonAt = "@InfoGata@mastodon.online";
   const liberapayUrl = "https://liberapay.com/InfoGata/donate";
+  const githubUrl = "https://github.com/InfoGata/audiogata";
   return (
     <Box>
       <List dense>
@@ -42,6 +44,16 @@ const AboutPage: React.FC = () => {
               </Avatar>
             </ListItemAvatar>
             <ListItemText primary="Company Website" secondary={website} />
+          </ListItemButton>
+        </ListItem>
+        <ListItem disablePadding>
+          <ListItemButton component="a" href={githubUrl} target="_blank">
+            <ListItemAvatar>
+              <Avatar>
+                <FontAwesomeIcon icon={faGitAlt} />
+              </Avatar>
+            </ListItemAvatar>
+            <ListItemText primary="Github" secondary={githubUrl} />
           </ListItemButton>
         </ListItem>
         <ListItem>
