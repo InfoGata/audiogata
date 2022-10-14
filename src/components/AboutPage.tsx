@@ -7,12 +7,14 @@ import {
   ListItemAvatar,
   ListItemButton,
   ListItemText,
+  SvgIcon,
 } from "@mui/material";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMonero } from "@fortawesome/free-brands-svg-icons/faMonero";
 import { faBitcoin } from "@fortawesome/free-brands-svg-icons/faBitcoin";
 import { faPaypal } from "@fortawesome/free-brands-svg-icons/faPaypal";
 import { faMastodon } from "@fortawesome/free-brands-svg-icons/faMastodon";
+import { ReactComponent as Liberapay } from "../liberapay_logo.svg";
 import React from "react";
 
 const AboutPage: React.FC = () => {
@@ -28,6 +30,7 @@ const AboutPage: React.FC = () => {
     "https://www.paypal.com/donate/?hosted_button_id=VYJRQP387NF4S";
   const mastodonUrl = "https://mastodon.online/@InfoGata";
   const mastodonAt = "@InfoGata@mastodon.online";
+  const liberapayUrl = "https://liberapay.com/InfoGata/donate";
   return (
     <Box>
       <List dense>
@@ -76,7 +79,17 @@ const AboutPage: React.FC = () => {
                 <FontAwesomeIcon icon={faPaypal} />
               </Avatar>
             </ListItemAvatar>
-            <ListItemText primary="Donate - Paypal" />
+            <ListItemText primary="Donate" secondary="Paypal" />
+          </ListItemButton>
+        </ListItem>
+        <ListItem disablePadding>
+          <ListItemButton component="a" href={liberapayUrl} target="_blank">
+            <ListItemAvatar>
+              <Avatar>
+                <SvgIcon component={Liberapay} inheritViewBox />
+              </Avatar>
+            </ListItemAvatar>
+            <ListItemText primary="Donate" secondary="Liberapay" />
           </ListItemButton>
         </ListItem>
         <ListItem>
