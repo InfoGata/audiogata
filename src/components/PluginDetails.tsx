@@ -3,6 +3,7 @@ import {
   Button,
   List,
   ListItem,
+  ListItemButton,
   ListItemText,
   Typography,
 } from "@mui/material";
@@ -78,12 +79,20 @@ const PluginDetails: React.FC = () => {
                 secondary={`${optionSize / 1000} kb`}
               />
             </ListItem>
-            <ListItem>
-              <ListItemText
-                primary="Update Url"
-                secondary={plugin.manifestUrl}
-              />
-            </ListItem>
+            {plugin.manifestUrl && (
+              <ListItem disablePadding>
+                <ListItemButton
+                  component="a"
+                  href={plugin.manifestUrl}
+                  target="_blank"
+                >
+                  <ListItemText
+                    primary="Update Url"
+                    secondary={plugin.manifestUrl}
+                  />
+                </ListItemButton>
+              </ListItem>
+            )}
           </List>
           {plugin.manifestUrl && <Button onClick={onUpdate}>Update</Button>}
         </div>
