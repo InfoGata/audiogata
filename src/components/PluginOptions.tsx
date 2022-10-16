@@ -100,7 +100,7 @@ const PluginOptions: React.FC = () => {
   return (
     <Grid>
       <Typography variant="h3">{plugin.name} Options</Typography>
-      {pluginIframe}
+      {optionsHtml && pluginIframe}
     </Grid>
   );
 };
