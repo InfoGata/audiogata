@@ -43,6 +43,7 @@ export interface Manifest {
   version?: string;
   description?: string;
   options?: string | ManifestOptions;
+  updateUrl?: string;
 }
 
 export interface ManifestOptions {

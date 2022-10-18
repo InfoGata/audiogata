@@ -21,10 +21,12 @@ interface ConfirmPluginDialogProps {
   handleClose: () => void;
   afterConfirm?: () => void;
   afterCancel?: () => void;
+  installUrl?: string;
 }
 
 const ConfirmPluginDialog: React.FC<ConfirmPluginDialogProps> = (props) => {
-  const { open, plugins, handleClose, afterConfirm, afterCancel } = props;
+  const { open, plugins, handleClose, afterConfirm, afterCancel, installUrl } =
+    props;
   const [checked, setChecked] = React.useState<Set<string>>(new Set());
   const { addPlugin } = usePlugins();
 
@@ -90,9 +92,19 @@ const ConfirmPluginDialog: React.FC<ConfirmPluginDialogProps> = (props) => {
       </DialogTitle>
       <DialogContent>
         <List>{info}</List>
+        {plugins.length === 1 &&
+          installUrl &&
+          plugins[0].manifestUrl !== installUrl && (
+            <Grid>
+              Install Manifest Url:{" "}
+              <Link href={installUrl} target="_blank">
+                {installUrl}
+              </Link>
+            </Grid>
+          )}
         {plugins.length === 1 && plugins[0].manifestUrl && (
           <Grid>
-            Manifest Url:{" "}
+            Update Manifest Url:{" "}
             <Link href={plugins[0].manifestUrl} target="_blank">
               {plugins[0].manifestUrl}
             </Link>

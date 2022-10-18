@@ -87,6 +87,7 @@ const PluginInstall: React.FC = () => {
         handleClose={onConfirmPluginClose}
         afterConfirm={onAfterConfirm}
         afterCancel={onAfterCancel}
+        installUrl={manifestUrl}
       />
     </>
   );
