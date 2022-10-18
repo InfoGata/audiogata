@@ -11,6 +11,7 @@ import "./index.css";
 import store, { persistor } from "./store/store";
 import reportWebVitals from "./reportWebVitals";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
+import "./i18n";
 
 const theme = createTheme({
   palette: {
