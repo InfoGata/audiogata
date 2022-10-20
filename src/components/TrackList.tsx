@@ -83,7 +83,7 @@ const TrackList: React.FC<TrackListProps> = (props) => {
                   onChange={onSelectAll}
                   size="small"
                   inputProps={{
-                    "aria-label": "select all desserts",
+                    "aria-label": "select all tracks",
                   }}
                 />
               </TableCell>

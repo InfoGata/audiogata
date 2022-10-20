@@ -19,6 +19,7 @@ import { deletePlaylist } from "../store/reducers/playlistReducer";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
 import { PluginFrameContainer, usePlugins } from "../PluginsContext";
 import { filterAsync } from "../utils";
+import { useTranslation } from "react-i18next";
 
 interface PlaylistsItemProps {
   playlist: PlaylistInfo;
@@ -47,6 +48,7 @@ const PlaylistsItem: React.FC<PlaylistsItemProps> = (props) => {
 };
 
 const Playlists: React.FC = () => {
+  const { t } = useTranslation();
   const { plugins } = usePlugins();
   const [playlistPlugins, setPlaylistPlugins] = React.useState<
     PluginFrameContainer[]
@@ -97,7 +99,7 @@ const Playlists: React.FC = () => {
   return (
     <>
       <Typography variant="h5" gutterBottom>
-        Playlists
+        {t("playlists")}
       </Typography>
       <Grid>{pluginPlaylists}</Grid>
       <List>
@@ -110,7 +112,7 @@ const Playlists: React.FC = () => {
           <ListItemIcon>
             <Delete />
           </ListItemIcon>
-          <ListItemText primary="Delete" />
+          <ListItemText primary={t("delete")} />
         </MenuItem>
       </Menu>
     </>

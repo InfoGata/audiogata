@@ -13,8 +13,10 @@ import { faMastodon } from "@fortawesome/free-brands-svg-icons/faMastodon";
 import { faGitAlt } from "@fortawesome/free-brands-svg-icons/faGitAlt";
 import React from "react";
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 const AboutPage: React.FC = () => {
+  const { t } = useTranslation();
   const email = "contact@audiogata.com";
   const website = "https://www.infogata.com";
   const privacyPolicy = `${website}/privacy.html`;
@@ -52,7 +54,7 @@ const AboutPage: React.FC = () => {
               <Email />
             </Avatar>
           </ListItemAvatar>
-          <ListItemText primary="Email" secondary={email} />
+          <ListItemText primary={t("email")} secondary={email} />
         </ListItem>
         <ListItem disablePadding>
           <ListItemButton component="a" href={twitterUrl} target="_blank">
@@ -81,7 +83,7 @@ const AboutPage: React.FC = () => {
                 <Favorite />
               </Avatar>
             </ListItemAvatar>
-            <ListItemText primary="Donate" />
+            <ListItemText primary={t("donate")} />
           </ListItemButton>
         </ListItem>
         <ListItem disablePadding>

@@ -1,5 +1,19 @@
 {
   "common": {
-    "greeting": "Hello"
+    "greeting": "Hello",
+    "home": "Home",
+    "playQueue": "Now Playing",
+    "plugins": "Plugins",
+    "settings": "Settings",
+    "about": "About",
+    "playlists": "Playlists",
+    "addPlaylist": "Add Playlist",
+    "email": "Email",
+    "donate": "Donate",
+    "nextPage": "Next",
+    "previousPage": "Previous",
+    "search": "Search",
+    "delete": "Delete",
+    "addPluginSuccess": "Successfully added plugin"
   }
 }

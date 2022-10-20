@@ -19,11 +19,13 @@ import { Link } from "react-router-dom";
 import AddPlaylistDialog from "./AddPlaylistDialog";
 import NavigationPlaylistItem from "./NavigationPlaylistItem";
 import { useAppSelector } from "../store/hooks";
+import { useTranslation } from "react-i18next";
 
 const Navigation: React.FC = () => {
   const [dialogOpen, setDialogOpen] = React.useState(false);
   const playlists = useAppSelector((state) => state.playlist.playlists);
   const navbarOpen = useAppSelector((state) => state.ui.navbarOpen);
+  const { t } = useTranslation();
 
   const openDialog = () => {
     setDialogOpen(true);
@@ -39,11 +41,11 @@ const Navigation: React.FC = () => {
     <List>
       <ListItem button={true} component={Link} to="/" key="Home">
         <ListItemIcon>
-          <Tooltip title="Home" placement="right">
+          <Tooltip title={t("home")} placement="right">
             <Home />
           </Tooltip>
         </ListItemIcon>
-        <ListItemText>Home</ListItemText>
+        <ListItemText>{t("home")}</ListItemText>
       </ListItem>
       <ListItem
         button={true}
@@ -52,51 +54,51 @@ const Navigation: React.FC = () => {
         key="Now Playing"
       >
         <ListItemIcon>
-          <Tooltip title="Now Playing" placement="right">
+          <Tooltip title={t("playQueue")} placement="right">
             <PlaylistPlay />
           </Tooltip>
         </ListItemIcon>
-        <ListItemText>Now Playing</ListItemText>
+        <ListItemText>{t("playQueue")}</ListItemText>
       </ListItem>
       <ListItem button={true} component={Link} to="/plugins" key="Plugins">
         <ListItemIcon>
-          <Tooltip title="Plugins" placement="right">
+          <Tooltip title={t("plugins")} placement="right">
             <Extension />
           </Tooltip>
         </ListItemIcon>
-        <ListItemText>Plugins</ListItemText>
+        <ListItemText>{t("plugins")}</ListItemText>
       </ListItem>
       <ListItem button={true} component={Link} to="/settings" key="Settings">
         <ListItemIcon>
-          <Tooltip title="Settings" placement="right">
+          <Tooltip title={t("settings")} placement="right">
             <SettingsApplications />
           </Tooltip>
         </ListItemIcon>
-        <ListItemText>Settings</ListItemText>
+        <ListItemText>{t("settings")}</ListItemText>
       </ListItem>
       <ListItem button={true} component={Link} to="/about" key="About">
         <ListItemIcon>
-          <Tooltip title="About" placement="right">
+          <Tooltip title={t("about")} placement="right">
             <Info />
           </Tooltip>
         </ListItemIcon>
-        <ListItemText>About</ListItemText>
+        <ListItemText>{t("about")}</ListItemText>
       </ListItem>
       <ListItem button={true} key="AddPlaylist" onClick={openDialog}>
         <ListItemIcon>
-          <Tooltip title="Add Playlist" placement="right">
+          <Tooltip title={t("addPlaylist")} placement="right">
             <PlaylistAdd />
           </Tooltip>
         </ListItemIcon>
-        <ListItemText>Add Playlist</ListItemText>
+        <ListItemText>{t("addPlaylist")}</ListItemText>
       </ListItem>
       <ListItem button={true} component={Link} to="/playlists" key="Playlists">
         <ListItemIcon>
-          <Tooltip title="Playlists" placement="right">
+          <Tooltip title={t("playlists")} placement="right">
             <Menu />
           </Tooltip>
         </ListItemIcon>
-        <ListItemText>Playlists</ListItemText>
+        <ListItemText>{t("playlists")}</ListItemText>
       </ListItem>
       {navbarOpen ? playlistItems : null}
       <AddPlaylistDialog handleClose={closeDialog} open={dialogOpen} />

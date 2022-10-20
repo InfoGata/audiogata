@@ -14,8 +14,10 @@ import { faBitcoin } from "@fortawesome/free-brands-svg-icons/faBitcoin";
 import { faPaypal } from "@fortawesome/free-brands-svg-icons/faPaypal";
 import { ReactComponent as Liberapay } from "../liberapay_logo.svg";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useTranslation } from "react-i18next";
 
 const Donate: React.FC = () => {
+  const { t } = useTranslation();
   const btcDonation = "bc1q3jdf0xpy2m2m2vuvvuqrzzaqt6g8h4lspv49j0";
   const xmrDonation =
     "485HGRVmzC4XK3Tm6vq2v7hXg32qVJLaeK15GjUpsWvGHQ7nyrV3UA2PJGTE4rCTPzCQxqwnkMWF6WRafjg3KTuAAGvi6wJ";
@@ -32,7 +34,7 @@ const Donate: React.FC = () => {
                 <FontAwesomeIcon icon={faPaypal} />
               </Avatar>
             </ListItemAvatar>
-            <ListItemText primary="Donate" secondary="Paypal" />
+            <ListItemText primary={t("donate")} secondary="Paypal" />
           </ListItemButton>
         </ListItem>
         <ListItem disablePadding>
@@ -42,7 +44,7 @@ const Donate: React.FC = () => {
                 <SvgIcon component={Liberapay} inheritViewBox />
               </Avatar>
             </ListItemAvatar>
-            <ListItemText primary="Donate" secondary="Liberapay" />
+            <ListItemText primary={t("donate")} secondary="Liberapay" />
           </ListItemButton>
         </ListItem>
         <ListItem>
@@ -51,7 +53,10 @@ const Donate: React.FC = () => {
               <FontAwesomeIcon icon={faBitcoin} />
             </Avatar>
           </ListItemAvatar>
-          <ListItemText primary="Donate - BTC" secondary={btcDonation} />
+          <ListItemText
+            primary={`${t("donate")} - BTC`}
+            secondary={btcDonation}
+          />
         </ListItem>
         <ListItem>
           <ListItemAvatar>
@@ -60,7 +65,7 @@ const Donate: React.FC = () => {
             </Avatar>
           </ListItemAvatar>
           <ListItemText
-            primary="Donate - XMR"
+            primary={`${t("donate")} - XMR`}
             secondary={xmrDonation}
             secondaryTypographyProps={{ style: { wordWrap: "break-word" } }}
           />

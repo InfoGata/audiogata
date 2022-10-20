@@ -6,10 +6,8 @@ import {
 } from "@mui/icons-material";
 import {
   Backdrop,
-  Button,
   CircularProgress,
   Divider,
-  Grid,
   IconButton,
   ListItemIcon,
   ListItemText,
@@ -39,6 +37,7 @@ import useTrackMenu from "../hooks/useTrackMenu";
 import AddPlaylistDialog from "./AddPlaylistDialog";
 import useFindPlugin from "../hooks/useFindPlugin";
 import ConfirmPluginDialog from "./ConfirmPluginDialog";
+import Pager from "./Pager";
 
 const PluginPlaylist: React.FC = () => {
   const { pluginId } = useParams<"pluginId">();
@@ -168,10 +167,12 @@ const PluginPlaylist: React.FC = () => {
         selected={selected}
         dragDisabled={true}
       />
-      <Grid>
-        {hasPreviousPage && <Button onClick={onPreviousPage}>Previous</Button>}
-        {hasNextPage && <Button onClick={onNextPage}>Next</Button>}
-      </Grid>
+      <Pager
+        hasNextPage={hasNextPage}
+        hasPreviousPage={hasPreviousPage}
+        onPreviousPage={onPreviousPage}
+        onNextPage={onNextPage}
+      />
       <Menu
         open={Boolean(queueMenuAnchorEl)}
         onClose={closeQueueMenu}

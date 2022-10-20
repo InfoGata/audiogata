@@ -15,6 +15,7 @@ import { useNavigate } from "react-router";
 import { toggleNavbar } from "../store/reducers/uiReducer";
 import { useAppDispatch } from "../store/hooks";
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 const SearchBar = styled("div")(({ theme }) => ({
   position: "relative",
@@ -57,6 +58,7 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 }));
 
 const TopBar: React.FC = () => {
+  const { t } = useTranslation();
   const theme = useTheme();
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
@@ -99,7 +101,7 @@ const TopBar: React.FC = () => {
               <Search />
             </SearchIconWrapper>
             <StyledInputBase
-              placeholder="Search…"
+              placeholder={t("search")}
               inputProps={{ "aria-label": "search" }}
               onChange={onSearchChange}
               value={search}
@@ -117,7 +119,7 @@ const TopBar: React.FC = () => {
         <Box sx={{ flexGrow: 1 }} />
         <Box sx={{ display: { xs: "none", sm: "flex" } }}>
           <IconButton component={Link} to="/donate">
-            <Tooltip title="Donate" placement="bottom">
+            <Tooltip title={t("donate")} placement="bottom">
               <Favorite />
             </Tooltip>
           </IconButton>

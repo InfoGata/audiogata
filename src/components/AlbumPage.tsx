@@ -1,11 +1,5 @@
 import { PlayCircle } from "@mui/icons-material";
-import {
-  Backdrop,
-  CircularProgress,
-  IconButton,
-  Button,
-  Grid,
-} from "@mui/material";
+import { Backdrop, CircularProgress, IconButton } from "@mui/material";
 import { nanoid } from "@reduxjs/toolkit";
 import React from "react";
 import { useQuery } from "react-query";
@@ -19,6 +13,7 @@ import { Album, PageInfo, Track } from "../plugintypes";
 import { useAppDispatch } from "../store/hooks";
 import { setTracks, setTrack, playQueue } from "../store/reducers/trackReducer";
 import ConfirmPluginDialog from "./ConfirmPluginDialog";
+import Pager from "./Pager";
 import PlaylistInfoCard from "./PlaylistInfoCard";
 import TrackList from "./TrackList";
 
@@ -105,10 +100,12 @@ const AlbumPage: React.FC = () => {
         selected={selected}
         dragDisabled={true}
       />
-      <Grid>
-        {hasPreviousPage && <Button onClick={onPreviousPage}>Previous</Button>}
-        {hasNextPage && <Button onClick={onNextPage}>Next</Button>}
-      </Grid>
+      <Pager
+        hasNextPage={hasNextPage}
+        hasPreviousPage={hasPreviousPage}
+        onPreviousPage={onPreviousPage}
+        onNextPage={onNextPage}
+      />
       <ConfirmPluginDialog
         open={Boolean(pendingPlugin)}
         plugins={pendingPlugin ? [pendingPlugin] : []}

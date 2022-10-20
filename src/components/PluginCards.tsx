@@ -16,8 +16,10 @@ import { getFileTypeFromPluginUrl, getPlugin } from "../utils";
 import { useNavigate } from "react-router";
 import { useSnackbar } from "notistack";
 import { defaultPlugins, PluginDescription } from "../default-plugins";
+import { useTranslation } from "react-i18next";
 
 const PluginCards: React.FC = () => {
+  const { t } = useTranslation();
   const { enqueueSnackbar } = useSnackbar();
   const { plugins, addPlugin, pluginsLoaded } = usePlugins();
   const [backdropOpen, setBackdropOpen] = React.useState(false);
@@ -34,7 +36,7 @@ const PluginCards: React.FC = () => {
         plugin.id = nanoid();
       }
       await addPlugin(plugin);
-      enqueueSnackbar(`Successfully added plugin: ${plugin.name}`);
+      enqueueSnackbar(`${t("addPluginSuccess")}: ${plugin.name}`);
       navigate("/plugins");
     }
     setBackdropOpen(false);

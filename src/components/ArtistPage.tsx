@@ -1,4 +1,4 @@
-import { Backdrop, Button, CircularProgress, Grid, List } from "@mui/material";
+import { Backdrop, CircularProgress, List } from "@mui/material";
 import React from "react";
 import { useQuery } from "react-query";
 import { useParams } from "react-router";
@@ -9,6 +9,7 @@ import { usePlugins } from "../PluginsContext";
 import { Artist, PageInfo } from "../plugintypes";
 import AlbumSearchResult from "./AlbumSearchResult";
 import ConfirmPluginDialog from "./ConfirmPluginDialog";
+import Pager from "./Pager";
 import PlaylistInfoCard from "./PlaylistInfoCard";
 
 const ArtistPage: React.FC = () => {
@@ -62,10 +63,12 @@ const ArtistPage: React.FC = () => {
         />
       )}
       <List>{albumsList}</List>
-      <Grid>
-        {hasPreviousPage && <Button onClick={onPreviousPage}>Previous</Button>}
-        {hasNextPage && <Button onClick={onNextPage}>Next</Button>}
-      </Grid>
+      <Pager
+        hasNextPage={hasNextPage}
+        hasPreviousPage={hasPreviousPage}
+        onPreviousPage={onPreviousPage}
+        onNextPage={onNextPage}
+      />
       <ConfirmPluginDialog
         open={Boolean(pendingPlugin)}
         plugins={pendingPlugin ? [pendingPlugin] : []}

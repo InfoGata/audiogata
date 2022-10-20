@@ -35,8 +35,10 @@ import { useNavigate } from "react-router-dom";
 import SelectTrackListPlugin from "./SelectTrackListPlugin";
 import SelectionEditDialog from "./SelectionEditDialog";
 import useTrackMenu from "../hooks/useTrackMenu";
+import { useTranslation } from "react-i18next";
 
 const NowPlaying: React.FC = () => {
+  const { t } = useTranslation();
   const [playlistDialogTracks, setPlaylistDialogTracks] = React.useState<
     Track[]
   >([]);
@@ -139,7 +141,7 @@ const NowPlaying: React.FC = () => {
   return (
     <>
       <Typography variant="h3" gutterBottom>
-        Now Playing
+        {t("playQueue")}
       </Typography>
       <IconButton aria-label="clear" onClick={clearQueue}>
         <Tooltip title="Clear All Tracks">

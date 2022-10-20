@@ -1,4 +1,4 @@
-import { Backdrop, Button, CircularProgress, Grid, List } from "@mui/material";
+import { Backdrop, CircularProgress, List } from "@mui/material";
 import React from "react";
 import { useQuery } from "react-query";
 import useTrackMenu from "../hooks/useTrackMenu";
@@ -6,6 +6,7 @@ import { PageInfo } from "../plugintypes";
 import TrackSearchResult from "./TrackSearchResult";
 import usePagination from "../hooks/usePagination";
 import { usePlugins } from "../PluginsContext";
+import Pager from "./Pager";
 
 interface TrackSearchResultsProps {
   pluginId: string;
@@ -64,12 +65,12 @@ const TrackSearchResults: React.FC<TrackSearchResultsProps> = (props) => {
       </Backdrop>
       <List>{trackList}</List>
       {hasSearch && (
-        <Grid>
-          {hasPreviousPage && (
-            <Button onClick={onPreviousPage}>Previous</Button>
-          )}
-          {hasNextPage && <Button onClick={onNextPage}>Next</Button>}
-        </Grid>
+        <Pager
+          hasNextPage={hasNextPage}
+          hasPreviousPage={hasPreviousPage}
+          onPreviousPage={onPreviousPage}
+          onNextPage={onNextPage}
+        />
       )}
     </>
   );
