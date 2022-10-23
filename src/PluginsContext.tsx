@@ -36,6 +36,7 @@ import { App, URLOpenListenerEvent } from "@capacitor/app";
 import { addPlaylists } from "./store/reducers/playlistReducer";
 import { NetworkRequest, PlayerComponent } from "./types";
 import { nanoid } from "@reduxjs/toolkit";
+import { useTranslation } from "react-i18next";
 
 export interface PluginMethodInterface extends PlayerComponent {
   onSearchAll(request: SearchRequest): Promise<SearchAllResult>;
@@ -151,6 +152,7 @@ export const PluginsProvider: React.FC<React.PropsWithChildren> = (props) => {
   >([]);
   const [pluginMessage, setPluginMessage] = React.useState<PluginMessage>();
   const dispatch = useAppDispatch();
+  const { t } = useTranslation();
 
   const loadingPlugin = React.useRef(false);
 
@@ -417,7 +419,7 @@ export const PluginsProvider: React.FC<React.PropsWithChildren> = (props) => {
 
   const addPlugin = async (plugin: PluginInfo) => {
     if (pluginFrames.some((p) => p.id === plugin.id)) {
-      enqueueSnackbar(`A plugin with Id ${plugin.id} is already installed`);
+      enqueueSnackbar(t("pluginAlreadyInstalled", { id: plugin.id }));
       return;
     }
 

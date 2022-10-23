@@ -1,6 +1,7 @@
 import { DirectoryFile, FileType, Manifest } from "./types";
 import thumbnail from "./thumbnail.png";
 import { ImageInfo, PluginInfo } from "./plugintypes";
+import i18next from "./i18n";
 
 export function formatSeconds(seconds?: number) {
   if (!seconds) {
@@ -82,7 +83,8 @@ export async function getFileText(
   if (fileType.filelist) {
     const file = getFileByDirectoryAndName(fileType.filelist, name);
     if (!file) {
-      alert(`Error: Couldn't find ${name}`);
+      const errorText = i18next.t("fileNotFound", { name });
+      alert(errorText);
       return null;
     }
 
@@ -109,7 +111,8 @@ export async function getPlugin(
 
   const manifest = JSON.parse(manifestText) as Manifest;
   if (!manifest.script) {
-    alert("Error: Manifest does not contain script");
+    const errorText = i18next.t("manifestNoScript");
+    alert(errorText);
     return null;
   }
 

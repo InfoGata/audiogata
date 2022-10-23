@@ -1,6 +1,7 @@
 import { PlaylistAdd, PlaylistPlay } from "@mui/icons-material";
 import { ListItemIcon, ListItemText, Menu, MenuItem } from "@mui/material";
 import React from "react";
+import { useTranslation } from "react-i18next";
 import AddPlaylistDialog from "./components/AddPlaylistDialog";
 import PlaylistMenuItem from "./components/PlaylistMenuItem";
 import { PlaylistInfo, Track } from "./plugintypes";
@@ -31,6 +32,7 @@ export const TrackMenuProvider: React.FC<React.PropsWithChildren> = (props) => {
   const closeMenu = () => setAnchorEl(null);
   const closePlaylistDialog = () => setPlaylistDialogOpen(false);
   const dispatch = useAppDispatch();
+  const { t } = useTranslation();
 
   const openTrackMenu = (
     event: React.MouseEvent<HTMLButtonElement>,
@@ -72,7 +74,7 @@ export const TrackMenuProvider: React.FC<React.PropsWithChildren> = (props) => {
             <ListItemIcon>
               <PlaylistPlay />
             </ListItemIcon>
-            <ListItemText primary="Add to Queue" />
+            <ListItemText primary={t("addToQueue")} />
           </MenuItem>
         )}
         {listElements}
@@ -80,7 +82,7 @@ export const TrackMenuProvider: React.FC<React.PropsWithChildren> = (props) => {
           <ListItemIcon>
             <PlaylistAdd />
           </ListItemIcon>
-          <ListItemText primary="Add to New Playlist" />
+          <ListItemText primary={t("addToNewPlaylist")} />
         </MenuItem>
         {playlists.map((p) => (
           <PlaylistMenuItem

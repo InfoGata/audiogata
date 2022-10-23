@@ -6,6 +6,7 @@ import {
   SelectChangeEvent,
 } from "@mui/material";
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { usePlugins } from "../PluginsContext";
 import { Track } from "../plugintypes";
 
@@ -17,6 +18,7 @@ interface SelectTrackListPluginProps {
 const SelectTrackListPlugin: React.FC<SelectTrackListPluginProps> = (props) => {
   const { trackList, setSelected } = props;
   const { plugins } = usePlugins();
+  const { t } = useTranslation();
   const pluginNameMap = new Map(plugins.map((p) => [p.id, p.name]));
   const pluginIds = Array.from(new Set(trackList.map((t) => t.pluginId)));
   const options = pluginIds.map((p) => [
@@ -43,14 +45,14 @@ const SelectTrackListPlugin: React.FC<SelectTrackListPluginProps> = (props) => {
   };
   return (
     <FormControl fullWidth>
-      <InputLabel id="select-plugin">Select Plugin</InputLabel>
+      <InputLabel id="select-plugin">{t("selectPlugin")}</InputLabel>
       <Select
         id="select-plugin"
         value={pluginId}
         label="Select Plugin"
         onChange={onSelectPluginChange}
       >
-        <MenuItem value={""}>None</MenuItem>
+        <MenuItem value={""}>{t("none")}</MenuItem>
         {optionsComponents}
       </Select>
     </FormControl>

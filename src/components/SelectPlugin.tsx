@@ -1,5 +1,6 @@
 import { FormControl, InputLabel, NativeSelect } from "@mui/material";
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { PluginMethodInterface, usePlugins } from "../PluginsContext";
 import { useAppDispatch, useAppStore } from "../store/hooks";
 import { setCurrentPluginId } from "../store/reducers/settingsReducer";
@@ -17,6 +18,7 @@ const SelectPlugin: React.FC<SelectPluginProps> = (props) => {
   const [options, setOptions] = React.useState<[string, string][]>();
   const dispatch = useAppDispatch();
   const store = useAppStore();
+  const { t } = useTranslation();
 
   React.useEffect(() => {
     const getOptions = async () => {
@@ -57,7 +59,7 @@ const SelectPlugin: React.FC<SelectPluginProps> = (props) => {
   return (
     <FormControl fullWidth>
       <InputLabel variant="standard" htmlFor="uncontrolled-native">
-        Plugin
+        {t("plugin")}
       </InputLabel>
       <NativeSelect
         value={pluginId}

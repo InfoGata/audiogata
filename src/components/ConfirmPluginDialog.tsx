@@ -14,6 +14,7 @@ import {
 import React from "react";
 import { PluginInfo } from "../plugintypes";
 import { usePlugins } from "../PluginsContext";
+import { useTranslation } from "react-i18next";
 
 interface ConfirmPluginDialogProps {
   open: boolean;
@@ -29,6 +30,7 @@ const ConfirmPluginDialog: React.FC<ConfirmPluginDialogProps> = (props) => {
     props;
   const [checked, setChecked] = React.useState<Set<string>>(new Set());
   const { addPlugin } = usePlugins();
+  const { t } = useTranslation(["plugins", "common"]);
 
   React.useEffect(() => {
     setChecked(new Set(plugins.map((p) => p.id || "")));
@@ -88,7 +90,7 @@ const ConfirmPluginDialog: React.FC<ConfirmPluginDialogProps> = (props) => {
       aria-labelledby="form-dialog-title"
     >
       <DialogTitle id="form-dialog-title">
-        Add Plugin{plugins.length > 1 && "s"}
+        {t("plugins:addPlugin", { count: plugins.length })}
       </DialogTitle>
       <DialogContent>
         <List>{info}</List>
@@ -96,7 +98,7 @@ const ConfirmPluginDialog: React.FC<ConfirmPluginDialogProps> = (props) => {
           installUrl &&
           plugins[0].manifestUrl !== installUrl && (
             <Grid>
-              Install Manifest Url:{" "}
+              {t("plugins:installManifestUrl")}:{" "}
               <Link href={installUrl} target="_blank">
                 {installUrl}
               </Link>
@@ -104,7 +106,7 @@ const ConfirmPluginDialog: React.FC<ConfirmPluginDialogProps> = (props) => {
           )}
         {plugins.length === 1 && plugins[0].manifestUrl && (
           <Grid>
-            Update Manifest Url:{" "}
+            {t("plugins:updateManifestUrl")}:{" "}
             <Link href={plugins[0].manifestUrl} target="_blank">
               {plugins[0].manifestUrl}
             </Link>
@@ -112,8 +114,8 @@ const ConfirmPluginDialog: React.FC<ConfirmPluginDialogProps> = (props) => {
         )}
       </DialogContent>
       <DialogActions>
-        <Button onClick={onCancel}>Cancel</Button>
-        <Button onClick={onConfirm}>Confirm</Button>
+        <Button onClick={onCancel}>{t("common:cancel")}</Button>
+        <Button onClick={onConfirm}>{t("common:confirm")}</Button>
       </DialogActions>
     </Dialog>
   );

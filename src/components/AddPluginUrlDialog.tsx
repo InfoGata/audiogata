@@ -17,6 +17,7 @@ import { PluginInfo } from "../plugintypes";
 import { FileType } from "../types";
 import { getPlugin } from "../utils";
 import { ExpandMore } from "@mui/icons-material";
+import { useTranslation } from "react-i18next";
 
 interface AddPluginUrlDialogProps {
   open: boolean;
@@ -29,6 +30,7 @@ const AddPluginUrlDialog: React.FC<AddPluginUrlDialogProps> = (props) => {
   const [pluginUrl, setPluginUrl] = React.useState("");
   const [headerKey, setHeaderKey] = React.useState("");
   const [headerValue, setHeaderValue] = React.useState("");
+  const { t } = useTranslation(["plugins", "common"]);
 
   const onChangePluginUrl = (event: React.ChangeEvent<HTMLInputElement>) => {
     setPluginUrl(event.target.value);
@@ -73,45 +75,43 @@ const AddPluginUrlDialog: React.FC<AddPluginUrlDialogProps> = (props) => {
       onClose={handleClose}
       aria-labelledby="form-dialog-title"
     >
-      <DialogTitle id="form-dialog-title">Add Plugin</DialogTitle>
+      <DialogTitle id="form-dialog-title">
+        {t("plugins:addPlugin_one")}
+      </DialogTitle>
       <DialogContent>
         <DialogContentText>
-          Install plugin using a link to a plugin's manifest.json
+          {t("plugins:installPluginFromUrl")}
         </DialogContentText>
         <TextField
           onChange={onChangePluginUrl}
           value={pluginUrl}
-          placeholder="manifest.json url"
+          placeholder={t("plugins:manifestUrl")}
           variant="outlined"
           fullWidth
         />
         <Accordion>
-          <AccordionSummary
-            expandIcon={<ExpandMore />}
-            aria-controls="panel1a-content"
-            id="panel1a-header"
-          >
-            <Typography>Advanced Options</Typography>
+          <AccordionSummary expandIcon={<ExpandMore />}>
+            <Typography>{t("plugins:advancedOptions")}</Typography>
           </AccordionSummary>
           <AccordionDetails>
             <TextField
               onChange={onChangeHeaderKey}
               value={headerKey}
-              placeholder="Header key"
+              placeholder={t("plugins:headerKey")}
               variant="outlined"
             />
             <TextField
               onChange={onChangeHeaderValue}
               value={headerValue}
-              placeholder="Header Value"
+              placeholder={t("plugins:headerValue")}
               variant="outlined"
             />
           </AccordionDetails>
         </Accordion>
       </DialogContent>
       <DialogActions>
-        <Button onClick={handleClose}>Cancel</Button>
-        <Button onClick={onConfirm}>Confirm</Button>
+        <Button onClick={handleClose}>{t("common:cancel")}</Button>
+        <Button onClick={onConfirm}>{t("common:confirm")}</Button>
       </DialogActions>
     </Dialog>
   );

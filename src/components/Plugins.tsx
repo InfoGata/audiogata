@@ -9,6 +9,7 @@ import { directoryProps, getPlugin } from "../utils";
 import ConfirmPluginDialog from "./ConfirmPluginDialog";
 import { PluginInfo } from "../plugintypes";
 import AddPluginUrlDialog from "./AddPluginUrlDialog";
+import { useTranslation } from "react-i18next";
 
 const FileInput = styled("input")({
   display: "none",
@@ -21,6 +22,7 @@ const Plugins: React.FC = () => {
   );
   const [isCheckingUpdate, setIsCheckingUpdate] = React.useState(false);
   const [openUrlDialog, setOpenUrlDialog] = React.useState(false);
+  const { t } = useTranslation("plugins");
 
   const onCloseUrlDialog = () => setOpenUrlDialog(false);
   const onOpenUrlDialog = () => setOpenUrlDialog(true);
@@ -75,7 +77,7 @@ const Plugins: React.FC = () => {
             onChange={onFileChange}
           />
           <Button variant="contained" component="span">
-            Load plugin From Folder
+            {t("loadPluginFromFolder")}
           </Button>
         </label>
       </Grid>
@@ -87,7 +89,7 @@ const Plugins: React.FC = () => {
       {plugins.length > 0 && (
         <Grid>
           <Button disabled={isCheckingUpdate} onClick={onCheckUpdates}>
-            Check For Updates
+            {t("loadPluginFromUrl")}
           </Button>
         </Grid>
       )}

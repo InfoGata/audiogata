@@ -24,6 +24,7 @@ import TrackSearchResults from "./TrackSearchResults";
 import AlbumSearchResults from "./AlbumSearchResults";
 import ArtistSearchResults from "./ArtistSearchResults";
 import PlaylistSearchResults from "./PlaylistSearchResults";
+import { useTranslation } from "react-i18next";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -55,6 +56,7 @@ const Search: React.FC = () => {
   const params = new URLSearchParams(location.search);
   const searchQuery = params.get("q") || "";
   const { plugins } = usePlugins();
+  const { t } = useTranslation();
   const queryClient = useQueryClient();
 
   const onSearch = async () => {
@@ -123,16 +125,16 @@ const Search: React.FC = () => {
           variant="fullWidth"
         >
           {trackList.length > 0 ? (
-            <Tab label="Tracks" value={SearchResultType.Tracks} />
+            <Tab label={t("tracks")} value={SearchResultType.Tracks} />
           ) : null}
           {albumList.length > 0 ? (
-            <Tab label="Albums" value={SearchResultType.Albums} />
+            <Tab label={t("albums")} value={SearchResultType.Albums} />
           ) : null}
           {artistList && artistList.length > 0 ? (
-            <Tab label="Artists" value={SearchResultType.Artists} />
+            <Tab label={t("artists")} value={SearchResultType.Artists} />
           ) : null}
           {playlistList && playlistList.length > 0 ? (
-            <Tab label="Playlists" value={SearchResultType.Playlists} />
+            <Tab label={t("playlists")} value={SearchResultType.Playlists} />
           ) : null}
         </Tabs>
       </AppBar>

@@ -16,6 +16,7 @@ import {
 } from "../utils";
 import { FileType, Manifest } from "../types";
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 const FileInput = styled("input")({
   display: "none",
@@ -32,6 +33,7 @@ const PluginContainer: React.FC<PluginContainerProps> = (props) => {
   const { updatePlugin } = usePlugins();
   const [hasUpdate, setHasUpdate] = React.useState(false);
   const [backdropOpen, setBackdropOpen] = React.useState(false);
+  const { t } = useTranslation("plugins");
 
   React.useEffect(() => {
     const checkUpdate = async () => {
@@ -52,9 +54,7 @@ const PluginContainer: React.FC<PluginContainerProps> = (props) => {
   }, [isCheckingUpdate, plugin]);
 
   const onDelete = async () => {
-    const confirmDelete = window.confirm(
-      "Are you sure you want to delete this plugin"
-    );
+    const confirmDelete = window.confirm(t("confirmDelete"));
     if (confirmDelete) {
       await deletePlugin(plugin);
     }
@@ -116,7 +116,7 @@ const PluginContainer: React.FC<PluginContainerProps> = (props) => {
           Options
         </Button>
       )}
-      <Button onClick={onDelete}>Delete</Button>
+      <Button onClick={onDelete}>{t("deletePlugin")}</Button>
       <label htmlFor={`update-plugin-${plugin.id}`}>
         <FileInput
           id={`update-plugin-${plugin.id}`}
@@ -124,13 +124,15 @@ const PluginContainer: React.FC<PluginContainerProps> = (props) => {
           {...directoryProps}
           onChange={onFileChange}
         />
-        <Button component="span">Update From File</Button>
+        <Button component="span">{t("updateFromFile")}</Button>
       </label>
       <Button component={Link} to={`/plugins/${plugin.id}`}>
         Details
       </Button>
-      {plugin.fileList && <Button onClick={onReload}>Reload</Button>}
-      {hasUpdate && <Button onClick={onUpdate}>Update</Button>}
+      {plugin.fileList && (
+        <Button onClick={onReload}>{t("reloadPlugin")}</Button>
+      )}
+      {hasUpdate && <Button onClick={onUpdate}>{t("updatePlugin")}</Button>}
     </Grid>
   );
 };

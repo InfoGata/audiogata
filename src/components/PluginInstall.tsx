@@ -1,6 +1,7 @@
 import { Backdrop, CircularProgress, Typography } from "@mui/material";
 import { nanoid } from "@reduxjs/toolkit";
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { useLocation, useNavigate } from "react-router-dom";
 import { PluginInfo } from "../plugintypes";
 import { FileType } from "../types";
@@ -19,6 +20,7 @@ const PluginInstall: React.FC = () => {
   const headerKey = params.get("headerKey") || "";
   const headerValue = params.get("headerValue") || "";
   const [isLoading, setIsLoading] = React.useState(true);
+  const { t } = useTranslation("plugins");
 
   React.useEffect(() => {
     const installPlugin = async () => {
@@ -26,7 +28,7 @@ const PluginInstall: React.FC = () => {
         return;
       }
       if (!manifestUrl.includes("manifest.json")) {
-        alert("The filename 'manifest.json' must be in the url");
+        alert(t("manifestMissingFromUrl"));
         setIsInstalling(false);
         return;
       }
@@ -53,7 +55,7 @@ const PluginInstall: React.FC = () => {
       }
     };
     installPlugin();
-  }, [manifestUrl, headerKey, headerValue]);
+  }, [manifestUrl, headerKey, headerValue, t]);
 
   const onConfirmPluginClose = () => {
     setPendingPlugin(null);
@@ -74,11 +76,11 @@ const PluginInstall: React.FC = () => {
       </Backdrop>
       {isInstalling ? (
         <Typography variant="h4">
-          Installing Plugin from {manifestUrl}
+          {t("installingPlugin", { manifestUrl })}
         </Typography>
       ) : (
         <Typography variant="h4">
-          Failed to Install plugin from {manifestUrl}
+          {t("failedToInstall", { manifestUrl })}
         </Typography>
       )}
       <ConfirmPluginDialog

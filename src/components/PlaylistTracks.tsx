@@ -38,6 +38,7 @@ import PlaylistMenuItem from "./PlaylistMenuItem";
 import SelectTrackListPlugin from "./SelectTrackListPlugin";
 import SelectionEditDialog from "./SelectionEditDialog";
 import useTrackMenu from "../hooks/useTrackMenu";
+import { useTranslation } from "react-i18next";
 
 const PlaylistTracks: React.FC = () => {
   const { playlistId } = useParams<"playlistId">();
@@ -47,6 +48,7 @@ const PlaylistTracks: React.FC = () => {
   const [openEditMenu, setOpenEditMenu] = React.useState(false);
   const [editSelectDialogOpen, setEditSelectDialogOpen] = React.useState(false);
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const deleteClick = async () => {
     if (menuTrack?.id) {
@@ -71,13 +73,13 @@ const PlaylistTracks: React.FC = () => {
       <ListItemIcon>
         <Delete />
       </ListItemIcon>
-      <ListItemText primary="Delete" />
+      <ListItemText primary={t("delete")} />
     </MenuItem>,
     <MenuItem onClick={infoClick} key="Info">
       <ListItemIcon>
         <Info />
       </ListItemIcon>
-      <ListItemText primary="Info" />
+      <ListItemText primary={t("info")} />
     </MenuItem>,
   ];
 
@@ -223,7 +225,7 @@ const PlaylistTracks: React.FC = () => {
               <ListItemIcon>
                 <PlaylistPlay />
               </ListItemIcon>
-              <ListItemText primary="Add Tracks To Queue" />
+              <ListItemText primary={t("addTracksToQueue")} />
             </MenuItem>
             {playlists.map((p) => (
               <PlaylistMenuItem
@@ -240,19 +242,19 @@ const PlaylistTracks: React.FC = () => {
                 <ListItemIcon>
                   <Delete />
                 </ListItemIcon>
-                <ListItemText primary="Delete Selected Tracks" />
+                <ListItemText primary={t("deleteSelectedTracks")} />
               </MenuItem>,
               <MenuItem onClick={openEditSelectDialog} key="edit">
                 <ListItemIcon>
                   <Edit />
                 </ListItemIcon>
-                <ListItemText primary="Edit Selected Tracks" />
+                <ListItemText primary={t("editSelectedTracks")} />
               </MenuItem>,
               <MenuItem onClick={addSelectedToQueue} key="add">
                 <ListItemIcon>
                   <PlaylistPlay />
                 </ListItemIcon>
-                <ListItemText primary="Add Selected To Queue" />
+                <ListItemText primary={t("addSelectedToQueue")} />
               </MenuItem>,
               playlists.map((p) => (
                 <PlaylistMenuItem

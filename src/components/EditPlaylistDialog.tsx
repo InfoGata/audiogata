@@ -7,6 +7,7 @@ import {
   TextField,
 } from "@mui/material";
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { PlaylistInfo } from "../plugintypes";
 import { useAppDispatch } from "../store/hooks";
 import { updatePlaylist } from "../store/reducers/playlistReducer";
@@ -21,6 +22,7 @@ const EditPlaylistDialog: React.FC<EditPlaylistDialogProps> = (props) => {
   const { open, playlist, handleClose } = props;
   const [name, setName] = React.useState(playlist.name);
   const dispatch = useAppDispatch();
+  const { t } = useTranslation();
   const formId = React.useId();
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -42,14 +44,14 @@ const EditPlaylistDialog: React.FC<EditPlaylistDialogProps> = (props) => {
         onClose={handleClose}
         aria-labelledby="form-dialog-title"
       >
-        <DialogTitle id="form-dialog-title">Edit Playlist</DialogTitle>
+        <DialogTitle id="form-dialog-title">{t("editPlaylist")}</DialogTitle>
         <DialogContent>
           <form onSubmit={onSubmit} id={formId}>
             <TextField
               autoFocus={true}
               margin="dense"
               id="name"
-              label="Name"
+              label={t("playlistName")}
               type="text"
               value={name}
               fullWidth={true}
@@ -58,9 +60,9 @@ const EditPlaylistDialog: React.FC<EditPlaylistDialogProps> = (props) => {
           </form>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose}>Cancel</Button>
+          <Button onClick={handleClose}>{t("cancel")}</Button>
           <Button type="submit" form={formId}>
-            Update Playlist
+            {t("updatePlaylist")}
           </Button>
         </DialogActions>
       </Dialog>

@@ -38,6 +38,7 @@ import AddPlaylistDialog from "./AddPlaylistDialog";
 import useFindPlugin from "../hooks/useFindPlugin";
 import ConfirmPluginDialog from "./ConfirmPluginDialog";
 import Pager from "./Pager";
+import { useTranslation } from "react-i18next";
 
 const PluginPlaylist: React.FC = () => {
   const { pluginId } = useParams<"pluginId">();
@@ -56,6 +57,7 @@ const PluginPlaylist: React.FC = () => {
     usePagination(currentPage);
   const params = new URLSearchParams(location.search);
   const { openMenu } = useTrackMenu();
+  const { t } = useTranslation();
 
   const [playlistDialogTracks, setPlaylistDialogTracks] = React.useState<
     Track[]
@@ -182,13 +184,13 @@ const PluginPlaylist: React.FC = () => {
           <ListItemIcon>
             <PlaylistPlay />
           </ListItemIcon>
-          <ListItemText primary="Add Tracks To Queue" />
+          <ListItemText primary={t("addTracksToQueue")} />
         </MenuItem>
         <MenuItem onClick={addToNewPlaylist}>
           <ListItemIcon>
             <PlaylistAdd />
           </ListItemIcon>
-          <ListItemText primary="Add Tracks to To New Playlist" />
+          <ListItemText primary={t("addTracksToNewPlaylist")} />
         </MenuItem>
         {playlists.map((p) => (
           <PlaylistMenuItem
@@ -205,13 +207,13 @@ const PluginPlaylist: React.FC = () => {
             <ListItemIcon>
               <PlaylistPlay />
             </ListItemIcon>
-            <ListItemText primary="Add Selected To Queue" />
+            <ListItemText primary={t("addSelectedToQueue")} />
           </MenuItem>,
           <MenuItem onClick={addSelectedToNewPlaylist}>
             <ListItemIcon>
               <PlaylistAdd />
             </ListItemIcon>
-            <ListItemText primary="Add Selected to To New Playlist" />
+            <ListItemText primary={t("addSelectedToNewPlaylist")} />
           </MenuItem>,
           playlists.map((p) => (
             <PlaylistMenuItem
