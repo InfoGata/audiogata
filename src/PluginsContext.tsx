@@ -274,7 +274,13 @@ export const PluginsProvider: React.FC<React.PropsWithChildren> = (props) => {
         srcUrl = `https://${plugin.id}.audiogata.com/pluginframe.html`;
       }
 
-      const completeMethods: { [key in keyof PluginMethodInterface]?: any } = {
+      const completeMethods: {
+        [key in keyof PluginMethodInterface]?: (
+          arg: any
+        ) =>
+          | ReturnType<PluginMethodInterface[key]>
+          | Awaited<ReturnType<PluginMethodInterface[key]>>;
+      } = {
         onSearchAll: (result: SearchAllResult) => {
           result.tracks?.items.forEach((i) => {
             i.pluginId = plugin.id;
