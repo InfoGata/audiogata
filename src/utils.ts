@@ -83,7 +83,7 @@ export async function getFileText(
   if (fileType.filelist) {
     const file = getFileByDirectoryAndName(fileType.filelist, name);
     if (!file) {
-      const errorText = i18next.t("fileNotFound", { name });
+      const errorText = i18next.t("common:fileNotFound", { name });
       alert(errorText);
       return null;
     }
@@ -111,7 +111,7 @@ export async function getPlugin(
 
   const manifest = JSON.parse(manifestText) as Manifest;
   if (!manifest.script) {
-    const errorText = i18next.t("manifestNoScript");
+    const errorText = i18next.t("common:manifestNoScript");
     alert(errorText);
     return null;
   }
