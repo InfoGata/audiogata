@@ -48,7 +48,8 @@
     "trackName": "Track Name",
     "trackDuration": "Track Duration",
     "save": "Save",
-    "title": "Title"
+    "title": "Title",
+    "privacyPolicy": "Privacy Policy"
   },
   "plugins": {
     "addPlugin_one": "Add Plugin",

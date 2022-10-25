@@ -93,7 +93,7 @@ const AboutPage: React.FC = () => {
                 <Lock />
               </Avatar>
             </ListItemAvatar>
-            <ListItemText primary="Privacy Policy" />
+            <ListItemText primary={t("privacyPolicy")} />
           </ListItemButton>
         </ListItem>
       </List>
