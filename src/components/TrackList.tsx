@@ -13,6 +13,7 @@ import {
 } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { Track } from "../plugintypes";
 import PlaylistItem from "./PlaylistItem";
 import Sortable from "./Sortable";
@@ -45,6 +46,7 @@ const TrackList: React.FC<TrackListProps> = (props) => {
   const [activeId, setActiveId] = React.useState<string | null>(null);
   const theme = useTheme();
   const showTrackLength = useMediaQuery(theme.breakpoints.up("sm"));
+  const { t } = useTranslation();
 
   const handleDragStart = (event: DragStartEvent) => {
     setActiveId(event.active.id);
@@ -87,8 +89,8 @@ const TrackList: React.FC<TrackListProps> = (props) => {
                   }}
                 />
               </TableCell>
-              <TableCell width="80%">Title</TableCell>
-              {showTrackLength && <TableCell>Track Length</TableCell>}
+              <TableCell width="80%">{t("title")}</TableCell>
+              {showTrackLength && <TableCell>{t("trackDuration")}</TableCell>}
               <TableCell></TableCell>
             </TableRow>
           </TableHead>

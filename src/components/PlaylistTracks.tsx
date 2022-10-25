@@ -233,7 +233,7 @@ const PlaylistTracks: React.FC = () => {
                 playlist={p}
                 tracks={tracklist}
                 closeMenu={closeQueueMenu}
-                namePrefix="Add Tracks to "
+                title={t("addTracksToPlaylist", { playlistName: p.name })}
               />
             ))}
             {selected.size > 0 && [
@@ -262,7 +262,7 @@ const PlaylistTracks: React.FC = () => {
                   playlist={p}
                   tracks={selectedTracks}
                   closeMenu={closeQueueMenu}
-                  namePrefix="Add Selected to "
+                  title={t("addSelectedToPlaylist", { playlistName: p.name })}
                 />
               )),
             ]}

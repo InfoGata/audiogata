@@ -185,7 +185,7 @@ const NowPlaying: React.FC = () => {
             playlist={p}
             tracks={trackList}
             closeMenu={closeQueueMenu}
-            namePrefix={"Add Queue to "}
+            title={t("addQueueToPlaylist", { playlistName: p.name })}
           />
         ))}
         {selected.size > 0 && [
@@ -214,7 +214,7 @@ const NowPlaying: React.FC = () => {
               playlist={p}
               tracks={selectedTracks}
               closeMenu={closeQueueMenu}
-              namePrefix={"Add Selected to "}
+              title={t("addSelectedToPlaylist", { playlistName: p.name })}
             />
           )),
         ]}

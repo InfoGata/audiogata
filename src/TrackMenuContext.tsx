@@ -90,7 +90,7 @@ export const TrackMenuProvider: React.FC<React.PropsWithChildren> = (props) => {
             playlist={p}
             tracks={menuTrack ? [menuTrack] : []}
             closeMenu={closeMenu}
-            namePrefix="Add to "
+            title={t("addToPlaylist", { playlistName: p.name })}
           />
         ))}
       </Menu>

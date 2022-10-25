@@ -12,6 +12,7 @@ import {
   SelectChangeEvent,
 } from "@mui/material";
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { usePlugins } from "../PluginsContext";
 
 interface SelectionEditProps {
@@ -24,6 +25,7 @@ const SelectionEditDialog: React.FC<SelectionEditProps> = (props) => {
   const { onClose, open, onSave } = props;
   const [pluginId, setPluginId] = React.useState("");
   const { plugins } = usePlugins();
+  const { t } = useTranslation();
   const onSaveClick = () => {
     onSave(pluginId);
     onClose();
@@ -43,11 +45,11 @@ const SelectionEditDialog: React.FC<SelectionEditProps> = (props) => {
 
   return (
     <Dialog open={open} onClose={onClose}>
-      <DialogTitle>Edit Tracks</DialogTitle>
+      <DialogTitle>{t("editTracks")}</DialogTitle>
       <DialogContent>
-        <DialogContentText>Change Plugin</DialogContentText>
+        <DialogContentText>{t("changePlugin")}</DialogContentText>
         <FormControl fullWidth>
-          <InputLabel id="select-plugin-dialog">Plugin</InputLabel>
+          <InputLabel id="select-plugin-dialog">{t("plugin")}</InputLabel>
           <Select
             id="select-plugin-dialog"
             value={pluginId}
@@ -59,8 +61,8 @@ const SelectionEditDialog: React.FC<SelectionEditProps> = (props) => {
         </FormControl>
       </DialogContent>
       <DialogActions>
-        <Button onClick={onClose}>Cancel</Button>
-        <Button onClick={onSaveClick}>Save</Button>
+        <Button onClick={onClose}>{t("cancel")}</Button>
+        <Button onClick={onSaveClick}>{t("save")}</Button>
       </DialogActions>
     </Dialog>
   );
