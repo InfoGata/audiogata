@@ -67,7 +67,7 @@ const TrackList: React.FC<TrackListProps> = (props) => {
 
   return (
     <Sortable
-      ids={tracks.map((t) => t.id || "")}
+      ids={tracks.map((track) => track.id || "")}
       onDragStart={handleDragStart}
       onDragEnd={handleDragEnd}
     >
@@ -95,16 +95,16 @@ const TrackList: React.FC<TrackListProps> = (props) => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {tracks.map((t, i) => (
+            {tracks.map((track, i) => (
               <SortableRow
-                id={t.id || ""}
-                key={t.id || t.apiId}
-                onClick={() => onTrackClick(t)}
+                id={track.id || ""}
+                key={track.id || track.apiId}
+                onClick={() => onTrackClick(track)}
                 disabled={dragDisabled}
               >
                 <PlaylistItem
                   showTrackLength={showTrackLength}
-                  track={t}
+                  track={track}
                   openMenu={openMenu}
                   isSelected={isSelected}
                   onSelectClick={onSelect}
@@ -117,7 +117,10 @@ const TrackList: React.FC<TrackListProps> = (props) => {
                 <PlaylistItem
                   showTrackLength={showTrackLength}
                   key={activeId}
-                  track={tracks.find((t) => t.id === activeId) || ({} as Track)}
+                  track={
+                    tracks.find((track) => track.id === activeId) ||
+                    ({} as Track)
+                  }
                 />
               ) : null}
             </DragOverlay>
