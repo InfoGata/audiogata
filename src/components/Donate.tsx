@@ -24,6 +24,7 @@ const Donate: React.FC = () => {
   const paypalUrl =
     "https://www.paypal.com/donate/?hosted_button_id=VYJRQP387NF4S";
   const liberapayUrl = "https://liberapay.com/InfoGata/donate";
+  const donateText = t("donate");
   return (
     <Box>
       <List dense>
@@ -34,7 +35,7 @@ const Donate: React.FC = () => {
                 <FontAwesomeIcon icon={faPaypal} />
               </Avatar>
             </ListItemAvatar>
-            <ListItemText primary={t("donate")} secondary="Paypal" />
+            <ListItemText primary={donateText} secondary="Paypal" />
           </ListItemButton>
         </ListItem>
         <ListItem disablePadding>
@@ -44,7 +45,7 @@ const Donate: React.FC = () => {
                 <SvgIcon component={Liberapay} inheritViewBox />
               </Avatar>
             </ListItemAvatar>
-            <ListItemText primary={t("donate")} secondary="Liberapay" />
+            <ListItemText primary={donateText} secondary="Liberapay" />
           </ListItemButton>
         </ListItem>
         <ListItem>
@@ -54,7 +55,7 @@ const Donate: React.FC = () => {
             </Avatar>
           </ListItemAvatar>
           <ListItemText
-            primary={`${t("donate")} - BTC`}
+            primary={`${donateText} - BTC`}
             secondary={btcDonation}
           />
         </ListItem>
@@ -65,7 +66,7 @@ const Donate: React.FC = () => {
             </Avatar>
           </ListItemAvatar>
           <ListItemText
-            primary={`${t("donate")} - XMR`}
+            primary={`${donateText} - XMR`}
             secondary={xmrDonation}
             secondaryTypographyProps={{ style: { wordWrap: "break-word" } }}
           />
