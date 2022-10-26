@@ -53,7 +53,7 @@ const PluginCards: React.FC = () => {
           </CardContent>
           <CardActions>
             <Button size="small" onClick={() => onAddPlugin(p)}>
-              Add
+              {t("addPlugin")}
             </Button>
           </CardActions>
         </Card>
@@ -67,7 +67,7 @@ const PluginCards: React.FC = () => {
           <Backdrop open={backdropOpen}>
             <CircularProgress color="inherit" />
           </Backdrop>
-          <Typography variant="h6">Plugins</Typography>
+          <Typography variant="h6">{t("plugins")}</Typography>
           <Fade in={pluginsLoaded}>
             <Grid container spacing={2}>
               {pluginCards}

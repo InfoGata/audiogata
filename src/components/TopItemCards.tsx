@@ -19,12 +19,14 @@ import { addTrack, setTrack } from "../store/reducers/trackReducer";
 import { getThumbnailImage, playlistThumbnailSize } from "../utils";
 import SelectPlugin from "./SelectPlugin";
 import { Image } from "mui-image";
+import { useTranslation } from "react-i18next";
 
 const TopItemCards: React.FC = () => {
   const [pluginId, setPluginId] = React.useState("");
   const { plugins } = usePlugins();
   const dispatch = useAppDispatch();
   const { openMenu } = useTrackMenu();
+  const { t } = useTranslation();
 
   const getTopItems = async () => {
     const plugin = plugins.find((p) => p.id === pluginId);
@@ -101,7 +103,7 @@ const TopItemCards: React.FC = () => {
       <Fade in={!!topTrackComponents}>
         <Grid>
           <Typography variant="h5" style={{ marginLeft: "15px" }}>
-            Top Tracks
+            {t("topTracks")}
           </Typography>
           <Grid
             sx={{

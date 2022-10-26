@@ -49,7 +49,11 @@
     "trackDuration": "Track Duration",
     "save": "Save",
     "title": "Title",
-    "privacyPolicy": "Privacy Policy"
+    "privacyPolicy": "Privacy Policy",
+    "dismiss": "Dismiss",
+    "topTracks": "Top Tracks",
+    "addPlugin": "Add",
+    "notFound": "Not Found"
   },
   "plugins": {
     "addPlugin_one": "Add Plugin",
@@ -77,6 +81,9 @@
     "failedToInstall": "Failed to Install plugin from {{manifestUrl}}",
     "manifestMissingFromUrl": "The filename 'manifest.json' must be in the url",
     "loadPluginFromFolder": "Load Plugin From Folder",
-    "loadPluginFromUrl": "Load Plugin From Url"
+    "loadPluginFromUrl": "Load Plugin From Url",
+    "pluginOptions": "{{pluginName}} Options",
+    "options": "Options",
+    "checkForUpdates": "Check for Updates"
   }
 }

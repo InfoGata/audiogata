@@ -1,5 +1,6 @@
 import { Backdrop, CircularProgress } from "@mui/material";
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { useParams } from "react-router-dom";
 import { db } from "../database";
 import { Track } from "../plugintypes";
@@ -10,6 +11,7 @@ const PlaylistTrackInfo: React.FC = () => {
   const { playlistId } = useParams<"playlistId">();
   const [backdropOpen, setBackdropOpen] = React.useState(false);
   const [track, setTrack] = React.useState<Track>();
+  const { t } = useTranslation();
 
   React.useEffect(() => {
     const getTrack = async () => {
@@ -30,7 +32,7 @@ const PlaylistTrackInfo: React.FC = () => {
       <Backdrop open={backdropOpen}>
         <CircularProgress color="inherit" />
       </Backdrop>
-      {track ? <TrackInfo track={track} /> : <>Not Found</>}
+      {track ? <TrackInfo track={track} /> : <>{t("notFound")}</>}
     </>
   );
 };

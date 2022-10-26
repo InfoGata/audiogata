@@ -113,7 +113,7 @@ const PluginContainer: React.FC<PluginContainerProps> = (props) => {
       </Typography>
       {plugin.hasOptions && (
         <Button component={Link} to={`/plugins/${plugin.id}/options`}>
-          Options
+          {t("options")}
         </Button>
       )}
       <Button onClick={onDelete}>{t("deletePlugin")}</Button>
@@ -127,7 +127,7 @@ const PluginContainer: React.FC<PluginContainerProps> = (props) => {
         <Button component="span">{t("updateFromFile")}</Button>
       </label>
       <Button component={Link} to={`/plugins/${plugin.id}`}>
-        Details
+        {t("pluginDetails")}
       </Button>
       {plugin.fileList && (
         <Button onClick={onReload}>{t("reloadPlugin")}</Button>

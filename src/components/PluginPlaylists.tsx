@@ -15,10 +15,12 @@ import {
 } from "@mui/material";
 import { getThumbnailImage, playlistThumbnailSize } from "../utils";
 import { useQuery } from "react-query";
+import { useTranslation } from "react-i18next";
 
 const PluginPlaylists: React.FC = () => {
   const { plugins } = usePlugins();
   const { pluginId } = useParams<"pluginId">();
+  const { t } = useTranslation();
   const plugin = plugins.find((p) => p.id === pluginId);
 
   const getPlaylists = async () => {
@@ -69,7 +71,7 @@ const PluginPlaylists: React.FC = () => {
       </Grid>
     </>
   ) : (
-    <>Not Found</>
+    <>{t("notFound")}</>
   );
 };
 

@@ -91,10 +91,23 @@
   },
   "eslintConfig": {
     "plugins": [
-      "jam3"
+      "jam3",
+      "i18next"
     ],
     "rules": {
-      "jam3/no-sanitizer-with-danger": 2
+      "jam3/no-sanitizer-with-danger": 2,
+      "i18next/no-literal-string": [
+        2,
+        {
+          "words": {
+            "exclude": [
+              "[0-9!-/:-@[-`{-~]+",
+              "[A-Z_-]+",
+              "\\s+AudioGata\\s+"
+            ]
+          }
+        }
+      ]
     },
     "extends": [
       "react-app",
@@ -114,14 +127,15 @@
     ]
   },
   "devDependencies": {
-    "react-app-rewired": "^2.1.8",
-    "react-scripts": "5.0.1",
     "@capacitor/cli": "^3.5.0",
     "@types/lodash": "^4.14.182",
     "cross-env": "^7.0.3",
     "electron": "^18.1.0",
     "electron-builder": "^23.0.3",
+    "eslint-plugin-i18next": "^6.0.0-2",
     "eslint-plugin-jam3": "^0.2.3",
+    "react-app-rewired": "^2.1.8",
+    "react-scripts": "5.0.1",
     "wait-on": "^6.0.1"
   }
 }

@@ -4,6 +4,7 @@ import { useParams } from "react-router-dom";
 import { usePlugins } from "../PluginsContext";
 import { db } from "../database";
 import { Grid, Typography } from "@mui/material";
+import { useTranslation } from "react-i18next";
 
 const PluginOptions: React.FC = () => {
   const { pluginId } = useParams<"pluginId">();
@@ -11,6 +12,7 @@ const PluginOptions: React.FC = () => {
   const ref = React.useRef<HTMLIFrameElement>(null);
   const plugin = plugins.find((p) => p.id === pluginId);
   const [optionsHtml, setOptionsHtml] = React.useState<string>();
+  const { t } = useTranslation(["plugins", "common"]);
 
   const iframeListener = React.useCallback(
     async (event: MessageEvent<any>) => {
@@ -47,7 +49,7 @@ const PluginOptions: React.FC = () => {
     getOptionsHtml();
   }, [plugin]);
 
-  if (!plugin) return <>Not Found</>;
+  if (!plugin) return <>{t("common:notFound")}</>;
 
   let srcUrl = `${window.location.protocol}//${plugin.id}.${window.location.host}/ui.html`;
   if (process.env.NODE_ENV === "production" || Capacitor.isNativePlatform()) {
@@ -99,7 +101,9 @@ const PluginOptions: React.FC = () => {
 
   return (
     <Grid>
-      <Typography variant="h3">{plugin.name} Options</Typography>
+      <Typography variant="h3">
+        {t("plugins:pluginOptions", { pluginName: plugin.name })}
+      </Typography>
       {optionsHtml && pluginIframe}
     </Grid>
   );

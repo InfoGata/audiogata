@@ -13,6 +13,7 @@ import { initializePlaylists } from "./store/reducers/playlistReducer";
 import { QueryClient, QueryClientProvider } from "react-query";
 import MatomoRouterProvider from "./components/MatomoRouterProvider";
 import { TrackMenuProvider } from "./TrackMenuContext";
+import { useTranslation } from "react-i18next";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -27,6 +28,7 @@ const App: React.FC = () => {
   const onClickDismiss = (key: SnackbarKey) => () => {
     notistackRef?.current?.closeSnackbar(key);
   };
+  const { t } = useTranslation();
 
   React.useEffect(() => {
     dispatch(initializePlaylists());
@@ -36,7 +38,9 @@ const App: React.FC = () => {
     <SnackbarProvider
       maxSnack={3}
       ref={notistackRef}
-      action={(key) => <Button onClick={onClickDismiss(key)}>Dismiss</Button>}
+      action={(key) => (
+        <Button onClick={onClickDismiss(key)}>{t("dismiss")}</Button>
+      )}
     >
       <QueryClientProvider client={queryClient}>
         <BrowserRouter>

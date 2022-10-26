@@ -20,7 +20,7 @@ const PluginDetails: React.FC = () => {
   const [scriptSize, setScriptSize] = React.useState(0);
   const [optionSize, setOptionsSize] = React.useState(0);
   const { updatePlugin } = usePlugins();
-  const { t } = useTranslation("plugins");
+  const { t } = useTranslation(["plugins", "common"]);
 
   const loadPluginFromDb = React.useCallback(async () => {
     const p = await db.plugins.get(pluginId || "");
@@ -54,30 +54,35 @@ const PluginDetails: React.FC = () => {
     <>
       {plugin ? (
         <div>
-          <Typography variant="h3">{t("pluginDetailsTitle")}</Typography>
+          <Typography variant="h3">
+            {t("plugins:pluginDetailsTitle")}
+          </Typography>
           <Typography variant="h6">{plugin.name}</Typography>
           <List>
             <ListItem>
               <ListItemText
-                primary={t("pluginDescription")}
+                primary={t("plugins:pluginDescription")}
                 secondary={plugin.description}
               />
             </ListItem>
             <ListItem>
-              <ListItemText primary={t("version")} secondary={plugin.version} />
+              <ListItemText
+                primary={t("plugins:version")}
+                secondary={plugin.version}
+              />
             </ListItem>
             <ListItem>
               <ListItemText primary="Id" secondary={plugin.id} />
             </ListItem>
             <ListItem>
               <ListItemText
-                primary={t("scriptSize")}
+                primary={t("plugins:scriptSize")}
                 secondary={`${scriptSize / 1000} kb`}
               />
             </ListItem>
             <ListItem>
               <ListItemText
-                primary={t("optionsPageSize")}
+                primary={t("plugins:optionsPageSize")}
                 secondary={`${optionSize / 1000} kb`}
               />
             </ListItem>
@@ -97,11 +102,11 @@ const PluginDetails: React.FC = () => {
             )}
           </List>
           {plugin.manifestUrl && (
-            <Button onClick={onUpdate}>{t("updatePlugin")}</Button>
+            <Button onClick={onUpdate}>{t("plugins:updatePlugin")}</Button>
           )}
         </div>
       ) : (
-        <>Not Found</>
+        <>{t("common:notFound")}</>
       )}
     </>
   );

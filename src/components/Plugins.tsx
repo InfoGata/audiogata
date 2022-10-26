@@ -83,13 +83,13 @@ const Plugins: React.FC = () => {
       </Grid>
       <Grid>
         <Button variant="contained" onClick={onOpenUrlDialog}>
-          Load plugin From Url
+          {t("loadPluginFromUrl")}
         </Button>
       </Grid>
       {plugins.length > 0 && (
         <Grid>
           <Button disabled={isCheckingUpdate} onClick={onCheckUpdates}>
-            {t("loadPluginFromUrl")}
+            {t("checkForUpdates")}
           </Button>
         </Grid>
       )}

@@ -51,6 +51,10 @@ const PlaybackRate: React.FC = () => {
   const open = Boolean(anchorEl);
   const id = open ? "simple-popover" : undefined;
   const currentRate = (playbackRate || 1.0) * 100;
+
+  const formattedRate = new Intl.NumberFormat(undefined, {
+    style: "percent",
+  }).format(playbackRate || 0);
   return (
     <>
       <IconButton disabled={!enabled} size="small" onClick={onRateButtonClick}>
@@ -79,7 +83,7 @@ const PlaybackRate: React.FC = () => {
             value={currentRate}
             onChange={onPlaybackRate}
           />
-          {currentRate} %
+          {formattedRate}
         </Box>
       </Popover>
     </>

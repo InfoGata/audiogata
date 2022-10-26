@@ -279,7 +279,7 @@ const PlaylistTracks: React.FC = () => {
           />
         </>
       ) : (
-        <>{loaded && <Typography>Not Found</Typography>}</>
+        <>{loaded && <Typography>{t("notFound")}</Typography>}</>
       )}
     </>
   );

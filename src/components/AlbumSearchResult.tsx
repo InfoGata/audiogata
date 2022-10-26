@@ -24,9 +24,7 @@ const AlbumSearchResult: React.FC<AlbumSearchResultProps> = (props) => {
       <ListItemAvatar>
         <Avatar alt={album.name} src={image} style={{ borderRadius: 0 }} />
       </ListItemAvatar>
-      <ListItemText>
-        {album.name} - {album.artistName}
-      </ListItemText>
+      <ListItemText primary={album.name} secondary={album.artistName} />
     </ListItem>
   );
 };
