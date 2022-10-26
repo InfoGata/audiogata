@@ -94,7 +94,7 @@ const PluginDetails: React.FC = () => {
                   target="_blank"
                 >
                   <ListItemText
-                    primary="Update Url"
+                    primary={t("plugins:updateUrl")}
                     secondary={plugin.manifestUrl}
                   />
                 </ListItemButton>
