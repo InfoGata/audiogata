@@ -28,6 +28,7 @@ import {
   Info,
   MoreHoriz,
   PlayCircle,
+  PlaylistAdd,
   PlaylistPlay,
 } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
@@ -39,6 +40,7 @@ import SelectTrackListPlugin from "./SelectTrackListPlugin";
 import SelectionEditDialog from "./SelectionEditDialog";
 import useTrackMenu from "../hooks/useTrackMenu";
 import { useTranslation } from "react-i18next";
+import AddPlaylistDialog from "./AddPlaylistDialog";
 
 const PlaylistTracks: React.FC = () => {
   const { playlistId } = useParams<"playlistId">();
@@ -106,6 +108,9 @@ const PlaylistTracks: React.FC = () => {
 
   const [queueMenuAnchorEl, setQueueMenuAnchorEl] =
     React.useState<null | HTMLElement>(null);
+
+  const [playlistDialogOpen, setPlaylistDialogOpen] = React.useState(false);
+  const closePlaylistDialog = () => setPlaylistDialogOpen(false);
 
   const selectedTracks = tracklist.filter((t) => selected.has(t.id ?? ""));
 
@@ -183,6 +188,11 @@ const PlaylistTracks: React.FC = () => {
     }
   };
 
+  const addSelectedToNewPlaylist = () => {
+    setPlaylistDialogOpen(true);
+    closeQueueMenu();
+  };
+
   return (
     <>
       <Backdrop open={!loaded}>
@@ -256,6 +266,13 @@ const PlaylistTracks: React.FC = () => {
                 </ListItemIcon>
                 <ListItemText primary={t("addSelectedToQueue")} />
               </MenuItem>,
+
+              <MenuItem onClick={addSelectedToNewPlaylist}>
+                <ListItemIcon>
+                  <PlaylistAdd />
+                </ListItemIcon>
+                <ListItemText primary={t("addSelectedToNewPlaylist")} />
+              </MenuItem>,
               playlists.map((p) => (
                 <PlaylistMenuItem
                   key={p.id}
@@ -276,6 +293,11 @@ const PlaylistTracks: React.FC = () => {
             open={editSelectDialogOpen}
             onClose={closeEditSelectDialog}
             onSave={onSelectedEdited}
+          />
+          <AddPlaylistDialog
+            tracks={selectedTracks}
+            open={playlistDialogOpen}
+            handleClose={closePlaylistDialog}
           />
         </>
       ) : (
