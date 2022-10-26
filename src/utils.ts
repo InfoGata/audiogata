@@ -96,7 +96,8 @@ export async function getFileText(
       const result = await fetch(newUrl, { headers: fileType.url.headers });
       return await result.text();
     } catch {
-      alert(`Error: Couldn't get ${name}`);
+      const errorText = i18next.t("common:cantGetFile", { name });
+      alert(errorText);
       return null;
     }
   }

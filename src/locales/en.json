@@ -30,6 +30,7 @@
     "addTracksToPlaylist": "Add tracks to {{playlistName}}",
     "addQueueToPlaylist": "Add Queue to {{playlistName}}",
     "fileNotFound": "Error: Couldn't find {{name}}",
+    "cantGetFile": "Error: Couldn't get {{name}}",
     "manifestNoScript": "Error: Manifest does not contain script",
     "updatePlaylist": "Update Playlist",
     "editPlaylist": "Edit Playlist",
