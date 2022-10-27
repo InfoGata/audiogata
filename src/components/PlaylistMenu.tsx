@@ -1,7 +1,6 @@
-import { MoreHoriz, PlaylistAdd, PlaylistPlay } from "@mui/icons-material";
+import { PlaylistAdd, PlaylistPlay } from "@mui/icons-material";
 import {
   Divider,
-  IconButton,
   ListItemIcon,
   ListItemText,
   Menu,

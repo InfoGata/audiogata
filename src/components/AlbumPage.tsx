@@ -1,4 +1,4 @@
-import { PlayCircle } from "@mui/icons-material";
+import { MoreHoriz, PlayCircle } from "@mui/icons-material";
 import { Backdrop, CircularProgress, IconButton } from "@mui/material";
 import { nanoid } from "@reduxjs/toolkit";
 import React from "react";
@@ -10,11 +10,12 @@ import useSelected from "../hooks/useSelected";
 import useTrackMenu from "../hooks/useTrackMenu";
 import { usePlugins } from "../PluginsContext";
 import { Album, PageInfo, Track } from "../plugintypes";
-import { useAppDispatch } from "../store/hooks";
+import { useAppDispatch, useAppSelector } from "../store/hooks";
 import { setTracks, setTrack, playQueue } from "../store/reducers/trackReducer";
 import ConfirmPluginDialog from "./ConfirmPluginDialog";
 import Pager from "./Pager";
 import PlaylistInfoCard from "./PlaylistInfoCard";
+import PlaylistMenu from "./PlaylistMenu";
 import TrackList from "./TrackList";
 
 const AlbumPage: React.FC = () => {
@@ -23,6 +24,13 @@ const AlbumPage: React.FC = () => {
   const { plugins, pluginsLoaded } = usePlugins();
   const state = useLocation().state as Album | null;
   const [albumInfo, setAlbumInfo] = React.useState<Album | null>(state);
+
+  const [queueMenuAnchorEl, setQueueMenuAnchorEl] =
+    React.useState<null | HTMLElement>(null);
+  const openQueueMenu = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setQueueMenuAnchorEl(event.currentTarget);
+  };
+  const closeQueueMenu = () => setQueueMenuAnchorEl(null);
   const dispatch = useAppDispatch();
   const { openMenu } = useTrackMenu();
   const plugin = plugins.find((p) => p.id === pluginId);
@@ -31,6 +39,8 @@ const AlbumPage: React.FC = () => {
     pluginId,
     plugin,
   });
+
+  const playlists = useAppSelector((state) => state.playlist.playlists);
 
   const [currentPage, setCurrentPage] = React.useState<PageInfo>();
   const { page, hasNextPage, hasPreviousPage, onPreviousPage, onNextPage } =
@@ -90,6 +100,16 @@ const AlbumPage: React.FC = () => {
       <IconButton size="large" onClick={onPlayClick}>
         <PlayCircle color="success" sx={{ fontSize: 45 }} />
       </IconButton>
+      <IconButton onClick={openQueueMenu}>
+        <MoreHoriz fontSize="large" />
+      </IconButton>
+      <PlaylistMenu
+        selected={selected}
+        tracklist={tracklist}
+        playlists={playlists}
+        anchorElement={queueMenuAnchorEl}
+        onClose={closeQueueMenu}
+      />
       <TrackList
         tracks={tracklist}
         openMenu={openMenu}
