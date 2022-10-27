@@ -267,7 +267,7 @@ const PlaylistTracks: React.FC = () => {
                 <ListItemText primary={t("addSelectedToQueue")} />
               </MenuItem>,
 
-              <MenuItem onClick={addSelectedToNewPlaylist}>
+              <MenuItem onClick={addSelectedToNewPlaylist} key="selectednew">
                 <ListItemIcon>
                   <PlaylistAdd />
                 </ListItemIcon>

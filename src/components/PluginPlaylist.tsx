@@ -209,7 +209,7 @@ const PluginPlaylist: React.FC = () => {
             </ListItemIcon>
             <ListItemText primary={t("addSelectedToQueue")} />
           </MenuItem>,
-          <MenuItem onClick={addSelectedToNewPlaylist}>
+          <MenuItem onClick={addSelectedToNewPlaylist} key="selectednew">
             <ListItemIcon>
               <PlaylistAdd />
             </ListItemIcon>
