@@ -10,20 +10,13 @@ import {
   IconButton,
   Tooltip,
 } from "@mui/material";
-import {
-  Delete,
-  Edit,
-  Info,
-  MoreHoriz,
-  PlaylistAdd,
-} from "@mui/icons-material";
+import { Delete, Info, MoreHoriz, PlaylistAdd } from "@mui/icons-material";
 import {
   clearTracks,
   deleteTrack,
   deleteTracks,
   setTrack,
   setTracks,
-  updatePluginId,
 } from "../store/reducers/trackReducer";
 import AddPlaylistDialog from "./AddPlaylistDialog";
 import PlaylistMenuItem from "./PlaylistMenuItem";
@@ -33,7 +26,6 @@ import TrackList from "./TrackList";
 import useSelected from "../hooks/useSelected";
 import { useNavigate } from "react-router-dom";
 import SelectTrackListPlugin from "./SelectTrackListPlugin";
-import SelectionEditDialog from "./SelectionEditDialog";
 import useTrackMenu from "../hooks/useTrackMenu";
 import { useTranslation } from "react-i18next";
 
@@ -43,7 +35,6 @@ const NowPlaying: React.FC = () => {
     Track[]
   >([]);
   const [playlistDialogOpen, setPlaylistDialogOpen] = React.useState(false);
-  const [editSelectDialogOpen, setEditSelectDialogOpen] = React.useState(false);
   const [queueMenuAnchorEl, setQueueMenuAnchorEl] =
     React.useState<null | HTMLElement>(null);
   const dispatch = useAppDispatch();
@@ -88,10 +79,7 @@ const NowPlaying: React.FC = () => {
     setQueueMenuAnchorEl(event.currentTarget);
   };
 
-  const openEditSelectDialog = () => setEditSelectDialogOpen(true);
-
   const closeQueueMenu = () => setQueueMenuAnchorEl(null);
-  const closeEditSelectDialog = () => setEditSelectDialogOpen(false);
 
   const trackList = useAppSelector((state) => state.track.tracks);
   const closePlaylistDialog = () => setPlaylistDialogOpen(false);
@@ -130,12 +118,6 @@ const NowPlaying: React.FC = () => {
 
   const onDragOver = (newTrackList: Track[]) => {
     dispatch(setTracks(newTrackList));
-  };
-
-  const onSelectedEdited = (pluginId?: string) => {
-    if (pluginId) {
-      dispatch(updatePluginId({ updateIds: selected, pluginId: pluginId }));
-    }
   };
 
   return (
@@ -196,12 +178,6 @@ const NowPlaying: React.FC = () => {
             </ListItemIcon>
             <ListItemText primary="Clear Selected Tracks" />
           </MenuItem>,
-          <MenuItem onClick={openEditSelectDialog} key="edit">
-            <ListItemIcon>
-              <Edit />
-            </ListItemIcon>
-            <ListItemText primary="Edit Selected Tracks" />
-          </MenuItem>,
           <MenuItem onClick={addSelectedToNewPlaylist} key="newplaylist">
             <ListItemIcon>
               <PlaylistAdd />
@@ -223,11 +199,6 @@ const NowPlaying: React.FC = () => {
         tracks={playlistDialogTracks}
         open={playlistDialogOpen}
         handleClose={closePlaylistDialog}
-      />
-      <SelectionEditDialog
-        open={editSelectDialogOpen}
-        onClose={closeEditSelectDialog}
-        onSave={onSelectedEdited}
       />
     </>
   );

@@ -6,11 +6,6 @@ import { AppThunk } from "../store";
 import unionBy from "lodash/unionBy";
 import intersectionBy from "lodash/intersectionBy";
 
-interface UpdatePluginId {
-  updateIds: Set<string>;
-  pluginId: string;
-}
-
 interface TrackState {
   tracks: Track[];
   shuffleList: number[];
@@ -96,16 +91,6 @@ const trackSlice = createSlice({
         ...state,
         tracks: state.tracks.map((t) =>
           t.id === action.payload.id ? action.payload : t
-        ),
-      };
-    },
-    updatePluginId(state, action: PayloadAction<UpdatePluginId>): TrackState {
-      return {
-        ...state,
-        tracks: state.tracks.map((t) =>
-          action.payload.updateIds.has(t.id || "")
-            ? { ...t, pluginId: action.payload.pluginId }
-            : t
         ),
       };
     },
@@ -410,6 +395,5 @@ export const {
   toggleIsPlaying,
   seek,
   playQueue,
-  updatePluginId,
 } = trackSlice.actions;
 export default trackSlice.reducer;

@@ -34,8 +34,6 @@
     "manifestNoScript": "Error: Manifest does not contain script",
     "updatePlaylist": "Update Playlist",
     "editPlaylist": "Edit Playlist",
-    "editTracks": "Edit Tracks",
-    "changePlugin": "Change Plugin",
     "addTracksToQueue": "Add Tracks to Queue",
     "addTracksToNewPlaylist": "Add Tracks to New Playlist",
     "deleteSelectedTracks": "Delete Selected Tracks",

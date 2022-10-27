@@ -37,7 +37,6 @@ import useSelected from "../hooks/useSelected";
 import EditPlaylistDialog from "./EditPlaylistDialog";
 import PlaylistMenuItem from "./PlaylistMenuItem";
 import SelectTrackListPlugin from "./SelectTrackListPlugin";
-import SelectionEditDialog from "./SelectionEditDialog";
 import useTrackMenu from "../hooks/useTrackMenu";
 import { useTranslation } from "react-i18next";
 import AddPlaylistDialog from "./AddPlaylistDialog";
@@ -48,7 +47,6 @@ const PlaylistTracks: React.FC = () => {
   const [playlist, setPlaylist] = React.useState<PlaylistInfo | undefined>();
   const [loaded, setLoaded] = React.useState(false);
   const [openEditMenu, setOpenEditMenu] = React.useState(false);
-  const [editSelectDialogOpen, setEditSelectDialogOpen] = React.useState(false);
   const navigate = useNavigate();
   const { t } = useTranslation();
 
@@ -100,8 +98,6 @@ const PlaylistTracks: React.FC = () => {
     state.playlist.playlists.find((p) => p.id === playlistId)
   );
 
-  const openEditSelectDialog = () => setEditSelectDialogOpen(true);
-
   const openQueueMenu = (event: React.MouseEvent<HTMLButtonElement>) => {
     setQueueMenuAnchorEl(event.currentTarget);
   };
@@ -115,7 +111,6 @@ const PlaylistTracks: React.FC = () => {
   const selectedTracks = tracklist.filter((t) => selected.has(t.id ?? ""));
 
   const closeQueueMenu = () => setQueueMenuAnchorEl(null);
-  const closeEditSelectDialog = () => setEditSelectDialogOpen(false);
 
   const onEditMenuOpen = () => {
     setOpenEditMenu(true);
@@ -176,16 +171,6 @@ const PlaylistTracks: React.FC = () => {
   const addPlaylistToQueue = () => {
     dispatch(addTracks(tracklist));
     closeQueueMenu();
-  };
-
-  const onSelectedEdited = (pluginId?: string) => {
-    if (pluginId && playlist) {
-      const newTrackList = tracklist.map((t) =>
-        t.id && selected.has(t.id) ? { ...t, pluginId: pluginId } : t
-      );
-      dispatch(setPlaylistTracks(playlist, newTrackList));
-      setTracklist(newTrackList);
-    }
   };
 
   const addSelectedToNewPlaylist = () => {
@@ -254,12 +239,6 @@ const PlaylistTracks: React.FC = () => {
                 </ListItemIcon>
                 <ListItemText primary={t("deleteSelectedTracks")} />
               </MenuItem>,
-              <MenuItem onClick={openEditSelectDialog} key="edit">
-                <ListItemIcon>
-                  <Edit />
-                </ListItemIcon>
-                <ListItemText primary={t("editSelectedTracks")} />
-              </MenuItem>,
               <MenuItem onClick={addSelectedToQueue} key="add">
                 <ListItemIcon>
                   <PlaylistPlay />
@@ -288,11 +267,6 @@ const PlaylistTracks: React.FC = () => {
             open={openEditMenu}
             playlist={playlist}
             handleClose={onEditMenuClose}
-          />
-          <SelectionEditDialog
-            open={editSelectDialogOpen}
-            onClose={closeEditSelectDialog}
-            onSave={onSelectedEdited}
           />
           <AddPlaylistDialog
             tracks={selectedTracks}
