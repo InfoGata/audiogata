@@ -1,16 +1,20 @@
 import { IconButton } from "@mui/material";
 import {
+  Forward10,
   Pause,
   PlayArrow,
   Repeat,
+  Replay10,
   Shuffle,
   SkipNext,
   SkipPrevious,
 } from "@mui/icons-material";
 import React from "react";
 import {
+  fastFoward,
   nextTrack,
   prevTrack,
+  rewind,
   toggleIsPlaying,
   toggleRepeat,
   toggleShuffle,
@@ -23,6 +27,9 @@ const Controls: React.FC = () => {
   const repeat = useAppSelector((state) => state.track.repeat);
   const shuffle = useAppSelector((state) => state.track.shuffle);
   const isPlaying = useAppSelector((state) => state.track.isPlaying);
+  const showForwardAndRewind = useAppSelector(
+    (state) => state.settings.showForwardAndRewind
+  );
   const dispatch = useAppDispatch();
   const playIcon = isPlaying ? <Pause /> : <PlayArrow />;
 
@@ -31,6 +38,8 @@ const Controls: React.FC = () => {
   const onPreviousClick = () => dispatch(prevTrack());
   const onNextClick = () => dispatch(nextTrack());
   const onTogglePlay = () => dispatch(toggleIsPlaying());
+  const onFastFoward = () => dispatch(fastFoward());
+  const onRewind = () => dispatch(rewind());
 
   const shuffleColor = shuffle ? "primary" : "inherit";
   const repeatColor = repeat ? "primary" : "inherit";
@@ -39,6 +48,11 @@ const Controls: React.FC = () => {
       <IconButton size="small" onClick={onToggleShuffle}>
         <Shuffle color={shuffleColor} />
       </IconButton>
+      {showForwardAndRewind && (
+        <IconButton size="small" onClick={onRewind}>
+          <Replay10 />
+        </IconButton>
+      )}
       <IconButton size="small" onClick={onPreviousClick}>
         <SkipPrevious />
       </IconButton>
@@ -48,6 +62,11 @@ const Controls: React.FC = () => {
       <IconButton size="small" onClick={onNextClick}>
         <SkipNext />
       </IconButton>
+      {showForwardAndRewind && (
+        <IconButton size="small" onClick={onFastFoward}>
+          <Forward10 />
+        </IconButton>
+      )}
       <IconButton size="small" onClick={onToggleRepeat}>
         <Repeat color={repeatColor} />
       </IconButton>

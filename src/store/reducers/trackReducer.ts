@@ -261,6 +261,22 @@ const trackSlice = createSlice({
         shuffleList: [],
       };
     },
+    fastFoward: (state): TrackState => {
+      const seconds = 10;
+      const newTime = (state.elapsed || 0) + seconds;
+      return {
+        ...state,
+        seekTime: newTime,
+      };
+    },
+    rewind: (state): TrackState => {
+      const seconds = 10;
+      const newTime = (state.elapsed || 0) - seconds;
+      return {
+        ...state,
+        seekTime: Math.max(0, newTime),
+      };
+    },
   },
 });
 
@@ -395,5 +411,7 @@ export const {
   toggleIsPlaying,
   seek,
   playQueue,
+  fastFoward,
+  rewind,
 } = trackSlice.actions;
 export default trackSlice.reducer;

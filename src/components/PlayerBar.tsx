@@ -27,7 +27,11 @@ const PlayerBar: React.FC = () => {
         sx={{ alignItems: "center", justifyContent: "space-between" }}
         disableGutters={true}
       >
-        <Grid container={true} spacing={1}>
+        <Grid
+          container={true}
+          justifyContent="flext-start"
+          alignItems="flex-end"
+        >
           <Grid item={true} sm={2} xs={3}>
             <Box
               component="img"

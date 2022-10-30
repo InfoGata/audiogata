@@ -4,10 +4,12 @@ interface SettingsState {
   playOnStartup: boolean;
   corsProxyUrl?: string;
   currentPluginId?: string;
+  showForwardAndRewind?: boolean;
 }
 
 const initialState: SettingsState = {
   playOnStartup: false,
+  showForwardAndRewind: false,
 };
 
 const settingsSlice = createSlice({
@@ -26,6 +28,12 @@ const settingsSlice = createSlice({
         corsProxyUrl: action.payload,
       };
     },
+    saveShowForwardAndRewind: (state, action: PayloadAction<boolean>) => {
+      return {
+        ...state,
+        showForwardAndRewind: action.payload,
+      };
+    },
     setCurrentPluginId: (state, action: PayloadAction<string>) => {
       return {
         ...state,
@@ -35,6 +43,10 @@ const settingsSlice = createSlice({
   },
 });
 
-export const { togglePlayOnStartup, saveCorsProxyUrl, setCurrentPluginId } =
-  settingsSlice.actions;
+export const {
+  togglePlayOnStartup,
+  saveCorsProxyUrl,
+  setCurrentPluginId,
+  saveShowForwardAndRewind,
+} = settingsSlice.actions;
 export default settingsSlice.reducer;
