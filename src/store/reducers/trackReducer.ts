@@ -115,7 +115,7 @@ const trackSlice = createSlice({
         }
         newIndex = shuffleList.shift() || 0;
       }
-      if (newIndex > state.tracks.length) {
+      if (state.repeat && newIndex >= state.tracks.length) {
         newIndex = 0;
       }
       const nextTrack = state.tracks[newIndex];
