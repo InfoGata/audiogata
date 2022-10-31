@@ -179,7 +179,17 @@ class AudioComponent extends React.Component<
         newProps.currentTrack?.pluginId || "",
         PlayerComponentType.onSeek
       );
-      await player?.onSeek(newProps.seekTime);
+
+      // Repeat currentTrack if repeatOne is on
+      if (
+        newProps.seekTime === 0 &&
+        newProps.currentTrack &&
+        newProps.repeatOne
+      ) {
+        await this.playTrack(newProps.currentTrack);
+      } else {
+        await player?.onSeek(newProps.seekTime);
+      }
       this.props.seek(undefined);
     }
   }
@@ -334,10 +344,10 @@ const mapStateToProps = (state: AppState) => ({
   elapsed: state.track.elapsed,
   isPlaying: state.track.isPlaying,
   mute: state.track.mute,
-  playOnStartup: state.settings.playOnStartup,
   seekTime: state.track.seekTime,
   volume: state.track.volume,
   playbackRate: state.track.playbackRate,
+  repeatOne: state.track.repeatOne,
 });
 type StateProps = ReturnType<typeof mapStateToProps>;
 

@@ -4,6 +4,7 @@ import {
   Pause,
   PlayArrow,
   Repeat,
+  RepeatOne,
   Replay10,
   Shuffle,
   SkipNext,
@@ -16,7 +17,7 @@ import {
   prevTrack,
   rewind,
   toggleIsPlaying,
-  toggleRepeat,
+  changeRepeat,
   toggleShuffle,
 } from "../store/reducers/trackReducer";
 import Volume from "./Volume";
@@ -25,6 +26,7 @@ import { useAppDispatch, useAppSelector } from "../store/hooks";
 
 const Controls: React.FC = () => {
   const repeat = useAppSelector((state) => state.track.repeat);
+  const repeatOne = useAppSelector((state) => state.track.repeatOne);
   const shuffle = useAppSelector((state) => state.track.shuffle);
   const isPlaying = useAppSelector((state) => state.track.isPlaying);
   const showForwardAndRewind = useAppSelector(
@@ -34,7 +36,7 @@ const Controls: React.FC = () => {
   const playIcon = isPlaying ? <Pause /> : <PlayArrow />;
 
   const onToggleShuffle = () => dispatch(toggleShuffle());
-  const onToggleRepeat = () => dispatch(toggleRepeat());
+  const onChangeRepeat = () => dispatch(changeRepeat());
   const onPreviousClick = () => dispatch(prevTrack());
   const onNextClick = () => dispatch(nextTrack());
   const onTogglePlay = () => dispatch(toggleIsPlaying());
@@ -67,8 +69,12 @@ const Controls: React.FC = () => {
           <Forward10 />
         </IconButton>
       )}
-      <IconButton size="small" onClick={onToggleRepeat}>
-        <Repeat color={repeatColor} />
+      <IconButton size="small" onClick={onChangeRepeat}>
+        {repeatOne ? (
+          <RepeatOne color="primary" />
+        ) : (
+          <Repeat color={repeatColor} />
+        )}
       </IconButton>
       <Volume />
       <PlaybackRate />

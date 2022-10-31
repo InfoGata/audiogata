@@ -11,6 +11,7 @@ interface TrackState {
   shuffleList: number[];
   shuffle: boolean;
   repeat: boolean;
+  repeatOne?: boolean;
   currentTrack?: Track;
   elapsed?: number;
   isPlaying: boolean;
@@ -24,6 +25,7 @@ const initialState: TrackState = {
   isPlaying: false,
   mute: false,
   repeat: false,
+  repeatOne: false,
   shuffle: false,
   shuffleList: [],
   tracks: [],
@@ -109,7 +111,7 @@ const trackSlice = createSlice({
         index = state.tracks.findIndex((t) => t.id === prevTrack.id);
       }
       let newIndex = index + 1;
-      if (state.shuffle) {
+      if (state.shuffle && !state.repeatOne) {
         if (shuffleList.length === 0) {
           shuffleList = createShuffleArray(state.tracks);
         }
@@ -120,13 +122,13 @@ const trackSlice = createSlice({
       }
       const nextTrack = state.tracks[newIndex];
       if (
-        nextTrack &&
-        state.currentTrack &&
-        nextTrack.id === state.currentTrack.id
+        (nextTrack &&
+          state.currentTrack &&
+          nextTrack.id === state.currentTrack.id) ||
+        state.repeatOne
       ) {
         return {
           ...state,
-          elapsed: 0,
           isPlaying: true,
           seekTime: 0,
           shuffleList,
@@ -136,7 +138,6 @@ const trackSlice = createSlice({
           ...state,
           elapsed: 0,
           isPlaying: false,
-          seekTime: 0,
           shuffleList,
           currentTrack: undefined,
         };
@@ -166,6 +167,19 @@ const trackSlice = createSlice({
         newIndex = state.tracks.length - 1;
       }
       const currentTrack = state.tracks[newIndex];
+      if (
+        (currentTrack &&
+          state.currentTrack &&
+          currentTrack.id === state.currentTrack.id) ||
+        state.repeatOne
+      ) {
+        return {
+          ...state,
+          elapsed: 0,
+          isPlaying: true,
+          seekTime: 0,
+        };
+      }
       return {
         ...state,
         currentTrack: currentTrack,
@@ -248,11 +262,22 @@ const trackSlice = createSlice({
         mute: !state.mute,
       };
     },
-    toggleRepeat: (state): TrackState => {
-      return {
-        ...state,
-        repeat: !state.repeat,
-      };
+    changeRepeat: (state) => {
+      if (state.repeatOne) {
+        state.repeatOne = false;
+        state.repeat = false;
+        return;
+      }
+
+      if (state.repeat && !state.repeatOne) {
+        state.repeatOne = true;
+        return;
+      }
+
+      if (!state.repeat) {
+        state.repeat = true;
+        return;
+      }
     },
     toggleShuffle: (state): TrackState => {
       return {
@@ -400,7 +425,7 @@ export const setTracks =
 
 export const {
   setTrack,
-  toggleRepeat,
+  changeRepeat,
   toggleShuffle,
   setElapsed,
   setVolume,
