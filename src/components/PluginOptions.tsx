@@ -53,7 +53,9 @@ const PluginOptions: React.FC = () => {
 
   let srcUrl = `${window.location.protocol}//${plugin.id}.${window.location.host}/ui.html`;
   if (process.env.NODE_ENV === "production" || Capacitor.isNativePlatform()) {
-    srcUrl = `https://${plugin.id}.${process.env.DOMAIN}/ui.html`;
+    srcUrl = `https://${plugin.id}.${
+      process.env.DOMAIN || "audiogata.com"
+    }/ui.html`;
   }
   let sandbox = "allow-scripts allow-popups allow-popups-to-escape-sandbox";
   if (plugin.optionsSameOrigin) sandbox = sandbox.concat(" allow-same-origin");

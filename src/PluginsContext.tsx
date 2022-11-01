@@ -271,7 +271,9 @@ export const PluginsProvider: React.FC<React.PropsWithChildren> = (props) => {
         process.env.NODE_ENV === "production" ||
         Capacitor.isNativePlatform()
       ) {
-        srcUrl = `https://${plugin.id}.${process.env.DOMAIN}/pluginframe.html`;
+        srcUrl = `https://${plugin.id}.${
+          process.env.DOMAIN || "audiogata.com"
+        }/pluginframe.html`;
       }
 
       const completeMethods: {
