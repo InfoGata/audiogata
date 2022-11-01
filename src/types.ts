@@ -20,6 +20,11 @@ declare global {
     InfoGata: InfoGataExtension;
     cordovaFetch: typeof fetch;
   }
+  namespace NodeJS {
+    interface ProcessEnv {
+      DOMAIN: string;
+    }
+  }
 }
 
 export interface DirectoryFile extends File {
