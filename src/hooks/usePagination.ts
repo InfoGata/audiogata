@@ -3,6 +3,10 @@ import { PageInfo } from "../plugintypes";
 
 const usePagination = (currentPage?: PageInfo) => {
   const [page, setPage] = React.useState<PageInfo>();
+  const resetPage = () => {
+    setPage(undefined);
+  };
+
   if (!currentPage) {
     return {
       page: undefined,
@@ -10,6 +14,7 @@ const usePagination = (currentPage?: PageInfo) => {
       hasNextPage: false,
       onPreviousPage: () => {},
       onNextPage: () => {},
+      resetPage,
     };
   }
 
@@ -47,6 +52,7 @@ const usePagination = (currentPage?: PageInfo) => {
     hasNextPage,
     onPreviousPage,
     onNextPage,
+    resetPage,
   };
 };
 

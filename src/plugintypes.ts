@@ -63,12 +63,21 @@ export interface NotificationMessage {
   type?: "default" | "success" | "error" | "warning" | "info";
 }
 
+export interface SearchResult {
+  filterInfo?: FilterInfo;
+  pageInfo?: PageInfo;
+}
+
 export interface PageInfo {
   totalResults?: number;
   resultsPerPage: number;
   offset: number;
   nextPage?: string;
   prevPage?: string;
+}
+
+export interface FilterInfo {
+  filters: Filter[];
 }
 
 export interface SearchAllResult {
@@ -81,6 +90,7 @@ export interface SearchAllResult {
 export interface SearchRequest {
   query: string;
   pageInfo?: PageInfo;
+  filterInfo?: FilterInfo;
 }
 
 export interface PlaylistTrackRequest {
@@ -103,9 +113,8 @@ export interface UserPlaylistRequest {
   pageInfo?: PageInfo;
 }
 
-export interface SearchTrackResult {
+export interface SearchTrackResult extends SearchResult {
   items: Track[];
-  pageInfo?: PageInfo;
 }
 
 export interface PlaylistTracksResult extends SearchTrackResult {
@@ -120,19 +129,16 @@ export interface AlbumTracksResult extends SearchTrackResult {
   album?: Album;
 }
 
-export interface SearchArtistResult {
+export interface SearchArtistResult extends SearchResult {
   items: Artist[];
-  pageInfo?: PageInfo;
 }
 
-export interface SearchAlbumResult {
+export interface SearchAlbumResult extends SearchResult {
   items: Album[];
-  pageInfo?: PageInfo;
 }
 
-export interface SearchPlaylistResult {
+export interface SearchPlaylistResult extends SearchResult {
   items: PlaylistInfo[];
-  pageInfo?: PageInfo;
 }
 
 export interface GetTrackUrlRequest {
@@ -143,4 +149,19 @@ export interface PlayTrackRequest {
   apiId?: string;
   source?: string;
   seekTime?: number;
+}
+
+export type FilterType = "radio" | "select" | "text";
+
+export interface Filter {
+  id: string;
+  displayName: string;
+  type: FilterType;
+  value?: string;
+  options?: FilterOption[];
+}
+
+export interface FilterOption {
+  displayName: string;
+  value: string;
 }

@@ -52,7 +52,9 @@
     "dismiss": "Dismiss",
     "topTracks": "Top Tracks",
     "addPlugin": "Add",
-    "notFound": "Not Found"
+    "notFound": "Not Found",
+    "filters": "Filters",
+    "applyFilters": "Apply Filters"
   },
   "plugins": {
     "addPlugin_one": "Add Plugin",

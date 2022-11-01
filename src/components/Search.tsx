@@ -77,19 +77,19 @@ const Search: React.FC = () => {
     }
 
     queryClient.setQueryData<Track[] | undefined>(
-      ["searchTracks", pluginId, searchQuery, undefined],
+      ["searchTracks", pluginId, searchQuery, undefined, undefined],
       searchAll?.tracks?.items
     );
     queryClient.setQueryData<Album[] | undefined>(
-      ["searchAlbums", pluginId, searchQuery, undefined],
+      ["searchAlbums", pluginId, searchQuery, undefined, undefined],
       searchAll?.albums?.items
     );
     queryClient.setQueryData<Artist[] | undefined>(
-      ["searchArtists", pluginId, searchQuery, undefined],
+      ["searchArtists", pluginId, searchQuery, undefined, undefined],
       searchAll?.artists?.items
     );
     queryClient.setQueryData<PlaylistInfo[] | undefined>(
-      ["searchPlaylists", pluginId, searchQuery, undefined],
+      ["searchPlaylists", pluginId, searchQuery, undefined, undefined],
       searchAll?.playlists?.items
     );
 
