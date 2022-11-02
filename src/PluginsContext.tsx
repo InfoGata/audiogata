@@ -37,6 +37,7 @@ import { addPlaylists } from "./store/reducers/playlistReducer";
 import { NetworkRequest, PlayerComponent } from "./types";
 import { nanoid } from "@reduxjs/toolkit";
 import { useTranslation } from "react-i18next";
+import i18n from "./i18n";
 
 export interface PluginMethodInterface extends PlayerComponent {
   onSearchAll(request: SearchRequest): Promise<SearchAllResult>;
@@ -86,6 +87,7 @@ interface ApplicationPluginInterface extends PluginInterface {
   installPlugins(plugins: PluginInfo[]): Promise<void>;
   getPlugins(): Promise<PluginInfo[]>;
   getPluginId(): Promise<string>;
+  getLocale(): Promise<string>;
 }
 
 interface PluginMessage {
@@ -263,6 +265,9 @@ export const PluginsProvider: React.FC<React.PropsWithChildren> = (props) => {
         },
         addPlaylists: async (playlists: Playlist[]) => {
           dispatch(addPlaylists(playlists));
+        },
+        getLocale: async () => {
+          return i18n.language;
         },
       };
 

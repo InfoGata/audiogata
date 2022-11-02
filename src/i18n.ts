@@ -7,6 +7,8 @@ export const resources = {
   en,
 } as const;
 
+export const availableLanguages = Object.keys(resources);
+
 i18n
   .use(initReactI18next)
   .use(LanguageDetector)
