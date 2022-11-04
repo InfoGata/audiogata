@@ -48,6 +48,7 @@ export interface Manifest {
   version?: string;
   description?: string;
   options?: string | ManifestOptions;
+  homepage?: string;
   updateUrl?: string;
 }
 

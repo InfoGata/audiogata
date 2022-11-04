@@ -127,6 +127,7 @@ export async function getPlugin(
     description: manifest.description,
     version: manifest.version,
     manifestUrl: manifest.updateUrl || fileType.url?.url,
+    homepage: manifest.homepage,
   };
 
   if (manifest.options) {

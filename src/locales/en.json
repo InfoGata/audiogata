@@ -85,6 +85,7 @@
     "loadPluginFromUrl": "Load Plugin From Url",
     "pluginOptions": "{{pluginName}} Options",
     "options": "Options",
-    "checkForUpdates": "Check for Updates"
+    "checkForUpdates": "Check for Updates",
+    "homepage": "Home Page"
   }
 }

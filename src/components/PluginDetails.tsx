@@ -65,6 +65,20 @@ const PluginDetails: React.FC = () => {
                 secondary={plugin.description}
               />
             </ListItem>
+            {plugin.homepage && (
+              <ListItem disablePadding>
+                <ListItemButton
+                  component="a"
+                  href={plugin.homepage}
+                  target="_blank"
+                >
+                  <ListItemText
+                    primary={t("plugins:homepage")}
+                    secondary={plugin.homepage}
+                  />
+                </ListItemButton>
+              </ListItem>
+            )}
             <ListItem>
               <ListItemText
                 primary={t("plugins:version")}
