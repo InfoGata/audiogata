@@ -1,13 +1,15 @@
-import { Backdrop, CircularProgress, List } from "@mui/material";
+import { Backdrop, CircularProgress } from "@mui/material";
 import React from "react";
 import { useQuery } from "react-query";
 import useTrackMenu from "../hooks/useTrackMenu";
-import { FilterInfo, PageInfo } from "../plugintypes";
-import TrackSearchResult from "./TrackSearchResult";
+import { FilterInfo, PageInfo, Track } from "../plugintypes";
 import usePagination from "../hooks/usePagination";
 import { usePlugins } from "../PluginsContext";
 import Pager from "./Pager";
 import Filtering from "./Filtering";
+import TrackList from "./TrackList";
+import { addTrack, setTrack } from "../store/reducers/trackReducer";
+import { useAppDispatch } from "../store/hooks";
 
 interface TrackSearchResultsProps {
   pluginId: string;
@@ -21,6 +23,7 @@ const TrackSearchResults: React.FC<TrackSearchResultsProps> = (props) => {
   const { plugins } = usePlugins();
   const plugin = plugins.find((p) => p.id === pluginId);
   const [filters, setFilters] = React.useState<FilterInfo | undefined>();
+  const dispatch = useAppDispatch();
 
   const [hasSearch, setHasSearch] = React.useState(false);
   React.useEffect(() => {
@@ -64,13 +67,14 @@ const TrackSearchResults: React.FC<TrackSearchResultsProps> = (props) => {
     { staleTime: 60 * 1000 }
   );
 
-  const trackList = query.data?.map((track) => (
-    <TrackSearchResult key={track.apiId} track={track} openMenu={openMenu} />
-  ));
-
   const applyFilters = (filters: FilterInfo) => {
     setFilters(filters);
     resetPage();
+  };
+
+  const onTrackClick = (track: Track) => {
+    dispatch(addTrack(track));
+    dispatch(setTrack(track));
   };
 
   return (
@@ -81,7 +85,12 @@ const TrackSearchResults: React.FC<TrackSearchResultsProps> = (props) => {
       {!!initialFilter && (
         <Filtering filters={initialFilter} setFilters={applyFilters} />
       )}
-      <List>{trackList}</List>
+      <TrackList
+        tracks={query.data || []}
+        openMenu={openMenu}
+        onTrackClick={onTrackClick}
+        dragDisabled={true}
+      />
       {hasSearch && (
         <Pager
           hasNextPage={hasNextPage}

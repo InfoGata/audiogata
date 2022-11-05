@@ -23,10 +23,10 @@ interface TrackListProps {
   tracks: Track[];
   onTrackClick: (track: Track) => void;
   openMenu: (event: React.MouseEvent<HTMLButtonElement>, track: Track) => void;
-  onSelect: (e: React.ChangeEvent<HTMLInputElement>, id: string) => void;
-  onSelectAll: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  isSelected: (id: string) => boolean;
-  selected: Set<string>;
+  onSelect?: (e: React.ChangeEvent<HTMLInputElement>, id: string) => void;
+  onSelectAll?: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  isSelected?: (id: string) => boolean;
+  selected?: Set<string>;
   onDragOver?: (newTrackList: Track[]) => void;
   dragDisabled?: boolean;
 }
@@ -76,18 +76,22 @@ const TrackList: React.FC<TrackListProps> = (props) => {
           <TableHead>
             <TableRow>
               <TableCell padding="none" width="4%">
-                <Checkbox
-                  color="primary"
-                  indeterminate={
-                    selected.size > 0 && selected.size < tracks.length
-                  }
-                  checked={tracks.length > 0 && selected.size === tracks.length}
-                  onChange={onSelectAll}
-                  size="small"
-                  inputProps={{
-                    "aria-label": "select all tracks",
-                  }}
-                />
+                {selected && (
+                  <Checkbox
+                    color="primary"
+                    indeterminate={
+                      selected.size > 0 && selected.size < tracks.length
+                    }
+                    checked={
+                      tracks.length > 0 && selected.size === tracks.length
+                    }
+                    onChange={onSelectAll}
+                    size="small"
+                    inputProps={{
+                      "aria-label": "select all tracks",
+                    }}
+                  />
+                )}
               </TableCell>
               <TableCell width="80%">{t("title")}</TableCell>
               {showTrackLength && <TableCell>{t("trackDuration")}</TableCell>}

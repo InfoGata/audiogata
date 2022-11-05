@@ -84,7 +84,11 @@ const PlaylistItem: React.FC<PlaylistItemsProps> = (props) => {
           <Avatar alt={track.name} src={image} style={{ borderRadius: 0 }} />
           <Box sx={{ minWidth: 0 }}>
             <Typography
-              color={currentTrack?.id === track.id ? "primary.main" : undefined}
+              color={
+                currentTrack && currentTrack?.id === track.id
+                  ? "primary.main"
+                  : undefined
+              }
               noWrap={true}
               dangerouslySetInnerHTML={{ __html: sanitizer(track.name) }}
               title={track.name}
@@ -102,7 +106,9 @@ const PlaylistItem: React.FC<PlaylistItemsProps> = (props) => {
               <Typography
                 variant="body2"
                 color={
-                  currentTrack?.id === track.id ? "primary.main" : undefined
+                  currentTrack && currentTrack?.id === track.id
+                    ? "primary.main"
+                    : undefined
                 }
                 noWrap={true}
                 dangerouslySetInnerHTML={{
