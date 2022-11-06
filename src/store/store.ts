@@ -32,7 +32,7 @@ export type AppDispatch = typeof store.dispatch;
 export type AppThunk<ReturnType = void> = ThunkAction<
   ReturnType,
   AppState,
-  unknown,
+  undefined,
   AnyAction
 >;
 export default store;

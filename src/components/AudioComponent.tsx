@@ -2,7 +2,7 @@ import React from "react";
 import { connect } from "react-redux";
 import { bindActionCreators, Dispatch } from "redux";
 import { PlayerComponent, PlayerComponentType } from "../types";
-import LocalPlayer from "../LocalPlayer";
+import { localPlayer } from "../LocalPlayer";
 import {
   nextTrack,
   prevTrack,
@@ -38,8 +38,8 @@ class AudioComponent extends React.Component<
   constructor(props: AudioComponentProps) {
     super(props);
 
-    LocalPlayer.onTrackEnd = this.onTrackEnd;
-    LocalPlayer.setTime = this.setTrackTimes;
+    localPlayer.onTrackEnd = this.onTrackEnd;
+    localPlayer.setTime = this.setTrackTimes;
 
     this.state = {
       errorCount: 0,
@@ -92,7 +92,7 @@ class AudioComponent extends React.Component<
       return result;
     }
 
-    return LocalPlayer;
+    return localPlayer;
   }
 
   private async onCurrentTrackUpdate(

@@ -1,10 +1,11 @@
 import { createSlice, nanoid, PayloadAction } from "@reduxjs/toolkit";
 import { Track } from "../../plugintypes";
-import { getPluginFrames } from "../../PluginsContext";
+import { getPluginFrames, PluginFrameContainer } from "../../PluginsContext";
 import { filterAsync } from "../../utils";
-import { AppThunk } from "../store";
+import { AppDispatch, AppThunk } from "../store";
 import unionBy from "lodash/unionBy";
 import intersectionBy from "lodash/intersectionBy";
+import { localPlayer } from "../../LocalPlayer";
 
 interface TrackState {
   tracks: Track[];
@@ -256,6 +257,12 @@ const trackSlice = createSlice({
         isPlaying: !state.isPlaying,
       };
     },
+    pause: (state): TrackState => {
+      return {
+        ...state,
+        isPlaying: false,
+      };
+    },
     toggleMute: (state): TrackState => {
       return {
         ...state,
@@ -353,8 +360,13 @@ export const addTracks =
 
 export const deleteTrack =
   (track: Track): AppThunk =>
-  async (dispatch) => {
+  async (dispatch, getState) => {
     const plugins = getPluginFrames();
+    const state = getState();
+    const currentTrack = state.track.currentTrack;
+    if (currentTrack && currentTrack.id === track.id) {
+      await pauseDeletedTrack(dispatch, plugins, currentTrack);
+    }
     dispatch(trackSlice.actions.deleteTrack(track));
     const filteredPlugins = await filterAsync(plugins, (p) =>
       p.hasDefined.onNowPlayingTracksRemoved()
@@ -364,16 +376,35 @@ export const deleteTrack =
     );
   };
 
+const pauseDeletedTrack = async (
+  dispatch: AppDispatch,
+  plugins: PluginFrameContainer[],
+  currentTrack?: Track
+) => {
+  const plugin = plugins.find((p) => p.id === currentTrack?.pluginId);
+  try {
+    if (plugin && (await plugin?.hasDefined.onPause())) {
+      await plugin.remote.onPause();
+    }
+    await localPlayer.onPause();
+  } catch {}
+  dispatch(trackSlice.actions.pause);
+};
+
 export const deleteTracks =
   (tracksIds: Set<string>): AppThunk =>
   async (dispatch, getState) => {
     const plugins = getPluginFrames();
+    const state = getState();
+    const currentTrack = state.track.currentTrack;
+    if (currentTrack?.id && tracksIds.has(currentTrack.id)) {
+      await pauseDeletedTrack(dispatch, plugins, currentTrack);
+    }
     dispatch(trackSlice.actions.deleteTracks(tracksIds));
     const filteredPlugins = await filterAsync(plugins, (p) =>
       p.hasDefined.onNowPlayingTracksRemoved()
     );
     if (filteredPlugins.length > 0) {
-      const state = getState();
       const tracks = state.track.tracks.filter((t) =>
         tracksIds.has(t.id ?? "")
       );
@@ -399,6 +430,9 @@ export const updateTrack =
 export const clearTracks = (): AppThunk => async (dispatch, getState) => {
   const state = getState();
   const plugins = getPluginFrames();
+  if (state.track.isPlaying) {
+    pauseDeletedTrack(dispatch, plugins, state.track.currentTrack);
+  }
   dispatch(trackSlice.actions.clearTracks());
   const filteredPlugins = await filterAsync(plugins, (p) =>
     p.hasDefined.onNowPlayingTracksRemoved()
@@ -438,5 +472,6 @@ export const {
   playQueue,
   fastFoward,
   rewind,
+  pause,
 } = trackSlice.actions;
 export default trackSlice.reducer;

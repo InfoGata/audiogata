@@ -73,4 +73,4 @@ class LocalPlayer implements PlayerComponent {
   }
 }
 
-export default new LocalPlayer();
+export const localPlayer = new LocalPlayer();
