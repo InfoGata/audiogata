@@ -12,6 +12,7 @@ import React from "react";
 import { faMonero } from "@fortawesome/free-brands-svg-icons/faMonero";
 import { faBitcoin } from "@fortawesome/free-brands-svg-icons/faBitcoin";
 import { faPaypal } from "@fortawesome/free-brands-svg-icons/faPaypal";
+import { faPatreon } from "@fortawesome/free-brands-svg-icons/faPatreon";
 import { ReactComponent as Liberapay } from "../liberapay_logo.svg";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useTranslation } from "react-i18next";
@@ -24,6 +25,7 @@ const Donate: React.FC = () => {
   const paypalUrl =
     "https://www.paypal.com/donate/?hosted_button_id=VYJRQP387NF4S";
   const liberapayUrl = "https://liberapay.com/InfoGata/donate";
+  const patreonUrl = "https://www.patreon.com/user?u=82244258";
   const donateText = t("donate");
   return (
     <Box>
@@ -36,6 +38,16 @@ const Donate: React.FC = () => {
               </Avatar>
             </ListItemAvatar>
             <ListItemText primary={donateText} secondary="Paypal" />
+          </ListItemButton>
+        </ListItem>
+        <ListItem disablePadding>
+          <ListItemButton component="a" href={patreonUrl} target="_blank">
+            <ListItemAvatar>
+              <Avatar>
+                <FontAwesomeIcon icon={faPatreon} />
+              </Avatar>
+            </ListItemAvatar>
+            <ListItemText primary={donateText} secondary="Patreon" />
           </ListItemButton>
         </ListItem>
         <ListItem disablePadding>
