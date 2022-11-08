@@ -76,7 +76,7 @@ const PlayerBar: React.FC = () => {
               <Typography
                 noWrap={true}
                 variant="body2"
-                sx={{ maxWidth: "250px" }}
+                sx={{ maxWidth: "240px" }}
                 title={currentTrack && currentTrack.name}
                 dangerouslySetInnerHTML={{
                   __html: sanitizer(currentTrack?.name || ""),
