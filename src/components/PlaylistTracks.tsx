@@ -50,8 +50,6 @@ const PlaylistTracks: React.FC = () => {
       dispatch(setPlaylistTracks(playlist, newTracklist));
       setTracklist(newTracklist);
     }
-
-    closeMenu();
   };
 
   const infoClick = () => {
@@ -97,7 +95,7 @@ const PlaylistTracks: React.FC = () => {
     state.playlist.playlists.filter((p) => p.id !== playlistId)
   );
 
-  const { closeMenu, openMenu, menuTrack } = useTrackMenu({
+  const { openMenu, menuTrack } = useTrackMenu({
     playlists,
     listItems,
   });

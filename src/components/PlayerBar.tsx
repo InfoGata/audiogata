@@ -1,4 +1,11 @@
-import { AppBar, Grid, Toolbar, Typography, Box } from "@mui/material";
+import {
+  AppBar,
+  Grid,
+  Toolbar,
+  Typography,
+  Box,
+  IconButton,
+} from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import React from "react";
 import { useAppSelector } from "../store/hooks";
@@ -6,12 +13,24 @@ import { getThumbnailImage } from "../utils";
 import Controls from "./Controls";
 import Progress from "./Progress";
 import DOMPurify from "dompurify";
+import { MoreHoriz } from "@mui/icons-material";
+import useTrackMenu from "../hooks/useTrackMenu";
 
 const thumbnailSize = 70;
 const PlayerBar: React.FC = () => {
   const theme = useTheme();
   const currentTrack = useAppSelector((state) => state.track.currentTrack);
   const sanitizer = DOMPurify.sanitize;
+
+  const { openMenu } = useTrackMenu({
+    noQueueItem: true,
+  });
+
+  const onMenuClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    if (currentTrack) {
+      openMenu(event, currentTrack);
+    }
+  };
 
   const image = getThumbnailImage(
     currentTrack && currentTrack.images,
@@ -47,7 +66,13 @@ const PlayerBar: React.FC = () => {
             direction="column"
             alignItems="center"
           >
-            <Grid item={true}>
+            <Grid
+              item={true}
+              container
+              direction="row"
+              justifyContent="center"
+              alignItems="center"
+            >
               <Typography
                 noWrap={true}
                 variant="body2"
@@ -57,6 +82,11 @@ const PlayerBar: React.FC = () => {
                   __html: sanitizer(currentTrack?.name || ""),
                 }}
               />
+              {currentTrack && (
+                <IconButton size="small" onClick={onMenuClick}>
+                  <MoreHoriz fontSize="small" />
+                </IconButton>
+              )}
             </Grid>
             <Grid item={true}>
               <Controls />

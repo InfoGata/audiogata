@@ -11,7 +11,6 @@ interface TrackMenuArgs {
 const useTrackMenu = (args?: TrackMenuArgs) => {
   const {
     openTrackMenu,
-    closeMenu,
     menuTrack,
     setPlaylists,
     setListElements,
@@ -21,15 +20,15 @@ const useTrackMenu = (args?: TrackMenuArgs) => {
 
   const openMenu = (
     event: React.MouseEvent<HTMLButtonElement>,
-    video: Track
+    track: Track
   ) => {
-    openTrackMenu(event, video);
+    openTrackMenu(event, track);
     setNoQueue(!!args?.noQueueItem);
     setPlaylists(args?.playlists ?? playlists);
     setListElements(args?.listItems ?? []);
   };
 
-  return { openMenu, closeMenu, menuTrack };
+  return { openMenu, menuTrack };
 };
 
 export default useTrackMenu;

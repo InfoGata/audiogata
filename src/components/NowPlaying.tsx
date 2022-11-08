@@ -44,7 +44,6 @@ const NowPlaying: React.FC = () => {
     if (menuTrack?.id) {
       await db.audioBlobs.delete(menuTrack.id);
     }
-    closeMenu();
     if (menuTrack) {
       dispatch(deleteTrack(menuTrack));
     }
@@ -70,7 +69,7 @@ const NowPlaying: React.FC = () => {
     </MenuItem>,
   ];
 
-  const { closeMenu, openMenu, menuTrack } = useTrackMenu({
+  const { openMenu, menuTrack } = useTrackMenu({
     listItems,
     noQueueItem: true,
   });

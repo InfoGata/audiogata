@@ -1,7 +1,8 @@
-import { PlaylistAdd, PlaylistPlay } from "@mui/icons-material";
+import { Album, Person, PlaylistAdd, PlaylistPlay } from "@mui/icons-material";
 import { ListItemIcon, ListItemText, Menu, MenuItem } from "@mui/material";
 import React from "react";
 import { useTranslation } from "react-i18next";
+import { Link } from "react-router-dom";
 import AddPlaylistDialog from "./components/AddPlaylistDialog";
 import PlaylistMenuItem from "./components/PlaylistMenuItem";
 import { PlaylistInfo, Track } from "./plugintypes";
@@ -17,7 +18,6 @@ export interface TrackMenuInterface {
   setListElements: React.Dispatch<React.SetStateAction<JSX.Element[]>>;
   setNoQueue: React.Dispatch<React.SetStateAction<boolean>>;
   menuTrack: Track | undefined;
-  closeMenu: () => void;
 }
 
 const TrackMenuContext = React.createContext<TrackMenuInterface>(undefined!);
@@ -46,20 +46,17 @@ export const TrackMenuProvider: React.FC<React.PropsWithChildren> = (props) => {
 
   const addMenuTrackToNewPlaylist = () => {
     setPlaylistDialogOpen(true);
-    closeMenu();
   };
 
   const addTrackToQueue = () => {
     if (menuTrack) {
       dispatch(addTrack(menuTrack));
     }
-    closeMenu();
   };
 
   const defaultContext: TrackMenuInterface = {
     menuTrack,
     openTrackMenu,
-    closeMenu,
     setPlaylists,
     setListElements,
     setNoQueue,
@@ -68,13 +65,40 @@ export const TrackMenuProvider: React.FC<React.PropsWithChildren> = (props) => {
   return (
     <TrackMenuContext.Provider value={defaultContext}>
       {props.children}
-      <Menu open={Boolean(anchorEl)} onClose={closeMenu} anchorEl={anchorEl}>
+      <Menu
+        open={Boolean(anchorEl)}
+        onClick={closeMenu}
+        onClose={closeMenu}
+        anchorEl={anchorEl}
+      >
         {!noQueue && (
           <MenuItem onClick={addTrackToQueue}>
             <ListItemIcon>
               <PlaylistPlay />
             </ListItemIcon>
             <ListItemText primary={t("addToQueue")} />
+          </MenuItem>
+        )}
+        {menuTrack?.albumApiId && (
+          <MenuItem
+            component={Link}
+            to={`/plugins/${menuTrack.pluginId}/albums/${menuTrack.albumApiId}`}
+          >
+            <ListItemIcon>
+              <Album />
+            </ListItemIcon>
+            <ListItemText primary={t("goToAlbum")} />
+          </MenuItem>
+        )}
+        {menuTrack?.artistApiId && (
+          <MenuItem
+            component={Link}
+            to={`/plugins/${menuTrack.pluginId}/artists/${menuTrack.artistApiId}`}
+          >
+            <ListItemIcon>
+              <Person />
+            </ListItemIcon>
+            <ListItemText primary={t("goToArtist")} />
           </MenuItem>
         )}
         {listElements}

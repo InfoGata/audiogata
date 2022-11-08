@@ -54,7 +54,9 @@
     "addPlugin": "Add",
     "notFound": "Not Found",
     "filters": "Filters",
-    "applyFilters": "Apply Filters"
+    "applyFilters": "Apply Filters",
+    "goToArtist": "Go to Artist",
+    "goToAlbum": "Go to Album"
   },
   "plugins": {
     "addPlugin_one": "Add Plugin",
