@@ -8,7 +8,6 @@ import { useAppDispatch, useAppSelector } from "../store/hooks";
 import TrackList from "./TrackList";
 import useSelected from "../hooks/useSelected";
 import { playQueue, setTrack, setTracks } from "../store/reducers/trackReducer";
-import { nanoid } from "@reduxjs/toolkit";
 import { useQuery } from "react-query";
 import usePagination from "../hooks/usePagination";
 import { useLocation } from "react-router-dom";
@@ -61,9 +60,6 @@ const PluginPlaylist: React.FC = () => {
         setPlaylistInfo(t.playlist);
       }
       setCurrentPage(t.pageInfo);
-      t.items.forEach((t) => {
-        t.id = nanoid();
-      });
       return t.items;
     }
     return [];

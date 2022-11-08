@@ -290,6 +290,7 @@ export const PluginsProvider: React.FC<React.PropsWithChildren> = (props) => {
       } = {
         onSearchAll: (result: SearchAllResult) => {
           result.tracks?.items.forEach((i) => {
+            i.id = nanoid();
             i.pluginId = plugin.id;
           });
           result.albums?.items.forEach((i) => {
@@ -305,6 +306,7 @@ export const PluginsProvider: React.FC<React.PropsWithChildren> = (props) => {
         },
         onSearchTracks: (result: SearchTrackResult) => {
           result.items.forEach((i) => {
+            i.id = nanoid();
             i.pluginId = plugin.id;
           });
           return result;
@@ -329,6 +331,7 @@ export const PluginsProvider: React.FC<React.PropsWithChildren> = (props) => {
         },
         onGetPlaylistTracks: (result: SearchTrackResult) => {
           result.items.forEach((i) => {
+            i.id = nanoid();
             i.pluginId = plugin.id;
           });
           return result;
@@ -361,6 +364,7 @@ export const PluginsProvider: React.FC<React.PropsWithChildren> = (props) => {
           }
           result.items.forEach((i) => {
             i.pluginId = plugin.id;
+            i.id = nanoid();
           });
           return result;
         },

@@ -1,6 +1,5 @@
 import { MoreHoriz, PlayCircle } from "@mui/icons-material";
 import { Backdrop, CircularProgress, IconButton } from "@mui/material";
-import { nanoid } from "@reduxjs/toolkit";
 import React from "react";
 import { useQuery } from "react-query";
 import { useLocation, useParams } from "react-router-dom";
@@ -54,9 +53,6 @@ const AlbumPage: React.FC = () => {
       if (albumData.album) {
         setAlbumInfo(albumData.album);
       }
-      albumData.items.forEach((t) => {
-        t.id = nanoid();
-      });
       setCurrentPage(albumData.pageInfo);
       return albumData.items;
     }
