@@ -12,17 +12,18 @@ import {
 } from "../store/reducers/trackReducer";
 import { AppState } from "../store/store";
 import { withSnackbar, ProviderContext } from "notistack";
-import PluginsContext from "../PluginsContext";
+import { withPlugins, PluginContextInterface } from "../PluginsContext";
 import { db } from "../database";
 import { filterAsync } from "../utils";
 import { Track } from "../plugintypes";
 import { Capacitor } from "@capacitor/core";
 import { MusicControls } from "@awesome-cordova-plugins/music-controls";
 
-interface AudioComponentProps
+export interface AudioComponentProps
   extends StateProps,
     DispatchProps,
-    ProviderContext {}
+    ProviderContext,
+    PluginContextInterface {}
 interface AudioComponentState {
   errorCount: number;
 }
@@ -31,9 +32,8 @@ class AudioComponent extends React.Component<
   AudioComponentProps,
   AudioComponentState
 > {
-  static contextType = PluginsContext;
-  context!: React.ContextType<typeof PluginsContext>;
   private trackLoaded = false;
+  // private isStartup = true;
   private lastPlayer: PlayerComponent | undefined;
   constructor(props: AudioComponentProps) {
     super(props);
@@ -69,7 +69,7 @@ class AudioComponent extends React.Component<
     await this.onIsPlayingUpdate(prevProps, currentProps);
     await this.onVolumeUpdate(prevProps, currentProps);
     await this.onMuteUpdate(prevProps, currentProps);
-    this.onRateUpdate(prevProps, currentProps);
+    await this.onRateUpdate(prevProps, currentProps);
     await this.onSeek(prevProps, currentProps);
   }
 
@@ -77,12 +77,29 @@ class AudioComponent extends React.Component<
     return null;
   }
 
+  // private async playStartupTrack(currentProps: AudioComponentProps) {
+  //   if (this.isStartup && currentProps.pluginsLoaded) {
+  //     if (currentProps.playOnStartup && currentProps.isPlaying) {
+  //       await this.playCurrentTrack();
+  //     }
+  //     this.isStartup = false;
+  //   }
+  // }
+
+  // private async playCurrentTrack() {
+  //   const currentTrack = this.props.currentTrack;
+  //   if (currentTrack) {
+  //     await this.playTrack(currentTrack, this.props.elapsed);
+  //     this.setMediaSessionMetaData();
+  //   }
+  // }
+
   private async getPlayerFromName(
     name: string,
     method: PlayerComponentType = PlayerComponentType.onPlay
   ): Promise<PlayerComponent | undefined> {
     // PlayerComponent must have play
-    const playerPlugins = await filterAsync(this.context.plugins, (p) =>
+    const playerPlugins = await filterAsync(this.props.plugins, (p) =>
       p.hasDefined.onPlay()
     );
     const plugin = playerPlugins.find((p) => p.id === name);
@@ -209,7 +226,7 @@ class AudioComponent extends React.Component<
         .where(":id")
         .equals(newTrack.id)
         .first();
-      const pluginFrame = this.context.plugins.find(
+      const pluginFrame = this.props.plugins.find(
         (p) => p.id === newTrack.pluginId
       );
       const hasPluginApi =
@@ -366,4 +383,4 @@ type DispatchProps = ReturnType<typeof mapDispatchToProps>;
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(withSnackbar(AudioComponent));
+)(withSnackbar(withPlugins(AudioComponent)));

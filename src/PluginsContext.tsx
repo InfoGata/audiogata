@@ -489,4 +489,23 @@ export const PluginsProvider: React.FC<React.PropsWithChildren> = (props) => {
 
 export const usePlugins = () => React.useContext(PluginsContext);
 
+export const withPlugins = <P extends PluginContextInterface>(
+  Component: React.ComponentType<P>
+) => {
+  const displayName = Component.displayName || Component.name || "Component";
+  const WrappedComponent: React.FC<Omit<P, keyof PluginContextInterface>> = (
+    props
+  ) => {
+    return (
+      <PluginsContext.Consumer>
+        {(context) => <Component {...(props as P)} {...context} />}
+      </PluginsContext.Consumer>
+    );
+  };
+
+  WrappedComponent.displayName = `withPlugins(${displayName})`;
+
+  return WrappedComponent;
+};
+
 export default PluginsContext;
