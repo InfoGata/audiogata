@@ -5,7 +5,7 @@ import React from "react";
 import { useTranslation } from "react-i18next";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
 import {
-  // togglePlayOnStartup,
+  togglePlayOnStartup,
   saveCorsProxyUrl,
   saveShowForwardAndRewind,
 } from "../store/reducers/settingsReducer";
@@ -13,8 +13,8 @@ import {
 const Settings: React.FC = () => {
   const dispatch = useAppDispatch();
   const { enqueueSnackbar } = useSnackbar();
-  // const playOnStartup = useAppSelector((state) => state.settings.playOnStartup);
-  // const onChangePlayOnStartup = () => dispatch(togglePlayOnStartup());
+  const playOnStartup = useAppSelector((state) => state.settings.playOnStartup);
+  const onChangePlayOnStartup = () => dispatch(togglePlayOnStartup());
   const corsProxyUrl = useAppSelector((state) => state.settings.corsProxyUrl);
   const showForwardAndRewind = useAppSelector(
     (state) => state.settings.showForwardAndRewind
@@ -40,12 +40,12 @@ const Settings: React.FC = () => {
 
   return (
     <FormGroup>
-      {/*<FormControlLabel
+      <FormControlLabel
         control={
           <Switch checked={playOnStartup} onChange={onChangePlayOnStartup} />
         }
         label={t("settings:playCurrentTrack")}
-      />*/}
+      />
       <FormControlLabel
         control={
           <Switch
