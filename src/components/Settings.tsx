@@ -5,6 +5,7 @@ import React from "react";
 import { useTranslation } from "react-i18next";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
 import {
+  // togglePlayOnStartup,
   saveCorsProxyUrl,
   saveShowForwardAndRewind,
 } from "../store/reducers/settingsReducer";
@@ -12,12 +13,14 @@ import {
 const Settings: React.FC = () => {
   const dispatch = useAppDispatch();
   const { enqueueSnackbar } = useSnackbar();
+  // const playOnStartup = useAppSelector((state) => state.settings.playOnStartup);
+  // const onChangePlayOnStartup = () => dispatch(togglePlayOnStartup());
   const corsProxyUrl = useAppSelector((state) => state.settings.corsProxyUrl);
   const showForwardAndRewind = useAppSelector(
     (state) => state.settings.showForwardAndRewind
   );
   const [corsProxy, setCorsProxy] = React.useState(corsProxyUrl);
-  const { t } = useTranslation();
+  const { t } = useTranslation(["common", "settings"]);
 
   const onCorsProxyChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setCorsProxy(e.target.value);
@@ -37,6 +40,12 @@ const Settings: React.FC = () => {
 
   return (
     <FormGroup>
+      {/*<FormControlLabel
+        control={
+          <Switch checked={playOnStartup} onChange={onChangePlayOnStartup} />
+        }
+        label={t("settings:playCurrentTrack")}
+      />*/}
       <FormControlLabel
         control={
           <Switch
@@ -44,14 +53,16 @@ const Settings: React.FC = () => {
             onChange={onChangeShowForwardAndRewind}
           />
         }
-        label="Show Fast Forward and Rewind Buttons"
+        label={t("settings:showFastForwardRewind")}
       />
       <TextField
         label="Cors proxy Url"
         value={corsProxy || ""}
         onChange={onCorsProxyChange}
         InputProps={{
-          endAdornment: <Button onClick={onCorsProxySave}>{t("save")}</Button>,
+          endAdornment: (
+            <Button onClick={onCorsProxySave}>{t("common:save")}</Button>
+          ),
         }}
       />
     </FormGroup>

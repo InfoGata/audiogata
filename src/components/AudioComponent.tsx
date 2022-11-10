@@ -18,12 +18,15 @@ import { filterAsync } from "../utils";
 import { Track } from "../plugintypes";
 import { Capacitor } from "@capacitor/core";
 import { MusicControls } from "@awesome-cordova-plugins/music-controls";
+import canAutoPlay from "can-autoplay";
+import { withTranslation, WithTranslation } from "react-i18next";
 
 export interface AudioComponentProps
   extends StateProps,
     DispatchProps,
     ProviderContext,
-    PluginContextInterface {}
+    PluginContextInterface,
+    WithTranslation {}
 interface AudioComponentState {
   errorCount: number;
 }
@@ -33,7 +36,7 @@ class AudioComponent extends React.Component<
   AudioComponentState
 > {
   private trackLoaded = false;
-  // private isStartup = true;
+  private isStartup = true;
   private lastPlayer: PlayerComponent | undefined;
   constructor(props: AudioComponentProps) {
     super(props);
@@ -58,9 +61,6 @@ class AudioComponent extends React.Component<
       PlayerComponentType.onSetPlaybackRate
     );
     await player?.onSetPlaybackRate(this.props.playbackRate || 1.0);
-    if (this.props.isPlaying) {
-      this.props.toggleIsPlaying();
-    }
   }
 
   public async componentDidUpdate(prevProps: AudioComponentProps) {
@@ -71,28 +71,35 @@ class AudioComponent extends React.Component<
     await this.onMuteUpdate(prevProps, currentProps);
     await this.onRateUpdate(prevProps, currentProps);
     await this.onSeek(prevProps, currentProps);
+    await this.playStartupTrack(currentProps);
   }
 
   public render() {
     return null;
   }
 
-  // private async playStartupTrack(currentProps: AudioComponentProps) {
-  //   if (this.isStartup && currentProps.pluginsLoaded) {
-  //     if (currentProps.playOnStartup && currentProps.isPlaying) {
-  //       await this.playCurrentTrack();
-  //     }
-  //     this.isStartup = false;
-  //   }
-  // }
-
-  // private async playCurrentTrack() {
-  //   const currentTrack = this.props.currentTrack;
-  //   if (currentTrack) {
-  //     await this.playTrack(currentTrack, this.props.elapsed);
-  //     this.setMediaSessionMetaData();
-  //   }
-  // }
+  private async playStartupTrack(currentProps: AudioComponentProps) {
+    if (this.isStartup && currentProps.pluginsLoaded) {
+      this.isStartup = false;
+      if (
+        currentProps.playOnStartup &&
+        currentProps.isPlaying &&
+        currentProps.currentTrack
+      ) {
+        const canAutoPlayResponse = await canAutoPlay.audio();
+        if (canAutoPlayResponse.result) {
+          await this.playTrack(currentProps.currentTrack, currentProps.elapsed);
+        } else {
+          this.props.enqueueSnackbar(this.props.t("cantAutoplay"), {
+            variant: "error",
+          });
+          this.props.toggleIsPlaying();
+        }
+      } else if (currentProps.isPlaying) {
+        this.props.toggleIsPlaying();
+      }
+    }
+  }
 
   private async getPlayerFromName(
     name: string,
@@ -365,6 +372,7 @@ const mapStateToProps = (state: AppState) => ({
   volume: state.track.volume,
   playbackRate: state.track.playbackRate,
   repeatOne: state.track.repeatOne,
+  playOnStartup: state.settings.playOnStartup,
 });
 type StateProps = ReturnType<typeof mapStateToProps>;
 
@@ -383,4 +391,4 @@ type DispatchProps = ReturnType<typeof mapDispatchToProps>;
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(withSnackbar(withPlugins(AudioComponent)));
+)(withSnackbar(withPlugins(withTranslation()(AudioComponent))));

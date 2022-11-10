@@ -56,7 +56,8 @@
     "filters": "Filters",
     "applyFilters": "Apply Filters",
     "goToArtist": "Go to Artist",
-    "goToAlbum": "Go to Album"
+    "goToAlbum": "Go to Album",
+    "cantAutoplay": "Can't autoplay track on start up."
   },
   "plugins": {
     "addPlugin_one": "Add Plugin",
@@ -89,5 +90,9 @@
     "options": "Options",
     "checkForUpdates": "Check for Updates",
     "homepage": "Home Page"
+  },
+  "settings": {
+    "playCurrentTrack": "Autoplay current track on start up",
+    "showFastForwardRewind": "Show Fast Forward and Rewind Buttons"
   }
 }
