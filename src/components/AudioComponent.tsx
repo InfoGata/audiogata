@@ -10,6 +10,7 @@ import {
   setElapsed,
   toggleIsPlaying,
 } from "../store/reducers/trackReducer";
+import { setTrackLoading } from "../store/reducers/uiReducer";
 import { AppState } from "../store/store";
 import { withSnackbar, ProviderContext } from "notistack";
 import { withPlugins, PluginContextInterface } from "../PluginsContext";
@@ -229,6 +230,7 @@ class AudioComponent extends React.Component<
   private async playTrack(track: Track, time?: number) {
     const newTrack: Track = { ...track };
     if (newTrack.pluginId && newTrack.id) {
+      this.props.setTrackLoading(true);
       const audioBlob = await db.audioBlobs
         .where(":id")
         .equals(newTrack.id)
@@ -264,6 +266,7 @@ class AudioComponent extends React.Component<
         this.onError(err);
         return;
       }
+      this.props.setTrackLoading(false);
       if (time) {
         await player?.onSeek(time);
       }
@@ -384,6 +387,7 @@ const mapDispatchToProps = (dispatch: Dispatch) =>
       seek,
       setElapsed,
       toggleIsPlaying,
+      setTrackLoading,
     },
     dispatch
   );

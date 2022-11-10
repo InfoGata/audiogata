@@ -5,6 +5,7 @@ import {
   Typography,
   Box,
   IconButton,
+  CircularProgress,
 } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import React from "react";
@@ -20,6 +21,7 @@ const thumbnailSize = 70;
 const PlayerBar: React.FC = () => {
   const theme = useTheme();
   const currentTrack = useAppSelector((state) => state.track.currentTrack);
+  const trackLoading = useAppSelector((state) => state.ui.trackLoading);
   const sanitizer = DOMPurify.sanitize;
 
   const { openMenu } = useTrackMenu({
@@ -52,6 +54,11 @@ const PlayerBar: React.FC = () => {
           alignItems="flex-end"
         >
           <Grid item={true} sm={2} xs={3}>
+            {trackLoading && (
+              <CircularProgress
+                sx={{ position: "absolute", top: 40, left: 25 }}
+              />
+            )}
             <Box
               component="img"
               sx={{ height: thumbnailSize, width: "auto" }}
