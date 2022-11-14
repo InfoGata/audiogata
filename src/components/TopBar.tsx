@@ -4,6 +4,7 @@ import {
   IconButton,
   InputAdornment,
   InputBase,
+  Link,
   Toolbar,
   Tooltip,
   Typography,
@@ -14,7 +15,7 @@ import React from "react";
 import { useNavigate } from "react-router";
 import { toggleNavbar } from "../store/reducers/uiReducer";
 import { useAppDispatch } from "../store/hooks";
-import { Link } from "react-router-dom";
+import { Link as RouterLink } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
 const SearchBar = styled("div")(({ theme }) => ({
@@ -93,7 +94,9 @@ const TopBar: React.FC = () => {
           noWrap={true}
           sx={{ display: { xs: "none", sm: "block" } }}
         >
-          AudioGata
+          <Link color="inherit" underline="none" component={RouterLink} to="/">
+            AudioGata
+          </Link>
         </Typography>
         <form onSubmit={handleSubmit}>
           <SearchBar>
@@ -118,7 +121,7 @@ const TopBar: React.FC = () => {
         </form>
         <Box sx={{ flexGrow: 1 }} />
         <Box sx={{ display: { xs: "none", sm: "flex" } }}>
-          <IconButton component={Link} to="/donate">
+          <IconButton component={RouterLink} to="/donate">
             <Tooltip title={t("donate")} placement="bottom">
               <Favorite />
             </Tooltip>

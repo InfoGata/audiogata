@@ -105,7 +105,7 @@
             "exclude": [
               "[0-9!-/:-@[-`{-~]+",
               "[A-Z_-]+",
-              "\\s+AudioGata\\s+"
+              "\\s*AudioGata\\s*"
             ]
           }
         }
