@@ -25,7 +25,7 @@ const Donate: React.FC = () => {
   const paypalUrl =
     "https://www.paypal.com/donate/?hosted_button_id=VYJRQP387NF4S";
   const liberapayUrl = "https://liberapay.com/InfoGata/donate";
-  const patreonUrl = "https://www.patreon.com/user?u=82244258";
+  const patreonUrl = "https://www.patreon.com/InfoGata";
   const donateText = t("donate");
   return (
     <Box>
