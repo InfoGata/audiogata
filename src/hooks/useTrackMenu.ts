@@ -26,7 +26,7 @@ const useTrackMenu = (args?: TrackMenuArgs) => {
     setNoQueue(!!args?.noQueueItem);
     setPlaylists(args?.playlists ?? playlists);
     if (args?.getListItems) {
-      const listItems = args.getListItems(menuTrack);
+      const listItems = args.getListItems(track);
       setListElements(listItems);
     } else {
       setListElements([]);
