@@ -16,7 +16,7 @@ import { PlaylistInfo, Track } from "../plugintypes";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
 import { setPlaylistTracks } from "../store/reducers/playlistReducer";
 import { Delete, Edit, Info, MoreHoriz, PlayCircle } from "@mui/icons-material";
-import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import TrackList from "./TrackList";
 import useSelected from "../hooks/useSelected";
 import EditPlaylistDialog from "./EditPlaylistDialog";
@@ -32,7 +32,6 @@ const PlaylistTracks: React.FC = () => {
   const [playlist, setPlaylist] = React.useState<PlaylistInfo | undefined>();
   const [loaded, setLoaded] = React.useState(false);
   const [openEditMenu, setOpenEditMenu] = React.useState(false);
-  const navigate = useNavigate();
   const [queueMenuAnchorEl, setQueueMenuAnchorEl] =
     React.useState<null | HTMLElement>(null);
   const openQueueMenu = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -41,36 +40,36 @@ const PlaylistTracks: React.FC = () => {
   const closeQueueMenu = () => setQueueMenuAnchorEl(null);
   const { t } = useTranslation();
 
-  const deleteClick = async () => {
-    if (menuTrack?.id) {
-      await db.audioBlobs.delete(menuTrack.id);
-    }
-    if (playlist && menuTrack) {
-      const newTracklist = tracklist.filter((t) => t.id !== menuTrack.id);
-      dispatch(setPlaylistTracks(playlist, newTracklist));
-      setTracklist(newTracklist);
-    }
+  const getListItems = (track?: Track) => {
+    const deleteClick = async () => {
+      if (track?.id) {
+        await db.audioBlobs.delete(track.id);
+      }
+      if (playlist && track) {
+        const newTracklist = tracklist.filter((t) => t.id !== track.id);
+        dispatch(setPlaylistTracks(playlist, newTracklist));
+        setTracklist(newTracklist);
+      }
+    };
+    return [
+      <MenuItem onClick={deleteClick} key="Delete">
+        <ListItemIcon>
+          <Delete />
+        </ListItemIcon>
+        <ListItemText primary={t("delete")} />
+      </MenuItem>,
+      <MenuItem
+        key="Info"
+        component={Link}
+        to={`/playlists/${playlistId}/tracks/${track?.id}`}
+      >
+        <ListItemIcon>
+          <Info />
+        </ListItemIcon>
+        <ListItemText primary={t("info")} />
+      </MenuItem>,
+    ];
   };
-
-  const infoClick = () => {
-    const url = `/playlists/${playlistId}/tracks/${menuTrack?.id}`;
-    navigate(url);
-  };
-
-  const listItems = [
-    <MenuItem onClick={deleteClick} key="Delete">
-      <ListItemIcon>
-        <Delete />
-      </ListItemIcon>
-      <ListItemText primary={t("delete")} />
-    </MenuItem>,
-    <MenuItem onClick={infoClick} key="Info">
-      <ListItemIcon>
-        <Info />
-      </ListItemIcon>
-      <ListItemText primary={t("info")} />
-    </MenuItem>,
-  ];
 
   const clearSelectedTracks = async () => {
     await db.audioBlobs.bulkDelete(Array.from(selected));
@@ -95,9 +94,9 @@ const PlaylistTracks: React.FC = () => {
     state.playlist.playlists.filter((p) => p.id !== playlistId)
   );
 
-  const { openMenu, menuTrack } = useTrackMenu({
+  const { openMenu } = useTrackMenu({
     playlists,
-    listItems,
+    getListItems,
   });
   const [tracklist, setTracklist] = React.useState<Track[]>([]);
   const { onSelect, onSelectAll, isSelected, selected, setSelected } =

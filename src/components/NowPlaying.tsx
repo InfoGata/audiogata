@@ -24,7 +24,7 @@ import { db } from "../database";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
 import TrackList from "./TrackList";
 import useSelected from "../hooks/useSelected";
-import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import SelectTrackListPlugin from "./SelectTrackListPlugin";
 import useTrackMenu from "../hooks/useTrackMenu";
 import { useTranslation } from "react-i18next";
@@ -38,39 +38,35 @@ const NowPlaying: React.FC = () => {
   const [queueMenuAnchorEl, setQueueMenuAnchorEl] =
     React.useState<null | HTMLElement>(null);
   const dispatch = useAppDispatch();
-  const navigate = useNavigate();
 
-  const deleteClick = async () => {
-    if (menuTrack?.id) {
-      await db.audioBlobs.delete(menuTrack.id);
-    }
-    if (menuTrack) {
-      dispatch(deleteTrack(menuTrack));
-    }
+  const getListItems = (track?: Track) => {
+    const deleteClick = async () => {
+      if (track?.id) {
+        await db.audioBlobs.delete(track.id);
+      }
+      if (track) {
+        dispatch(deleteTrack(track));
+      }
+    };
+
+    return [
+      <MenuItem onClick={deleteClick} key="Delete">
+        <ListItemIcon>
+          <Delete />
+        </ListItemIcon>
+        <ListItemText primary="Delete" />
+      </MenuItem>,
+      <MenuItem key="Info" component={Link} to={`/track/${track?.id}`}>
+        <ListItemIcon>
+          <Info />
+        </ListItemIcon>
+        <ListItemText primary="Info" />
+      </MenuItem>,
+    ];
   };
 
-  const infoClick = () => {
-    const url = `/track/${menuTrack?.id}`;
-    navigate(url);
-  };
-
-  const listItems = [
-    <MenuItem onClick={deleteClick} key="Delete">
-      <ListItemIcon>
-        <Delete />
-      </ListItemIcon>
-      <ListItemText primary="Delete" />
-    </MenuItem>,
-    <MenuItem onClick={infoClick} key="Info">
-      <ListItemIcon>
-        <Info />
-      </ListItemIcon>
-      <ListItemText primary="Info" />
-    </MenuItem>,
-  ];
-
-  const { openMenu, menuTrack } = useTrackMenu({
-    listItems,
+  const { openMenu } = useTrackMenu({
+    getListItems,
     noQueueItem: true,
   });
 

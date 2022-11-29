@@ -4,7 +4,7 @@ import { useAppSelector } from "../store/hooks";
 import TrackMenuContext from "../TrackMenuContext";
 interface TrackMenuArgs {
   playlists?: PlaylistInfo[];
-  listItems?: JSX.Element[];
+  getListItems?: (track?: Track) => JSX.Element[];
   noQueueItem?: boolean;
 }
 
@@ -25,7 +25,12 @@ const useTrackMenu = (args?: TrackMenuArgs) => {
     openTrackMenu(event, track);
     setNoQueue(!!args?.noQueueItem);
     setPlaylists(args?.playlists ?? playlists);
-    setListElements(args?.listItems ?? []);
+    if (args?.getListItems) {
+      const listItems = args.getListItems(menuTrack);
+      setListElements(listItems);
+    } else {
+      setListElements([]);
+    }
   };
 
   return { openMenu, menuTrack };
