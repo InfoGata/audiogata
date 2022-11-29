@@ -13,6 +13,8 @@ npm run dev
 
 ## Plugins
 
+The plugin scripts are run in sandboxed iframes using [plugin-frame](https://github.com/elijahgreen/plugin-frame). Every iframe is ran on it's own subdomain with it's subdomain being the id of the plugin ([pluginId].audiogata.com).
+
 [youtube-audiogata](https://github.com/InfoGata/youtube-audiogata)
 
 [soundcloud-audiogata](https://github.com/InfoGata/soundcloud-audiogata)
