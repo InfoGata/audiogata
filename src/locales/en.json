@@ -57,7 +57,8 @@
     "applyFilters": "Apply Filters",
     "goToArtist": "Go to Artist",
     "goToAlbum": "Go to Album",
-    "cantAutoplay": "Can't autoplay track on start up."
+    "cantAutoplay": "Can't autoplay track on start up.",
+    "updateTrackInfo": "Update Track Info from Plugin"
   },
   "plugins": {
     "addPlugin_one": "Add Plugin",

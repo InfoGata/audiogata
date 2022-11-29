@@ -142,6 +142,10 @@ export interface SearchPlaylistResult extends SearchResult {
   items: PlaylistInfo[];
 }
 
+export interface GetTrackRequest {
+  apiId: string;
+}
+
 export interface GetTrackUrlRequest {
   apiId?: string;
 }

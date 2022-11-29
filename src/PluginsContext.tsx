@@ -19,6 +19,7 @@ import {
   ArtistAlbumRequest,
   GetTrackUrlRequest,
   PlayTrackRequest,
+  GetTrackRequest,
 } from "./plugintypes";
 import { PluginFrame, PluginInterface } from "plugin-frame";
 import { db } from "./database";
@@ -45,6 +46,7 @@ export interface PluginMethodInterface extends PlayerComponent {
   onSearchArtists(request: SearchRequest): Promise<SearchArtistResult>;
   onSearchAlbums(request: SearchRequest): Promise<SearchAlbumResult>;
   onSearchPlaylists(request: SearchRequest): Promise<SearchPlaylistResult>;
+  onGetTrack(request: GetTrackRequest): Promise<Track>;
   onNowPlayingTracksAdded(tracks: Track[]): Promise<void>;
   onNowPlayingTracksRemoved(tracks: Track[]): Promise<void>;
   onNowPlayingTracksChanged(tracks: Track[]): Promise<void>;
@@ -288,6 +290,11 @@ export const PluginsProvider: React.FC<React.PropsWithChildren> = (props) => {
           | ReturnType<PluginMethodInterface[key]>
           | Awaited<ReturnType<PluginMethodInterface[key]>>;
       } = {
+        onGetTrack: (result: Track) => {
+          result.pluginId = plugin.id;
+          console.log(result);
+          return result;
+        },
         onSearchAll: (result: SearchAllResult) => {
           result.tracks?.items.forEach((i) => {
             i.id = nanoid();
