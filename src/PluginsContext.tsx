@@ -20,6 +20,7 @@ import {
   GetTrackUrlRequest,
   PlayTrackRequest,
   GetTrackRequest,
+  PlaylistInfo,
 } from "./plugintypes";
 import { PluginFrame, PluginInterface } from "plugin-frame";
 import { db } from "./database";
@@ -83,6 +84,7 @@ interface ApplicationPluginInterface extends PluginInterface {
   getNowPlayingTracks(): Promise<Track[]>;
   setNowPlayingTracks(tracks: Track[]): Promise<void>;
   getPlaylists(): Promise<Playlist[]>;
+  getPlaylistsInfo(): Promise<PlaylistInfo[]>;
   addPlaylists(playlists: Playlist[]): Promise<void>;
   createNotification(notification: NotificationMessage): Promise<void>;
   getCorsProxy(): Promise<string | undefined>;
@@ -171,6 +173,9 @@ export const PluginsProvider: React.FC<React.PropsWithChildren> = (props) => {
   const corsProxyUrl = useAppSelector((state) => state.settings.corsProxyUrl);
   const corsProxyUrlRef = React.useRef(corsProxyUrl);
   corsProxyUrlRef.current = corsProxyUrl;
+  const playlists = useAppSelector((state) => state.playlist.playlists);
+  const playlistsRef = React.useRef(playlists);
+  playlistsRef.current = playlists;
 
   const { enqueueSnackbar } = useSnackbar();
   const [pendingPlugins, setPendingPlugins] = React.useState<
@@ -264,6 +269,9 @@ export const PluginsProvider: React.FC<React.PropsWithChildren> = (props) => {
         },
         getPlaylists: async () => {
           return await db.playlists.toArray();
+        },
+        getPlaylistsInfo: async () => {
+          return playlistsRef.current;
         },
         addPlaylists: async (playlists: Playlist[]) => {
           dispatch(addPlaylists(playlists));
