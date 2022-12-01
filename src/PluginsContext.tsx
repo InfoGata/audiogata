@@ -35,7 +35,10 @@ import { isElectron } from "./utils";
 import { Capacitor } from "@capacitor/core";
 import ConfirmPluginDialog from "./components/ConfirmPluginDialog";
 import { App, URLOpenListenerEvent } from "@capacitor/app";
-import { addPlaylists } from "./store/reducers/playlistReducer";
+import {
+  addPlaylists,
+  addPlaylistTracks,
+} from "./store/reducers/playlistReducer";
 import { NetworkRequest, PlayerComponent } from "./types";
 import { nanoid } from "@reduxjs/toolkit";
 import { useTranslation } from "react-i18next";
@@ -86,6 +89,7 @@ interface ApplicationPluginInterface extends PluginInterface {
   getPlaylists(): Promise<Playlist[]>;
   getPlaylistsInfo(): Promise<PlaylistInfo[]>;
   addPlaylists(playlists: Playlist[]): Promise<void>;
+  addTracksToPlaylist(playlistId: string, tracks: Track[]): Promise<void>;
   createNotification(notification: NotificationMessage): Promise<void>;
   getCorsProxy(): Promise<string | undefined>;
   installPlugins(plugins: PluginInfo[]): Promise<void>;
@@ -275,6 +279,19 @@ export const PluginsProvider: React.FC<React.PropsWithChildren> = (props) => {
         },
         addPlaylists: async (playlists: Playlist[]) => {
           dispatch(addPlaylists(playlists));
+        },
+        addTracksToPlaylist: async (playlistId: string, tracks: Track[]) => {
+          tracks.forEach((t) => {
+            if (!t.pluginId) {
+              t.pluginId = plugin.id;
+            }
+          });
+          const playlist = playlistsRef.current.find(
+            (p) => p.id === playlistId
+          );
+          if (playlist) {
+            dispatch(addPlaylistTracks(playlist, tracks));
+          }
         },
         getLocale: async () => {
           return i18n.language;

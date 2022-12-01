@@ -96,6 +96,11 @@ export const addPlaylistTracks =
   (playlistInfo: PlaylistInfo, tracks: Track[]): AppThunk =>
   async (_dispatch) => {
     const playlist = await db.playlists.get(playlistInfo.id || "");
+    tracks.forEach((t) => {
+      if (!t.id) {
+        t.id = nanoid();
+      }
+    });
     if (playlist) {
       const newTracks = unionBy(playlist.tracks, tracks, "id");
       playlist.tracks = newTracks;
