@@ -20,6 +20,7 @@ import { useAppDispatch, useAppSelector } from "../store/hooks";
 import { PluginFrameContainer, usePlugins } from "../PluginsContext";
 import { filterAsync } from "../utils";
 import { useTranslation } from "react-i18next";
+import ImportPlaylistUrlDialog from "./ImportPlaylistUrlDialog";
 
 interface PlaylistsItemProps {
   playlist: PlaylistInfo;
@@ -58,6 +59,9 @@ const Playlists: React.FC = () => {
   const [menuPlaylist, setMenuPlaylist] = React.useState<
     PlaylistInfo | undefined
   >();
+  const [openImportDialog, setOpenImportDialog] = React.useState(false);
+  const onOpenImportDialog = () => setOpenImportDialog(true);
+  const onCloseImportDialog = () => setOpenImportDialog(false);
 
   React.useEffect(() => {
     const setPlugins = async () => {
@@ -101,6 +105,9 @@ const Playlists: React.FC = () => {
       <Typography variant="h5" gutterBottom>
         {t("playlists")}
       </Typography>
+      <Button variant="contained" onClick={onOpenImportDialog}>
+        {t("importPlaylistByUrl")}
+      </Button>
       <Grid>{pluginPlaylists}</Grid>
       <List>
         {playlists.map((p) => (
@@ -115,6 +122,10 @@ const Playlists: React.FC = () => {
           <ListItemText primary={t("delete")} />
         </MenuItem>
       </Menu>
+      <ImportPlaylistUrlDialog
+        open={openImportDialog}
+        handleClose={onCloseImportDialog}
+      />
     </>
   );
 };

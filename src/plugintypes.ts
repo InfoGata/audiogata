@@ -170,3 +170,5 @@ export interface FilterOption {
   displayName: string;
   value: string;
 }
+
+export type ParseUrlType = "playlist";

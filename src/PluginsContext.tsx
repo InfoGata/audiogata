@@ -21,6 +21,7 @@ import {
   PlayTrackRequest,
   GetTrackRequest,
   PlaylistInfo,
+  ParseUrlType,
 } from "./plugintypes";
 import { PluginFrame, PluginInterface } from "plugin-frame";
 import { db } from "./database";
@@ -73,6 +74,8 @@ export interface PluginMethodInterface extends PlayerComponent {
     request: UserPlaylistRequest
   ): Promise<SearchPlaylistResult>;
   onGetTopItems(): Promise<SearchAllResult>;
+  onCanParseUrl(url: string, type: ParseUrlType): Promise<boolean>;
+  onLookupPlaylistUrl(url: string): Promise<Playlist>;
 }
 
 interface ApplicationPluginInterface extends PluginInterface {
@@ -406,6 +409,15 @@ export const PluginsProvider: React.FC<React.PropsWithChildren> = (props) => {
           }
           result.items.forEach((i) => {
             i.pluginId = plugin.id;
+          });
+          return result;
+        },
+        onLookupPlaylistUrl: (result: Playlist) => {
+          result.id = nanoid();
+          result.pluginId = plugin.id;
+          result.tracks.forEach((t) => {
+            t.id = nanoid();
+            t.pluginId = plugin.id;
           });
           return result;
         },
