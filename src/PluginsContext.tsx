@@ -307,7 +307,7 @@ export const PluginsProvider: React.FC<React.PropsWithChildren> = (props) => {
         Capacitor.isNativePlatform()
       ) {
         srcUrl = `https://${plugin.id}.${
-          process.env.DOMAIN || "audiogata.com"
+          process.env.REACT_APP_DOMAIN || "audiogata.com"
         }/pluginframe.html`;
       }
 
