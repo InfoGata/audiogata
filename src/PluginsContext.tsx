@@ -32,7 +32,7 @@ import {
   setTracks,
 } from "./store/reducers/trackReducer";
 import { useSnackbar } from "notistack";
-import { isElectron } from "./utils";
+import { getPluginSubdomain, isElectron } from "./utils";
 import { Capacitor } from "@capacitor/core";
 import ConfirmPluginDialog from "./components/ConfirmPluginDialog";
 import { App, URLOpenListenerEvent } from "@capacitor/app";
@@ -301,15 +301,7 @@ export const PluginsProvider: React.FC<React.PropsWithChildren> = (props) => {
         },
       };
 
-      let srcUrl = `${window.location.protocol}//${plugin.id}.${window.location.host}/pluginframe.html`;
-      if (
-        process.env.NODE_ENV === "production" ||
-        Capacitor.isNativePlatform()
-      ) {
-        srcUrl = `https://${plugin.id}.${
-          process.env.REACT_APP_DOMAIN || "audiogata.com"
-        }/pluginframe.html`;
-      }
+      const srcUrl = `${getPluginSubdomain(plugin.id)}/pluginframe.html`;
 
       const completeMethods: {
         [key in keyof PluginMethodInterface]?: (
@@ -320,7 +312,6 @@ export const PluginsProvider: React.FC<React.PropsWithChildren> = (props) => {
       } = {
         onGetTrack: (result: Track) => {
           result.pluginId = plugin.id;
-          console.log(result);
           return result;
         },
         onSearchAll: (result: SearchAllResult) => {

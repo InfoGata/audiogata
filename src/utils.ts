@@ -2,6 +2,7 @@ import { DirectoryFile, FileType, Manifest } from "./types";
 import thumbnail from "./thumbnail.png";
 import { ImageInfo, PluginInfo } from "./plugintypes";
 import i18next from "./i18n";
+import { Capacitor } from "@capacitor/core";
 
 export function formatSeconds(seconds?: number) {
   if (!seconds) {
@@ -165,6 +166,17 @@ export async function filterAsync<T>(
 export const isElectron = (): boolean => {
   const userAgent = navigator.userAgent.toLowerCase();
   return userAgent.indexOf(" electron/") > -1;
+};
+
+export const getPluginSubdomain = (id?: string): string => {
+  if (process.env.NODE_ENV === "production" || Capacitor.isNativePlatform()) {
+    const domain = process.env.REACT_APP_DOMAIN || "audiogata.com";
+    const protocol = domain.startsWith("localhost")
+      ? window.location.protocol
+      : "https:";
+    return `${protocol}//${id}.${domain}`;
+  }
+  return `${window.location.protocol}//${id}.${window.location.host}`;
 };
 
 export const navbarWidth = 200;
