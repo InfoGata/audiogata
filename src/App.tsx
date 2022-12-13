@@ -14,6 +14,7 @@ import { QueryClient, QueryClientProvider } from "react-query";
 import MatomoRouterProvider from "./components/MatomoRouterProvider";
 import { TrackMenuProvider } from "./TrackMenuContext";
 import { useTranslation } from "react-i18next";
+import useUpdateServiceWorker from "./hooks/useUpdateServiceWorker";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -23,12 +24,13 @@ const queryClient = new QueryClient({
   },
 });
 const App: React.FC = () => {
+  const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const notistackRef = React.useRef<SnackbarProvider>(null);
   const onClickDismiss = (key: SnackbarKey) => () => {
     notistackRef?.current?.closeSnackbar(key);
   };
-  const { t } = useTranslation();
+  useUpdateServiceWorker(notistackRef.current?.enqueueSnackbar, onClickDismiss);
 
   React.useEffect(() => {
     dispatch(initializePlaylists());

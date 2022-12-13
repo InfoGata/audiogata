@@ -12,6 +12,8 @@ import store, { persistor } from "./store/store";
 import reportWebVitals from "./reportWebVitals";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import "./i18n";
+import * as serviceWorkerRegistration from "./serviceWorkerRegistration";
+import { updateReady } from "./store/reducers/uiReducer";
 
 const theme = createTheme({
   palette: {
@@ -33,5 +35,14 @@ root.render(
     </Provider>
   </React.StrictMode>
 );
+
+serviceWorkerRegistration.register({
+  onUpdate: (registration) => {
+    const waitingServiceWorker = registration.waiting;
+    if (waitingServiceWorker) {
+      store.dispatch(updateReady(waitingServiceWorker));
+    }
+  },
+});
 
 reportWebVitals();

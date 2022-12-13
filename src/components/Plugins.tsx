@@ -16,7 +16,7 @@ const FileInput = styled("input")({
 });
 
 const Plugins: React.FC = () => {
-  const { plugins, deletePlugin } = usePlugins();
+  const { plugins, deletePlugin, pluginsFailed, reloadPlugins } = usePlugins();
   const [pendingPlugin, setPendingPlugin] = React.useState<PluginInfo | null>(
     null
   );
@@ -91,6 +91,15 @@ const Plugins: React.FC = () => {
           <Button disabled={isCheckingUpdate} onClick={onCheckUpdates}>
             {t("checkForUpdates")}
           </Button>
+        </Grid>
+      )}
+      {pluginsFailed && (
+        <Grid>
+          <Button
+            variant="contained"
+            color="warning"
+            onClick={reloadPlugins}
+          >{`${t("failedPlugins")}: ${t("clickReload")}`}</Button>
         </Grid>
       )}
       <Grid>{pluginComponents}</Grid>

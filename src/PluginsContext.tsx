@@ -127,6 +127,8 @@ export interface PluginContextInterface {
   plugins: PluginFrameContainer[];
   pluginMessage?: PluginMessage;
   pluginsLoaded: boolean;
+  pluginsFailed: boolean;
+  reloadPlugins: () => Promise<void>;
 }
 
 const PluginsContext = React.createContext<PluginContextInterface>(undefined!);
@@ -160,12 +162,14 @@ const getHeaderEntries = (
 
 export const PluginsProvider: React.FC<React.PropsWithChildren> = (props) => {
   const [pluginsLoaded, setPluginsLoaded] = React.useState(false);
+
   const [pluginFrames, setPluginFrames] = React.useState<
     PluginFrameContainer[]
   >([]);
   const [pluginMessage, setPluginMessage] = React.useState<PluginMessage>();
+  const [pluginsFailed, setPluginsFailed] = React.useState(false);
   const dispatch = useAppDispatch();
-  const { t } = useTranslation();
+  const { t } = useTranslation("plugins");
 
   const loadingPlugin = React.useRef(false);
 
@@ -427,30 +431,38 @@ export const PluginsProvider: React.FC<React.PropsWithChildren> = (props) => {
       host.hasOptions = !!plugin.optionsHtml;
       host.fileList = pluginFiles;
       host.manifestUrl = plugin.manifestUrl;
-      await host.ready();
+      const timeoutMs = 3000;
+      const timeoutPromise = new Promise((_, reject) => {
+        setTimeout(() => reject(), timeoutMs);
+      });
+      await Promise.race([host.ready(), timeoutPromise]);
       await host.executeCode(plugin.script);
       return host;
     },
     [dispatch, enqueueSnackbar]
   );
 
+  const loadPlugins = React.useCallback(async () => {
+    setPluginsFailed(false);
+    try {
+      const plugs = await db.plugins.toArray();
+
+      const framePromises = plugs.map((p) => loadPlugin(p));
+      const frames = await Promise.all(framePromises);
+      setPluginFrames(frames);
+    } catch {
+      enqueueSnackbar(t("failedPlugins"), { variant: "error" });
+      setPluginsFailed(true);
+    } finally {
+      setPluginsLoaded(true);
+    }
+  }, [loadPlugin, enqueueSnackbar, t]);
+
   React.useEffect(() => {
-    const getPlugins = async () => {
-      try {
-        const plugs = await db.plugins.toArray();
-
-        const framePromises = plugs.map((p) => loadPlugin(p));
-        const frames = await Promise.all(framePromises);
-        setPluginFrames(frames);
-      } finally {
-        setPluginsLoaded(true);
-      }
-    };
-
     if (loadingPlugin.current) return;
     loadingPlugin.current = true;
-    getPlugins();
-  }, [loadPlugin]);
+    loadPlugins();
+  }, [loadPlugins]);
 
   React.useEffect(() => {
     App.addListener("appUrlOpen", async (event: URLOpenListenerEvent) => {
@@ -505,6 +517,8 @@ export const PluginsProvider: React.FC<React.PropsWithChildren> = (props) => {
     plugins: pluginFrames,
     pluginMessage: pluginMessage,
     pluginsLoaded,
+    pluginsFailed,
+    reloadPlugins: loadPlugins,
   };
 
   const handleClose = () => {

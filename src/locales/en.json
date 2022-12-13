@@ -26,7 +26,6 @@
     "cancel": "Cancel",
     "confirm": "Confirm",
     "playlistName": "Playlist Name",
-    "pluginAlreadyInstalled": "A plugin with Id {{id}} is already installed",
     "addToQueue": "Add to Queue",
     "addToNewPlaylist": "Add to New Playlist",
     "addSelectedToPlaylist": "Add Selected to {{playlistName}}",
@@ -62,7 +61,9 @@
     "goToArtist": "Go to Artist",
     "goToAlbum": "Go to Album",
     "cantAutoplay": "Can't autoplay track on start up.",
-    "updateTrackInfo": "Update Track Info from Plugin"
+    "updateTrackInfo": "Update Track Info from Plugin",
+    "newVersion": "A new version of this site is available",
+    "reload": "Reload"
   },
   "plugins": {
     "addPlugin_one": "Add Plugin",
@@ -94,7 +95,10 @@
     "pluginOptions": "{{pluginName}} Options",
     "options": "Options",
     "checkForUpdates": "Check for Updates",
-    "homepage": "Home Page"
+    "pluginAlreadyInstalled": "A plugin with Id {{id}} is already installed",
+    "homepage": "Home Page",
+    "failedPlugins": "Failed to load plugins",
+    "clickReload": "Click to reload plugins"
   },
   "settings": {
     "playCurrentTrack": "Autoplay current track on start up",
