@@ -263,6 +263,12 @@ const trackSlice = createSlice({
         isPlaying: false,
       };
     },
+    play: (state): TrackState => {
+      return {
+        ...state,
+        isPlaying: true,
+      };
+    },
     toggleMute: (state): TrackState => {
       return {
         ...state,
@@ -473,5 +479,6 @@ export const {
   fastFoward,
   rewind,
   pause,
+  play,
 } = trackSlice.actions;
 export default trackSlice.reducer;

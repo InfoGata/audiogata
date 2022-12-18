@@ -9,6 +9,8 @@ import {
   seek,
   setElapsed,
   toggleIsPlaying,
+  pause,
+  play,
 } from "../store/reducers/trackReducer";
 import { setTrackLoading } from "../store/reducers/uiReducer";
 import { AppState } from "../store/store";
@@ -332,12 +334,38 @@ class AudioComponent extends React.Component<
 
   private setMediaSessionActions() {
     if (navigator && navigator.mediaSession) {
-      navigator.mediaSession.setActionHandler("previoustrack", () => {
-        this.props.prevTrack();
-      });
-      navigator.mediaSession.setActionHandler("nexttrack", () => {
-        this.props.nextTrack();
-      });
+      const handlers: [MediaSessionAction, MediaSessionActionHandler][] = [
+        [
+          "previoustrack",
+          () => {
+            this.props.prevTrack();
+          },
+        ],
+        [
+          "nexttrack",
+          () => {
+            this.props.nextTrack();
+          },
+        ],
+        [
+          "play",
+          () => {
+            this.props.play();
+          },
+        ],
+        [
+          "pause",
+          () => {
+            this.props.pause();
+          },
+        ],
+      ];
+
+      for (const [action, handler] of handlers) {
+        try {
+          navigator.mediaSession.setActionHandler(action, handler);
+        } catch {}
+      }
     }
 
     if (Capacitor.isNativePlatform()) {
@@ -388,6 +416,8 @@ const mapDispatchToProps = (dispatch: Dispatch) =>
       setElapsed,
       toggleIsPlaying,
       setTrackLoading,
+      play,
+      pause,
     },
     dispatch
   );
