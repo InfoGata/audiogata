@@ -17,7 +17,7 @@ import { AppState } from "../store/store";
 import { withSnackbar, ProviderContext } from "notistack";
 import { withPlugins, PluginContextInterface } from "../PluginsContext";
 import { db } from "../database";
-import { filterAsync } from "../utils";
+import { defaultSkipTime, filterAsync } from "../utils";
 import { Track } from "../plugintypes";
 import { Capacitor } from "@capacitor/core";
 import { MusicControls } from "@awesome-cordova-plugins/music-controls";
@@ -357,6 +357,33 @@ class AudioComponent extends React.Component<
           "pause",
           () => {
             this.props.pause();
+          },
+        ],
+        [
+          "seekbackward",
+          (details) => {
+            const skipTime = details.seekOffset || defaultSkipTime;
+            const elapsed = this.props.elapsed || 0;
+            const currentTime = Math.max(elapsed - skipTime, 0);
+            this.props.seek(currentTime);
+          },
+        ],
+        [
+          "seekforward",
+          (details) => {
+            const skipTime = details.seekOffset || defaultSkipTime;
+            const elapsed = this.props.elapsed || 0;
+            const newTime = elapsed + skipTime;
+            const currentTime = this.props.currentTrack?.duration
+              ? Math.min(newTime, this.props.currentTrack.duration)
+              : newTime;
+            this.props.seek(currentTime);
+          },
+        ],
+        [
+          "seekto",
+          (details) => {
+            this.props.seek(details.seekTime || undefined);
           },
         ],
       ];

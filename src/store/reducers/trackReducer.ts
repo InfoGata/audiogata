@@ -1,7 +1,7 @@
 import { createSlice, nanoid, PayloadAction } from "@reduxjs/toolkit";
 import { Track } from "../../plugintypes";
 import { getPluginFrames, PluginFrameContainer } from "../../PluginsContext";
-import { filterAsync } from "../../utils";
+import { defaultSkipTime, filterAsync } from "../../utils";
 import { AppDispatch, AppThunk } from "../store";
 import unionBy from "lodash/unionBy";
 import intersectionBy from "lodash/intersectionBy";
@@ -300,7 +300,7 @@ const trackSlice = createSlice({
       };
     },
     fastFoward: (state): TrackState => {
-      const seconds = 10;
+      const seconds = defaultSkipTime;
       const newTime = (state.elapsed || 0) + seconds;
       return {
         ...state,
@@ -308,7 +308,7 @@ const trackSlice = createSlice({
       };
     },
     rewind: (state): TrackState => {
-      const seconds = 10;
+      const seconds = defaultSkipTime;
       const newTime = (state.elapsed || 0) - seconds;
       return {
         ...state,
@@ -463,11 +463,27 @@ export const setTracks =
     );
   };
 
+export const setElapsed =
+  (elapsed: number): AppThunk =>
+  async (dispatch, getState) => {
+    const state = getState();
+    if (
+      "setPositionState" in navigator.mediaSession &&
+      state.track.currentTrack?.duration
+    ) {
+      navigator.mediaSession.setPositionState({
+        position: elapsed,
+        duration: state.track.currentTrack.duration,
+      });
+    }
+
+    dispatch(trackSlice.actions.setElapsed(elapsed));
+  };
+
 export const {
   setTrack,
   changeRepeat,
   toggleShuffle,
-  setElapsed,
   setVolume,
   setPlaybackRate,
   toggleMute,
