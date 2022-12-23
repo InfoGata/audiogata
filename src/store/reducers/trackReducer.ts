@@ -299,16 +299,16 @@ const trackSlice = createSlice({
         shuffleList: [],
       };
     },
-    fastFoward: (state): TrackState => {
-      const seconds = defaultSkipTime;
+    fastFoward: (state, action: PayloadAction<number>): TrackState => {
+      const seconds = action.payload;
       const newTime = (state.elapsed || 0) + seconds;
       return {
         ...state,
         seekTime: newTime,
       };
     },
-    rewind: (state): TrackState => {
-      const seconds = defaultSkipTime;
+    rewind: (state, action: PayloadAction<number>): TrackState => {
+      const seconds = action.payload;
       const newTime = (state.elapsed || 0) - seconds;
       return {
         ...state,
@@ -317,6 +317,18 @@ const trackSlice = createSlice({
     },
   },
 });
+
+export const fastFoward = (): AppThunk => async (dispatch, getState) => {
+  const state = getState();
+  const seconds = state.settings.customFowardAndRewindTime || defaultSkipTime;
+  dispatch(trackSlice.actions.fastFoward(seconds));
+};
+
+export const rewind = (): AppThunk => async (dispatch, getState) => {
+  const state = getState();
+  const seconds = state.settings.customFowardAndRewindTime || defaultSkipTime;
+  dispatch(trackSlice.actions.rewind(seconds));
+};
 
 export const addTrack =
   (track: Track): AppThunk =>
@@ -492,8 +504,6 @@ export const {
   toggleIsPlaying,
   seek,
   playQueue,
-  fastFoward,
-  rewind,
   pause,
   play,
 } = trackSlice.actions;

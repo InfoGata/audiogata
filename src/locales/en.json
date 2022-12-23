@@ -102,6 +102,7 @@
   },
   "settings": {
     "playCurrentTrack": "Autoplay current track on start up",
-    "showFastForwardRewind": "Show Fast Forward and Rewind Buttons"
+    "showFastForwardRewind": "Show Fast Forward and Rewind Buttons",
+    "forwardRewindTime": "Forward and Rewind Skip Time in Seconds"
   }
 }

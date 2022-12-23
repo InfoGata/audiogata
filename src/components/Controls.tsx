@@ -1,11 +1,17 @@
 import { IconButton } from "@mui/material";
 import {
+  FastForward,
   Forward10,
+  Forward30,
+  Forward5,
   Pause,
   PlayArrow,
   Repeat,
   RepeatOne,
+  FastRewind,
   Replay10,
+  Replay30,
+  Replay5,
   Shuffle,
   SkipNext,
   SkipPrevious,
@@ -23,6 +29,41 @@ import {
 import Volume from "./Volume";
 import PlaybackRate from "./PlaybackRate";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
+import { defaultSkipTime } from "../utils";
+
+const getForwardIcon = (time?: number) => {
+  if (!time) {
+    time = defaultSkipTime;
+  }
+
+  switch (time) {
+    case 5:
+      return <Forward5 />;
+    case 10:
+      return <Forward10 />;
+    case 30:
+      return <Forward30 />;
+    default:
+      return <FastForward />;
+  }
+};
+
+const getRewindIcon = (time?: number) => {
+  if (!time) {
+    time = defaultSkipTime;
+  }
+
+  switch (time) {
+    case 5:
+      return <Replay5 />;
+    case 10:
+      return <Replay10 />;
+    case 30:
+      return <Replay30 />;
+    default:
+      return <FastRewind />;
+  }
+};
 
 const Controls: React.FC = () => {
   const repeat = useAppSelector((state) => state.track.repeat);
@@ -32,6 +73,10 @@ const Controls: React.FC = () => {
   const showForwardAndRewind = useAppSelector(
     (state) => state.settings.showForwardAndRewind
   );
+  const customForwardAndRewindTime = useAppSelector(
+    (state) => state.settings.customFowardAndRewindTime
+  );
+
   const dispatch = useAppDispatch();
   const playIcon = isPlaying ? <Pause /> : <PlayArrow />;
 
@@ -52,7 +97,7 @@ const Controls: React.FC = () => {
       </IconButton>
       {showForwardAndRewind && (
         <IconButton size="small" onClick={onRewind}>
-          <Replay10 />
+          {getRewindIcon(customForwardAndRewindTime)}
         </IconButton>
       )}
       <IconButton size="small" onClick={onPreviousClick}>
@@ -66,7 +111,7 @@ const Controls: React.FC = () => {
       </IconButton>
       {showForwardAndRewind && (
         <IconButton size="small" onClick={onFastFoward}>
-          <Forward10 />
+          {getForwardIcon(customForwardAndRewindTime)}
         </IconButton>
       )}
       <IconButton size="small" onClick={onChangeRepeat}>

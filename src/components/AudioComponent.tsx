@@ -362,7 +362,10 @@ class AudioComponent extends React.Component<
         [
           "seekbackward",
           (details) => {
-            const skipTime = details.seekOffset || defaultSkipTime;
+            const skipTime =
+              details.seekOffset ||
+              this.props.customForwardAndRewindTime ||
+              defaultSkipTime;
             const elapsed = this.props.elapsed || 0;
             const currentTime = Math.max(elapsed - skipTime, 0);
             this.props.seek(currentTime);
@@ -371,7 +374,10 @@ class AudioComponent extends React.Component<
         [
           "seekforward",
           (details) => {
-            const skipTime = details.seekOffset || defaultSkipTime;
+            const skipTime =
+              details.seekOffset ||
+              this.props.customForwardAndRewindTime ||
+              defaultSkipTime;
             const elapsed = this.props.elapsed || 0;
             const newTime = elapsed + skipTime;
             const currentTime = this.props.currentTrack?.duration
@@ -431,6 +437,7 @@ const mapStateToProps = (state: AppState) => ({
   playbackRate: state.track.playbackRate,
   repeatOne: state.track.repeatOne,
   playOnStartup: state.settings.playOnStartup,
+  customForwardAndRewindTime: state.settings.customFowardAndRewindTime,
 });
 type StateProps = ReturnType<typeof mapStateToProps>;
 

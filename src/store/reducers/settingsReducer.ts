@@ -5,6 +5,7 @@ interface SettingsState {
   corsProxyUrl?: string;
   currentPluginId?: string;
   showForwardAndRewind?: boolean;
+  customFowardAndRewindTime?: number;
 }
 
 const initialState: SettingsState = {
@@ -34,6 +35,12 @@ const settingsSlice = createSlice({
         showForwardAndRewind: action.payload,
       };
     },
+    saveCustomFowardAndRewindTime: (state, action: PayloadAction<number>) => {
+      return {
+        ...state,
+        customFowardAndRewindTime: action.payload,
+      };
+    },
     setCurrentPluginId: (state, action: PayloadAction<string>) => {
       return {
         ...state,
@@ -48,5 +55,6 @@ export const {
   saveCorsProxyUrl,
   setCurrentPluginId,
   saveShowForwardAndRewind,
+  saveCustomFowardAndRewindTime,
 } = settingsSlice.actions;
 export default settingsSlice.reducer;

@@ -1,4 +1,13 @@
-import { Button, FormControlLabel, Switch, TextField } from "@mui/material";
+import {
+  Button,
+  FormControl,
+  FormControlLabel,
+  FormLabel,
+  Radio,
+  RadioGroup,
+  Switch,
+  TextField,
+} from "@mui/material";
 import FormGroup from "@mui/material/FormGroup";
 import { useSnackbar } from "notistack";
 import React from "react";
@@ -8,7 +17,9 @@ import {
   togglePlayOnStartup,
   saveCorsProxyUrl,
   saveShowForwardAndRewind,
+  saveCustomFowardAndRewindTime,
 } from "../store/reducers/settingsReducer";
+import { defaultSkipTime } from "../utils";
 
 const Settings: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -18,6 +29,9 @@ const Settings: React.FC = () => {
   const corsProxyUrl = useAppSelector((state) => state.settings.corsProxyUrl);
   const showForwardAndRewind = useAppSelector(
     (state) => state.settings.showForwardAndRewind
+  );
+  const customFowardAndRewindTime = useAppSelector(
+    (state) => state.settings.customFowardAndRewindTime
   );
   const [corsProxy, setCorsProxy] = React.useState(corsProxyUrl);
   const { t } = useTranslation(["common", "settings"]);
@@ -38,6 +52,13 @@ const Settings: React.FC = () => {
     dispatch(saveShowForwardAndRewind(checked));
   };
 
+  const onChangeCustomFowardAndRewindTime = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const value = Number(event.target.value);
+    dispatch(saveCustomFowardAndRewindTime(value));
+  };
+
   return (
     <FormGroup>
       <FormControlLabel
@@ -55,6 +76,30 @@ const Settings: React.FC = () => {
         }
         label={t("settings:showFastForwardRewind")}
       />
+      {showForwardAndRewind && (
+        <FormControl>
+          <FormLabel id="radio-buttons-skip-time-label">
+            {t("settings:forwardRewindTime")}
+          </FormLabel>
+          <RadioGroup
+            row
+            aria-labelledby="demo-radio-buttons-group-label"
+            value={customFowardAndRewindTime || defaultSkipTime}
+            onChange={onChangeCustomFowardAndRewindTime}
+            name="radio-buttons-group"
+          >
+            <FormControlLabel value={5} control={<Radio />} label="5" />
+            <FormControlLabel value={10} control={<Radio />} label="10" />
+            <FormControlLabel value={30} control={<Radio />} label="30" />
+            <TextField
+              sx={{ width: "6ch" }}
+              value={customFowardAndRewindTime || defaultSkipTime}
+              onChange={onChangeCustomFowardAndRewindTime}
+              inputProps={{ inputMode: "numeric", pattern: "[0-9]*" }}
+            />
+          </RadioGroup>
+        </FormControl>
+      )}
       <TextField
         label="Cors proxy Url"
         value={corsProxy || ""}
