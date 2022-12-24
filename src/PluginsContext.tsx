@@ -431,7 +431,7 @@ export const PluginsProvider: React.FC<React.PropsWithChildren> = (props) => {
       host.hasOptions = !!plugin.optionsHtml;
       host.fileList = pluginFiles;
       host.manifestUrl = plugin.manifestUrl;
-      const timeoutMs = 3000;
+      const timeoutMs = 10000;
       const timeoutPromise = new Promise((_, reject) => {
         setTimeout(() => reject(), timeoutMs);
       });
