@@ -1,4 +1,10 @@
-import { Avatar, ListItem, ListItemAvatar, ListItemText } from "@mui/material";
+import {
+  Avatar,
+  ListItem,
+  ListItemAvatar,
+  ListItemButton,
+  ListItemText,
+} from "@mui/material";
 import React from "react";
 import { Link } from "react-router-dom";
 import { Album } from "../plugintypes";
@@ -15,16 +21,17 @@ const AlbumSearchResult: React.FC<AlbumSearchResultProps> = (props) => {
   const image = getThumbnailImage(album.images, searchThumbnailSize);
 
   return (
-    <ListItem
-      button={true}
-      component={Link}
-      to={`/plugins/${pluginId}/albums/${album.apiId}`}
-      state={album}
-    >
-      <ListItemAvatar>
-        <Avatar alt={album.name} src={image} style={{ borderRadius: 0 }} />
-      </ListItemAvatar>
-      <ListItemText primary={album.name} secondary={album.artistName} />
+    <ListItem disablePadding>
+      <ListItemButton
+        component={Link}
+        to={`/plugins/${pluginId}/albums/${album.apiId}`}
+        state={album}
+      >
+        <ListItemAvatar>
+          <Avatar alt={album.name} src={image} style={{ borderRadius: 0 }} />
+        </ListItemAvatar>
+        <ListItemText primary={album.name} secondary={album.artistName} />
+      </ListItemButton>
     </ListItem>
   );
 };

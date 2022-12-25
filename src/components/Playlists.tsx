@@ -10,6 +10,7 @@ import {
   Typography,
   Grid,
   Button,
+  ListItemButton,
 } from "@mui/material";
 import React from "react";
 import { PlaylistInfo } from "../plugintypes";
@@ -37,13 +38,15 @@ const PlaylistsItem: React.FC<PlaylistsItemProps> = (props) => {
     openMenu(event, playlist);
   };
   return (
-    <ListItem button={true} component={Link} to={playlistPath}>
-      <ListItemText>{playlist.name}</ListItemText>
-      <ListItemSecondaryAction>
-        <IconButton onClick={openPlaylistMenu} size="large">
-          <MoreHoriz />
-        </IconButton>
-      </ListItemSecondaryAction>
+    <ListItem disablePadding>
+      <ListItemButton component={Link} to={playlistPath}>
+        <ListItemText>{playlist.name}</ListItemText>
+        <ListItemSecondaryAction>
+          <IconButton onClick={openPlaylistMenu} size="large">
+            <MoreHoriz />
+          </IconButton>
+        </ListItemSecondaryAction>
+      </ListItemButton>
     </ListItem>
   );
 };

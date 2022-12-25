@@ -1,4 +1,10 @@
-import { Avatar, ListItem, ListItemAvatar, ListItemText } from "@mui/material";
+import {
+  Avatar,
+  ListItem,
+  ListItemAvatar,
+  ListItemButton,
+  ListItemText,
+} from "@mui/material";
 import React from "react";
 import { Artist } from "../plugintypes";
 import { getThumbnailImage, searchThumbnailSize } from "../utils";
@@ -14,16 +20,17 @@ const ArtistSearchResult: React.FC<ArtistSearchResultProps> = (props) => {
 
   const image = getThumbnailImage(artist.images, searchThumbnailSize);
   return (
-    <ListItem
-      button={true}
-      component={Link}
-      to={`/plugins/${pluginId}/artists/${artist.apiId}`}
-      state={artist}
-    >
-      <ListItemAvatar>
-        <Avatar alt={artist.name} src={image} style={{ borderRadius: 0 }} />
-      </ListItemAvatar>
-      <ListItemText>{artist.name}</ListItemText>
+    <ListItem disablePadding>
+      <ListItemButton
+        component={Link}
+        to={`/plugins/${pluginId}/artists/${artist.apiId}`}
+        state={artist}
+      >
+        <ListItemAvatar>
+          <Avatar alt={artist.name} src={image} style={{ borderRadius: 0 }} />
+        </ListItemAvatar>
+        <ListItemText>{artist.name}</ListItemText>
+      </ListItemButton>
     </ListItem>
   );
 };

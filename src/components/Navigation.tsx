@@ -1,6 +1,7 @@
 import {
   List,
   ListItem,
+  ListItemButton,
   ListItemIcon,
   ListItemText,
   Tooltip,
@@ -39,66 +40,75 @@ const Navigation: React.FC = () => {
   ));
   return (
     <List>
-      <ListItem button={true} component={Link} to="/" key="Home">
-        <ListItemIcon>
-          <Tooltip title={t("home")} placement="right">
-            <Home />
-          </Tooltip>
-        </ListItemIcon>
-        <ListItemText>{t("home")}</ListItemText>
+      <ListItem disablePadding>
+        <ListItemButton component={Link} to="/">
+          <ListItemIcon>
+            <Tooltip title={t("home")} placement="right">
+              <Home />
+            </Tooltip>
+          </ListItemIcon>
+          <ListItemText>{t("home")}</ListItemText>
+        </ListItemButton>
       </ListItem>
-      <ListItem
-        button={true}
-        component={Link}
-        to="/nowplaying"
-        key="Now Playing"
-      >
-        <ListItemIcon>
-          <Tooltip title={t("playQueue")} placement="right">
-            <PlaylistPlay />
-          </Tooltip>
-        </ListItemIcon>
-        <ListItemText>{t("playQueue")}</ListItemText>
+      <ListItem disablePadding>
+        <ListItemButton component={Link} to="/nowplaying">
+          <ListItemIcon>
+            <Tooltip title={t("playQueue")} placement="right">
+              <PlaylistPlay />
+            </Tooltip>
+          </ListItemIcon>
+          <ListItemText>{t("playQueue")}</ListItemText>
+        </ListItemButton>
       </ListItem>
-      <ListItem button={true} component={Link} to="/plugins" key="Plugins">
-        <ListItemIcon>
-          <Tooltip title={t("plugins")} placement="right">
-            <Extension />
-          </Tooltip>
-        </ListItemIcon>
-        <ListItemText>{t("plugins")}</ListItemText>
+      <ListItem disablePadding>
+        <ListItemButton component={Link} to="/plugins">
+          <ListItemIcon>
+            <Tooltip title={t("plugins")} placement="right">
+              <Extension />
+            </Tooltip>
+          </ListItemIcon>
+          <ListItemText>{t("plugins")}</ListItemText>
+        </ListItemButton>
       </ListItem>
-      <ListItem button={true} component={Link} to="/settings" key="Settings">
-        <ListItemIcon>
-          <Tooltip title={t("settings")} placement="right">
-            <SettingsApplications />
-          </Tooltip>
-        </ListItemIcon>
-        <ListItemText>{t("settings")}</ListItemText>
+      <ListItem disablePadding>
+        <ListItemButton component={Link} to="/settings">
+          <ListItemIcon>
+            <Tooltip title={t("settings")} placement="right">
+              <SettingsApplications />
+            </Tooltip>
+          </ListItemIcon>
+          <ListItemText>{t("settings")}</ListItemText>
+        </ListItemButton>
       </ListItem>
-      <ListItem button={true} component={Link} to="/about" key="About">
-        <ListItemIcon>
-          <Tooltip title={t("about")} placement="right">
-            <Info />
-          </Tooltip>
-        </ListItemIcon>
-        <ListItemText>{t("about")}</ListItemText>
+      <ListItem disablePadding>
+        <ListItemButton component={Link} to="/about">
+          <ListItemIcon>
+            <Tooltip title={t("about")} placement="right">
+              <Info />
+            </Tooltip>
+          </ListItemIcon>
+          <ListItemText>{t("about")}</ListItemText>
+        </ListItemButton>
       </ListItem>
-      <ListItem button={true} key="AddPlaylist" onClick={openDialog}>
-        <ListItemIcon>
-          <Tooltip title={t("addPlaylist")} placement="right">
-            <PlaylistAdd />
-          </Tooltip>
-        </ListItemIcon>
-        <ListItemText>{t("addPlaylist")}</ListItemText>
+      <ListItem disablePadding>
+        <ListItemButton onClick={openDialog}>
+          <ListItemIcon>
+            <Tooltip title={t("addPlaylist")} placement="right">
+              <PlaylistAdd />
+            </Tooltip>
+          </ListItemIcon>
+          <ListItemText>{t("addPlaylist")}</ListItemText>
+        </ListItemButton>
       </ListItem>
-      <ListItem button={true} component={Link} to="/playlists" key="Playlists">
-        <ListItemIcon>
-          <Tooltip title={t("playlists")} placement="right">
-            <Menu />
-          </Tooltip>
-        </ListItemIcon>
-        <ListItemText>{t("playlists")}</ListItemText>
+      <ListItem disablePadding>
+        <ListItemButton component={Link} to="/playlists">
+          <ListItemIcon>
+            <Tooltip title={t("playlists")} placement="right">
+              <Menu />
+            </Tooltip>
+          </ListItemIcon>
+          <ListItemText>{t("playlists")}</ListItemText>
+        </ListItemButton>
       </ListItem>
       {navbarOpen ? playlistItems : null}
       <AddPlaylistDialog handleClose={closeDialog} open={dialogOpen} />
