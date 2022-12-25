@@ -63,7 +63,8 @@
     "cantAutoplay": "Can't autoplay track on start up.",
     "updateTrackInfo": "Update Track Info from Plugin",
     "newVersion": "A new version of this site is available",
-    "reload": "Reload"
+    "reload": "Reload",
+    "offline": "You are offline"
   },
   "plugins": {
     "addPlugin_one": "Add Plugin",

@@ -15,6 +15,7 @@ import MatomoRouterProvider from "./components/MatomoRouterProvider";
 import { TrackMenuProvider } from "./TrackMenuContext";
 import { useTranslation } from "react-i18next";
 import useUpdateServiceWorker from "./hooks/useUpdateServiceWorker";
+import useOffline from "./hooks/useOffline";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -27,10 +28,11 @@ const App: React.FC = () => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const notistackRef = React.useRef<SnackbarProvider>(null);
-  const onClickDismiss = (key: SnackbarKey) => () => {
+  const onClickDismiss = (key: SnackbarKey) => {
     notistackRef?.current?.closeSnackbar(key);
   };
   useUpdateServiceWorker(notistackRef.current?.enqueueSnackbar, onClickDismiss);
+  useOffline(notistackRef.current?.enqueueSnackbar, onClickDismiss);
 
   React.useEffect(() => {
     dispatch(initializePlaylists());
@@ -41,7 +43,7 @@ const App: React.FC = () => {
       maxSnack={3}
       ref={notistackRef}
       action={(key) => (
-        <Button onClick={onClickDismiss(key)}>{t("dismiss")}</Button>
+        <Button onClick={() => onClickDismiss(key)}>{t("dismiss")}</Button>
       )}
     >
       <QueryClientProvider client={queryClient}>
