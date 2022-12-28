@@ -4,6 +4,7 @@ import {
   ListItemAvatar,
   ListItemButton,
   ListItemText,
+  Typography,
 } from "@mui/material";
 import React from "react";
 import { Link } from "react-router-dom";
@@ -30,7 +31,32 @@ const AlbumSearchResult: React.FC<AlbumSearchResultProps> = (props) => {
         <ListItemAvatar>
           <Avatar alt={album.name} src={image} style={{ borderRadius: 0 }} />
         </ListItemAvatar>
-        <ListItemText primary={album.name} secondary={album.artistName} />
+        <ListItemText
+          primary={album.name}
+          secondary={
+            <>
+              <Typography
+                component="span"
+                variant="body2"
+                color="text.secondary"
+              >
+                {album.artistName}
+              </Typography>
+              {album.addtionalArtists?.map((a) => (
+                <>
+                  {", "}
+                  <Typography
+                    component="span"
+                    variant="body2"
+                    color="text.secondary"
+                  >
+                    {a.name}
+                  </Typography>
+                </>
+              ))}
+            </>
+          }
+        />
       </ListItemButton>
     </ListItem>
   );

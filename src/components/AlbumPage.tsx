@@ -85,11 +85,18 @@ const AlbumPage: React.FC = () => {
       {albumInfo && (
         <PlaylistInfoCard
           name={albumInfo.name || ""}
-          subtitle={albumInfo.artistName}
-          subtitleLink={
-            albumInfo.artistApiId &&
-            `/plugins/${pluginId}/artists/${albumInfo.artistApiId}`
-          }
+          subtitleLinks={[
+            {
+              name: albumInfo.artistName,
+              link:
+                albumInfo.artistApiId &&
+                `/plugins/${pluginId}/artists/${albumInfo.artistApiId}`,
+            },
+            ...(albumInfo.addtionalArtists?.map((a) => ({
+              name: a.name,
+              link: a.apiId && `/plugins/${pluginId}/artists/${a.apiId}`,
+            })) ?? []),
+          ]}
           images={albumInfo.images}
         />
       )}

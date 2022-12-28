@@ -29,6 +29,28 @@ interface PlaylistItemsProps {
   index?: number;
 }
 
+interface ArtistLinkProps {
+  pluginId?: string;
+  name?: string;
+  apiId?: string;
+}
+
+const ArtistLink: React.FC<ArtistLinkProps> = (props) => {
+  const { pluginId, name, apiId } = props;
+  const stopPropagation = (e: React.MouseEvent) => {
+    e.stopPropagation();
+  };
+  return (
+    <Link
+      component={RouterLink}
+      to={`/plugins/${pluginId}/artists/${apiId}`}
+      onClick={stopPropagation}
+    >
+      {name}
+    </Link>
+  );
+};
+
 const PlaylistItem: React.FC<PlaylistItemsProps> = (props) => {
   const { track, showTrackLength, openMenu, onSelectClick, isSelected, index } =
     props;
@@ -95,13 +117,24 @@ const PlaylistItem: React.FC<PlaylistItemsProps> = (props) => {
               sx={{ overflow: "hidden", textOverflow: "ellipsis" }}
             />
             {track.artistApiId ? (
-              <Link
-                component={RouterLink}
-                to={`/plugins/${track.pluginId}/artists/${track.artistApiId}`}
-                onClick={stopPropagation}
-              >
-                {track.artistName}
-              </Link>
+              <>
+                <ArtistLink
+                  pluginId={track.pluginId}
+                  name={track.artistName}
+                  apiId={track.artistApiId}
+                />
+                {track.addtionalArtists &&
+                  track.addtionalArtists.map((a) => (
+                    <>
+                      {", "}
+                      <ArtistLink
+                        pluginId={track.pluginId}
+                        name={a.name}
+                        apiId={a.apiId}
+                      />
+                    </>
+                  ))}
+              </>
             ) : (
               <Typography
                 variant="body2"
