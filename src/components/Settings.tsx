@@ -92,10 +92,13 @@ const Settings: React.FC = () => {
             <FormControlLabel value={10} control={<Radio />} label="10" />
             <FormControlLabel value={30} control={<Radio />} label="30" />
             <TextField
-              sx={{ width: "6ch" }}
+              type="number"
+              sx={{ width: "10ch" }}
               value={customFowardAndRewindTime || defaultSkipTime}
               onChange={onChangeCustomFowardAndRewindTime}
-              inputProps={{ inputMode: "numeric", pattern: "[0-9]*" }}
+              inputProps={{
+                shrink: true,
+              }}
             />
           </RadioGroup>
         </FormControl>
