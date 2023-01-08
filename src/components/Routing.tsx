@@ -9,6 +9,7 @@ import Search from "./Search";
 import Settings from "./Settings";
 import QueueTrackInfo from "./QueueTrackInfo";
 import { Box } from "@mui/material";
+import { useTheme } from "@mui/material/styles";
 import PluginPlaylists from "./PluginPlaylists";
 import PluginPlaylist from "./PluginPlaylist";
 import PluginDetails from "./PluginDetails";
@@ -22,8 +23,17 @@ import AboutPage from "./AboutPage";
 import Donate from "./Donate";
 
 const Routing: React.FC = () => {
+  const theme = useTheme();
   return (
-    <Box component="main" sx={{ flexGrow: 1, p: 1, overflow: "auto" }}>
+    <Box
+      component="main"
+      sx={{
+        flexGrow: 1,
+        p: 1,
+        overflow: "auto",
+        minHeight: `calc(100vh - ${theme.spacing(3)})`,
+      }}
+    >
       <DrawerHeader />
       <Routes>
         <Route path="/" element={<Home />} />
