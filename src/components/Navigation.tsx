@@ -13,7 +13,7 @@ import {
   Menu,
   PlaylistAdd,
   PlaylistPlay,
-  SettingsApplications,
+  Settings,
 } from "@mui/icons-material";
 import React from "react";
 import { Link } from "react-router-dom";
@@ -74,7 +74,7 @@ const Navigation: React.FC = () => {
         <ListItemButton component={Link} to="/settings">
           <ListItemIcon>
             <Tooltip title={t("settings")} placement="right">
-              <SettingsApplications />
+              <Settings />
             </Tooltip>
           </ListItemIcon>
           <ListItemText>{t("settings")}</ListItemText>
