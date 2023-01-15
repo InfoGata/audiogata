@@ -179,6 +179,10 @@ export const getPluginSubdomain = (id?: string): string => {
   return `${window.location.protocol}//${id}.${window.location.host}`;
 };
 
+export const hasExtension = () => {
+  return typeof window.InfoGata !== "undefined";
+};
+
 export const defaultSkipTime = 10;
 
 export const navbarWidth = 200;
