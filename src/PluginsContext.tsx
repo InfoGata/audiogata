@@ -32,7 +32,7 @@ import {
   setTracks,
 } from "./store/reducers/trackReducer";
 import { useSnackbar } from "notistack";
-import { getPluginSubdomain, isElectron } from "./utils";
+import { getPluginSubdomain, hasExtension, isElectron } from "./utils";
 import { Capacitor } from "@capacitor/core";
 import ConfirmPluginDialog from "./components/ConfirmPluginDialog";
 import { App, URLOpenListenerEvent } from "@capacitor/app";
@@ -197,8 +197,7 @@ export const PluginsProvider: React.FC<React.PropsWithChildren> = (props) => {
     async (plugin: PluginInfo, pluginFiles?: FileList) => {
       const api: ApplicationPluginInterface = {
         networkRequest: async (input: RequestInfo, init?: RequestInit) => {
-          const hasExtension = typeof window.InfoGata !== "undefined";
-          if (hasExtension) {
+          if (hasExtension()) {
             return await window.InfoGata.networkRequest(input, init);
           }
 
@@ -229,9 +228,7 @@ export const PluginsProvider: React.FC<React.PropsWithChildren> = (props) => {
         },
         isNetworkRequestCorsDisabled: async () => {
           const isDisabled =
-            typeof window.InfoGata !== "undefined" ||
-            isElectron() ||
-            Capacitor.isNativePlatform();
+            hasExtension() || isElectron() || Capacitor.isNativePlatform();
           return isDisabled;
         },
         postUiMessage: async (message: any) => {
