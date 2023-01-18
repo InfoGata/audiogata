@@ -1,7 +1,7 @@
 import { PlayTrackRequest } from "./plugintypes";
 
 export interface NetworkRequest {
-  body: Blob;
+  body: Blob | ArrayBuffer;
   headers: { [k: string]: string };
   status: number;
   statusText: string;
