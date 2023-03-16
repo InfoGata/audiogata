@@ -14,6 +14,7 @@ import {
   PlaylistAdd,
   PlaylistPlay,
   Settings,
+  Star,
 } from "@mui/icons-material";
 import React from "react";
 import { Link } from "react-router-dom";
@@ -88,6 +89,16 @@ const Navigation: React.FC = () => {
             </Tooltip>
           </ListItemIcon>
           <ListItemText>{t("about")}</ListItemText>
+        </ListItemButton>
+      </ListItem>
+      <ListItem disablePadding>
+        <ListItemButton component={Link} to="/favorites/tracks">
+          <ListItemIcon>
+            <Tooltip title={t("favorites")} placement="right">
+              <Star />
+            </Tooltip>
+          </ListItemIcon>
+          <ListItemText>{t("favorites")}</ListItemText>
         </ListItemButton>
       </ListItem>
       <ListItem disablePadding>

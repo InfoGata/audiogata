@@ -1,4 +1,9 @@
-import { PlaylistAdd, PlaylistPlay } from "@mui/icons-material";
+import {
+  PlaylistAdd,
+  PlaylistPlay,
+  Star,
+  StarBorder,
+} from "@mui/icons-material";
 import {
   Divider,
   ListItemIcon,
@@ -20,6 +25,9 @@ interface PlaylistMenuProps {
   tracklist: Track[];
   selectedMenuItems?: JSX.Element[];
   anchorElement: HTMLElement | null;
+  isFavorite?: boolean;
+  onFavorite?: () => void;
+  onRemoveFavorite?: () => void;
   onClose: () => void;
 }
 
@@ -31,6 +39,9 @@ const PlaylistMenu: React.FC<PlaylistMenuProps> = (props) => {
     selectedMenuItems,
     anchorElement,
     onClose,
+    isFavorite,
+    onFavorite,
+    onRemoveFavorite,
   } = props;
   const { t } = useTranslation();
   const [playlistDialogTracks, setPlaylistDialogTracks] = React.useState<
@@ -92,6 +103,18 @@ const PlaylistMenu: React.FC<PlaylistMenuProps> = (props) => {
             title={t("addTracksToPlaylist", { playlistName: p.name })}
           />
         ))}
+        {onFavorite && (
+          <MenuItem onClick={isFavorite ? onRemoveFavorite : onFavorite}>
+            <ListItemIcon>
+              {isFavorite ? <StarBorder /> : <Star />}
+            </ListItemIcon>
+            <ListItemText
+              primary={
+                isFavorite ? t("removeFromFavorites") : t("addToFavorites")
+              }
+            />
+          </MenuItem>
+        )}
         {selected.size > 0 && [
           <Divider key="divider" />,
           selectedMenuItems,

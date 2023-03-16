@@ -26,6 +26,7 @@ export interface Track {
 }
 
 export interface Album {
+  id?: string;
   name?: string;
   apiId?: string;
   pluginId?: string;
@@ -36,6 +37,7 @@ export interface Album {
 }
 
 export interface Artist {
+  id?: string;
   name?: string;
   apiId?: string;
   pluginId?: string;

@@ -16,6 +16,7 @@ import Pager from "./Pager";
 import PlaylistInfoCard from "./PlaylistInfoCard";
 import PlaylistMenu from "./PlaylistMenu";
 import TrackList from "./TrackList";
+import { db } from "../database";
 
 const AlbumPage: React.FC = () => {
   const { pluginId } = useParams<"pluginId">();
@@ -23,16 +24,37 @@ const AlbumPage: React.FC = () => {
   const { plugins, pluginsLoaded } = usePlugins();
   const state = useLocation().state as Album | null;
   const [albumInfo, setAlbumInfo] = React.useState<Album | null>(state);
+  const [isFavorite, setIsFavorite] = React.useState(false);
 
   const [queueMenuAnchorEl, setQueueMenuAnchorEl] =
     React.useState<null | HTMLElement>(null);
-  const openQueueMenu = (event: React.MouseEvent<HTMLButtonElement>) => {
+  const openQueueMenu = async (event: React.MouseEvent<HTMLButtonElement>) => {
     setQueueMenuAnchorEl(event.currentTarget);
+    const hasFavorite = await db.favoriteAlbums.get({ pluginId, apiId });
+    setIsFavorite(!!hasFavorite);
   };
   const closeQueueMenu = () => setQueueMenuAnchorEl(null);
   const dispatch = useAppDispatch();
   const { openMenu } = useTrackMenu();
   const plugin = plugins.find((p) => p.id === pluginId);
+
+  const onFavorite = async () => {
+    if (albumInfo) {
+      await db.favoriteAlbums.add(albumInfo);
+    }
+    closeQueueMenu();
+  };
+
+  const onRemoveFavorite = async () => {
+    if (albumInfo) {
+      const record = await db.favoriteAlbums.get({ pluginId, apiId });
+      if (record?.id) {
+        await db.favoriteAlbums.delete(record.id);
+      }
+    }
+    closeQueueMenu();
+  };
+
   const { isLoading, pendingPlugin, removePendingPlugin } = useFindPlugin({
     pluginsLoaded,
     pluginId,
@@ -112,6 +134,9 @@ const AlbumPage: React.FC = () => {
         playlists={playlists}
         anchorElement={queueMenuAnchorEl}
         onClose={closeQueueMenu}
+        isFavorite={isFavorite}
+        onFavorite={onFavorite}
+        onRemoveFavorite={onRemoveFavorite}
       />
       <TrackList
         tracks={tracklist}

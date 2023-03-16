@@ -21,6 +21,11 @@ import ArtistPage from "./ArtistPage";
 import AlbumPage from "./AlbumPage";
 import AboutPage from "./AboutPage";
 import Donate from "./Donate";
+import FavoriteTracks from "./FavoriteTracks";
+import Favorites from "./Favorites";
+import FavoriteAlbums from "./FavoriteAlbums";
+import FavoriteArtists from "./FavoriteArtists";
+import FavoritePlayists from "./FavoritePlaylists";
 
 const Routing: React.FC = () => {
   const theme = useTheme();
@@ -46,6 +51,13 @@ const Routing: React.FC = () => {
         <Route path="/donate" element={<Donate />} />
         <Route path="/settings" element={<Settings />} />
         <Route path="/search" element={<Search />} />
+        <Route path="/favorites" element={<Favorites />}>
+          <Route index element={<FavoriteTracks />} />
+          <Route path="tracks" element={<FavoriteTracks />} />
+          <Route path="albums" element={<FavoriteAlbums />} />
+          <Route path="artists" element={<FavoriteArtists />} />
+          <Route path="playlists" element={<FavoritePlayists />} />
+        </Route>
         <Route path="/track/:trackId" element={<QueueTrackInfo />} />
         <Route
           path="/playlists/:playlistId/tracks/:trackId"

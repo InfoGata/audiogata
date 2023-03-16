@@ -1,4 +1,11 @@
-import { Album, Person, PlaylistAdd, PlaylistPlay } from "@mui/icons-material";
+import {
+  Album,
+  Person,
+  PlaylistAdd,
+  PlaylistPlay,
+  Star,
+  StarBorder,
+} from "@mui/icons-material";
 import { ListItemIcon, ListItemText, Menu, MenuItem } from "@mui/material";
 import React from "react";
 import { useTranslation } from "react-i18next";
@@ -8,16 +15,17 @@ import PlaylistMenuItem from "./components/PlaylistMenuItem";
 import { PlaylistInfo, Track } from "./plugintypes";
 import { useAppDispatch } from "./store/hooks";
 import { addTrack } from "./store/reducers/trackReducer";
+import { db } from "./database";
+import { useSnackbar } from "notistack";
 
 export interface TrackMenuInterface {
   openTrackMenu: (
     event: React.MouseEvent<HTMLButtonElement>,
     track: Track
-  ) => void;
+  ) => Promise<void>;
   setPlaylists: React.Dispatch<React.SetStateAction<PlaylistInfo[]>>;
   setListElements: React.Dispatch<React.SetStateAction<JSX.Element[]>>;
   setNoQueue: React.Dispatch<React.SetStateAction<boolean>>;
-  menuTrack: Track | undefined;
 }
 
 const TrackMenuContext = React.createContext<TrackMenuInterface>(undefined!);
@@ -29,12 +37,14 @@ export const TrackMenuProvider: React.FC<React.PropsWithChildren> = (props) => {
   const [menuTrack, setMenuTrack] = React.useState<Track>();
   const [playlistDialogOpen, setPlaylistDialogOpen] = React.useState(false);
   const [noQueue, setNoQueue] = React.useState(false);
+  const [isFavorited, setIsFavorited] = React.useState(false);
   const closeMenu = () => setAnchorEl(null);
   const closePlaylistDialog = () => setPlaylistDialogOpen(false);
   const dispatch = useAppDispatch();
   const { t } = useTranslation();
+  const { enqueueSnackbar } = useSnackbar();
 
-  const openTrackMenu = (
+  const openTrackMenu = async (
     event: React.MouseEvent<HTMLButtonElement>,
     track: Track
   ) => {
@@ -42,6 +52,18 @@ export const TrackMenuProvider: React.FC<React.PropsWithChildren> = (props) => {
     event.preventDefault();
     setAnchorEl(event.currentTarget);
     setMenuTrack(track);
+    if (track.pluginId && track.apiId) {
+      const hasFavorite = await db.favoriteTracks.get({
+        pluginId: track.pluginId,
+        apiId: track.apiId,
+      });
+      setIsFavorited(!!hasFavorite);
+    } else if (track.id) {
+      const hasFavorite = await db.favoriteTracks.get(track.id);
+      setIsFavorited(!!hasFavorite);
+    } else {
+      setIsFavorited(false);
+    }
   };
 
   const addMenuTrackToNewPlaylist = () => {
@@ -54,8 +76,21 @@ export const TrackMenuProvider: React.FC<React.PropsWithChildren> = (props) => {
     }
   };
 
+  const favoriteTrack = async () => {
+    if (menuTrack) {
+      await db.favoriteTracks.add(menuTrack);
+      enqueueSnackbar(t("addedToFavorites"));
+    }
+  };
+
+  const removeFavorite = async () => {
+    if (menuTrack?.id) {
+      await db.favoriteTracks.delete(menuTrack.id);
+      enqueueSnackbar(t("removedFromFavorites"));
+    }
+  };
+
   const defaultContext: TrackMenuInterface = {
-    menuTrack,
     openTrackMenu,
     setPlaylists,
     setListElements,
@@ -79,6 +114,14 @@ export const TrackMenuProvider: React.FC<React.PropsWithChildren> = (props) => {
             <ListItemText primary={t("addToQueue")} />
           </MenuItem>
         )}
+        <MenuItem onClick={isFavorited ? removeFavorite : favoriteTrack}>
+          <ListItemIcon>{isFavorited ? <StarBorder /> : <Star />}</ListItemIcon>
+          <ListItemText
+            primary={
+              isFavorited ? t("removeFromFavorites") : t("addToFavorites")
+            }
+          />
+        </MenuItem>
         {menuTrack?.albumApiId && (
           <MenuItem
             component={Link}

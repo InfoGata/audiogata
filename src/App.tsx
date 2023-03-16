@@ -16,6 +16,7 @@ import { TrackMenuProvider } from "./TrackMenuContext";
 import { useTranslation } from "react-i18next";
 import useUpdateServiceWorker from "./hooks/useUpdateServiceWorker";
 import useOffline from "./hooks/useOffline";
+import { ItemMenuProvider } from "./ItemMenuContext";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -51,14 +52,16 @@ const App: React.FC = () => {
           <MatomoRouterProvider>
             <PluginsProvider>
               <TrackMenuProvider>
-                <Box sx={{ display: "flex" }}>
-                  <CssBaseline />
-                  <TopBar />
-                  <SideBar />
-                  <Routing />
-                  <PlayerBar />
-                  <AudioComponent />
-                </Box>
+                <ItemMenuProvider>
+                  <Box sx={{ display: "flex" }}>
+                    <CssBaseline />
+                    <TopBar />
+                    <SideBar />
+                    <Routing />
+                    <PlayerBar />
+                    <AudioComponent />
+                  </Box>
+                </ItemMenuProvider>
               </TrackMenuProvider>
             </PluginsProvider>
           </MatomoRouterProvider>

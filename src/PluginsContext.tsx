@@ -321,12 +321,15 @@ export const PluginsProvider: React.FC<React.PropsWithChildren> = (props) => {
             i.pluginId = plugin.id;
           });
           result.albums?.items.forEach((i) => {
+            i.id = nanoid();
             i.pluginId = plugin.id;
           });
           result.artists?.items.forEach((i) => {
+            i.id = nanoid();
             i.pluginId = plugin.id;
           });
           result.playlists?.items.forEach((i) => {
+            i.id = nanoid();
             i.pluginId = plugin.id;
           });
           return result;
@@ -340,18 +343,21 @@ export const PluginsProvider: React.FC<React.PropsWithChildren> = (props) => {
         },
         onSearchArtists: (result: SearchArtistResult) => {
           result.items.forEach((i) => {
+            i.id = nanoid();
             i.pluginId = plugin.id;
           });
           return result;
         },
         onSearchAlbums: (result: SearchAlbumResult) => {
           result.items.forEach((i) => {
+            i.id = nanoid();
             i.pluginId = plugin.id;
           });
           return result;
         },
         onSearchPlaylists: (result: SearchPlaylistResult) => {
           result.items.forEach((i) => {
+            i.id = nanoid();
             i.pluginId = plugin.id;
           });
           return result;
@@ -370,23 +376,28 @@ export const PluginsProvider: React.FC<React.PropsWithChildren> = (props) => {
           });
           result.albums?.items.forEach((i) => {
             i.pluginId = plugin.id;
+            i.id = nanoid();
           });
           result.artists?.items.forEach((i) => {
             i.pluginId = plugin.id;
+            i.id = nanoid();
           });
           result.playlists?.items.forEach((i) => {
             i.pluginId = plugin.id;
+            i.id = nanoid();
           });
           return result;
         },
         onGetUserPlaylists: (result: SearchPlaylistResult) => {
           result.items.forEach((i) => {
+            i.id = nanoid();
             i.pluginId = plugin.id;
           });
           return result;
         },
         onGetAlbumTracks: (result: AlbumTracksResult) => {
           if (result.album) {
+            result.album.id = nanoid();
             result.album.pluginId = plugin.id;
           }
           result.items.forEach((i) => {
@@ -397,9 +408,11 @@ export const PluginsProvider: React.FC<React.PropsWithChildren> = (props) => {
         },
         onGetArtistAlbums: (result: ArtistAlbumsResult) => {
           if (result.artist) {
+            result.artist.id = nanoid();
             result.artist.pluginId = plugin.id;
           }
           result.items.forEach((i) => {
+            i.id = nanoid();
             i.pluginId = plugin.id;
           });
           return result;

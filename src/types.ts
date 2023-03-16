@@ -1,4 +1,10 @@
-import { PlayTrackRequest } from "./plugintypes";
+import {
+  Album,
+  Artist,
+  PlaylistInfo,
+  PlayTrackRequest,
+  Track,
+} from "./plugintypes";
 
 export interface NetworkRequest {
   body: Blob | ArrayBuffer;
@@ -72,6 +78,28 @@ export const enum PlayerComponentType {
   onPlay = "onPlay",
   onSetPlaybackRate = "onSetPlaybackRate",
 }
+
+export type TrackItemType = {
+  type: "track";
+  item: Track;
+};
+export type PlaylistItemType = {
+  type: "playlist";
+  item: PlaylistInfo;
+};
+export type AlbumItemType = {
+  type: "album";
+  item: Album;
+};
+export type ArtistItemType = {
+  type: "artist";
+  item: Artist;
+};
+export type ItemMenuType =
+  | TrackItemType
+  | PlaylistItemType
+  | AlbumItemType
+  | ArtistItemType;
 
 export interface PlayerComponent {
   [PlayerComponentType.onSetVolume]: (volume: number) => Promise<void>;

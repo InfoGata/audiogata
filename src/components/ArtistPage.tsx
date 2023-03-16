@@ -1,9 +1,11 @@
-import { Backdrop, CircularProgress, List } from "@mui/material";
+import { MoreHoriz } from "@mui/icons-material";
+import { Backdrop, CircularProgress, IconButton, List } from "@mui/material";
 import React from "react";
 import { useQuery } from "react-query";
 import { useParams } from "react-router";
 import { useLocation } from "react-router-dom";
 import useFindPlugin from "../hooks/useFindPlugin";
+import useItemMenu from "../hooks/useItemMenu";
 import usePagination from "../hooks/usePagination";
 import { usePlugins } from "../PluginsContext";
 import { Artist, PageInfo } from "../plugintypes";
@@ -24,6 +26,12 @@ const ArtistPage: React.FC = () => {
     pluginId,
     plugin,
   });
+  const { openMenu } = useItemMenu();
+  const openArtistMenu = (event: React.MouseEvent<HTMLButtonElement>) => {
+    if (artistInfo) {
+      openMenu(event, { type: "artist", item: artistInfo });
+    }
+  };
 
   const [currentPage, setCurrentPage] = React.useState<PageInfo>();
   const { page, hasNextPage, hasPreviousPage, onPreviousPage, onNextPage } =
@@ -62,6 +70,9 @@ const ArtistPage: React.FC = () => {
           images={artistInfo.images}
         />
       )}
+      <IconButton onClick={openArtistMenu}>
+        <MoreHoriz fontSize="large" />
+      </IconButton>
       <List>{albumsList}</List>
       <Pager
         hasNextPage={hasNextPage}
