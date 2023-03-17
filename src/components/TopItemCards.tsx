@@ -19,6 +19,7 @@ import { getThumbnailImage, playlistThumbnailSize } from "../utils";
 import SelectPlugin from "./SelectPlugin";
 import { Image } from "mui-image";
 import { useTranslation } from "react-i18next";
+import DOMPurify from "dompurify";
 
 const TopItemCards: React.FC = () => {
   const [pluginId, setPluginId] = React.useState("");
@@ -26,6 +27,7 @@ const TopItemCards: React.FC = () => {
   const dispatch = useAppDispatch();
   const { openMenu } = useTrackMenu();
   const { t } = useTranslation();
+  const sanitizer = DOMPurify.sanitize;
 
   const getTopItems = async () => {
     const plugin = plugins.find((p) => p.id === pluginId);
@@ -78,9 +80,10 @@ const TopItemCards: React.FC = () => {
               component="span"
               width={230}
               noWrap
-            >
-              {t.name}
-            </Typography>
+              dangerouslySetInnerHTML={{
+                __html: sanitizer(t.name || ""),
+              }}
+            />
           </Stack>
         </CardActions>
       </Card>

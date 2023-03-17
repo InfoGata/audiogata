@@ -16,9 +16,11 @@ import { db } from "../database";
 import useItemMenu from "../hooks/useItemMenu";
 import thumbnail from "../thumbnail.png";
 import { getThumbnailImage, playlistThumbnailSize } from "../utils";
+import DOMPurify from "dompurify";
 
 const FavoriteArtists: React.FC = () => {
   const artists = useLiveQuery(() => db.favoriteArtists.toArray());
+  const sanitizer = DOMPurify.sanitize;
 
   const onImageError = (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
     e.currentTarget.src = thumbnail;
@@ -58,9 +60,10 @@ const FavoriteArtists: React.FC = () => {
                 component="span"
                 width={230}
                 noWrap
-              >
-                {a.name}
-              </Typography>
+                dangerouslySetInnerHTML={{
+                  __html: sanitizer(a.name || ""),
+                }}
+              />
             </Stack>
           </CardActions>
         </Card>

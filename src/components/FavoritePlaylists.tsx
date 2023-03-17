@@ -16,9 +16,11 @@ import { getThumbnailImage, playlistThumbnailSize } from "../utils";
 import thumbnail from "../thumbnail.png";
 import { MoreHoriz } from "@mui/icons-material";
 import useItemMenu from "../hooks/useItemMenu";
+import DOMPurify from "dompurify";
 
 const FavoritePlayists: React.FC = () => {
   const playlists = useLiveQuery(() => db.favoritePlaylists.toArray());
+  const sanitizer = DOMPurify.sanitize;
 
   const onImageError = (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
     e.currentTarget.src = thumbnail;
@@ -58,9 +60,10 @@ const FavoritePlayists: React.FC = () => {
                 component="span"
                 width={230}
                 noWrap
-              >
-                {p.name}
-              </Typography>
+                dangerouslySetInnerHTML={{
+                  __html: sanitizer(p.name || ""),
+                }}
+              />
             </Stack>
           </CardActions>
         </Card>
