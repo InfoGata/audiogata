@@ -98,18 +98,18 @@ export const ItemMenuProvider: React.FC<React.PropsWithChildren> = (props) => {
             }
           />
         </MenuItem>
+        {menuItem?.type === "album" && menuItem.item.artistApiId && (
+          <MenuItem
+            component={Link}
+            to={`/plugins/${menuItem.item.pluginId}/artists/${menuItem.item.artistApiId}`}
+          >
+            <ListItemIcon>
+              <Person />
+            </ListItemIcon>
+            <ListItemText primary={t("goToArtist")} />
+          </MenuItem>
+        )}
       </Menu>
-      {menuItem?.type === "album" && menuItem.item.artistApiId && (
-        <MenuItem
-          component={Link}
-          to={`/plugins/${menuItem.item.pluginId}/artists/${menuItem.item.artistApiId}`}
-        >
-          <ListItemIcon>
-            <Person />
-          </ListItemIcon>
-          <ListItemText primary={t("goToArtist")} />
-        </MenuItem>
-      )}
     </ItemMenuContext.Provider>
   );
 };
