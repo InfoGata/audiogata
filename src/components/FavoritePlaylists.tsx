@@ -26,7 +26,7 @@ const FavoritePlayists: React.FC = () => {
 
   const { openMenu } = useItemMenu();
 
-  const albumCards = playlists?.map((p) => {
+  const playlistCards = playlists?.map((p) => {
     const openPlaylistMenu = (event: React.MouseEvent<HTMLButtonElement>) => {
       if (openMenu) {
         openMenu(event, { type: "playlist", item: p });
@@ -70,7 +70,7 @@ const FavoritePlayists: React.FC = () => {
 
   return (
     <Grid container spacing={2}>
-      {albumCards}
+      {playlistCards}
     </Grid>
   );
 };
