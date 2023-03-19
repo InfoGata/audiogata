@@ -374,6 +374,7 @@ export const PluginsProvider: React.FC<React.PropsWithChildren> = (props) => {
             i.pluginId = plugin.id;
             i.id = nanoid();
           });
+          console.log(result.tracks);
           result.albums?.items.forEach((i) => {
             i.pluginId = plugin.id;
             i.id = nanoid();

@@ -23,6 +23,7 @@ export interface Track {
   artistName?: string;
   images?: ImageInfo[];
   addtionalArtists?: ArtistInfo[];
+  originalUrl?: string;
 }
 
 export interface Album {
@@ -34,6 +35,7 @@ export interface Album {
   artistApiId?: string;
   images?: ImageInfo[];
   addtionalArtists?: ArtistInfo[];
+  originalUrl?: string;
 }
 
 export interface Artist {
@@ -42,6 +44,7 @@ export interface Artist {
   apiId?: string;
   pluginId?: string;
   images?: ImageInfo[];
+  originalUrl?: string;
 }
 
 export interface ArtistInfo {
@@ -56,6 +59,7 @@ export interface PlaylistInfo {
   isUserPlaylist?: boolean;
   apiId?: string;
   pluginId?: string;
+  originalUrl?: string;
 }
 
 export interface Playlist extends PlaylistInfo {

@@ -3,7 +3,12 @@ import { db } from "./database";
 import { ListItemIcon, ListItemText, Menu, MenuItem } from "@mui/material";
 import { useSnackbar } from "notistack";
 import { useTranslation } from "react-i18next";
-import { Person, Star, StarBorder } from "@mui/icons-material";
+import {
+  Person,
+  Star,
+  StarBorder,
+  Link as LinkIcon,
+} from "@mui/icons-material";
 import { ItemMenuType } from "./types";
 import Dexie from "dexie";
 import { Link } from "react-router-dom";
@@ -107,6 +112,18 @@ export const ItemMenuProvider: React.FC<React.PropsWithChildren> = (props) => {
               <Person />
             </ListItemIcon>
             <ListItemText primary={t("goToArtist")} />
+          </MenuItem>
+        )}
+        {menuItem?.item.originalUrl && (
+          <MenuItem
+            component="a"
+            href={menuItem.item.originalUrl}
+            target="_blank"
+          >
+            <ListItemIcon>
+              <LinkIcon />
+            </ListItemIcon>
+            <ListItemText primary={t("originalUrl")} />
           </MenuItem>
         )}
       </Menu>

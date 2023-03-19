@@ -5,6 +5,7 @@ import {
   PlaylistPlay,
   Star,
   StarBorder,
+  Link as LinkIcon,
 } from "@mui/icons-material";
 import { ListItemIcon, ListItemText, Menu, MenuItem } from "@mui/material";
 import React from "react";
@@ -142,6 +143,14 @@ export const TrackMenuProvider: React.FC<React.PropsWithChildren> = (props) => {
               <Person />
             </ListItemIcon>
             <ListItemText primary={t("goToArtist")} />
+          </MenuItem>
+        )}
+        {menuTrack?.originalUrl && (
+          <MenuItem component="a" href={menuTrack.originalUrl} target="_blank">
+            <ListItemIcon>
+              <LinkIcon />
+            </ListItemIcon>
+            <ListItemText primary={t("originalUrl")} />
           </MenuItem>
         )}
         {listElements}

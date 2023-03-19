@@ -70,7 +70,8 @@
     "updateTrackInfo": "Update Track Info from Plugin",
     "newVersion": "A new version of this site is available",
     "reload": "Reload",
-    "offline": "You are offline"
+    "offline": "You are offline",
+    "originalUrl": "Original Url"
   },
   "plugins": {
     "addPlugin_one": "Add Plugin",
