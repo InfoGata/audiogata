@@ -26,6 +26,7 @@ import Favorites from "./Favorites";
 import FavoriteAlbums from "./FavoriteAlbums";
 import FavoriteArtists from "./FavoriteArtists";
 import FavoritePlayists from "./FavoritePlaylists";
+import Privacy from "./Privacy";
 
 const Routing: React.FC = () => {
   const theme = useTheme();
@@ -48,6 +49,7 @@ const Routing: React.FC = () => {
         <Route path="/playlists" element={<Playlists />} />
         <Route path="/playlists/:playlistId" element={<PlaylistTracks />} />
         <Route path="/about" element={<AboutPage />} />
+        <Route path="/privacy" element={<Privacy />} />
         <Route path="/donate" element={<Donate />} />
         <Route path="/settings" element={<Settings />} />
         <Route path="/search" element={<Search />} />

@@ -19,7 +19,6 @@ const AboutPage: React.FC = () => {
   const { t } = useTranslation();
   const email = "contact@audiogata.com";
   const website = "https://www.infogata.com";
-  const privacyPolicy = `${website}/privacy.html`;
   const twitterUrl = "https://twitter.com/info_gata";
   const twitterAt = "@info_gata";
   const mastodonUrl = "https://mastodon.online/@InfoGata";
@@ -87,7 +86,7 @@ const AboutPage: React.FC = () => {
           </ListItemButton>
         </ListItem>
         <ListItem disablePadding>
-          <ListItemButton component="a" href={privacyPolicy} target="_blank">
+          <ListItemButton component={Link} to="/privacy">
             <ListItemAvatar>
               <Avatar>
                 <Lock />
@@ -97,11 +96,6 @@ const AboutPage: React.FC = () => {
           </ListItemButton>
         </ListItem>
       </List>
-      <iframe
-        title="out-opt"
-        style={{ border: 0, height: "200px", width: "600px" }}
-        src="https://matomo.infogata.com/index.php?module=CoreAdminHome&action=optOut&language=en&backgroundColor=121212&fontColor=ffffff&fontSize=16px"
-      ></iframe>
     </Box>
   );
 };
