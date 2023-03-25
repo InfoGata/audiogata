@@ -9,7 +9,6 @@ import "@fontsource/roboto/700.css";
 import App from "./App";
 import "./index.css";
 import store, { persistor } from "./store/store";
-import reportWebVitals from "./reportWebVitals";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import "./i18n";
 import * as serviceWorkerRegistration from "./serviceWorkerRegistration";
@@ -21,10 +20,7 @@ const theme = createTheme({
   },
 });
 
-const root = ReactDOM.createRoot(
-  document.getElementById("root") as HTMLElement
-);
-root.render(
+ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
@@ -44,5 +40,3 @@ serviceWorkerRegistration.register({
     }
   },
 });
-
-reportWebVitals();

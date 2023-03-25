@@ -19,13 +19,6 @@ const store = configureStore({
   reducer: persistedReducer,
 });
 
-if (process.env.NODE_ENV === "development" && module.hot) {
-  module.hot.accept("./rootReducer", () => {
-    const newRootReducer = require("./rootReducer").default;
-    store.replaceReducer(persistReducer(persistConfig, newRootReducer));
-  });
-}
-
 export const persistor = persistStore(store);
 export type AppState = ReturnType<typeof persistedReducer>;
 export type AppDispatch = typeof store.dispatch;

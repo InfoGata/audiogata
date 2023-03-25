@@ -26,11 +26,6 @@ declare global {
     InfoGata: InfoGataExtension;
     cordovaFetch: typeof fetch;
   }
-  namespace NodeJS {
-    interface ProcessEnv {
-      REACT_APP_DOMAIN: string;
-    }
-  }
 }
 
 export interface DirectoryFile extends File {

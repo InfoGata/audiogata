@@ -1,0 +1,43 @@
+{
+  "root": true,
+  "parser": "@typescript-eslint/parser",
+  "plugins": [
+    "@typescript-eslint",
+    "jsx-a11y",
+      "jam3",
+      "i18next"
+  ],
+  "extends": [
+    "plugin:react/recommended",
+    "plugin:react-hooks/recommended",
+    "plugin:import/recommended",
+    "plugin:import/typescript"
+  ],
+  "settings": {
+    "react": {
+      "version": "detect"
+    },
+    "import/resolver": {
+      "node": {
+        "paths": ["src"],
+        "extensions": [".js", ".jsx", ".ts", ".tsx"]
+      }
+    }
+  },
+  "rules": {
+    "react/prop-types": "off",
+    "jam3/no-sanitizer-with-danger": 2,
+    "i18next/no-literal-string": [
+      2,
+      {
+        "words": {
+          "exclude": [
+            "[0-9!-/:-@[-`{-~]+",
+            "[A-Z_-]+",
+            "\\s*AudioGata\\s*"
+          ]
+        }
+      }
+    ]
+  }
+}

@@ -169,8 +169,8 @@ export const isElectron = (): boolean => {
 };
 
 export const getPluginSubdomain = (id?: string): string => {
-  if (process.env.NODE_ENV === "production" || Capacitor.isNativePlatform()) {
-    const domain = process.env.REACT_APP_DOMAIN || "audiogata.com";
+  if (import.meta.env.PROD || Capacitor.isNativePlatform()) {
+    const domain = import.meta.env.VITE_DOMAIN || "audiogata.com";
     const protocol = domain.startsWith("localhost")
       ? window.location.protocol
       : "https:";
