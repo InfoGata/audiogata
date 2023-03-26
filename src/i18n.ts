@@ -9,6 +9,7 @@ export const resources = {
 
 export const availableLanguages = Object.keys(resources);
 
+// eslint-disable-next-line import/no-named-as-default-member
 i18n
   .use(initReactI18next)
   .use(LanguageDetector)

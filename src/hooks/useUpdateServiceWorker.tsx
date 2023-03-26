@@ -2,7 +2,8 @@ import { Button } from "@mui/material";
 import { OptionsObject, SnackbarKey, SnackbarMessage } from "notistack";
 import React from "react";
 import { useTranslation } from "react-i18next";
-import { useAppSelector } from "../store/hooks";
+// eslint-disable-next-line import/no-unresolved
+import { useRegisterSW } from "virtual:pwa-register/react";
 
 const useUpdateServiceWorker = (
   enqueueSnackbar:
@@ -10,41 +11,37 @@ const useUpdateServiceWorker = (
     | undefined,
   onClickDismiss: (key: SnackbarKey) => void
 ) => {
-  const waitingServiceWorker = useAppSelector(
-    (state) => state.ui.waitingServiceWorker
-  );
   const { t } = useTranslation();
+  const {
+    needRefresh: [needRefresh, setNeedRefresh],
+    updateServiceWorker,
+  } = useRegisterSW();
+
+  const onDismiss = React.useCallback(
+    (key: SnackbarKey) => {
+      setNeedRefresh(false);
+      onClickDismiss(key);
+    },
+    [onClickDismiss, setNeedRefresh]
+  );
 
   React.useEffect(() => {
-    const updateServiceWorker = () => {
-      if (waitingServiceWorker) {
-        waitingServiceWorker.postMessage({ type: "SKIP_WAITING" });
-
-        waitingServiceWorker.addEventListener("statechange", (e) => {
-          const sw = e?.target as ServiceWorker;
-          if (sw.state === "activated") {
-            window.location.reload();
-          }
-        });
-      }
-    };
-
-    if (waitingServiceWorker && enqueueSnackbar) {
+    if (needRefresh && enqueueSnackbar) {
       enqueueSnackbar(t("newVersion"), {
         persist: true,
         action: (key) => (
           <>
-            <Button color="primary" onClick={updateServiceWorker}>
+            <Button color="primary" onClick={() => updateServiceWorker()}>
               {t("reload")}
             </Button>
-            <Button color="error" onClick={() => onClickDismiss(key)}>
+            <Button color="error" onClick={() => onDismiss(key)}>
               {t("dismiss")}
             </Button>
           </>
         ),
       });
     }
-  }, [waitingServiceWorker, t, enqueueSnackbar, onClickDismiss]);
+  }, [t, enqueueSnackbar, needRefresh, updateServiceWorker, onDismiss]);
 };
 
 export default useUpdateServiceWorker;
