@@ -10,10 +10,13 @@ import {
 } from "@mui/material";
 import React from "react";
 import { Track } from "../plugintypes";
-import { formatSeconds } from "../utils";
 import { MoreHoriz } from "@mui/icons-material";
 import { useAppSelector } from "../store/hooks";
-import { getThumbnailImage, searchThumbnailSize } from "../utils";
+import {
+  formatSeconds,
+  getThumbnailImage,
+  searchThumbnailSize,
+} from "../utils";
 import DOMPurify from "dompurify";
 import { Link as RouterLink } from "react-router-dom";
 
