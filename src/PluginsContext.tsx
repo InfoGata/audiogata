@@ -32,7 +32,7 @@ import {
   setTracks,
 } from "./store/reducers/trackReducer";
 import { useSnackbar } from "notistack";
-import { getPluginSubdomain, hasExtension, isElectron } from "./utils";
+import { getPluginSubdomain, hasExtension } from "./utils";
 import { Capacitor } from "@capacitor/core";
 import ConfirmPluginDialog from "./components/ConfirmPluginDialog";
 import { App, URLOpenListenerEvent } from "@capacitor/app";
@@ -44,6 +44,7 @@ import { NetworkRequest, PlayerComponent } from "./types";
 import { nanoid } from "@reduxjs/toolkit";
 import { useTranslation } from "react-i18next";
 import i18n from "./i18n";
+import isElectron from "is-electron";
 
 export interface PluginMethodInterface extends PlayerComponent {
   onSearchAll(request: SearchRequest): Promise<SearchAllResult>;

@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "homepage": "",
-  "main": "build/electron/main.js",
+  "main": "./out/main/index.js",
   "dependencies": {
     "@awesome-cordova-plugins/music-controls": "^5.44.0",
     "@capacitor/android": "3.6.0",
@@ -13,6 +13,8 @@
     "@dnd-kit/core": "^5.0.1",
     "@dnd-kit/sortable": "^6.0.0",
     "@dnd-kit/utilities": "^3.1.0",
+    "@electron-toolkit/preload": "^1.0.3",
+    "@electron-toolkit/utils": "^1.0.2",
     "@emotion/react": "^11.7.1",
     "@emotion/styled": "^11.6.0",
     "@fontsource/roboto": "^4.2.1",
@@ -25,7 +27,6 @@
     "@testing-library/user-event": "^13.5.0",
     "@types/can-autoplay": "^3.0.1",
     "@types/dompurify": "^2.3.3",
-    "@types/electron-devtools-installer": "^2.2.2",
     "@types/mui-image": "^1.0.1",
     "@types/node": "^16.11.41",
     "@types/react": "^18.0.14",
@@ -42,13 +43,10 @@
     "dexie": "^3.0.3",
     "dexie-react-hooks": "^1.1.3",
     "dompurify": "^2.3.8",
-    "electron-devtools-installer": "^3.2.0",
-    "electron-fetch": "^1.7.4",
-    "electron-is-dev": "^2.0.0",
-    "electron-reload": "^2.0.0-alpha.1",
     "hls.js": "^1.2.4",
     "i18next": "^22.0.2",
     "i18next-browser-languagedetector": "^6.1.8",
+    "is-electron": "^2.2.2",
     "lodash": "^4.17.21",
     "mui-image": "^1.0.7",
     "node-fetch": "^3.2.3",
@@ -73,19 +71,12 @@
     "cors-server": "node servers/cors/server.js",
     "postinstall": "electron-builder install-app-deps && cd servers/cors && npm install",
     "dev": "concurrently --kill-others \"npm run cors-server\" \"npm start\"",
-    "electron:dev": "concurrently \"cross-env BROWSER=none npm start\" \"wait-on http://localhost:3000 && tsc -p electron -w\" \"wait-on http://localhost:3000 && tsc -p electron && electron .\"",
-    "electron:build": "npm run build && tsc -p electron && electron-builder",
     "cap:build": "npm run build && cap sync",
-    "android": "npm run build && cap run android"
-  },
-  "build": {
-    "extends": null,
-    "files": [
-      "build/**/*"
-    ],
-    "directories": {
-      "buildResources": "assets"
-    }
+    "android": "npm run build && cap run android",
+    "electron:start": "electron-vite preview",
+    "electron:dev": "electron-vite dev",
+    "electron:build": "electron-vite build",
+    "electron:build:linux": "electron-vite build && electron-builder --linux --config"
   },
   "browserslist": {
     "production": [
@@ -105,9 +96,9 @@
     "@typescript-eslint/eslint-plugin": "^5.56.0",
     "@typescript-eslint/parser": "^5.56.0",
     "@vitejs/plugin-react": "^3.1.0",
-    "cross-env": "^7.0.3",
-    "electron": "^18.1.0",
-    "electron-builder": "^23.0.3",
+    "electron": "^23.2.0",
+    "electron-builder": "^24.1.1",
+    "electron-vite": "^1.0.21",
     "eslint": "^8.36.0",
     "eslint-plugin-i18next": "^6.0.0-2",
     "eslint-plugin-import": "^2.27.5",
@@ -116,7 +107,6 @@
     "eslint-plugin-react": "^7.32.2",
     "eslint-plugin-react-hooks": "^4.6.0",
     "vite": "^4.2.1",
-    "vite-plugin-svgr": "^2.4.0",
-    "wait-on": "^6.0.1"
+    "vite-plugin-svgr": "^2.4.0"
   }
 }

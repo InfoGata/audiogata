@@ -163,11 +163,6 @@ export async function filterAsync<T>(
   return array.filter((_value, index) => filterMap[index]);
 }
 
-export const isElectron = (): boolean => {
-  const userAgent = navigator.userAgent.toLowerCase();
-  return userAgent.indexOf(" electron/") > -1;
-};
-
 export const getPluginSubdomain = (id?: string): string => {
   if (import.meta.env.PROD || Capacitor.isNativePlatform()) {
     const domain = import.meta.env.VITE_DOMAIN || "audiogata.com";

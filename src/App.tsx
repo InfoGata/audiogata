@@ -1,7 +1,7 @@
 import { Box, Button, CssBaseline } from "@mui/material";
 import { SnackbarKey, SnackbarProvider } from "notistack";
 import React from "react";
-import { BrowserRouter } from "react-router-dom";
+import { BrowserRouter, HashRouter } from "react-router-dom";
 import AudioComponent from "./components/AudioComponent";
 import PlayerBar from "./components/PlayerBar";
 import Routing from "./components/Routing";
@@ -17,6 +17,9 @@ import { useTranslation } from "react-i18next";
 import useUpdateServiceWorker from "./hooks/useUpdateServiceWorker";
 import useOffline from "./hooks/useOffline";
 import { ItemMenuProvider } from "./ItemMenuContext";
+import isElectron from "is-electron";
+
+const Router = isElectron() ? HashRouter : BrowserRouter;
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -48,7 +51,7 @@ const App: React.FC = () => {
       )}
     >
       <QueryClientProvider client={queryClient}>
-        <BrowserRouter>
+        <Router>
           <MatomoRouterProvider>
             <PluginsProvider>
               <TrackMenuProvider>
@@ -65,7 +68,7 @@ const App: React.FC = () => {
               </TrackMenuProvider>
             </PluginsProvider>
           </MatomoRouterProvider>
-        </BrowserRouter>
+        </Router>
       </QueryClientProvider>
     </SnackbarProvider>
   );
