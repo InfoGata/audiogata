@@ -74,7 +74,7 @@
     "cap:build": "npm run build && cap sync",
     "android": "npm run build && cap run android",
     "electron:start": "electron-vite preview",
-    "electron:dev": "electron-vite dev",
+    "electron:dev": "concurrently --kill-others \"npm run cors-server\" \"electron-vite dev\"",
     "electron:build": "electron-vite build",
     "electron:build:linux": "electron-vite build && electron-builder --linux --config"
   },
