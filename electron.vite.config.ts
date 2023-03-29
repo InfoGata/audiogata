@@ -24,6 +24,11 @@ export default defineConfig({
     },
   },
   renderer: {
+    resolve: {
+      alias: {
+        "hls.js": "hls.js/dist/hls.min.js",
+      },
+    },
     root: ".",
     build: {
       rollupOptions: {
