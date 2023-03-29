@@ -96,7 +96,7 @@
     "@typescript-eslint/eslint-plugin": "^5.56.0",
     "@typescript-eslint/parser": "^5.56.0",
     "@vitejs/plugin-react": "^3.1.0",
-    "electron": "^23.2.0",
+    "electron": "github:castlabs/electron-releases#v23.1.4+wvcus",
     "electron-builder": "^24.1.1",
     "electron-vite": "^1.0.21",
     "eslint": "^8.36.0",
