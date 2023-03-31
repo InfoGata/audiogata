@@ -5,7 +5,7 @@ import { nanoid } from "@reduxjs/toolkit";
 import { FileType } from "../types";
 import { usePlugins } from "../PluginsContext";
 import PluginContainer from "./PluginContainer";
-import { directoryProps, getPlugin } from "../utils";
+import { directoryProps, generatePluginId, getPlugin } from "../utils";
 import ConfirmPluginDialog from "./ConfirmPluginDialog";
 import { PluginInfo } from "../plugintypes";
 import AddPluginUrlDialog from "./AddPluginUrlDialog";
@@ -43,7 +43,7 @@ const Plugins: React.FC = () => {
 
     if (plugin) {
       if (!plugin.id) {
-        plugin.id = nanoid();
+        plugin.id = generatePluginId();
       }
       setPendingPlugin(plugin);
     }
