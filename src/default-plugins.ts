@@ -13,7 +13,7 @@ export const defaultPlugins: PluginDescription[] = [
     url: "https://cdn.jsdelivr.net/gh/InfoGata/youtube-audiogata@latest/manifest.json",
   },
   {
-    id: "B9-GwavJJOQpQXotpLZH-",
+    id: "B9-GwavJJOQpQXotpLZH",
     name: "Plugin for SoundCloud",
     description: "Play music from SoundCloud.",
     url: "https://cdn.jsdelivr.net/gh/InfoGata/soundcloud-audiogata@latest/manifest.json",
