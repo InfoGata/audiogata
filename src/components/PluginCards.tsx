@@ -10,9 +10,12 @@ import {
   CircularProgress,
   Fade,
 } from "@mui/material";
-import { nanoid } from "@reduxjs/toolkit";
 import { usePlugins } from "../PluginsContext";
-import { getFileTypeFromPluginUrl, getPlugin } from "../utils";
+import {
+  generatePluginId,
+  getFileTypeFromPluginUrl,
+  getPlugin,
+} from "../utils";
 import { useNavigate } from "react-router";
 import { useSnackbar } from "notistack";
 import { defaultPlugins, PluginDescription } from "../default-plugins";
@@ -33,7 +36,7 @@ const PluginCards: React.FC = () => {
 
     if (plugin) {
       if (!plugin.id) {
-        plugin.id = nanoid();
+        plugin.id = generatePluginId();
       }
       await addPlugin(plugin);
       enqueueSnackbar(`${t("addPluginSuccess")}: ${plugin.name}`);

@@ -11,11 +11,10 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { nanoid } from "@reduxjs/toolkit";
 import React from "react";
 import { PluginInfo } from "../plugintypes";
 import { FileType } from "../types";
-import { getPlugin } from "../utils";
+import { generatePluginId, getPlugin } from "../utils";
 import { ExpandMore } from "@mui/icons-material";
 import { useTranslation } from "react-i18next";
 
@@ -63,7 +62,7 @@ const AddPluginUrlDialog: React.FC<AddPluginUrlDialogProps> = (props) => {
 
     if (plugin) {
       if (!plugin.id) {
-        plugin.id = nanoid();
+        plugin.id = generatePluginId();
       }
       handleConfirm(plugin);
     }
