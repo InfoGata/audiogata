@@ -480,6 +480,7 @@ export const setElapsed =
   async (dispatch, getState) => {
     const state = getState();
     if (
+      navigator.mediaSession &&
       "setPositionState" in navigator.mediaSession &&
       state.track.currentTrack?.duration
     ) {
