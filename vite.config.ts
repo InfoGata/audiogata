@@ -1,3 +1,4 @@
+/// <reference types="vitest" />
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import svgrPlugin from "vite-plugin-svgr";
@@ -9,6 +10,10 @@ export default defineConfig({
     alias: {
       "hls.js": "hls.js/dist/hls.min.js",
     },
+  },
+  test: {
+    environment: "jsdom",
+    setupFiles: ["fake-indexeddb/auto"],
   },
   plugins: [
     react(),

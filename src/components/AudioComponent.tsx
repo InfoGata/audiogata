@@ -20,7 +20,7 @@ import { db } from "../database";
 import { defaultSkipTime, filterAsync } from "../utils";
 import { Track } from "../plugintypes";
 import { Capacitor } from "@capacitor/core";
-import { MusicControls } from "@awesome-cordova-plugins/music-controls";
+import { MusicControls } from "@awesome-cordova-plugins/music-controls/index";
 import canAutoPlay from "can-autoplay";
 import { withTranslation, WithTranslation } from "react-i18next";
 
