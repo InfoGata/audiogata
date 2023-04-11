@@ -2,7 +2,7 @@ import { createSlice, nanoid, PayloadAction } from "@reduxjs/toolkit";
 import { Playlist, Track, PlaylistInfo } from "../../plugintypes";
 import { AppThunk } from "../store";
 import { db } from "../../database";
-import unionBy from "lodash/unionBy";
+import { mergeTracks } from "../../utils";
 
 interface PlaylistState {
   playlists: PlaylistInfo[];
@@ -102,7 +102,7 @@ export const addPlaylistTracks =
       }
     });
     if (playlist) {
-      const newTracks = unionBy(playlist.tracks, tracks, "id");
+      const newTracks = mergeTracks(playlist.tracks, tracks);
       playlist.tracks = newTracks;
       await db.playlists.put(playlist);
     }

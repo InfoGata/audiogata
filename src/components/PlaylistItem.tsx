@@ -46,6 +46,7 @@ const ArtistLink: React.FC<ArtistLinkProps> = (props) => {
   return (
     <Link
       component={RouterLink}
+      key={apiId}
       to={`/plugins/${pluginId}/artists/${apiId}`}
       onClick={stopPropagation}
     >
@@ -127,10 +128,11 @@ const PlaylistItem: React.FC<PlaylistItemsProps> = (props) => {
                   apiId={track.artistApiId}
                 />
                 {track.addtionalArtists &&
-                  track.addtionalArtists.map((a) => (
+                  track.addtionalArtists.map((a, i) => (
                     <>
                       {", "}
                       <ArtistLink
+                        key={i}
                         pluginId={track.pluginId}
                         name={a.name}
                         apiId={a.apiId}

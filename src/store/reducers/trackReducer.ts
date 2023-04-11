@@ -1,9 +1,8 @@
 import { createSlice, nanoid, PayloadAction } from "@reduxjs/toolkit";
 import { Track } from "../../plugintypes";
 import { getPluginFrames, PluginFrameContainer } from "../../PluginsContext";
-import { defaultSkipTime, filterAsync } from "../../utils";
+import { defaultSkipTime, filterAsync, mergeTracks } from "../../utils";
 import { AppDispatch, AppThunk } from "../store";
-import unionBy from "lodash/unionBy";
 import intersectionBy from "lodash/intersectionBy";
 import { localPlayer } from "../../LocalPlayer";
 
@@ -339,7 +338,7 @@ export const addTrack =
       const id = nanoid();
       track.id = id;
     }
-    const newTracks = unionBy(state.track.tracks, [track], "id");
+    const newTracks = mergeTracks(state.track.tracks, [track]);
     dispatch(trackSlice.actions.setTracks(newTracks));
     const filteredPlugins = await filterAsync(plugins, (p) =>
       p.hasDefined.onNowPlayingTracksAdded()
@@ -361,7 +360,7 @@ export const addTracks =
   async (dispatch, getState) => {
     const plugins = getPluginFrames();
     const state = getState();
-    const newTracks = unionBy(state.track.tracks, tracks, "id");
+    const newTracks = mergeTracks(state.track.tracks, tracks);
     dispatch(trackSlice.actions.setTracks(newTracks));
     const filteredPlugins = await filterAsync(plugins, (p) =>
       p.hasDefined.onNowPlayingTracksAdded()

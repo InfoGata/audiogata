@@ -1,18 +1,18 @@
 import {
-  Backdrop,
   IconButton,
-  CircularProgress,
   Typography,
   MenuItem,
   ListItemIcon,
   ListItemText,
   Grid,
+  Backdrop,
+  CircularProgress,
 } from "@mui/material";
 import React from "react";
 import { useParams } from "react-router";
 import { playQueue, setTrack, setTracks } from "../store/reducers/trackReducer";
 import { db } from "../database";
-import { PlaylistInfo, Track } from "../plugintypes";
+import { Track } from "../plugintypes";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
 import { setPlaylistTracks } from "../store/reducers/playlistReducer";
 import { Delete, Edit, Info, MoreHoriz, PlayCircle } from "@mui/icons-material";
@@ -25,13 +25,14 @@ import useTrackMenu from "../hooks/useTrackMenu";
 import { useTranslation } from "react-i18next";
 import AddPlaylistDialog from "./AddPlaylistDialog";
 import PlaylistMenu from "./PlaylistMenu";
+import ConvertTracksDialog from "./ConvertTracksDialog";
+import { useLiveQuery } from "dexie-react-hooks";
 
 const PlaylistTracks: React.FC = () => {
   const { playlistId } = useParams<"playlistId">();
   const dispatch = useAppDispatch();
-  const [playlist, setPlaylist] = React.useState<PlaylistInfo | undefined>();
-  const [loaded, setLoaded] = React.useState(false);
   const [openEditMenu, setOpenEditMenu] = React.useState(false);
+  const [openConvertDialog, setOpenConvertDialog] = React.useState(false);
   const [queueMenuAnchorEl, setQueueMenuAnchorEl] =
     React.useState<null | HTMLElement>(null);
   const openQueueMenu = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -39,6 +40,12 @@ const PlaylistTracks: React.FC = () => {
   };
   const closeQueueMenu = () => setQueueMenuAnchorEl(null);
   const { t } = useTranslation();
+  const playlist = useLiveQuery(
+    () => db.playlists.get(playlistId || ""),
+    [playlistId],
+    false
+  );
+  const tracklist = (playlist && playlist?.tracks) || [];
 
   const getListItems = (track?: Track) => {
     const deleteClick = async () => {
@@ -48,7 +55,6 @@ const PlaylistTracks: React.FC = () => {
       if (playlist && track) {
         const newTracklist = tracklist.filter((t) => t.id !== track.id);
         dispatch(setPlaylistTracks(playlist, newTracklist));
-        setTracklist(newTracklist);
       }
     };
     return [
@@ -76,9 +82,16 @@ const PlaylistTracks: React.FC = () => {
     if (playlist) {
       const newTracklist = tracklist.filter((t) => !selected.has(t.id ?? ""));
       dispatch(setPlaylistTracks(playlist, newTracklist));
-      setTracklist(newTracklist);
     }
     closeQueueMenu();
+  };
+
+  // const onConvertTracksOpen = () => {
+  //   setOpenConvertDialog(true);
+  // };
+
+  const onConvertTracksClose = () => {
+    setOpenConvertDialog(false);
   };
 
   const selectedMenuItems = [
@@ -88,6 +101,12 @@ const PlaylistTracks: React.FC = () => {
       </ListItemIcon>
       <ListItemText primary={t("deleteSelectedTracks")} />
     </MenuItem>,
+    // <MenuItem onClick={onConvertTracksOpen} key="convert">
+    //   <ListItemIcon>
+    //     <Edit />
+    //   </ListItemIcon>
+    //   <ListItemText primary={t("convertSelectedTracks")} />
+    // </MenuItem>,
   ];
 
   const playlists = useAppSelector((state) =>
@@ -98,7 +117,6 @@ const PlaylistTracks: React.FC = () => {
     playlists,
     getListItems,
   });
-  const [tracklist, setTracklist] = React.useState<Track[]>([]);
   const { onSelect, onSelectAll, isSelected, selected, setSelected } =
     useSelected(tracklist || []);
   const playlistInfo = useAppSelector((state) =>
@@ -118,18 +136,6 @@ const PlaylistTracks: React.FC = () => {
     setOpenEditMenu(false);
   };
 
-  React.useEffect(() => {
-    const getPlaylist = async () => {
-      if (playlistId) {
-        const playlist = await db.playlists.get(playlistId);
-        setPlaylist(await db.playlists.get(playlistId));
-        setTracklist(playlist?.tracks ?? []);
-        setLoaded(true);
-      }
-    };
-    getPlaylist();
-  }, [playlistId]);
-
   const playPlaylist = () => {
     if (!playlist) {
       return;
@@ -147,13 +153,12 @@ const PlaylistTracks: React.FC = () => {
   const onDragOver = (trackList: Track[]) => {
     if (playlist) {
       dispatch(setPlaylistTracks(playlist, trackList));
-      setTracklist(tracklist);
     }
   };
 
   return (
     <>
-      <Backdrop open={!loaded}>
+      <Backdrop open={playlist === false}>
         <CircularProgress color="inherit" />
       </Backdrop>
       {playlist ? (
@@ -202,9 +207,17 @@ const PlaylistTracks: React.FC = () => {
             open={playlistDialogOpen}
             handleClose={closePlaylistDialog}
           />
+          {openConvertDialog && (
+            <ConvertTracksDialog
+              playlist={playlist}
+              tracks={selectedTracks}
+              open={openConvertDialog}
+              handleClose={onConvertTracksClose}
+            />
+          )}
         </>
       ) : (
-        <>{loaded && <Typography>{t("notFound")}</Typography>}</>
+        <>{playlist !== false && <Typography>{t("notFound")}</Typography>}</>
       )}
     </>
   );

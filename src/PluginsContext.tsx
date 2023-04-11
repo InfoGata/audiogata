@@ -22,6 +22,7 @@ import {
   GetTrackRequest,
   PlaylistInfo,
   ParseUrlType,
+  LookupTrackRequest,
 } from "./plugintypes";
 import { PluginFrame, PluginInterface } from "plugin-frame";
 import { db } from "./database";
@@ -77,6 +78,7 @@ export interface PluginMethodInterface extends PlayerComponent {
   onGetTopItems(): Promise<SearchAllResult>;
   onCanParseUrl(url: string, type: ParseUrlType): Promise<boolean>;
   onLookupPlaylistUrl(url: string): Promise<Playlist>;
+  onLookupTrack(request: LookupTrackRequest): Promise<Track>;
 }
 
 interface ApplicationPluginInterface extends PluginInterface {
@@ -423,6 +425,10 @@ export const PluginsProvider: React.FC<React.PropsWithChildren> = (props) => {
             t.pluginId = plugin.id;
           });
           return result;
+        },
+        onLookupTrack: (track: Track) => {
+          track.pluginId = plugin.id;
+          return track;
         },
       };
 

@@ -71,7 +71,10 @@
     "newVersion": "A new version of this site is available",
     "reload": "Reload",
     "offline": "You are offline",
-    "originalUrl": "Original Url"
+    "originalUrl": "Original Url",
+    "convert": "Convert",
+    "convertSelectedTracks": "Convert Selected Tracks",
+    "conversionFailed": "Conversion Failed"
   },
   "plugins": {
     "addPlugin_one": "Add Plugin",

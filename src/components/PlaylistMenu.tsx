@@ -20,6 +20,7 @@ import { useAppDispatch } from "../store/hooks";
 import AddPlaylistDialog from "./AddPlaylistDialog";
 
 interface PlaylistMenuProps {
+  playlist?: PlaylistInfo;
   playlists: PlaylistInfo[];
   selected: Set<string>;
   tracklist: Track[];

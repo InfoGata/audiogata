@@ -1,9 +1,12 @@
 import { DirectoryFile, FileType, Manifest } from "./types";
 import thumbnail from "./thumbnail.png";
-import { ImageInfo, PluginInfo } from "./plugintypes";
+import { ImageInfo, PluginInfo, Track } from "./plugintypes";
 import i18next from "./i18n";
 import { Capacitor } from "@capacitor/core";
 import { customAlphabet } from "nanoid";
+import reverse from "lodash/reverse";
+import uniqBy from "lodash/uniqBy";
+import { ValueIteratee } from "lodash";
 
 export function formatSeconds(seconds?: number) {
   if (!seconds) {
@@ -186,6 +189,22 @@ export const generatePluginId = () => {
     21
   );
   return nanoid();
+};
+
+// Merge tracks, arr1 and arr2 have tracks with the same id, take arr2's track
+export const mergeTracks = (arr1: Track[], arr2: Track[]): Track[] => {
+  const map = new Map<string, Track>();
+  arr1.forEach((t) => {
+    if (t.id) {
+      map.set(t.id, t);
+    }
+  });
+  arr2.forEach((t) => {
+    if (t.id) {
+      map.set(t.id, t);
+    }
+  });
+  return Array.from(map.values());
 };
 
 export const defaultSkipTime = 10;
