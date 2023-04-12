@@ -3,13 +3,13 @@ import React from "react";
 import { useParams } from "react-router-dom";
 import usePlugins from "../hooks/usePlugins";
 import { db } from "../database";
-import { Grid, Typography } from "@mui/material";
+import { Backdrop, CircularProgress, Grid, Typography } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import { getPluginSubdomain } from "../utils";
 
 const PluginOptions: React.FC = () => {
   const { pluginId } = useParams<"pluginId">();
-  const { plugins, pluginMessage } = usePlugins();
+  const { plugins, pluginMessage, pluginsLoaded } = usePlugins();
   const ref = React.useRef<HTMLIFrameElement>(null);
   const plugin = plugins.find((p) => p.id === pluginId);
   const [optionsHtml, setOptionsHtml] = React.useState<string>();
@@ -50,6 +50,13 @@ const PluginOptions: React.FC = () => {
     getOptionsHtml();
   }, [plugin]);
 
+  if (!pluginsLoaded) {
+    return (
+      <Backdrop open={true}>
+        <CircularProgress color="inherit" />
+      </Backdrop>
+    );
+  }
   if (!plugin) return <>{t("common:notFound")}</>;
 
   const srcUrl = `${getPluginSubdomain(plugin.id)}/ui.html`;
