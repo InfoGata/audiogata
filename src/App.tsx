@@ -11,15 +11,15 @@ import { useAppDispatch } from "./store/hooks";
 import { initializePlaylists } from "./store/reducers/playlistReducer";
 import { QueryClient, QueryClientProvider } from "react-query";
 import MatomoRouterProvider from "./components/MatomoRouterProvider";
-import { TrackMenuProvider } from "./TrackMenuContext";
 import { useTranslation } from "react-i18next";
 import useUpdateServiceWorker from "./hooks/useUpdateServiceWorker";
 import useOffline from "./hooks/useOffline";
-import { ItemMenuProvider } from "./ItemMenuContext";
 import isElectron from "is-electron";
 import PluginsProvider from "./providers/PluginsProvider";
 import OutsideCallConsumer from "react-outside-call";
 import callConfig from "./call-config";
+import TrackMenuProvider from "./providers/TrackMenuProvider";
+import ItemMenuProvider from "./providers/ItemMenuProvider";
 
 const Router = isElectron() ? HashRouter : BrowserRouter;
 
