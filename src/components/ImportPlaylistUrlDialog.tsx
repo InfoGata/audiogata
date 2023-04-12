@@ -12,7 +12,8 @@ import {
 import { useSnackbar } from "notistack";
 import React from "react";
 import { useTranslation } from "react-i18next";
-import { PluginFrameContainer, usePlugins } from "../PluginsContext";
+import { PluginFrameContainer } from "../PluginsContext";
+import usePlugins from "../hooks/usePlugins";
 import { useAppDispatch } from "../store/hooks";
 import { addPlaylist } from "../store/reducers/playlistReducer";
 import { filterAsync } from "../utils";

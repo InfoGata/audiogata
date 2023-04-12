@@ -3,7 +3,7 @@ import { Backdrop, CircularProgress, IconButton } from "@mui/material";
 import React from "react";
 import { useParams } from "react-router";
 import { Track, PageInfo, PlaylistInfo } from "../plugintypes";
-import { usePlugins } from "../PluginsContext";
+import usePlugins from "../hooks/usePlugins";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
 import TrackList from "./TrackList";
 import useSelected from "../hooks/useSelected";

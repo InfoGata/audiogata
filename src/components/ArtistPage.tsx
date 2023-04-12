@@ -7,7 +7,7 @@ import { useLocation } from "react-router-dom";
 import useFindPlugin from "../hooks/useFindPlugin";
 import useItemMenu from "../hooks/useItemMenu";
 import usePagination from "../hooks/usePagination";
-import { usePlugins } from "../PluginsContext";
+import usePlugins from "../hooks/usePlugins";
 import { Artist, PageInfo } from "../plugintypes";
 import AlbumSearchResult from "./AlbumSearchResult";
 import ConfirmPluginDialog from "./ConfirmPluginDialog";

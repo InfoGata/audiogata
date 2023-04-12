@@ -1,7 +1,8 @@
 import { FormControl, InputLabel, NativeSelect } from "@mui/material";
 import React from "react";
 import { useTranslation } from "react-i18next";
-import { PluginMethodInterface, usePlugins } from "../PluginsContext";
+import { PluginMethodInterface } from "../PluginsContext";
+import usePlugins from "../hooks/usePlugins";
 import { useAppDispatch, useAppStore } from "../store/hooks";
 import { setCurrentPluginId } from "../store/reducers/settingsReducer";
 import { filterAsync } from "../utils";

@@ -3,7 +3,7 @@ import React from "react";
 import { useTranslation } from "react-i18next";
 import { useParams } from "react-router-dom";
 import { db } from "../database";
-import { usePlugins } from "../PluginsContext";
+import usePlugins from "../hooks/usePlugins";
 import { Track } from "../plugintypes";
 import { useAppDispatch } from "../store/hooks";
 import { setPlaylistTracks } from "../store/reducers/playlistReducer";

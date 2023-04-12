@@ -4,7 +4,7 @@ import { SlowMotionVideo } from "@mui/icons-material";
 import React from "react";
 import { setPlaybackRate } from "../store/reducers/trackReducer";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
-import { usePlugins } from "../PluginsContext";
+import usePlugins from "../hooks/usePlugins";
 
 const PlaybackRate: React.FC = () => {
   const theme = useTheme();

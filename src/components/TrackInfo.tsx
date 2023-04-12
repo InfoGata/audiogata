@@ -1,9 +1,9 @@
 import { List, ListItem, ListItemText } from "@mui/material";
 import React from "react";
 import { Track } from "../plugintypes";
-import { usePlugins } from "../PluginsContext";
 import { formatSeconds } from "../utils";
 import { useTranslation } from "react-i18next";
+import usePlugins from "../hooks/usePlugins";
 
 interface TrackInfoProps {
   track: Track;

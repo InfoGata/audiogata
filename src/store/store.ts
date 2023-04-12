@@ -26,6 +26,15 @@ export const setupStore = (preloadedState?: PreloadedState<AppState>) => {
     preloadedState,
   });
 };
+
+if (import.meta.env.DEV && import.meta.hot) {
+  import.meta.hot.accept("./rootReducer", (newModule) => {
+    if (newModule) {
+      store.replaceReducer(persistReducer(persistConfig, newModule.default));
+    }
+  });
+}
+
 const store = setupStore();
 export const persistor = persistStore(store);
 export type AppState = ReturnType<typeof persistedReducer>;

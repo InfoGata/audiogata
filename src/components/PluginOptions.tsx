@@ -1,7 +1,7 @@
 import { Capacitor } from "@capacitor/core";
 import React from "react";
 import { useParams } from "react-router-dom";
-import { usePlugins } from "../PluginsContext";
+import usePlugins from "../hooks/usePlugins";
 import { db } from "../database";
 import { Grid, Typography } from "@mui/material";
 import { useTranslation } from "react-i18next";

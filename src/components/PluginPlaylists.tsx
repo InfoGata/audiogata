@@ -1,5 +1,5 @@
 import React from "react";
-import { usePlugins } from "../PluginsContext";
+import usePlugins from "../hooks/usePlugins";
 import { useParams } from "react-router";
 import { Link } from "react-router-dom";
 import thumbnail from "../thumbnail.png";

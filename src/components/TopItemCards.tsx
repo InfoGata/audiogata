@@ -12,7 +12,7 @@ import {
 import React from "react";
 import { useQuery } from "react-query";
 import useTrackMenu from "../hooks/useTrackMenu";
-import { usePlugins } from "../PluginsContext";
+import usePlugins from "../hooks/usePlugins";
 import { useAppDispatch } from "../store/hooks";
 import { addTrack, setTrack } from "../store/reducers/trackReducer";
 import { getThumbnailImage, playlistThumbnailSize } from "../utils";

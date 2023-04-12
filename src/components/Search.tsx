@@ -16,7 +16,7 @@ import {
   SearchAllResult,
   Track,
 } from "../plugintypes";
-import { usePlugins } from "../PluginsContext";
+import usePlugins from "../hooks/usePlugins";
 import { SearchResultType } from "../types";
 import SelectPlugin from "./SelectPlugin";
 import { useQuery, useQueryClient } from "react-query";

@@ -2,7 +2,7 @@ import { Backdrop, Button, CircularProgress, Grid } from "@mui/material";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { useParams } from "react-router";
-import { usePlugins } from "../PluginsContext";
+import usePlugins from "../hooks/usePlugins";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
 import { updateTrack } from "../store/reducers/trackReducer";
 import TrackInfo from "./TrackInfo";

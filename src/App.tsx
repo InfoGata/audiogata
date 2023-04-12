@@ -7,7 +7,6 @@ import PlayerBar from "./components/PlayerBar";
 import Routing from "./components/Routing";
 import SideBar from "./components/SideBar";
 import TopBar from "./components/TopBar";
-import { PluginsProvider } from "./PluginsContext";
 import { useAppDispatch } from "./store/hooks";
 import { initializePlaylists } from "./store/reducers/playlistReducer";
 import { QueryClient, QueryClientProvider } from "react-query";
@@ -18,6 +17,9 @@ import useUpdateServiceWorker from "./hooks/useUpdateServiceWorker";
 import useOffline from "./hooks/useOffline";
 import { ItemMenuProvider } from "./ItemMenuContext";
 import isElectron from "is-electron";
+import PluginsProvider from "./providers/PluginsProvider";
+import OutsideCallConsumer from "react-outside-call";
+import callConfig from "./call-config";
 
 const Router = isElectron() ? HashRouter : BrowserRouter;
 
@@ -28,6 +30,7 @@ const queryClient = new QueryClient({
     },
   },
 });
+
 const App: React.FC = () => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
@@ -56,14 +59,16 @@ const App: React.FC = () => {
             <PluginsProvider>
               <TrackMenuProvider>
                 <ItemMenuProvider>
-                  <Box sx={{ display: "flex" }}>
-                    <CssBaseline />
-                    <TopBar />
-                    <SideBar />
-                    <Routing />
-                    <PlayerBar />
-                    <AudioComponent />
-                  </Box>
+                  <OutsideCallConsumer config={callConfig}>
+                    <Box sx={{ display: "flex" }}>
+                      <CssBaseline />
+                      <TopBar />
+                      <SideBar />
+                      <Routing />
+                      <PlayerBar />
+                      <AudioComponent />
+                    </Box>
+                  </OutsideCallConsumer>
                 </ItemMenuProvider>
               </TrackMenuProvider>
             </PluginsProvider>

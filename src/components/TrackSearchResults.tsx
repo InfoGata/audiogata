@@ -4,12 +4,12 @@ import { useQuery } from "react-query";
 import useTrackMenu from "../hooks/useTrackMenu";
 import { FilterInfo, PageInfo, Track } from "../plugintypes";
 import usePagination from "../hooks/usePagination";
-import { usePlugins } from "../PluginsContext";
 import Pager from "./Pager";
 import Filtering from "./Filtering";
 import TrackList from "./TrackList";
 import { addTrack, setTrack } from "../store/reducers/trackReducer";
 import { useAppDispatch } from "../store/hooks";
+import usePlugins from "../hooks/usePlugins";
 
 interface TrackSearchResultsProps {
   pluginId: string;

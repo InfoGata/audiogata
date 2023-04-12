@@ -7,7 +7,7 @@ interface MatomoProviderWithChildrenProps extends MatomoProviderProps {
   children: React.ReactNode;
 }
 
-export const createClient = () => {
+const createClient = () => {
   return createInstance({
     urlBase: "https://matomo.infogata.com",
     siteId: 3,

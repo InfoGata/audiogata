@@ -10,7 +10,7 @@ import {
   CircularProgress,
   Fade,
 } from "@mui/material";
-import { usePlugins } from "../PluginsContext";
+import usePlugins from "../hooks/usePlugins";
 import {
   generatePluginId,
   getFileTypeFromPluginUrl,

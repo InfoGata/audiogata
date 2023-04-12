@@ -2,7 +2,7 @@ import { List, Backdrop, CircularProgress } from "@mui/material";
 import React from "react";
 import { useQuery } from "react-query";
 import usePagination from "../hooks/usePagination";
-import { usePlugins } from "../PluginsContext";
+import usePlugins from "../hooks/usePlugins";
 import { FilterInfo, PageInfo } from "../plugintypes";
 import AlbumSearchResult from "./AlbumSearchResult";
 import Filtering from "./Filtering";

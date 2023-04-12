@@ -7,7 +7,7 @@ import {
 } from "@mui/material";
 import React from "react";
 import { useTranslation } from "react-i18next";
-import { usePlugins } from "../PluginsContext";
+import usePlugins from "../hooks/usePlugins";
 import { Track } from "../plugintypes";
 
 interface SelectTrackListPluginProps {

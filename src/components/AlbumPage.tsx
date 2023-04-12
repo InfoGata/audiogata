@@ -7,7 +7,7 @@ import useFindPlugin from "../hooks/useFindPlugin";
 import usePagination from "../hooks/usePagination";
 import useSelected from "../hooks/useSelected";
 import useTrackMenu from "../hooks/useTrackMenu";
-import { usePlugins } from "../PluginsContext";
+import usePlugins from "../hooks/usePlugins";
 import { Album, PageInfo, Track } from "../plugintypes";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
 import { setTracks, setTrack, playQueue } from "../store/reducers/trackReducer";

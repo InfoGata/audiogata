@@ -2,7 +2,7 @@ import React from "react";
 import { Button, Grid } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { FileType } from "../types";
-import { usePlugins } from "../PluginsContext";
+import usePlugins from "../hooks/usePlugins";
 import PluginContainer from "./PluginContainer";
 import { directoryProps, generatePluginId, getPlugin } from "../utils";
 import ConfirmPluginDialog from "./ConfirmPluginDialog";

@@ -7,7 +7,8 @@ import {
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import React from "react";
-import { PluginFrameContainer, usePlugins } from "../PluginsContext";
+import { PluginFrameContainer } from "../PluginsContext";
+import usePlugins from "../hooks/usePlugins";
 import {
   directoryProps,
   getFileText,

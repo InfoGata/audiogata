@@ -15,7 +15,7 @@ import {
 import { setTrackLoading } from "../store/reducers/uiReducer";
 import { AppState } from "../store/store";
 import { withSnackbar, ProviderContext } from "notistack";
-import { withPlugins, PluginContextInterface } from "../PluginsContext";
+import { PluginContextInterface } from "../PluginsContext";
 import { db } from "../database";
 import { defaultSkipTime, filterAsync } from "../utils";
 import { Track } from "../plugintypes";
@@ -23,6 +23,7 @@ import { Capacitor } from "@capacitor/core";
 import { MusicControls } from "@awesome-cordova-plugins/music-controls/index";
 import canAutoPlay from "can-autoplay";
 import { withTranslation, WithTranslation } from "react-i18next";
+import { withPlugins } from "../withPlugins";
 
 export interface AudioComponentProps
   extends StateProps,
