@@ -56,6 +56,7 @@ export interface PluginMethodInterface extends PlayerComponent {
   onGetTopItems(): Promise<SearchAllResult>;
   onCanParseUrl(url: string, type: ParseUrlType): Promise<boolean>;
   onLookupPlaylistUrl(url: string): Promise<Playlist>;
+  onLookupTrackUrls(url: string[]): Promise<Track[]>;
   onLookupTrack(request: LookupTrackRequest): Promise<Track>;
 }
 

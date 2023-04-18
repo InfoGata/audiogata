@@ -13,16 +13,17 @@ import {
   ListItemButton,
 } from "@mui/material";
 import React from "react";
-import { PlaylistInfo } from "../plugintypes";
+import { Playlist, PlaylistInfo, Track } from "../plugintypes";
 import { Link } from "react-router-dom";
 import { Delete, MoreHoriz } from "@mui/icons-material";
-import { deletePlaylist } from "../store/reducers/playlistReducer";
+import { addPlaylist, deletePlaylist } from "../store/reducers/playlistReducer";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
 import { PluginFrameContainer } from "../PluginsContext";
 import usePlugins from "../hooks/usePlugins";
 import { filterAsync } from "../utils";
 import { useTranslation } from "react-i18next";
-import ImportPlaylistUrlDialog from "./ImportPlaylistUrlDialog";
+import ImportDialog from "./ImportDialog";
+import { useSnackbar } from "notistack";
 
 interface PlaylistsItemProps {
   playlist: PlaylistInfo;
@@ -55,6 +56,7 @@ const PlaylistsItem: React.FC<PlaylistsItemProps> = (props) => {
 const Playlists: React.FC = () => {
   const { t } = useTranslation();
   const { plugins } = usePlugins();
+  const { enqueueSnackbar } = useSnackbar();
   const [playlistPlugins, setPlaylistPlugins] = React.useState<
     PluginFrameContainer[]
   >([]);
@@ -104,6 +106,14 @@ const Playlists: React.FC = () => {
       {p.name}
     </Button>
   ));
+
+  const onImport = (item: Playlist | Track[]) => {
+    if ("tracks" in item) {
+      dispatch(addPlaylist(item));
+      enqueueSnackbar(t("playlistImported", { playlistName: item.name }));
+    }
+  };
+
   return (
     <>
       <Typography variant="h5" gutterBottom>
@@ -126,9 +136,11 @@ const Playlists: React.FC = () => {
           <ListItemText primary={t("delete")} />
         </MenuItem>
       </Menu>
-      <ImportPlaylistUrlDialog
+      <ImportDialog
         open={openImportDialog}
         handleClose={onCloseImportDialog}
+        parseType="playlist"
+        onSuccess={onImport}
       />
     </>
   );

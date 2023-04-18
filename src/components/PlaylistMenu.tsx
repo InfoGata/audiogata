@@ -20,10 +20,10 @@ import { useAppDispatch } from "../store/hooks";
 import AddPlaylistDialog from "./AddPlaylistDialog";
 
 interface PlaylistMenuProps {
-  playlist?: PlaylistInfo;
   playlists: PlaylistInfo[];
   selected: Set<string>;
   tracklist: Track[];
+  menuItems?: JSX.Element[];
   selectedMenuItems?: JSX.Element[];
   anchorElement: HTMLElement | null;
   isFavorite?: boolean;
@@ -37,6 +37,7 @@ const PlaylistMenu: React.FC<PlaylistMenuProps> = (props) => {
     playlists,
     selected,
     tracklist,
+    menuItems,
     selectedMenuItems,
     anchorElement,
     onClose,
@@ -82,7 +83,9 @@ const PlaylistMenu: React.FC<PlaylistMenuProps> = (props) => {
         open={Boolean(anchorElement)}
         onClose={onClose}
         anchorEl={anchorElement}
+        onClick={onClose}
       >
+        {menuItems}
         <MenuItem onClick={addPlaylistToQueue}>
           <ListItemIcon>
             <PlaylistPlay />

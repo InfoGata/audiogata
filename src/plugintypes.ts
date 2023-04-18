@@ -184,7 +184,7 @@ export interface FilterOption {
   value: string;
 }
 
-export type ParseUrlType = "playlist";
+export type ParseUrlType = "playlist" | "track";
 
 export interface LookupTrackRequest {
   trackName: string;

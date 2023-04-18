@@ -12,10 +12,20 @@ import React from "react";
 import { useParams } from "react-router";
 import { playQueue, setTrack, setTracks } from "../store/reducers/trackReducer";
 import { db } from "../database";
-import { Track } from "../plugintypes";
+import { Playlist, Track } from "../plugintypes";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
-import { setPlaylistTracks } from "../store/reducers/playlistReducer";
-import { Delete, Edit, Info, MoreHoriz, PlayCircle } from "@mui/icons-material";
+import {
+  addPlaylistTracks,
+  setPlaylistTracks,
+} from "../store/reducers/playlistReducer";
+import {
+  Delete,
+  Edit,
+  Info,
+  MoreHoriz,
+  PlayCircle,
+  UploadFile,
+} from "@mui/icons-material";
 import { Link } from "react-router-dom";
 import TrackList from "./TrackList";
 import useSelected from "../hooks/useSelected";
@@ -27,6 +37,7 @@ import AddPlaylistDialog from "./AddPlaylistDialog";
 import PlaylistMenu from "./PlaylistMenu";
 import ConvertTracksDialog from "./ConvertTracksDialog";
 import { useLiveQuery } from "dexie-react-hooks";
+import ImportDialog from "./ImportDialog";
 
 const PlaylistTracks: React.FC = () => {
   const { playlistId } = useParams<"playlistId">();
@@ -39,6 +50,8 @@ const PlaylistTracks: React.FC = () => {
     setQueueMenuAnchorEl(event.currentTarget);
   };
   const closeQueueMenu = () => setQueueMenuAnchorEl(null);
+  const [importDialogOpen, setImportDialogOpen] = React.useState(false);
+
   const { t } = useTranslation();
   const playlist = useLiveQuery(
     () => db.playlists.get(playlistId || ""),
@@ -92,6 +105,20 @@ const PlaylistTracks: React.FC = () => {
 
   const onConvertTracksClose = () => {
     setOpenConvertDialog(false);
+  };
+
+  const openImportDialog = () => {
+    setImportDialogOpen(true);
+  };
+  const closeImportDialog = () => {
+    setImportDialogOpen(false);
+  };
+
+  const onImport = (item: Track[] | Playlist) => {
+    if (playlist && Array.isArray(item)) {
+      dispatch(addPlaylistTracks(playlist, item));
+      closeImportDialog();
+    }
   };
 
   const selectedMenuItems = [
@@ -156,6 +183,15 @@ const PlaylistTracks: React.FC = () => {
     }
   };
 
+  const menuItems = [
+    <MenuItem onClick={openImportDialog} key="import">
+      <ListItemIcon>
+        <UploadFile />
+      </ListItemIcon>
+      <ListItemText primary={t("importTrackByUrl")} />
+    </MenuItem>,
+  ];
+
   return (
     <>
       <Backdrop open={playlist === false}>
@@ -182,6 +218,7 @@ const PlaylistTracks: React.FC = () => {
             selectedMenuItems={selectedMenuItems}
             anchorElement={queueMenuAnchorEl}
             onClose={closeQueueMenu}
+            menuItems={menuItems}
           />
           <SelectTrackListPlugin
             trackList={tracklist}
@@ -206,6 +243,12 @@ const PlaylistTracks: React.FC = () => {
             tracks={selectedTracks}
             open={playlistDialogOpen}
             handleClose={closePlaylistDialog}
+          />
+          <ImportDialog
+            open={importDialogOpen}
+            handleClose={closeImportDialog}
+            parseType="track"
+            onSuccess={onImport}
           />
           {openConvertDialog && (
             <ConvertTracksDialog

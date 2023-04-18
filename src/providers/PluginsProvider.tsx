@@ -352,6 +352,13 @@ const PluginsProvider: React.FC<React.PropsWithChildren> = (props) => {
           });
           return result;
         },
+        onLookupTrackUrls: (result: Track[]) => {
+          result.forEach((t) => {
+            t.id = nanoid();
+            t.pluginId = plugin.id;
+          });
+          return result;
+        },
         onLookupTrack: (track: Track) => {
           track.pluginId = plugin.id;
           return track;
