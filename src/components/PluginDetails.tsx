@@ -94,12 +94,14 @@ const PluginDetails: React.FC = () => {
                 secondary={`${scriptSize / 1000} kb`}
               />
             </ListItem>
-            <ListItem>
-              <ListItemText
-                primary={t("plugins:optionsPageSize")}
-                secondary={`${optionSize / 1000} kb`}
-              />
-            </ListItem>
+            {!!optionSize && (
+              <ListItem>
+                <ListItemText
+                  primary={t("plugins:optionsPageSize")}
+                  secondary={`${optionSize / 1000} kb`}
+                />
+              </ListItem>
+            )}
             {plugin.manifestUrl && (
               <ListItem disablePadding>
                 <ListItemButton
