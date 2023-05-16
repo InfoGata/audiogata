@@ -4,9 +4,6 @@ import { ImageInfo, PluginInfo, Track } from "./plugintypes";
 import i18next from "./i18n";
 import { Capacitor } from "@capacitor/core";
 import { customAlphabet } from "nanoid";
-import reverse from "lodash/reverse";
-import uniqBy from "lodash/uniqBy";
-import { ValueIteratee } from "lodash";
 
 export function formatSeconds(seconds?: number) {
   if (!seconds) {

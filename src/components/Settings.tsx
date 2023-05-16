@@ -18,6 +18,7 @@ import {
   saveCorsProxyUrl,
   saveShowForwardAndRewind,
   saveCustomFowardAndRewindTime,
+  toggleDisableAutoUpdatePlugins,
 } from "../store/reducers/settingsReducer";
 import { defaultSkipTime } from "../utils";
 
@@ -26,6 +27,11 @@ const Settings: React.FC = () => {
   const { enqueueSnackbar } = useSnackbar();
   const playOnStartup = useAppSelector((state) => state.settings.playOnStartup);
   const onChangePlayOnStartup = () => dispatch(togglePlayOnStartup());
+  const disableAutoUpdatePlugins = useAppSelector(
+    (state) => state.settings.disableAutoUpdatePlugins
+  );
+  const onChangeDisableAutoUpdatePlugins = () =>
+    dispatch(toggleDisableAutoUpdatePlugins());
   const corsProxyUrl = useAppSelector((state) => state.settings.corsProxyUrl);
   const showForwardAndRewind = useAppSelector(
     (state) => state.settings.showForwardAndRewind
@@ -58,9 +64,17 @@ const Settings: React.FC = () => {
     const value = Number(event.target.value);
     dispatch(saveCustomFowardAndRewindTime(value));
   };
-
   return (
     <FormGroup>
+      <FormControlLabel
+        control={
+          <Switch
+            checked={disableAutoUpdatePlugins}
+            onChange={onChangeDisableAutoUpdatePlugins}
+          />
+        }
+        label={t("settings:disableAutoUpdatePlugins")}
+      />
       <FormControlLabel
         control={
           <Switch checked={playOnStartup} onChange={onChangePlayOnStartup} />

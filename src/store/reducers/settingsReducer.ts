@@ -6,6 +6,7 @@ interface SettingsState {
   currentPluginId?: string;
   showForwardAndRewind?: boolean;
   customFowardAndRewindTime?: number;
+  disableAutoUpdatePlugins?: boolean;
 }
 
 const initialState: SettingsState = {
@@ -21,6 +22,12 @@ const settingsSlice = createSlice({
       return {
         ...state,
         playOnStartup: !state.playOnStartup,
+      };
+    },
+    toggleDisableAutoUpdatePlugins: (state) => {
+      return {
+        ...state,
+        autoUpdatePlugins: !state.disableAutoUpdatePlugins,
       };
     },
     saveCorsProxyUrl: (state, action: PayloadAction<string | undefined>) => {
@@ -56,5 +63,6 @@ export const {
   setCurrentPluginId,
   saveShowForwardAndRewind,
   saveCustomFowardAndRewindTime,
+  toggleDisableAutoUpdatePlugins,
 } = settingsSlice.actions;
 export default settingsSlice.reducer;
