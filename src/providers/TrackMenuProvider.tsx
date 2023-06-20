@@ -63,6 +63,7 @@ const TrackMenuProvider: React.FC<React.PropsWithChildren> = (props) => {
   const addTrackToQueue = () => {
     if (menuTrack) {
       dispatch(addTrack(menuTrack));
+      enqueueSnackbar(t("trackAddedToQueue"));
     }
   };
 

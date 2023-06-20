@@ -18,6 +18,7 @@ import { useTranslation } from "react-i18next";
 import { addTracks } from "../store/reducers/trackReducer";
 import { useAppDispatch } from "../store/hooks";
 import AddPlaylistDialog from "./AddPlaylistDialog";
+import { useSnackbar } from "notistack";
 
 interface PlaylistMenuProps {
   playlists: PlaylistInfo[];
@@ -52,16 +53,19 @@ const PlaylistMenu: React.FC<PlaylistMenuProps> = (props) => {
   const [playlistDialogOpen, setPlaylistDialogOpen] = React.useState(false);
   const closePlaylistDialog = () => setPlaylistDialogOpen(false);
   const dispatch = useAppDispatch();
+  const { enqueueSnackbar } = useSnackbar();
 
   const selectedTracks = tracklist.filter((t) => selected.has(t.id ?? ""));
 
   const addPlaylistToQueue = () => {
     dispatch(addTracks(tracklist));
+    enqueueSnackbar(t("tracksAddedToQueue"));
     onClose();
   };
 
   const addSelectedToQueue = () => {
     dispatch(addTracks(selectedTracks));
+    enqueueSnackbar(t("tracksAddedToQueue"));
     onClose();
   };
 
