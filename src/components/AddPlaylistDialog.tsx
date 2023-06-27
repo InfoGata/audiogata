@@ -12,6 +12,7 @@ import { useTranslation } from "react-i18next";
 import { Playlist, Track } from "../plugintypes";
 import { useAppDispatch } from "../store/hooks";
 import { addPlaylist } from "../store/reducers/playlistReducer";
+import { useSnackbar } from "notistack";
 
 interface AddPlaylistDialogProps {
   open: boolean;
@@ -25,6 +26,7 @@ const AddPlaylistDialog: React.FC<AddPlaylistDialogProps> = (props) => {
   const [name, setName] = React.useState("");
   const formId = React.useId();
   const dispatch = useAppDispatch();
+  const { enqueueSnackbar } = useSnackbar();
 
   const onSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -34,6 +36,8 @@ const AddPlaylistDialog: React.FC<AddPlaylistDialogProps> = (props) => {
       tracks: tracks,
     };
     dispatch(addPlaylist(playlist));
+    enqueueSnackbar(t("playlistCreated"));
+
     handleClose();
   };
 
