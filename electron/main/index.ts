@@ -43,8 +43,18 @@ function createWindow() {
   mainWindow.webContents.session.webRequest.onHeadersReceived(
     (details, callback) => {
       const { responseHeaders } = details;
-      UpsertKeyValue(responseHeaders, "Access-Control-Allow-Origin", ["*"]);
-      UpsertKeyValue(responseHeaders, "Access-Control-Allow-Headers", ["*"]);
+      if (responseHeaders) {
+        // If credentials == "true", Access-Control-Allow-Origin cannot be "*"
+        // So only set it if that header isn't there
+        const credentialsHeader =
+          responseHeaders["access-control-allow-credentials"];
+        if (!credentialsHeader) {
+          UpsertKeyValue(responseHeaders, "Access-Control-Allow-Origin", ["*"]);
+          UpsertKeyValue(responseHeaders, "Access-Control-Allow-Headers", [
+            "*",
+          ]);
+        }
+      }
       callback({
         responseHeaders,
       });
