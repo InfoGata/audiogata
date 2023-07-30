@@ -99,9 +99,9 @@ const PlaylistTracks: React.FC = () => {
     closeQueueMenu();
   };
 
-  // const onConvertTracksOpen = () => {
-  //   setOpenConvertDialog(true);
-  // };
+  const onConvertTracksOpen = () => {
+    setOpenConvertDialog(true);
+  };
 
   const onConvertTracksClose = () => {
     setOpenConvertDialog(false);
@@ -128,12 +128,12 @@ const PlaylistTracks: React.FC = () => {
       </ListItemIcon>
       <ListItemText primary={t("deleteSelectedTracks")} />
     </MenuItem>,
-    // <MenuItem onClick={onConvertTracksOpen} key="convert">
-    //   <ListItemIcon>
-    //     <Edit />
-    //   </ListItemIcon>
-    //   <ListItemText primary={t("convertSelectedTracks")} />
-    // </MenuItem>,
+    <MenuItem onClick={onConvertTracksOpen} key="convert">
+      <ListItemIcon>
+        <Edit />
+      </ListItemIcon>
+      <ListItemText primary={t("convertSelectedTracks")} />
+    </MenuItem>,
   ];
 
   const playlists = useAppSelector((state) =>
