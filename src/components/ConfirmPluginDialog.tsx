@@ -12,9 +12,9 @@ import {
   ListItemText,
 } from "@mui/material";
 import React from "react";
-import { PluginInfo } from "../plugintypes";
-import usePlugins from "../hooks/usePlugins";
 import { useTranslation } from "react-i18next";
+import usePlugins from "../hooks/usePlugins";
+import { PluginInfo } from "../plugintypes";
 
 interface ConfirmPluginDialogProps {
   open: boolean;

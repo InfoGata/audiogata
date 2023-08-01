@@ -1,33 +1,22 @@
-import React from "react";
-import { db } from "../database";
-import { useAppDispatch, useAppSelector } from "../store/hooks";
-import {
-  nextTrack,
-  setElapsed,
-  setTracks,
-} from "../store/reducers/trackReducer";
-import { useSnackbar } from "notistack";
-import {
-  getFileText,
-  getFileTypeFromPluginUrl,
-  getPlugin,
-  getPluginSubdomain,
-  hasExtension,
-  mapAsync,
-} from "../utils";
-import { Capacitor } from "@capacitor/core";
-import ConfirmPluginDialog from "../components/ConfirmPluginDialog";
 import { App, URLOpenListenerEvent } from "@capacitor/app";
-import {
-  addPlaylists,
-  addPlaylistTracks,
-} from "../store/reducers/playlistReducer";
+import { Capacitor } from "@capacitor/core";
 import { nanoid } from "@reduxjs/toolkit";
-import { useTranslation } from "react-i18next";
-import i18n from "../i18n";
 import isElectron from "is-electron";
+import { useSnackbar } from "notistack";
 import { PluginInterface } from "plugin-frame";
-import { Manifest, NetworkRequest } from "../types";
+import React from "react";
+import { useTranslation } from "react-i18next";
+import semverGt from "semver/functions/gt";
+import semverValid from "semver/functions/parse";
+import PluginsContext, {
+  PluginContextInterface,
+  PluginFrameContainer,
+  PluginMessage,
+  PluginMethodInterface,
+} from "../PluginsContext";
+import ConfirmPluginDialog from "../components/ConfirmPluginDialog";
+import { db } from "../database";
+import i18n from "../i18n";
 import {
   AlbumTracksResult,
   ArtistAlbumsResult,
@@ -42,14 +31,25 @@ import {
   SearchTrackResult,
   Track,
 } from "../plugintypes";
-import PluginsContext, {
-  PluginContextInterface,
-  PluginFrameContainer,
-  PluginMessage,
-  PluginMethodInterface,
-} from "../PluginsContext";
-import semverValid from "semver/functions/parse";
-import semverGt from "semver/functions/gt";
+import { useAppDispatch, useAppSelector } from "../store/hooks";
+import {
+  addPlaylistTracks,
+  addPlaylists,
+} from "../store/reducers/playlistReducer";
+import {
+  nextTrack,
+  setElapsed,
+  setTracks,
+} from "../store/reducers/trackReducer";
+import { Manifest, NetworkRequest } from "../types";
+import {
+  getFileText,
+  getFileTypeFromPluginUrl,
+  getPlugin,
+  getPluginSubdomain,
+  hasExtension,
+  mapAsync,
+} from "../utils";
 
 interface ApplicationPluginInterface extends PluginInterface {
   networkRequest(

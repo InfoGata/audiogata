@@ -7,17 +7,17 @@ import {
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import React from "react";
+import { useTranslation } from "react-i18next";
+import { Link } from "react-router-dom";
 import { PluginFrameContainer } from "../PluginsContext";
 import usePlugins from "../hooks/usePlugins";
+import { FileType, Manifest } from "../types";
 import {
   directoryProps,
   getFileText,
   getFileTypeFromPluginUrl,
   getPlugin,
 } from "../utils";
-import { FileType, Manifest } from "../types";
-import { Link } from "react-router-dom";
-import { useTranslation } from "react-i18next";
 
 const FileInput = styled("input")({
   display: "none",

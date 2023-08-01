@@ -3,20 +3,20 @@ import { Backdrop, CircularProgress, IconButton } from "@mui/material";
 import React from "react";
 import { useQuery } from "react-query";
 import { useLocation, useParams } from "react-router-dom";
+import { db } from "../database";
 import useFindPlugin from "../hooks/useFindPlugin";
 import usePagination from "../hooks/usePagination";
+import usePlugins from "../hooks/usePlugins";
 import useSelected from "../hooks/useSelected";
 import useTrackMenu from "../hooks/useTrackMenu";
-import usePlugins from "../hooks/usePlugins";
 import { Album, PageInfo, Track } from "../plugintypes";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
-import { setTracks, setTrack, playQueue } from "../store/reducers/trackReducer";
+import { playQueue, setTrack, setTracks } from "../store/reducers/trackReducer";
 import ConfirmPluginDialog from "./ConfirmPluginDialog";
 import Pager from "./Pager";
 import PlaylistInfoCard from "./PlaylistInfoCard";
 import PlaylistMenu from "./PlaylistMenu";
 import TrackList from "./TrackList";
-import { db } from "../database";
 
 const AlbumPage: React.FC = () => {
   const { pluginId } = useParams<"pluginId">();

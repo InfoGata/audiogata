@@ -1,22 +1,22 @@
 import { MoreHoriz, PlayCircle } from "@mui/icons-material";
 import { Backdrop, CircularProgress, IconButton } from "@mui/material";
 import React from "react";
-import { useParams } from "react-router";
-import { Track, PageInfo, PlaylistInfo } from "../plugintypes";
-import usePlugins from "../hooks/usePlugins";
-import { useAppDispatch, useAppSelector } from "../store/hooks";
-import TrackList from "./TrackList";
-import useSelected from "../hooks/useSelected";
-import { playQueue, setTrack, setTracks } from "../store/reducers/trackReducer";
 import { useQuery } from "react-query";
-import usePagination from "../hooks/usePagination";
+import { useParams } from "react-router";
 import { useLocation } from "react-router-dom";
-import PlaylistInfoCard from "./PlaylistInfoCard";
-import useTrackMenu from "../hooks/useTrackMenu";
 import useFindPlugin from "../hooks/useFindPlugin";
+import usePagination from "../hooks/usePagination";
+import usePlugins from "../hooks/usePlugins";
+import useSelected from "../hooks/useSelected";
+import useTrackMenu from "../hooks/useTrackMenu";
+import { PageInfo, PlaylistInfo, Track } from "../plugintypes";
+import { useAppDispatch, useAppSelector } from "../store/hooks";
+import { playQueue, setTrack, setTracks } from "../store/reducers/trackReducer";
 import ConfirmPluginDialog from "./ConfirmPluginDialog";
 import Pager from "./Pager";
+import PlaylistInfoCard from "./PlaylistInfoCard";
 import PlaylistMenu from "./PlaylistMenu";
+import TrackList from "./TrackList";
 
 const PluginPlaylist: React.FC = () => {
   const { pluginId } = useParams<"pluginId">();

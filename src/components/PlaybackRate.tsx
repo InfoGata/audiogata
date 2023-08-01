@@ -1,10 +1,10 @@
-import { IconButton, Popover, Slider, Box } from "@mui/material";
-import { useTheme } from "@mui/material/styles";
 import { SlowMotionVideo } from "@mui/icons-material";
+import { Box, IconButton, Popover, Slider } from "@mui/material";
+import { useTheme } from "@mui/material/styles";
 import React from "react";
-import { setPlaybackRate } from "../store/reducers/trackReducer";
-import { useAppDispatch, useAppSelector } from "../store/hooks";
 import usePlugins from "../hooks/usePlugins";
+import { useAppDispatch, useAppSelector } from "../store/hooks";
+import { setPlaybackRate } from "../store/reducers/trackReducer";
 
 const PlaybackRate: React.FC = () => {
   const theme = useTheme();

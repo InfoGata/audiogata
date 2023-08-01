@@ -1,9 +1,9 @@
-import { IconButton, Popover, Slider, Box } from "@mui/material";
-import { useTheme } from "@mui/material/styles";
 import { VolumeOff, VolumeUp } from "@mui/icons-material";
+import { Box, IconButton, Popover, Slider } from "@mui/material";
+import { useTheme } from "@mui/material/styles";
 import React from "react";
-import { setVolume } from "../store/reducers/trackReducer";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
+import { setVolume } from "../store/reducers/trackReducer";
 
 const Volume: React.FC = () => {
   const theme = useTheme();

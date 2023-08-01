@@ -1,8 +1,8 @@
-import React, { PropsWithChildren } from "react";
 import { PreloadedState } from "@reduxjs/toolkit";
 import { RenderOptions, render } from "@testing-library/react";
-import { AppState, AppStore, setupStore } from "../store/store";
+import React, { PropsWithChildren } from "react";
 import { Provider } from "react-redux";
+import { AppState, AppStore, setupStore } from "../store/store";
 
 // as allows the user to specify other things such as initialState, store.
 interface ExtendedRenderOptions extends Omit<RenderOptions, "queries"> {

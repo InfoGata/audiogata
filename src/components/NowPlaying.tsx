@@ -1,16 +1,22 @@
-import React from "react";
-import { Track } from "../plugintypes";
-import {
-  Menu,
-  ListItemText,
-  MenuItem,
-  ListItemIcon,
-  Divider,
-  Typography,
-  IconButton,
-  Tooltip,
-} from "@mui/material";
 import { Delete, Info, MoreHoriz, PlaylistAdd } from "@mui/icons-material";
+import {
+  Divider,
+  IconButton,
+  ListItemIcon,
+  ListItemText,
+  Menu,
+  MenuItem,
+  Tooltip,
+  Typography,
+} from "@mui/material";
+import React from "react";
+import { useTranslation } from "react-i18next";
+import { Link } from "react-router-dom";
+import { db } from "../database";
+import useSelected from "../hooks/useSelected";
+import useTrackMenu from "../hooks/useTrackMenu";
+import { Track } from "../plugintypes";
+import { useAppDispatch, useAppSelector } from "../store/hooks";
 import {
   clearTracks,
   deleteTrack,
@@ -20,14 +26,8 @@ import {
 } from "../store/reducers/trackReducer";
 import AddPlaylistDialog from "./AddPlaylistDialog";
 import PlaylistMenuItem from "./PlaylistMenuItem";
-import { db } from "../database";
-import { useAppDispatch, useAppSelector } from "../store/hooks";
-import TrackList from "./TrackList";
-import useSelected from "../hooks/useSelected";
-import { Link } from "react-router-dom";
 import SelectTrackListPlugin from "./SelectTrackListPlugin";
-import useTrackMenu from "../hooks/useTrackMenu";
-import { useTranslation } from "react-i18next";
+import TrackList from "./TrackList";
 
 const NowPlaying: React.FC = () => {
   const { t } = useTranslation();

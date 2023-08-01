@@ -11,10 +11,10 @@ import {
 } from "@mui/material";
 import { useSnackbar } from "notistack";
 import React from "react";
-import { ParseUrlType, Playlist, Track } from "../plugintypes";
 import { useTranslation } from "react-i18next";
 import { PluginFrameContainer } from "../PluginsContext";
 import usePlugins from "../hooks/usePlugins";
+import { ParseUrlType, Playlist, Track } from "../plugintypes";
 import { filterAsync } from "../utils";
 
 interface ImportDialogProps {

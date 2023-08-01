@@ -1,3 +1,4 @@
+import { useLiveQuery } from "dexie-react-hooks";
 import React from "react";
 import { db } from "../database";
 import useTrackMenu from "../hooks/useTrackMenu";
@@ -5,7 +6,6 @@ import { Track } from "../plugintypes";
 import { useAppDispatch } from "../store/hooks";
 import { setTrack, setTracks } from "../store/reducers/trackReducer";
 import TrackList from "./TrackList";
-import { useLiveQuery } from "dexie-react-hooks";
 
 const FavoriteTracks: React.FC = () => {
   const dispatch = useAppDispatch();

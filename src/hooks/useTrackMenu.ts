@@ -1,7 +1,7 @@
 import React from "react";
+import TrackMenuContext from "../TrackMenuContext";
 import { PlaylistInfo, Track } from "../plugintypes";
 import { useAppSelector } from "../store/hooks";
-import TrackMenuContext from "../TrackMenuContext";
 
 interface TrackMenuArgs {
   playlists?: PlaylistInfo[];

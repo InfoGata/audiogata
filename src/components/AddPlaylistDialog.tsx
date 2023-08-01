@@ -7,12 +7,12 @@ import {
   DialogTitle,
   TextField,
 } from "@mui/material";
+import { useSnackbar } from "notistack";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { Playlist, Track } from "../plugintypes";
 import { useAppDispatch } from "../store/hooks";
 import { addPlaylist } from "../store/reducers/playlistReducer";
-import { useSnackbar } from "notistack";
 
 interface AddPlaylistDialogProps {
   open: boolean;

@@ -1,21 +1,21 @@
+import { MoreHoriz } from "@mui/icons-material";
 import {
   AppBar,
+  Box,
+  CircularProgress,
   Grid,
+  IconButton,
   Toolbar,
   Typography,
-  Box,
-  IconButton,
-  CircularProgress,
 } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
+import DOMPurify from "dompurify";
 import React from "react";
+import useTrackMenu from "../hooks/useTrackMenu";
 import { useAppSelector } from "../store/hooks";
 import { getThumbnailImage } from "../utils";
 import Controls from "./Controls";
 import Progress from "./Progress";
-import DOMPurify from "dompurify";
-import { MoreHoriz } from "@mui/icons-material";
-import useTrackMenu from "../hooks/useTrackMenu";
 
 const thumbnailSize = 70;
 const PlayerBar: React.FC = () => {

@@ -1,6 +1,6 @@
+import { is, optimizer } from "@electron-toolkit/utils";
 import { app, BrowserWindow, components } from "electron";
 import { join } from "path";
-import { optimizer, is } from "@electron-toolkit/utils";
 
 function UpsertKeyValue(obj: any, keyToChange: string, value: string[]) {
   const keyToChangeLower = keyToChange.toLowerCase();

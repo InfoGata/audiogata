@@ -1,29 +1,29 @@
+import { Delete, MoreHoriz } from "@mui/icons-material";
 import {
+  Button,
+  Grid,
+  IconButton,
   List,
   ListItem,
-  ListItemText,
+  ListItemButton,
+  ListItemIcon,
   ListItemSecondaryAction,
+  ListItemText,
   Menu,
   MenuItem,
-  ListItemIcon,
-  IconButton,
   Typography,
-  Grid,
-  Button,
-  ListItemButton,
 } from "@mui/material";
+import { useSnackbar } from "notistack";
 import React from "react";
-import { Playlist, PlaylistInfo, Track } from "../plugintypes";
+import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
-import { Delete, MoreHoriz } from "@mui/icons-material";
-import { addPlaylist, deletePlaylist } from "../store/reducers/playlistReducer";
-import { useAppDispatch, useAppSelector } from "../store/hooks";
 import { PluginFrameContainer } from "../PluginsContext";
 import usePlugins from "../hooks/usePlugins";
+import { Playlist, PlaylistInfo, Track } from "../plugintypes";
+import { useAppDispatch, useAppSelector } from "../store/hooks";
+import { addPlaylist, deletePlaylist } from "../store/reducers/playlistReducer";
 import { filterAsync } from "../utils";
-import { useTranslation } from "react-i18next";
 import ImportDialog from "./ImportDialog";
-import { useSnackbar } from "notistack";
 
 interface PlaylistsItemProps {
   playlist: PlaylistInfo;

@@ -1,10 +1,10 @@
-import { Card, CardMedia, Box, CardContent, Typography } from "@mui/material";
-import React from "react";
-import { ImageInfo } from "../plugintypes";
-import { getThumbnailImage, playlistThumbnailSize } from "../utils";
-import thumbnail from "../thumbnail.png";
-import { Link } from "react-router-dom";
+import { Box, Card, CardContent, CardMedia, Typography } from "@mui/material";
 import DOMPurify from "dompurify";
+import React from "react";
+import { Link } from "react-router-dom";
+import { ImageInfo } from "../plugintypes";
+import thumbnail from "../thumbnail.png";
+import { getThumbnailImage, playlistThumbnailSize } from "../utils";
 
 interface SubtitleLink {
   name?: string;

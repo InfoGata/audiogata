@@ -1,25 +1,25 @@
-import React from "react";
 import {
-  Card,
-  CardContent,
-  Grid,
-  Typography,
-  CardActions,
-  Button,
   Backdrop,
+  Button,
+  Card,
+  CardActions,
+  CardContent,
   CircularProgress,
   Fade,
+  Grid,
+  Typography,
 } from "@mui/material";
+import { useSnackbar } from "notistack";
+import React from "react";
+import { useTranslation } from "react-i18next";
+import { useNavigate } from "react-router";
+import { PluginDescription, defaultPlugins } from "../default-plugins";
 import usePlugins from "../hooks/usePlugins";
 import {
   generatePluginId,
   getFileTypeFromPluginUrl,
   getPlugin,
 } from "../utils";
-import { useNavigate } from "react-router";
-import { useSnackbar } from "notistack";
-import { defaultPlugins, PluginDescription } from "../default-plugins";
-import { useTranslation } from "react-i18next";
 
 const PluginCards: React.FC = () => {
   const { t } = useTranslation();

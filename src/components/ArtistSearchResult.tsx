@@ -1,3 +1,4 @@
+import { MoreHoriz } from "@mui/icons-material";
 import {
   Avatar,
   IconButton,
@@ -8,11 +9,10 @@ import {
   ListItemText,
 } from "@mui/material";
 import React from "react";
+import { Link } from "react-router-dom";
+import useItemMenu from "../hooks/useItemMenu";
 import { Artist } from "../plugintypes";
 import { getThumbnailImage, searchThumbnailSize } from "../utils";
-import { Link } from "react-router-dom";
-import { MoreHoriz } from "@mui/icons-material";
-import useItemMenu from "../hooks/useItemMenu";
 
 interface ArtistSearchResultProps {
   artist: Artist;

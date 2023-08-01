@@ -1,9 +1,9 @@
-import { DirectoryFile, FileType, Manifest } from "./types";
-import thumbnail from "./thumbnail.png";
-import { ImageInfo, PluginInfo, Track } from "./plugintypes";
-import i18next from "./i18n";
 import { Capacitor } from "@capacitor/core";
 import { customAlphabet } from "nanoid";
+import i18next from "./i18n";
+import { ImageInfo, PluginInfo, Track } from "./plugintypes";
+import thumbnail from "./thumbnail.png";
+import { DirectoryFile, FileType, Manifest } from "./types";
 
 export function formatSeconds(seconds?: number) {
   if (!seconds) {

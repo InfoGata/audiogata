@@ -1,4 +1,3 @@
-import React from "react";
 import {
   Button,
   List,
@@ -7,12 +6,13 @@ import {
   ListItemText,
   Typography,
 } from "@mui/material";
+import React from "react";
+import { useTranslation } from "react-i18next";
 import { useParams } from "react-router-dom";
 import { db } from "../database";
+import usePlugins from "../hooks/usePlugins";
 import { PluginInfo } from "../plugintypes";
 import { getFileTypeFromPluginUrl, getPlugin } from "../utils";
-import usePlugins from "../hooks/usePlugins";
-import { useTranslation } from "react-i18next";
 
 const PluginDetails: React.FC = () => {
   const { pluginId } = useParams<"pluginId">();

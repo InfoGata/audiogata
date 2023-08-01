@@ -1,8 +1,3 @@
-import React from "react";
-import usePlugins from "../hooks/usePlugins";
-import { useParams } from "react-router";
-import { Link } from "react-router-dom";
-import thumbnail from "../thumbnail.png";
 import {
   Backdrop,
   Card,
@@ -13,9 +8,14 @@ import {
   Grid,
   Typography,
 } from "@mui/material";
-import { getThumbnailImage, playlistThumbnailSize } from "../utils";
-import { useQuery } from "react-query";
+import React from "react";
 import { useTranslation } from "react-i18next";
+import { useQuery } from "react-query";
+import { useParams } from "react-router";
+import { Link } from "react-router-dom";
+import usePlugins from "../hooks/usePlugins";
+import thumbnail from "../thumbnail.png";
+import { getThumbnailImage, playlistThumbnailSize } from "../utils";
 
 const PluginPlaylists: React.FC = () => {
   const { plugins } = usePlugins();

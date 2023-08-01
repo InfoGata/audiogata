@@ -14,11 +14,11 @@ import React from "react";
 import { useTranslation } from "react-i18next";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
 import {
-  togglePlayOnStartup,
   saveCorsProxyUrl,
-  saveShowForwardAndRewind,
   saveCustomFowardAndRewindTime,
+  saveShowForwardAndRewind,
   toggleDisableAutoUpdatePlugins,
+  togglePlayOnStartup,
 } from "../store/reducers/settingsReducer";
 import { defaultSkipTime } from "../utils";
 

@@ -1,4 +1,4 @@
-import { describe, test, expect } from "vitest";
+import { describe, expect, test } from "vitest";
 import { Track } from "../plugintypes";
 import { mergeTracks } from "../utils";
 

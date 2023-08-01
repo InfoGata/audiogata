@@ -1,8 +1,8 @@
-import { defineConfig } from "electron-vite";
 import react from "@vitejs/plugin-react";
-import svgrPlugin from "vite-plugin-svgr";
+import { defineConfig } from "electron-vite";
 import { resolve } from "path";
 import { VitePWA } from "vite-plugin-pwa";
+import svgrPlugin from "vite-plugin-svgr";
 
 export default defineConfig({
   main: {

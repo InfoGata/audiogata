@@ -1,24 +1,24 @@
-import React from "react";
 import {
   Album,
+  Link as LinkIcon,
   Person,
   PlaylistAdd,
   PlaylistPlay,
   Star,
   StarBorder,
-  Link as LinkIcon,
 } from "@mui/icons-material";
 import { ListItemIcon, ListItemText, Menu, MenuItem } from "@mui/material";
+import { useSnackbar } from "notistack";
+import React from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
+import TrackMenuContext, { TrackMenuInterface } from "../TrackMenuContext";
 import AddPlaylistDialog from "../components/AddPlaylistDialog";
 import PlaylistMenuItem from "../components/PlaylistMenuItem";
+import { db } from "../database";
+import { PlaylistInfo, Track } from "../plugintypes";
 import { useAppDispatch } from "../store/hooks";
 import { addTrack } from "../store/reducers/trackReducer";
-import { db } from "../database";
-import { useSnackbar } from "notistack";
-import { PlaylistInfo, Track } from "../plugintypes";
-import TrackMenuContext, { TrackMenuInterface } from "../TrackMenuContext";
 
 const TrackMenuProvider: React.FC<React.PropsWithChildren> = (props) => {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);

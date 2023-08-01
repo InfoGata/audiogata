@@ -1,6 +1,6 @@
+import Hls from "hls.js";
 import { PlayTrackRequest } from "./plugintypes";
 import { PlayerComponent } from "./types";
-import Hls from "hls.js";
 export const HLS_EXTENSIONS = /\.(m3u8)($|\?)/i;
 
 let hls: Hls | undefined;

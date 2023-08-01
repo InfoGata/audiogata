@@ -1,3 +1,4 @@
+import { Clear, Favorite, GitHub, Menu, Search } from "@mui/icons-material";
 import {
   AppBar,
   Box,
@@ -10,13 +11,12 @@ import {
   Typography,
 } from "@mui/material";
 import { alpha, styled, useTheme } from "@mui/material/styles";
-import { Menu, Search, Clear, GitHub, Favorite } from "@mui/icons-material";
 import React from "react";
-import { useNavigate } from "react-router";
-import { toggleNavbar } from "../store/reducers/uiReducer";
-import { useAppDispatch } from "../store/hooks";
-import { Link as RouterLink } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import { useNavigate } from "react-router";
+import { Link as RouterLink } from "react-router-dom";
+import { useAppDispatch } from "../store/hooks";
+import { toggleNavbar } from "../store/reducers/uiReducer";
 
 const SearchBar = styled("div")(({ theme }) => ({
   position: "relative",

@@ -1,8 +1,8 @@
 import { createSlice, nanoid, PayloadAction } from "@reduxjs/toolkit";
-import { Playlist, Track, PlaylistInfo } from "../../plugintypes";
-import { AppThunk } from "../store";
 import { db } from "../../database";
+import { Playlist, PlaylistInfo, Track } from "../../plugintypes";
 import { mergeTracks } from "../../utils";
+import { AppThunk } from "../store";
 
 interface PlaylistState {
   playlists: PlaylistInfo[];

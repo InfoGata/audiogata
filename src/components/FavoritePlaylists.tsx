@@ -1,3 +1,4 @@
+import { MoreHoriz } from "@mui/icons-material";
 import {
   Card,
   CardActionArea,
@@ -9,14 +10,13 @@ import {
   Typography,
 } from "@mui/material";
 import { useLiveQuery } from "dexie-react-hooks";
+import DOMPurify from "dompurify";
 import React from "react";
 import { Link } from "react-router-dom";
 import { db } from "../database";
-import { getThumbnailImage, playlistThumbnailSize } from "../utils";
-import thumbnail from "../thumbnail.png";
-import { MoreHoriz } from "@mui/icons-material";
 import useItemMenu from "../hooks/useItemMenu";
-import DOMPurify from "dompurify";
+import thumbnail from "../thumbnail.png";
+import { getThumbnailImage, playlistThumbnailSize } from "../utils";
 
 const FavoritePlayists: React.FC = () => {
   const playlists = useLiveQuery(() => db.favoritePlaylists.toArray());

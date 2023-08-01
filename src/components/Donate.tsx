@@ -1,3 +1,8 @@
+import { faBitcoin } from "@fortawesome/free-brands-svg-icons/faBitcoin";
+import { faMonero } from "@fortawesome/free-brands-svg-icons/faMonero";
+import { faPatreon } from "@fortawesome/free-brands-svg-icons/faPatreon";
+import { faPaypal } from "@fortawesome/free-brands-svg-icons/faPaypal";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   Avatar,
   Box,
@@ -9,13 +14,8 @@ import {
   SvgIcon,
 } from "@mui/material";
 import React from "react";
-import { faMonero } from "@fortawesome/free-brands-svg-icons/faMonero";
-import { faBitcoin } from "@fortawesome/free-brands-svg-icons/faBitcoin";
-import { faPaypal } from "@fortawesome/free-brands-svg-icons/faPaypal";
-import { faPatreon } from "@fortawesome/free-brands-svg-icons/faPatreon";
-import { ReactComponent as Liberapay } from "../liberapay_logo.svg";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useTranslation } from "react-i18next";
+import { ReactComponent as Liberapay } from "../liberapay_logo.svg";
 
 const Donate: React.FC = () => {
   const { t } = useTranslation();

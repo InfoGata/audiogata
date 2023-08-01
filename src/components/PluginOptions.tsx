@@ -1,10 +1,10 @@
 import { Capacitor } from "@capacitor/core";
-import React from "react";
-import { useParams } from "react-router-dom";
-import usePlugins from "../hooks/usePlugins";
-import { db } from "../database";
 import { Backdrop, CircularProgress, Grid, Typography } from "@mui/material";
+import React from "react";
 import { useTranslation } from "react-i18next";
+import { useParams } from "react-router-dom";
+import { db } from "../database";
+import usePlugins from "../hooks/usePlugins";
 import { getPluginSubdomain } from "../utils";
 
 const PluginOptions: React.FC = () => {

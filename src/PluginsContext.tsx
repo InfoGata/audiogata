@@ -1,8 +1,18 @@
+import { PluginFrame } from "plugin-frame";
 import React from "react";
 import {
+  AlbumTrackRequest,
+  AlbumTracksResult,
+  ArtistAlbumRequest,
+  ArtistAlbumsResult,
+  GetTrackRequest,
+  GetTrackUrlRequest,
+  LookupTrackRequest,
+  ParseUrlType,
+  PlayTrackRequest,
   Playlist,
-  Track,
   PlaylistTrackRequest,
+  PlaylistTracksResult,
   PluginInfo,
   SearchAlbumResult,
   SearchAllResult,
@@ -10,19 +20,9 @@ import {
   SearchPlaylistResult,
   SearchRequest,
   SearchTrackResult,
+  Track,
   UserPlaylistRequest,
-  PlaylistTracksResult,
-  ArtistAlbumsResult,
-  AlbumTracksResult,
-  AlbumTrackRequest,
-  ArtistAlbumRequest,
-  GetTrackUrlRequest,
-  PlayTrackRequest,
-  GetTrackRequest,
-  ParseUrlType,
-  LookupTrackRequest,
 } from "./plugintypes";
-import { PluginFrame } from "plugin-frame";
 import { PlayerComponent } from "./types";
 
 export interface PluginMethodInterface extends PlayerComponent {

@@ -1,3 +1,4 @@
+import { MoreHoriz } from "@mui/icons-material";
 import {
   Avatar,
   IconButton,
@@ -8,13 +9,12 @@ import {
   ListItemText,
   Typography,
 } from "@mui/material";
+import DOMPurify from "dompurify";
 import React from "react";
+import { Link } from "react-router-dom";
+import useItemMenu from "../hooks/useItemMenu";
 import { PlaylistInfo } from "../plugintypes";
 import { getThumbnailImage, searchThumbnailSize } from "../utils";
-import DOMPurify from "dompurify";
-import { Link } from "react-router-dom";
-import { MoreHoriz } from "@mui/icons-material";
-import useItemMenu from "../hooks/useItemMenu";
 
 interface PlaylistSearchResultProps {
   playlist: PlaylistInfo;

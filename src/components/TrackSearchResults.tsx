@@ -1,15 +1,15 @@
 import { Backdrop, CircularProgress } from "@mui/material";
 import React from "react";
 import { useQuery } from "react-query";
+import usePagination from "../hooks/usePagination";
+import usePlugins from "../hooks/usePlugins";
 import useTrackMenu from "../hooks/useTrackMenu";
 import { FilterInfo, PageInfo, Track } from "../plugintypes";
-import usePagination from "../hooks/usePagination";
-import Pager from "./Pager";
-import Filtering from "./Filtering";
-import TrackList from "./TrackList";
-import { addTrack, setTrack } from "../store/reducers/trackReducer";
 import { useAppDispatch } from "../store/hooks";
-import usePlugins from "../hooks/usePlugins";
+import { addTrack, setTrack } from "../store/reducers/trackReducer";
+import Filtering from "./Filtering";
+import Pager from "./Pager";
+import TrackList from "./TrackList";
 
 interface TrackSearchResultsProps {
   pluginId: string;

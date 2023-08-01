@@ -1,28 +1,28 @@
+import { MusicControls } from "@awesome-cordova-plugins/music-controls/index";
+import { Capacitor } from "@capacitor/core";
+import canAutoPlay from "can-autoplay";
+import { ProviderContext, withSnackbar } from "notistack";
 import React from "react";
+import { withTranslation, WithTranslation } from "react-i18next";
 import { connect } from "react-redux";
 import { bindActionCreators, Dispatch } from "redux";
-import { PlayerComponent, PlayerComponentType } from "../types";
+import { db } from "../database";
 import { localPlayer } from "../LocalPlayer";
+import { PluginContextInterface } from "../PluginsContext";
+import { Track } from "../plugintypes";
 import {
   nextTrack,
+  pause,
+  play,
   prevTrack,
   seek,
   setElapsed,
   toggleIsPlaying,
-  pause,
-  play,
 } from "../store/reducers/trackReducer";
 import { setTrackLoading } from "../store/reducers/uiReducer";
 import { AppState } from "../store/store";
-import { withSnackbar, ProviderContext } from "notistack";
-import { PluginContextInterface } from "../PluginsContext";
-import { db } from "../database";
+import { PlayerComponent, PlayerComponentType } from "../types";
 import { defaultSkipTime, filterAsync } from "../utils";
-import { Track } from "../plugintypes";
-import { Capacitor } from "@capacitor/core";
-import { MusicControls } from "@awesome-cordova-plugins/music-controls/index";
-import canAutoPlay from "can-autoplay";
-import { withTranslation, WithTranslation } from "react-i18next";
 import { withPlugins } from "../withPlugins";
 
 export interface AudioComponentProps

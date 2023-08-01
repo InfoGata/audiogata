@@ -1,14 +1,14 @@
-import React from "react";
 import { Button, Grid } from "@mui/material";
 import { styled } from "@mui/material/styles";
-import { FileType } from "../types";
-import usePlugins from "../hooks/usePlugins";
-import PluginContainer from "./PluginContainer";
-import { directoryProps, generatePluginId, getPlugin } from "../utils";
-import ConfirmPluginDialog from "./ConfirmPluginDialog";
-import { PluginInfo } from "../plugintypes";
-import AddPluginUrlDialog from "./AddPluginUrlDialog";
+import React from "react";
 import { useTranslation } from "react-i18next";
+import usePlugins from "../hooks/usePlugins";
+import { PluginInfo } from "../plugintypes";
+import { FileType } from "../types";
+import { directoryProps, generatePluginId, getPlugin } from "../utils";
+import AddPluginUrlDialog from "./AddPluginUrlDialog";
+import ConfirmPluginDialog from "./ConfirmPluginDialog";
+import PluginContainer from "./PluginContainer";
 
 const FileInput = styled("input")({
   display: "none",

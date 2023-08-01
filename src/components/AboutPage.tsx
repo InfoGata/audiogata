@@ -1,3 +1,6 @@
+import { faGitAlt } from "@fortawesome/free-brands-svg-icons/faGitAlt";
+import { faMastodon } from "@fortawesome/free-brands-svg-icons/faMastodon";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Email, Favorite, Language, Lock, Twitter } from "@mui/icons-material";
 import {
   Avatar,
@@ -8,12 +11,9 @@ import {
   ListItemButton,
   ListItemText,
 } from "@mui/material";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faMastodon } from "@fortawesome/free-brands-svg-icons/faMastodon";
-import { faGitAlt } from "@fortawesome/free-brands-svg-icons/faGitAlt";
 import React from "react";
-import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import { Link } from "react-router-dom";
 
 const AboutPage: React.FC = () => {
   const { t } = useTranslation();

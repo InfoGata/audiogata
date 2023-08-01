@@ -1,11 +1,11 @@
 import { createSlice, nanoid, PayloadAction } from "@reduxjs/toolkit";
-import { Track } from "../../plugintypes";
+import intersectionBy from "lodash/intersectionBy";
+import callConfig from "../../call-config";
+import { localPlayer } from "../../LocalPlayer";
 import { PluginFrameContainer } from "../../PluginsContext";
+import { Track } from "../../plugintypes";
 import { defaultSkipTime, filterAsync, mergeTracks } from "../../utils";
 import { AppDispatch, AppThunk } from "../store";
-import intersectionBy from "lodash/intersectionBy";
-import { localPlayer } from "../../LocalPlayer";
-import callConfig from "../../call-config";
 
 interface TrackState {
   tracks: Track[];

@@ -1,6 +1,6 @@
-import { IconButton } from "@mui/material";
 import {
   FastForward,
+  FastRewind,
   Forward10,
   Forward30,
   Forward5,
@@ -8,7 +8,6 @@ import {
   PlayArrow,
   Repeat,
   RepeatOne,
-  FastRewind,
   Replay10,
   Replay30,
   Replay5,
@@ -16,20 +15,21 @@ import {
   SkipNext,
   SkipPrevious,
 } from "@mui/icons-material";
+import { IconButton } from "@mui/material";
 import React from "react";
+import { useAppDispatch, useAppSelector } from "../store/hooks";
 import {
+  changeRepeat,
   fastFoward,
   nextTrack,
   prevTrack,
   rewind,
   toggleIsPlaying,
-  changeRepeat,
   toggleShuffle,
 } from "../store/reducers/trackReducer";
-import Volume from "./Volume";
-import PlaybackRate from "./PlaybackRate";
-import { useAppDispatch, useAppSelector } from "../store/hooks";
 import { defaultSkipTime } from "../utils";
+import PlaybackRate from "./PlaybackRate";
+import Volume from "./Volume";
 
 const getForwardIcon = (time?: number) => {
   if (!time) {

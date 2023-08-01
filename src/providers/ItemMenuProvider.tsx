@@ -1,18 +1,18 @@
-import React from "react";
-import Dexie from "dexie";
-import { Link } from "react-router-dom";
-import { db } from "../database";
-import { ListItemIcon, ListItemText, Menu, MenuItem } from "@mui/material";
-import { useSnackbar } from "notistack";
-import { useTranslation } from "react-i18next";
 import {
+  Link as LinkIcon,
   Person,
   Star,
   StarBorder,
-  Link as LinkIcon,
 } from "@mui/icons-material";
-import { ItemMenuType } from "../types";
+import { ListItemIcon, ListItemText, Menu, MenuItem } from "@mui/material";
+import Dexie from "dexie";
+import { useSnackbar } from "notistack";
+import React from "react";
+import { useTranslation } from "react-i18next";
+import { Link } from "react-router-dom";
 import ItemMenuContext, { ItemMenuInterface } from "../ItemMenuContext";
+import { db } from "../database";
+import { ItemMenuType } from "../types";
 
 const getTable = (item: ItemMenuType): Dexie.Table => {
   switch (item.type) {

@@ -1,3 +1,4 @@
+import { ExpandMore } from "@mui/icons-material";
 import {
   Accordion,
   AccordionDetails,
@@ -12,11 +13,10 @@ import {
   Typography,
 } from "@mui/material";
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { PluginInfo } from "../plugintypes";
 import { FileType } from "../types";
 import { generatePluginId, getPlugin } from "../utils";
-import { ExpandMore } from "@mui/icons-material";
-import { useTranslation } from "react-i18next";
 
 interface AddPluginUrlDialogProps {
   open: boolean;

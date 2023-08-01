@@ -1,14 +1,17 @@
 import {
   AppBar,
+  Backdrop,
   Box,
+  CircularProgress,
   Tab,
   Tabs,
   Typography,
-  Backdrop,
-  CircularProgress,
 } from "@mui/material";
 import React from "react";
+import { useTranslation } from "react-i18next";
+import { useQuery, useQueryClient } from "react-query";
 import { useLocation } from "react-router";
+import usePlugins from "../hooks/usePlugins";
 import {
   Album,
   Artist,
@@ -16,15 +19,12 @@ import {
   SearchAllResult,
   Track,
 } from "../plugintypes";
-import usePlugins from "../hooks/usePlugins";
 import { SearchResultType } from "../types";
-import SelectPlugin from "./SelectPlugin";
-import { useQuery, useQueryClient } from "react-query";
-import TrackSearchResults from "./TrackSearchResults";
 import AlbumSearchResults from "./AlbumSearchResults";
 import ArtistSearchResults from "./ArtistSearchResults";
 import PlaylistSearchResults from "./PlaylistSearchResults";
-import { useTranslation } from "react-i18next";
+import SelectPlugin from "./SelectPlugin";
+import TrackSearchResults from "./TrackSearchResults";
 
 interface TabPanelProps {
   children?: React.ReactNode;

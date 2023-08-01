@@ -1,24 +1,4 @@
 import {
-  IconButton,
-  Typography,
-  MenuItem,
-  ListItemIcon,
-  ListItemText,
-  Grid,
-  Backdrop,
-  CircularProgress,
-} from "@mui/material";
-import React from "react";
-import { useParams } from "react-router";
-import { playQueue, setTrack, setTracks } from "../store/reducers/trackReducer";
-import { db } from "../database";
-import { Playlist, Track } from "../plugintypes";
-import { useAppDispatch, useAppSelector } from "../store/hooks";
-import {
-  addPlaylistTracks,
-  setPlaylistTracks,
-} from "../store/reducers/playlistReducer";
-import {
   Delete,
   Edit,
   Info,
@@ -26,18 +6,38 @@ import {
   PlayCircle,
   UploadFile,
 } from "@mui/icons-material";
-import { Link } from "react-router-dom";
-import TrackList from "./TrackList";
-import useSelected from "../hooks/useSelected";
-import EditPlaylistDialog from "./EditPlaylistDialog";
-import SelectTrackListPlugin from "./SelectTrackListPlugin";
-import useTrackMenu from "../hooks/useTrackMenu";
-import { useTranslation } from "react-i18next";
-import AddPlaylistDialog from "./AddPlaylistDialog";
-import PlaylistMenu from "./PlaylistMenu";
-import ConvertTracksDialog from "./ConvertTracksDialog";
+import {
+  Backdrop,
+  CircularProgress,
+  Grid,
+  IconButton,
+  ListItemIcon,
+  ListItemText,
+  MenuItem,
+  Typography,
+} from "@mui/material";
 import { useLiveQuery } from "dexie-react-hooks";
+import React from "react";
+import { useTranslation } from "react-i18next";
+import { useParams } from "react-router";
+import { Link } from "react-router-dom";
+import { db } from "../database";
+import useSelected from "../hooks/useSelected";
+import useTrackMenu from "../hooks/useTrackMenu";
+import { Playlist, Track } from "../plugintypes";
+import { useAppDispatch, useAppSelector } from "../store/hooks";
+import {
+  addPlaylistTracks,
+  setPlaylistTracks,
+} from "../store/reducers/playlistReducer";
+import { playQueue, setTrack, setTracks } from "../store/reducers/trackReducer";
+import AddPlaylistDialog from "./AddPlaylistDialog";
+import ConvertTracksDialog from "./ConvertTracksDialog";
+import EditPlaylistDialog from "./EditPlaylistDialog";
 import ImportDialog from "./ImportDialog";
+import PlaylistMenu from "./PlaylistMenu";
+import SelectTrackListPlugin from "./SelectTrackListPlugin";
+import TrackList from "./TrackList";
 
 const PlaylistTracks: React.FC = () => {
   const { playlistId } = useParams<"playlistId">();

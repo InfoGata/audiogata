@@ -1,8 +1,7 @@
-import React from "react";
-import { describe, test, expect } from "vitest";
 import { screen } from "@testing-library/react";
-import i18next from "../i18n";
+import { describe, expect, test } from "vitest";
 import App from "../App";
+import i18next from "../i18n";
 import { renderWithProviders } from "./renderWithProviders";
 
 describe("App", () => {

@@ -6,14 +6,14 @@ import {
   ListItemText,
 } from "@mui/material";
 import React from "react";
+import { useTranslation } from "react-i18next";
+import usePlugins from "../hooks/usePlugins";
 import { Track } from "../plugintypes";
 import {
   formatSeconds,
   getThumbnailImage,
   searchThumbnailSize,
 } from "../utils";
-import { useTranslation } from "react-i18next";
-import usePlugins from "../hooks/usePlugins";
 
 interface TrackInfoProps {
   track: Track;

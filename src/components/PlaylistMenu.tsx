@@ -11,14 +11,14 @@ import {
   Menu,
   MenuItem,
 } from "@mui/material";
-import React from "react";
-import { PlaylistInfo, Track } from "../plugintypes";
-import PlaylistMenuItem from "./PlaylistMenuItem";
-import { useTranslation } from "react-i18next";
-import { addTracks } from "../store/reducers/trackReducer";
-import { useAppDispatch } from "../store/hooks";
-import AddPlaylistDialog from "./AddPlaylistDialog";
 import { useSnackbar } from "notistack";
+import React from "react";
+import { useTranslation } from "react-i18next";
+import { PlaylistInfo, Track } from "../plugintypes";
+import { useAppDispatch } from "../store/hooks";
+import { addTracks } from "../store/reducers/trackReducer";
+import AddPlaylistDialog from "./AddPlaylistDialog";
+import PlaylistMenuItem from "./PlaylistMenuItem";
 
 interface PlaylistMenuProps {
   playlists: PlaylistInfo[];
