@@ -1,5 +1,6 @@
 import {
   Album,
+  ArrowRight,
   Link as LinkIcon,
   Person,
   PlaylistAdd,
@@ -19,6 +20,7 @@ import { db } from "../database";
 import { PlaylistInfo, Track } from "../plugintypes";
 import { useAppDispatch } from "../store/hooks";
 import { addTrack } from "../store/reducers/trackReducer";
+import { NestedMenuItem } from "mui-nested-menu";
 
 const TrackMenuProvider: React.FC<React.PropsWithChildren> = (props) => {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -150,15 +152,21 @@ const TrackMenuProvider: React.FC<React.PropsWithChildren> = (props) => {
           </ListItemIcon>
           <ListItemText primary={t("addToNewPlaylist")} />
         </MenuItem>
-        {playlists.map((p) => (
-          <PlaylistMenuItem
-            key={p.id}
-            playlist={p}
-            tracks={menuTrack ? [menuTrack] : []}
-            closeMenu={closeMenu}
-            title={t("addToPlaylist", { playlistName: p.name })}
-          />
-        ))}
+        <NestedMenuItem
+          parentMenuOpen={Boolean(anchorEl)}
+          label={t("addToPlaylist")}
+          rightIcon={<ArrowRight />}
+        >
+          {playlists.map((p) => (
+            <PlaylistMenuItem
+              key={p.id}
+              playlist={p}
+              tracks={menuTrack ? [menuTrack] : []}
+              closeMenu={closeMenu}
+              title={p.name ?? ""}
+            />
+          ))}
+        </NestedMenuItem>
       </Menu>
       <AddPlaylistDialog
         tracks={menuTrack ? [menuTrack] : []}

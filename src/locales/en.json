@@ -38,7 +38,7 @@
     "addToQueue": "Add to Queue",
     "addToNewPlaylist": "Add to New Playlist",
     "addSelectedToPlaylist": "Add Selected to {{playlistName}}",
-    "addToPlaylist": "Add to {{playlistName}}",
+    "addToPlaylist": "Add to playlist",
     "addTracksToPlaylist": "Add tracks to {{playlistName}}",
     "addedTracksToPlaylist_one": "Added track to {{playlistName}}",
     "addedTracksToPlaylist_other": "Added tracks to {{playlistName}}",
