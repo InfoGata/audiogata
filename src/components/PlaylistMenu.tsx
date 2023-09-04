@@ -1,4 +1,5 @@
 import {
+  ArrowRight,
   PlaylistAdd,
   PlaylistPlay,
   Star,
@@ -19,6 +20,7 @@ import { useAppDispatch } from "../store/hooks";
 import { addTracks } from "../store/reducers/trackReducer";
 import AddPlaylistDialog from "./AddPlaylistDialog";
 import PlaylistMenuItem from "./PlaylistMenuItem";
+import { NestedMenuItem } from "mui-nested-menu";
 
 interface PlaylistMenuProps {
   playlists: PlaylistInfo[];
@@ -28,6 +30,7 @@ interface PlaylistMenuProps {
   selectedMenuItems?: JSX.Element[];
   anchorElement: HTMLElement | null;
   isFavorite?: boolean;
+  noQueueItem?: boolean;
   onFavorite?: () => void;
   onRemoveFavorite?: () => void;
   onClose: () => void;
@@ -45,6 +48,7 @@ const PlaylistMenu: React.FC<PlaylistMenuProps> = (props) => {
     isFavorite,
     onFavorite,
     onRemoveFavorite,
+    noQueueItem,
   } = props;
   const { t } = useTranslation();
   const [playlistDialogTracks, setPlaylistDialogTracks] = React.useState<
@@ -90,27 +94,36 @@ const PlaylistMenu: React.FC<PlaylistMenuProps> = (props) => {
         onClick={onClose}
       >
         {menuItems}
-        <MenuItem onClick={addPlaylistToQueue}>
-          <ListItemIcon>
-            <PlaylistPlay />
-          </ListItemIcon>
-          <ListItemText primary={t("addTracksToQueue")} />
-        </MenuItem>
+        {!noQueueItem && (
+          <MenuItem onClick={addPlaylistToQueue}>
+            <ListItemIcon>
+              <PlaylistPlay />
+            </ListItemIcon>
+            <ListItemText primary={t("addTracksToQueue")} />
+          </MenuItem>
+        )}
         <MenuItem onClick={addToNewPlaylist}>
           <ListItemIcon>
             <PlaylistAdd />
           </ListItemIcon>
           <ListItemText primary={t("addTracksToNewPlaylist")} />
         </MenuItem>
-        {playlists.map((p) => (
-          <PlaylistMenuItem
-            key={p.id}
-            playlist={p}
-            tracks={tracklist}
-            closeMenu={onClose}
-            title={t("addTracksToPlaylist", { playlistName: p.name })}
-          />
-        ))}
+        <NestedMenuItem
+          parentMenuOpen={Boolean(anchorElement)}
+          label={t("addTracksToPlaylist")}
+          rightIcon={<ArrowRight />}
+          onClick={(e) => e.stopPropagation()}
+        >
+          {playlists.map((p) => (
+            <PlaylistMenuItem
+              key={p.id}
+              playlist={p}
+              tracks={tracklist}
+              closeMenu={onClose}
+              title={p.name ?? ""}
+            />
+          ))}
+        </NestedMenuItem>
         {onFavorite && (
           <MenuItem onClick={isFavorite ? onRemoveFavorite : onFavorite}>
             <ListItemIcon>
@@ -138,15 +151,23 @@ const PlaylistMenu: React.FC<PlaylistMenuProps> = (props) => {
             </ListItemIcon>
             <ListItemText primary={t("addSelectedToNewPlaylist")} />
           </MenuItem>,
-          playlists.map((p) => (
-            <PlaylistMenuItem
-              key={p.id}
-              playlist={p}
-              tracks={selectedTracks}
-              closeMenu={onClose}
-              title={t("addSelectedToPlaylist", { playlistName: p.name })}
-            />
-          )),
+          <NestedMenuItem
+            key="selectednested"
+            parentMenuOpen={Boolean(anchorElement)}
+            label={t("addSelectedToPlaylist")}
+            rightIcon={<ArrowRight />}
+            onClick={(e) => e.stopPropagation()}
+          >
+            {playlists.map((p) => (
+              <PlaylistMenuItem
+                key={p.id}
+                playlist={p}
+                tracks={selectedTracks}
+                closeMenu={onClose}
+                title={p.name ?? ""}
+              />
+            ))}
+          </NestedMenuItem>,
         ]}
       </Menu>
       <AddPlaylistDialog

@@ -28,13 +28,10 @@ import AddPlaylistDialog from "./AddPlaylistDialog";
 import PlaylistMenuItem from "./PlaylistMenuItem";
 import SelectTrackListPlugin from "./SelectTrackListPlugin";
 import TrackList from "./TrackList";
+import PlaylistMenu from "./PlaylistMenu";
 
 const NowPlaying: React.FC = () => {
   const { t } = useTranslation();
-  const [playlistDialogTracks, setPlaylistDialogTracks] = React.useState<
-    Track[]
-  >([]);
-  const [playlistDialogOpen, setPlaylistDialogOpen] = React.useState(false);
   const [queueMenuAnchorEl, setQueueMenuAnchorEl] =
     React.useState<null | HTMLElement>(null);
   const dispatch = useAppDispatch();
@@ -77,24 +74,11 @@ const NowPlaying: React.FC = () => {
   const closeQueueMenu = () => setQueueMenuAnchorEl(null);
 
   const trackList = useAppSelector((state) => state.track.tracks);
-  const closePlaylistDialog = () => setPlaylistDialogOpen(false);
 
   const { onSelect, onSelectAll, isSelected, selected, setSelected } =
     useSelected(trackList);
 
-  const addQueueToNewPlaylist = () => {
-    setPlaylistDialogTracks(trackList);
-    setPlaylistDialogOpen(true);
-    closeQueueMenu();
-  };
-
   const selectedTracks = trackList.filter((t) => selected.has(t.id ?? ""));
-
-  const addSelectedToNewPlaylist = () => {
-    setPlaylistDialogTracks(selectedTracks);
-    setPlaylistDialogOpen(true);
-    closeQueueMenu();
-  };
 
   const clearSelectedTracks = () => {
     dispatch(deleteTracks(selected));
@@ -114,6 +98,23 @@ const NowPlaying: React.FC = () => {
   const onDragOver = (newTrackList: Track[]) => {
     dispatch(setTracks(newTrackList));
   };
+
+  const selectedMenuItems = [
+    <MenuItem onClick={clearSelectedTracks} key="clear">
+      <ListItemIcon>
+        <Delete />
+      </ListItemIcon>
+      <ListItemText primary={t("deleteSelectedTracks")} />
+    </MenuItem>,
+  ];
+  const menuItems = [
+    <MenuItem onClick={clearQueue} key="clearQueue">
+      <ListItemIcon>
+        <Delete />
+      </ListItemIcon>
+      <ListItemText primary="Clear All Tracks" />
+    </MenuItem>,
+  ];
 
   return (
     <>
@@ -139,61 +140,15 @@ const NowPlaying: React.FC = () => {
         onSelectAll={onSelectAll}
         selected={selected}
       />
-      <Menu
-        open={Boolean(queueMenuAnchorEl)}
+      <PlaylistMenu
+        noQueueItem={true}
+        selected={selected}
+        tracklist={trackList}
+        playlists={playlists}
+        selectedMenuItems={selectedMenuItems}
+        anchorElement={queueMenuAnchorEl}
         onClose={closeQueueMenu}
-        anchorEl={queueMenuAnchorEl}
-      >
-        <MenuItem onClick={clearQueue}>
-          <ListItemIcon>
-            <Delete />
-          </ListItemIcon>
-          <ListItemText primary="Clear All Tracks" />
-        </MenuItem>
-        <MenuItem onClick={addQueueToNewPlaylist}>
-          <ListItemIcon>
-            <PlaylistAdd />
-          </ListItemIcon>
-          <ListItemText primary="Add Queue To New Playlist" />
-        </MenuItem>
-        {playlists.map((p) => (
-          <PlaylistMenuItem
-            key={p.id}
-            playlist={p}
-            tracks={trackList}
-            closeMenu={closeQueueMenu}
-            title={t("addQueueToPlaylist", { playlistName: p.name })}
-          />
-        ))}
-        {selected.size > 0 && [
-          <Divider key="divider" />,
-          <MenuItem onClick={clearSelectedTracks} key="clear">
-            <ListItemIcon>
-              <Delete />
-            </ListItemIcon>
-            <ListItemText primary="Clear Selected Tracks" />
-          </MenuItem>,
-          <MenuItem onClick={addSelectedToNewPlaylist} key="newplaylist">
-            <ListItemIcon>
-              <PlaylistAdd />
-            </ListItemIcon>
-            <ListItemText primary="Add Selected To New Playlist" />
-          </MenuItem>,
-          playlists.map((p) => (
-            <PlaylistMenuItem
-              key={p.id}
-              playlist={p}
-              tracks={selectedTracks}
-              closeMenu={closeQueueMenu}
-              title={t("addSelectedToPlaylist", { playlistName: p.name })}
-            />
-          )),
-        ]}
-      </Menu>
-      <AddPlaylistDialog
-        tracks={playlistDialogTracks}
-        open={playlistDialogOpen}
-        handleClose={closePlaylistDialog}
+        menuItems={menuItems}
       />
     </>
   );
