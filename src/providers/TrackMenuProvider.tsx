@@ -152,21 +152,23 @@ const TrackMenuProvider: React.FC<React.PropsWithChildren> = (props) => {
           </ListItemIcon>
           <ListItemText primary={t("addToNewPlaylist")} />
         </MenuItem>
-        <NestedMenuItem
-          parentMenuOpen={Boolean(anchorEl)}
-          label={t("addToPlaylist")}
-          rightIcon={<ArrowRight />}
-        >
-          {playlists.map((p) => (
-            <PlaylistMenuItem
-              key={p.id}
-              playlist={p}
-              tracks={menuTrack ? [menuTrack] : []}
-              closeMenu={closeMenu}
-              title={p.name ?? ""}
-            />
-          ))}
-        </NestedMenuItem>
+        {playlists.length > 0 && (
+          <NestedMenuItem
+            parentMenuOpen={Boolean(anchorEl)}
+            label={t("addToPlaylist")}
+            rightIcon={<ArrowRight />}
+          >
+            {playlists.map((p) => (
+              <PlaylistMenuItem
+                key={p.id}
+                playlist={p}
+                tracks={menuTrack ? [menuTrack] : []}
+                closeMenu={closeMenu}
+                title={p.name ?? ""}
+              />
+            ))}
+          </NestedMenuItem>
+        )}
       </Menu>
       <AddPlaylistDialog
         tracks={menuTrack ? [menuTrack] : []}
