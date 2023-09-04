@@ -157,6 +157,7 @@ const TrackMenuProvider: React.FC<React.PropsWithChildren> = (props) => {
             parentMenuOpen={Boolean(anchorEl)}
             label={t("addToPlaylist")}
             rightIcon={<ArrowRight />}
+            onClick={(e) => e.stopPropagation()}
           >
             {playlists.map((p) => (
               <PlaylistMenuItem
