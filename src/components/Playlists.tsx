@@ -37,6 +37,7 @@ const PlaylistsItem: React.FC<PlaylistsItemProps> = (props) => {
   const { openMenu, playlist } = props;
   const playlistPath = `/playlists/${props.playlist.id}`;
   const openPlaylistMenu = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
     openMenu(event, playlist);
   };
   return (
