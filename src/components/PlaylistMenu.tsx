@@ -108,22 +108,24 @@ const PlaylistMenu: React.FC<PlaylistMenuProps> = (props) => {
           </ListItemIcon>
           <ListItemText primary={t("addTracksToNewPlaylist")} />
         </MenuItem>
-        <NestedMenuItem
-          parentMenuOpen={Boolean(anchorElement)}
-          label={t("addTracksToPlaylist")}
-          rightIcon={<ArrowRight />}
-          onClick={(e) => e.stopPropagation()}
-        >
-          {playlists.map((p) => (
-            <PlaylistMenuItem
-              key={p.id}
-              playlist={p}
-              tracks={tracklist}
-              closeMenu={onClose}
-              title={p.name ?? ""}
-            />
-          ))}
-        </NestedMenuItem>
+        {playlists.length > 0 && (
+          <NestedMenuItem
+            parentMenuOpen={Boolean(anchorElement)}
+            label={t("addTracksToPlaylist")}
+            rightIcon={<ArrowRight />}
+            onClick={(e) => e.stopPropagation()}
+          >
+            {playlists.map((p) => (
+              <PlaylistMenuItem
+                key={p.id}
+                playlist={p}
+                tracks={tracklist}
+                closeMenu={onClose}
+                title={p.name ?? ""}
+              />
+            ))}
+          </NestedMenuItem>
+        )}
         {onFavorite && (
           <MenuItem onClick={isFavorite ? onRemoveFavorite : onFavorite}>
             <ListItemIcon>
@@ -139,35 +141,39 @@ const PlaylistMenu: React.FC<PlaylistMenuProps> = (props) => {
         {selected.size > 0 && [
           <Divider key="divider" />,
           selectedMenuItems,
-          <MenuItem onClick={addSelectedToQueue} key="add">
-            <ListItemIcon>
-              <PlaylistPlay />
-            </ListItemIcon>
-            <ListItemText primary={t("addSelectedToQueue")} />
-          </MenuItem>,
+          !noQueueItem && (
+            <MenuItem onClick={addSelectedToQueue} key="add">
+              <ListItemIcon>
+                <PlaylistPlay />
+              </ListItemIcon>
+              <ListItemText primary={t("addSelectedToQueue")} />
+            </MenuItem>
+          ),
           <MenuItem onClick={addSelectedToNewPlaylist} key="selectednew">
             <ListItemIcon>
               <PlaylistAdd />
             </ListItemIcon>
             <ListItemText primary={t("addSelectedToNewPlaylist")} />
           </MenuItem>,
-          <NestedMenuItem
-            key="selectednested"
-            parentMenuOpen={Boolean(anchorElement)}
-            label={t("addSelectedToPlaylist")}
-            rightIcon={<ArrowRight />}
-            onClick={(e) => e.stopPropagation()}
-          >
-            {playlists.map((p) => (
-              <PlaylistMenuItem
-                key={p.id}
-                playlist={p}
-                tracks={selectedTracks}
-                closeMenu={onClose}
-                title={p.name ?? ""}
-              />
-            ))}
-          </NestedMenuItem>,
+          playlists.length > 0 && (
+            <NestedMenuItem
+              key="selectednested"
+              parentMenuOpen={Boolean(anchorElement)}
+              label={t("addSelectedToPlaylist")}
+              rightIcon={<ArrowRight />}
+              onClick={(e) => e.stopPropagation()}
+            >
+              {playlists.map((p) => (
+                <PlaylistMenuItem
+                  key={p.id}
+                  playlist={p}
+                  tracks={selectedTracks}
+                  closeMenu={onClose}
+                  title={p.name ?? ""}
+                />
+              ))}
+            </NestedMenuItem>
+          ),
         ]}
       </Menu>
       <AddPlaylistDialog
