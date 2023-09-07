@@ -5,6 +5,8 @@ import {
   AlbumTracksResult,
   ArtistAlbumRequest,
   ArtistAlbumsResult,
+  GetLyricsRequest,
+  GetLyricsResponse,
   GetTrackRequest,
   GetTrackUrlRequest,
   LookupTrackRequest,
@@ -58,6 +60,7 @@ export interface PluginMethodInterface extends PlayerComponent {
   onLookupPlaylistUrl(url: string): Promise<Playlist>;
   onLookupTrackUrls(url: string[]): Promise<Track[]>;
   onLookupTrack(request: LookupTrackRequest): Promise<Track>;
+  onGetLyrics(request: GetLyricsRequest): Promise<GetLyricsResponse>;
 }
 
 export interface PluginMessage {

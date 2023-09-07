@@ -190,3 +190,12 @@ export interface LookupTrackRequest {
   trackName: string;
   artistName?: string;
 }
+
+export interface GetLyricsRequest {
+  trackName: string;
+  artistName: string;
+}
+
+export interface GetLyricsResponse {
+  lyrics: string;
+}
