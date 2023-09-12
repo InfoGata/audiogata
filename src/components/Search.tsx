@@ -112,6 +112,7 @@ const Search: React.FC = () => {
         pluginId={pluginId}
         setPluginId={setPluginId}
         methodName="onSearchAll"
+        useCurrentPlugin={true}
       />
       <AppBar position="static">
         <Backdrop open={query.isLoading}>

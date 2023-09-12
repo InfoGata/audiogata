@@ -193,7 +193,7 @@ export interface LookupTrackRequest {
 
 export interface GetLyricsRequest {
   trackName: string;
-  artistName: string;
+  artistName?: string;
 }
 
 export interface GetLyricsResponse {

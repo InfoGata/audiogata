@@ -7,6 +7,7 @@ import {
   PlaylistPlay,
   Star,
   StarBorder,
+  Lyrics,
 } from "@mui/icons-material";
 import { ListItemIcon, ListItemText, Menu, MenuItem } from "@mui/material";
 import { useSnackbar } from "notistack";
@@ -18,7 +19,7 @@ import AddPlaylistDialog from "../components/AddPlaylistDialog";
 import PlaylistMenuItem from "../components/PlaylistMenuItem";
 import { db } from "../database";
 import { PlaylistInfo, Track } from "../plugintypes";
-import { useAppDispatch } from "../store/hooks";
+import { useAppDispatch, useAppSelector } from "../store/hooks";
 import { addTrack } from "../store/reducers/trackReducer";
 import { NestedMenuItem } from "mui-nested-menu";
 
@@ -33,6 +34,9 @@ const TrackMenuProvider: React.FC<React.PropsWithChildren> = (props) => {
   const closeMenu = () => setAnchorEl(null);
   const closePlaylistDialog = () => setPlaylistDialogOpen(false);
   const dispatch = useAppDispatch();
+  const lyricsPluginId = useAppSelector(
+    (state) => state.settings.lyricsPluginId
+  );
   const { t } = useTranslation();
   const { enqueueSnackbar } = useSnackbar();
 
@@ -143,6 +147,24 @@ const TrackMenuProvider: React.FC<React.PropsWithChildren> = (props) => {
               <LinkIcon />
             </ListItemIcon>
             <ListItemText primary={t("originalUrl")} />
+          </MenuItem>
+        )}
+        {menuTrack && lyricsPluginId && (
+          <MenuItem
+            component={Link}
+            to={{
+              pathname: "/lyrics",
+              search:
+                `?trackName=${encodeURIComponent(menuTrack.name)}` +
+                (menuTrack.artistName
+                  ? `&artistName=${menuTrack.artistName}`
+                  : ""),
+            }}
+          >
+            <ListItemIcon>
+              <Lyrics />
+            </ListItemIcon>
+            <ListItemText primary={t("lyrics")} />
           </MenuItem>
         )}
         {listElements}

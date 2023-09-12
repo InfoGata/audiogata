@@ -7,6 +7,7 @@ interface SettingsState {
   showForwardAndRewind?: boolean;
   customFowardAndRewindTime?: number;
   disableAutoUpdatePlugins?: boolean;
+  lyricsPluginId?: string;
 }
 
 const initialState: SettingsState = {
@@ -54,6 +55,9 @@ const settingsSlice = createSlice({
         currentPluginId: action.payload,
       };
     },
+    setLyricsPluginId: (state, action: PayloadAction<string | undefined>) => {
+      return { ...state, lyricsPluginId: action.payload };
+    },
   },
 });
 
@@ -64,5 +68,6 @@ export const {
   saveShowForwardAndRewind,
   saveCustomFowardAndRewindTime,
   toggleDisableAutoUpdatePlugins,
+  setLyricsPluginId,
 } = settingsSlice.actions;
 export default settingsSlice.reducer;

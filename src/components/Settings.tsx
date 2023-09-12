@@ -19,8 +19,10 @@ import {
   saveShowForwardAndRewind,
   toggleDisableAutoUpdatePlugins,
   togglePlayOnStartup,
+  setLyricsPluginId,
 } from "../store/reducers/settingsReducer";
 import { defaultSkipTime } from "../utils";
+import SelectPlugin from "./SelectPlugin";
 
 const Settings: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -39,8 +41,19 @@ const Settings: React.FC = () => {
   const customFowardAndRewindTime = useAppSelector(
     (state) => state.settings.customFowardAndRewindTime
   );
+  const lyricsPluginId = useAppSelector(
+    (state) => state.settings.lyricsPluginId
+  );
   const [corsProxy, setCorsProxy] = React.useState(corsProxyUrl);
   const { t } = useTranslation(["common", "settings"]);
+
+  const setLyricsPlugin = (pluginId: string) => {
+    if (pluginId) {
+      dispatch(setLyricsPluginId(pluginId));
+    } else {
+      dispatch(setLyricsPluginId(undefined));
+    }
+  };
 
   const onCorsProxyChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setCorsProxy(e.target.value);
@@ -111,12 +124,19 @@ const Settings: React.FC = () => {
               value={customFowardAndRewindTime || defaultSkipTime}
               onChange={onChangeCustomFowardAndRewindTime}
               inputProps={{
-                shrink: true,
+                shrink: "true",
               }}
             />
           </RadioGroup>
         </FormControl>
       )}
+      <SelectPlugin
+        pluginId={lyricsPluginId ?? ""}
+        methodName="onGetLyrics"
+        setPluginId={setLyricsPlugin}
+        noneOption={true}
+        labelText={t("settings:lyricsPlugin")}
+      />
       <TextField
         label="Cors proxy Url"
         value={corsProxy || ""}

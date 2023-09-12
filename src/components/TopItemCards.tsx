@@ -97,6 +97,7 @@ const TopItemCards: React.FC = () => {
           pluginId={pluginId}
           setPluginId={setPluginId}
           methodName="onGetTopItems"
+          useCurrentPlugin={true}
         />
       </Grid>
       <Fade in={!!topTrackComponents}>

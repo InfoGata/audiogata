@@ -10,11 +10,21 @@ import { filterAsync } from "../utils";
 interface SelectPluginProps {
   methodName: keyof PluginMethodInterface;
   pluginId: string;
-  setPluginId: (value: React.SetStateAction<string>) => void;
+  setPluginId: (value: string) => void;
+  noneOption?: boolean;
+  useCurrentPlugin?: boolean;
+  labelText?: string;
 }
 
 const SelectPlugin: React.FC<SelectPluginProps> = (props) => {
-  const { methodName, setPluginId, pluginId } = props;
+  const {
+    methodName,
+    setPluginId,
+    pluginId,
+    noneOption,
+    useCurrentPlugin,
+    labelText,
+  } = props;
   const { plugins } = usePlugins();
   const [options, setOptions] = React.useState<[string, string][]>();
   const dispatch = useAppDispatch();
@@ -26,14 +36,16 @@ const SelectPlugin: React.FC<SelectPluginProps> = (props) => {
       const validPlugins = await filterAsync(plugins, (p) =>
         p.methodDefined(methodName)
       );
-      const currentPluginId = store.getState().settings.currentPluginId;
-      if (
-        !currentPluginId ||
-        !validPlugins.some((p) => p.id === currentPluginId)
-      ) {
-        setPluginId(validPlugins[0]?.id || "");
-      } else {
-        setPluginId(currentPluginId);
+      if (useCurrentPlugin) {
+        const currentPluginId = store.getState().settings.currentPluginId;
+        if (
+          !currentPluginId ||
+          !validPlugins.some((p) => p.id === currentPluginId)
+        ) {
+          setPluginId(validPlugins[0]?.id || "");
+        } else {
+          setPluginId(currentPluginId);
+        }
       }
 
       const options: [string, string][] = validPlugins.map((p) => [
@@ -43,7 +55,7 @@ const SelectPlugin: React.FC<SelectPluginProps> = (props) => {
       setOptions(options);
     };
     getOptions();
-  }, [plugins, methodName, setPluginId, store]);
+  }, [plugins, methodName, setPluginId, store, useCurrentPlugin]);
 
   const optionsComponents = options?.map((option) => (
     <option key={option[0]} value={option[0]}>
@@ -52,15 +64,21 @@ const SelectPlugin: React.FC<SelectPluginProps> = (props) => {
   ));
 
   const onSelectPluginChange = (e: React.FormEvent<HTMLSelectElement>) => {
-    const pluginId = e.currentTarget.value;
-    dispatch(setCurrentPluginId(pluginId));
+    const selectedPluginId = e.currentTarget.value;
+    if (useCurrentPlugin) {
+      dispatch(setCurrentPluginId(selectedPluginId));
+    }
     setPluginId(e.currentTarget.value);
   };
 
   return (
     <FormControl fullWidth>
-      <InputLabel variant="standard" htmlFor="uncontrolled-native">
-        {t("plugin")}
+      <InputLabel
+        variant="standard"
+        htmlFor="uncontrolled-native"
+        shrink={true}
+      >
+        {labelText ? labelText : t("plugin")}
       </InputLabel>
       <NativeSelect
         value={pluginId}
@@ -70,6 +88,7 @@ const SelectPlugin: React.FC<SelectPluginProps> = (props) => {
           id: "uncontrolled-native",
         }}
       >
+        {!!noneOption && <option value="">{t("none")}</option>}
         {optionsComponents}
       </NativeSelect>
     </FormControl>

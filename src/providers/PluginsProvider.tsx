@@ -50,6 +50,7 @@ import {
   hasExtension,
   mapAsync,
 } from "../utils";
+import { setLyricsPluginId } from "../store/reducers/settingsReducer";
 
 interface ApplicationPluginInterface extends PluginInterface {
   networkRequest(
@@ -110,6 +111,9 @@ const PluginsProvider: React.FC<React.PropsWithChildren> = (props) => {
   const dispatch = useAppDispatch();
   const { t } = useTranslation("plugins");
 
+  const lyricsPluginId = useAppSelector(
+    (state) => state.settings.lyricsPluginId
+  );
   const loadingPlugin = React.useRef(false);
 
   // Store variables being used by plugin methods in refs
@@ -449,6 +453,9 @@ const PluginsProvider: React.FC<React.PropsWithChildren> = (props) => {
     const pluginFrame = await loadPlugin(plugin);
     setPluginFrames([...pluginFrames, pluginFrame]);
     await db.plugins.add(plugin);
+    if (!lyricsPluginId && (await pluginFrame.hasDefined.onGetLyrics())) {
+      dispatch(setLyricsPluginId(pluginFrame.id));
+    }
   };
 
   const updatePlugin = React.useCallback(
@@ -461,6 +468,15 @@ const PluginsProvider: React.FC<React.PropsWithChildren> = (props) => {
     },
     [loadPlugin, pluginFrames]
   );
+
+  const deletePlugin = async (pluginFrame: PluginFrameContainer) => {
+    const newPlugins = pluginFrames.filter((p) => p.id !== pluginFrame.id);
+    if (pluginFrame.id === lyricsPluginId) {
+      dispatch(setLyricsPluginId(undefined));
+    }
+    setPluginFrames(newPlugins);
+    await db.plugins.delete(pluginFrame.id || "");
+  };
 
   React.useEffect(() => {
     const checkUpdate = async () => {
@@ -505,12 +521,6 @@ const PluginsProvider: React.FC<React.PropsWithChildren> = (props) => {
     disableAutoUpdatePlugins,
     updatePlugin,
   ]);
-
-  const deletePlugin = async (pluginFrame: PluginFrameContainer) => {
-    const newPlugins = pluginFrames.filter((p) => p.id !== pluginFrame.id);
-    setPluginFrames(newPlugins);
-    await db.plugins.delete(pluginFrame.id || "");
-  };
 
   const defaultContext: PluginContextInterface = {
     addPlugin: addPlugin,

@@ -82,7 +82,8 @@
     "originalUrl": "Original Url",
     "convert": "Convert",
     "convertSelectedTracks": "Convert Selected Tracks",
-    "conversionFailed": "Conversion Failed"
+    "conversionFailed": "Conversion Failed",
+    "lyrics": "Lyrics"
   },
   "plugins": {
     "addPlugin_one": "Add Plugin",
@@ -123,6 +124,7 @@
     "playCurrentTrack": "Autoplay current track on start up",
     "showFastForwardRewind": "Show Fast Forward and Rewind Buttons",
     "forwardRewindTime": "Forward and Rewind Skip Time in Seconds",
-    "disableAutoUpdatePlugins": "Disable plugins updating automatically"
+    "disableAutoUpdatePlugins": "Disable plugins updating automatically",
+    "lyricsPlugin": "Lyrics Plugin"
   }
 }

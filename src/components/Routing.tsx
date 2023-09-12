@@ -27,6 +27,7 @@ import Privacy from "./Privacy";
 import QueueTrackInfo from "./QueueTrackInfo";
 import Search from "./Search";
 import Settings from "./Settings";
+import Lyrics from "./Lyrics";
 
 const Routing: React.FC = () => {
   const theme = useTheme();
@@ -60,6 +61,7 @@ const Routing: React.FC = () => {
           <Route path="artists" element={<FavoriteArtists />} />
           <Route path="playlists" element={<FavoritePlayists />} />
         </Route>
+        <Route path="/lyrics" element={<Lyrics />} />
         <Route path="/track/:trackId" element={<QueueTrackInfo />} />
         <Route
           path="/playlists/:playlistId/tracks/:trackId"
