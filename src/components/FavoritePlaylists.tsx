@@ -15,16 +15,12 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { db } from "../database";
 import useItemMenu from "../hooks/useItemMenu";
-import thumbnail from "../thumbnail.png";
 import { getThumbnailImage, playlistThumbnailSize } from "../utils";
+import { Image } from "mui-image";
 
 const FavoritePlayists: React.FC = () => {
   const playlists = useLiveQuery(() => db.favoritePlaylists.toArray());
   const sanitizer = DOMPurify.sanitize;
-
-  const onImageError = (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
-    e.currentTarget.src = thumbnail;
-  };
 
   const { openMenu } = useItemMenu();
 
@@ -41,11 +37,9 @@ const FavoritePlayists: React.FC = () => {
             component={Link}
             to={`/plugins/${p.pluginId}/playlists/${p.apiId}`}
           >
-            <CardMedia
-              component={"img"}
-              image={getThumbnailImage(p.images, playlistThumbnailSize)}
-              alt={p.name}
-              onError={onImageError}
+            <Image
+              src={getThumbnailImage(p.images, playlistThumbnailSize)}
+              height={playlistThumbnailSize}
             />
           </CardActionArea>
           <CardActions>

@@ -3,26 +3,21 @@ import {
   Card,
   CardActionArea,
   CardActions,
-  CardMedia,
   Grid,
   IconButton,
   Stack,
   Typography,
 } from "@mui/material";
 import { useLiveQuery } from "dexie-react-hooks";
+import { Image } from "mui-image";
 import React from "react";
 import { Link } from "react-router-dom";
 import { db } from "../database";
 import useItemMenu from "../hooks/useItemMenu";
-import thumbnail from "../thumbnail.png";
 import { getThumbnailImage, playlistThumbnailSize } from "../utils";
 
 const FavoriteAlbums: React.FC = () => {
   const albums = useLiveQuery(() => db.favoriteAlbums.toArray());
-
-  const onImageError = (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
-    e.currentTarget.src = thumbnail;
-  };
 
   const { openMenu } = useItemMenu();
 
@@ -40,11 +35,9 @@ const FavoriteAlbums: React.FC = () => {
             component={Link}
             to={`/plugins/${a.pluginId}/albums/${a.apiId}`}
           >
-            <CardMedia
-              component={"img"}
-              image={getThumbnailImage(a.images, playlistThumbnailSize)}
-              alt={a.name}
-              onError={onImageError}
+            <Image
+              src={getThumbnailImage(a.images, playlistThumbnailSize)}
+              height={playlistThumbnailSize}
             />
           </CardActionArea>
           <CardActions>

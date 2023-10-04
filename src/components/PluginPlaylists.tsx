@@ -3,18 +3,17 @@ import {
   Card,
   CardActionArea,
   CardContent,
-  CardMedia,
   CircularProgress,
   Grid,
   Typography,
 } from "@mui/material";
+import { Image } from "mui-image";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { useQuery } from "react-query";
 import { useParams } from "react-router";
 import { Link } from "react-router-dom";
 import usePlugins from "../hooks/usePlugins";
-import thumbnail from "../thumbnail.png";
 import { getThumbnailImage, playlistThumbnailSize } from "../utils";
 
 const PluginPlaylists: React.FC = () => {
@@ -35,10 +34,6 @@ const PluginPlaylists: React.FC = () => {
   const query = useQuery(["pluginplaylists", pluginId], getPlaylists);
   const playlists = query.data || [];
 
-  const onImageError = (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
-    e.currentTarget.src = thumbnail;
-  };
-
   const playlistLinks = playlists.map((p, i) => (
     <Grid item xs={2} key={i}>
       <Card>
@@ -46,11 +41,9 @@ const PluginPlaylists: React.FC = () => {
           component={Link}
           to={`/plugins/${pluginId}/playlists/${p.apiId}?isuserplaylist`}
         >
-          <CardMedia
-            component={"img"}
-            image={getThumbnailImage(p.images, playlistThumbnailSize)}
-            alt={p.name}
-            onError={onImageError}
+          <Image
+            src={getThumbnailImage(p.images, playlistThumbnailSize)}
+            height={playlistThumbnailSize}
           />
           <CardContent>
             <Typography gutterBottom variant="h6" component="div">
