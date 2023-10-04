@@ -9,12 +9,11 @@ import {
   Typography,
 } from "@mui/material";
 import { useLiveQuery } from "dexie-react-hooks";
-import { Image } from "mui-image";
 import React from "react";
 import { Link } from "react-router-dom";
 import { db } from "../database";
 import useItemMenu from "../hooks/useItemMenu";
-import { getThumbnailImage, playlistThumbnailSize } from "../utils";
+import PlaylistImage from "./PlaylistImage";
 
 const FavoriteAlbums: React.FC = () => {
   const albums = useLiveQuery(() => db.favoriteAlbums.toArray());
@@ -35,10 +34,7 @@ const FavoriteAlbums: React.FC = () => {
             component={Link}
             to={`/plugins/${a.pluginId}/albums/${a.apiId}`}
           >
-            <Image
-              src={getThumbnailImage(a.images, playlistThumbnailSize)}
-              height={playlistThumbnailSize}
-            />
+            <PlaylistImage images={a.images} />
           </CardActionArea>
           <CardActions>
             <Stack direction="row" alignItems="center" gap={1}>

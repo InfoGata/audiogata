@@ -10,7 +10,6 @@ import {
   Typography,
 } from "@mui/material";
 import DOMPurify from "dompurify";
-import { Image } from "mui-image";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { useQuery } from "react-query";
@@ -19,6 +18,7 @@ import useTrackMenu from "../hooks/useTrackMenu";
 import { useAppDispatch } from "../store/hooks";
 import { addTrack, setTrack } from "../store/reducers/trackReducer";
 import { getThumbnailImage, playlistThumbnailSize } from "../utils";
+import PlaylistImage from "./PlaylistImage";
 import SelectPlugin from "./SelectPlugin";
 
 const TopItemCards: React.FC = () => {
@@ -66,7 +66,7 @@ const TopItemCards: React.FC = () => {
         }}
       >
         <CardActionArea onClick={onClickTrack}>
-          <Image src={image} height={200} />
+          <PlaylistImage images={t.images} />
         </CardActionArea>
         <CardActions>
           <Stack direction="row" alignItems="center" gap={1}>

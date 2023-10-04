@@ -7,14 +7,13 @@ import {
   Grid,
   Typography,
 } from "@mui/material";
-import { Image } from "mui-image";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { useQuery } from "react-query";
 import { useParams } from "react-router";
 import { Link } from "react-router-dom";
 import usePlugins from "../hooks/usePlugins";
-import { getThumbnailImage, playlistThumbnailSize } from "../utils";
+import PlaylistImage from "./PlaylistImage";
 
 const PluginPlaylists: React.FC = () => {
   const { plugins } = usePlugins();
@@ -41,10 +40,7 @@ const PluginPlaylists: React.FC = () => {
           component={Link}
           to={`/plugins/${pluginId}/playlists/${p.apiId}?isuserplaylist`}
         >
-          <Image
-            src={getThumbnailImage(p.images, playlistThumbnailSize)}
-            height={playlistThumbnailSize}
-          />
+          <PlaylistImage images={p.images} />
           <CardContent>
             <Typography gutterBottom variant="h6" component="div">
               {p.name}

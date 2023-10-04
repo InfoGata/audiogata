@@ -3,7 +3,6 @@ import {
   Card,
   CardActionArea,
   CardActions,
-  CardMedia,
   Grid,
   IconButton,
   Stack,
@@ -15,8 +14,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { db } from "../database";
 import useItemMenu from "../hooks/useItemMenu";
-import { getThumbnailImage, playlistThumbnailSize } from "../utils";
-import { Image } from "mui-image";
+import PlaylistImage from "./PlaylistImage";
 
 const FavoritePlayists: React.FC = () => {
   const playlists = useLiveQuery(() => db.favoritePlaylists.toArray());
@@ -37,10 +35,7 @@ const FavoritePlayists: React.FC = () => {
             component={Link}
             to={`/plugins/${p.pluginId}/playlists/${p.apiId}`}
           >
-            <Image
-              src={getThumbnailImage(p.images, playlistThumbnailSize)}
-              height={playlistThumbnailSize}
-            />
+            <PlaylistImage images={p.images} />
           </CardActionArea>
           <CardActions>
             <Stack direction="row" alignItems="center" gap={1}>
