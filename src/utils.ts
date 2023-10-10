@@ -80,13 +80,16 @@ export function getFileTypeFromPluginUrl(url: string) {
 
 export async function getFileText(
   fileType: FileType,
-  name: string
+  name: string,
+  suppressErrors = false
 ): Promise<string | null> {
   if (fileType.filelist) {
     const file = getFileByDirectoryAndName(fileType.filelist, name);
     if (!file) {
-      const errorText = i18next.t("common:fileNotFound", { name });
-      alert(errorText);
+      if (!suppressErrors) {
+        const errorText = i18next.t("common:fileNotFound", { name });
+        alert(errorText);
+      }
       return null;
     }
 
@@ -98,8 +101,10 @@ export async function getFileText(
       const result = await fetch(newUrl, { headers: fileType.url.headers });
       return await result.text();
     } catch {
-      const errorText = i18next.t("common:cantGetFile", { name });
-      alert(errorText);
+      if (!suppressErrors) {
+        const errorText = i18next.t("common:cantGetFile", { name });
+        alert(errorText);
+      }
       return null;
     }
   }
