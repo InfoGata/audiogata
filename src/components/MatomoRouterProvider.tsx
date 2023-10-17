@@ -14,7 +14,6 @@ const createClient = () => {
     linkTracking: true,
     configurations: {
       disableCookies: true,
-      enableJSErrorTracking: true,
     },
   });
 };
