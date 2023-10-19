@@ -50,7 +50,11 @@ import {
   hasExtension,
   mapAsync,
 } from "../utils";
-import { setLyricsPluginId } from "../store/reducers/settingsReducer";
+import {
+  setLyricsPluginId,
+  setPluginsPreInstalled,
+} from "../store/reducers/settingsReducer";
+import { defaultPlugins } from "../default-plugins";
 
 interface ApplicationPluginInterface extends PluginInterface {
   networkRequest(
@@ -115,6 +119,10 @@ const PluginsProvider: React.FC<React.PropsWithChildren> = (props) => {
     (state) => state.settings.lyricsPluginId
   );
   const loadingPlugin = React.useRef(false);
+
+  const pluginsPreinstalled = useAppSelector(
+    (state) => state.settings.pluginsPreinstalled
+  );
 
   // Store variables being used by plugin methods in refs
   // in order to not get stale state
@@ -450,13 +458,20 @@ const PluginsProvider: React.FC<React.PropsWithChildren> = (props) => {
       return;
     }
 
-    const pluginFrame = await loadPlugin(plugin);
-    setPluginFrames([...pluginFrames, pluginFrame]);
-    await db.plugins.add(plugin);
-    if (!lyricsPluginId && (await pluginFrame.hasDefined.onGetLyrics())) {
-      dispatch(setLyricsPluginId(pluginFrame.id));
-    }
+    await loadAddAddPlugin(plugin);
   };
+
+  const loadAddAddPlugin = React.useCallback(
+    async (plugin: PluginInfo) => {
+      const pluginFrame = await loadPlugin(plugin);
+      setPluginFrames((prev) => [...prev, pluginFrame]);
+      await db.plugins.add(plugin);
+      if (!lyricsPluginId && (await pluginFrame.hasDefined.onGetLyrics())) {
+        dispatch(setLyricsPluginId(pluginFrame.id));
+      }
+    },
+    [dispatch, loadPlugin, lyricsPluginId]
+  );
 
   const updatePlugin = React.useCallback(
     async (plugin: PluginInfo, id: string, pluginFiles?: FileList) => {
@@ -477,6 +492,31 @@ const PluginsProvider: React.FC<React.PropsWithChildren> = (props) => {
     setPluginFrames(newPlugins);
     await db.plugins.delete(pluginFrame.id || "");
   };
+
+  React.useEffect(() => {
+    const preinstall = async () => {
+      if (pluginsLoaded && !pluginsPreinstalled) {
+        // Make sure preinstall plugins aren't already installed
+        const presinstallPlugins = defaultPlugins.filter(
+          (dp) => !!dp.preinstall
+        );
+        const plugs = await db.plugins.toArray();
+        const newPlugins = presinstallPlugins.filter(
+          (preinstall) => !plugs.some((pf) => pf.id === preinstall.id)
+        );
+        await mapAsync(newPlugins, async (newPlugin) => {
+          const fileType = getFileTypeFromPluginUrl(newPlugin.url);
+          const plugin = await getPlugin(fileType, true);
+          if (!plugin) return;
+
+          await loadAddAddPlugin(plugin);
+        });
+        dispatch(setPluginsPreInstalled());
+      }
+    };
+
+    preinstall();
+  }, [dispatch, pluginsLoaded, pluginsPreinstalled, loadAddAddPlugin]);
 
   React.useEffect(() => {
     const checkUpdate = async () => {

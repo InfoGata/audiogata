@@ -112,15 +112,18 @@ export async function getFileText(
 }
 
 export async function getPlugin(
-  fileType: FileType
+  fileType: FileType,
+  suppressErrors = false
 ): Promise<PluginInfo | null> {
   const manifestText = await getFileText(fileType, "manifest.json");
   if (!manifestText) return null;
 
   const manifest = JSON.parse(manifestText) as Manifest;
   if (!manifest.script) {
-    const errorText = i18next.t("common:manifestNoScript");
-    alert(errorText);
+    if (!suppressErrors) {
+      const errorText = i18next.t("common:manifestNoScript");
+      alert(errorText);
+    }
     return null;
   }
 

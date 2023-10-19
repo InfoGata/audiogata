@@ -3,6 +3,7 @@ export interface PluginDescription {
   name: string;
   url: string;
   description: string;
+  preinstall?: boolean;
 }
 
 export const defaultPlugins: PluginDescription[] = [
@@ -11,6 +12,7 @@ export const defaultPlugins: PluginDescription[] = [
     name: "Plugin for Youtube",
     description: "Plugin for playing music from youtube.com",
     url: "https://cdn.jsdelivr.net/gh/InfoGata/youtube-audiogata@latest/manifest.json",
+    preinstall: true,
   },
   {
     id: "B9-GwavJJOQpQXotpLZH",
@@ -47,6 +49,7 @@ export const defaultPlugins: PluginDescription[] = [
     name: "Plugin for Azlyrics",
     description: "Get lyrics from azlyrics.com",
     url: "https://cdn.jsdelivr.net/gh/InfoGata/azlyrics-audiogata@latest/manifest.json",
+    preinstall: true,
   },
 ];
 
