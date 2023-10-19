@@ -16,6 +16,7 @@ import PluginsContext, {
 } from "../PluginsContext";
 import ConfirmPluginDialog from "../components/ConfirmPluginDialog";
 import { db } from "../database";
+import { defaultPlugins } from "../default-plugins";
 import i18n from "../i18n";
 import {
   AlbumTracksResult,
@@ -37,6 +38,10 @@ import {
   addPlaylists,
 } from "../store/reducers/playlistReducer";
 import {
+  setLyricsPluginId,
+  setPluginsPreInstalled,
+} from "../store/reducers/settingsReducer";
+import {
   nextTrack,
   setElapsed,
   setTracks,
@@ -50,11 +55,6 @@ import {
   hasExtension,
   mapAsync,
 } from "../utils";
-import {
-  setLyricsPluginId,
-  setPluginsPreInstalled,
-} from "../store/reducers/settingsReducer";
-import { defaultPlugins } from "../default-plugins";
 
 interface ApplicationPluginInterface extends PluginInterface {
   networkRequest(
@@ -458,10 +458,10 @@ const PluginsProvider: React.FC<React.PropsWithChildren> = (props) => {
       return;
     }
 
-    await loadAddAddPlugin(plugin);
+    await loadAndAddPlugin(plugin);
   };
 
-  const loadAddAddPlugin = React.useCallback(
+  const loadAndAddPlugin = React.useCallback(
     async (plugin: PluginInfo) => {
       const pluginFrame = await loadPlugin(plugin);
       setPluginFrames((prev) => [...prev, pluginFrame]);
@@ -509,14 +509,14 @@ const PluginsProvider: React.FC<React.PropsWithChildren> = (props) => {
           const plugin = await getPlugin(fileType, true);
           if (!plugin) return;
 
-          await loadAddAddPlugin(plugin);
+          await loadAndAddPlugin(plugin);
         });
         dispatch(setPluginsPreInstalled());
       }
     };
 
     preinstall();
-  }, [dispatch, pluginsLoaded, pluginsPreinstalled, loadAddAddPlugin]);
+  }, [dispatch, pluginsLoaded, pluginsPreinstalled, loadAndAddPlugin]);
 
   React.useEffect(() => {
     const checkUpdate = async () => {
