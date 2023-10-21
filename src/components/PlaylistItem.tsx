@@ -5,13 +5,11 @@ import {
   Checkbox,
   IconButton,
   LinearProgress,
-  Link,
   TableCell,
   Typography,
 } from "@mui/material";
 import DOMPurify from "dompurify";
-import React from "react";
-import { Link as RouterLink } from "react-router-dom";
+import React, { Fragment } from "react";
 import { Track } from "../plugintypes";
 import { useAppSelector } from "../store/hooks";
 import {
@@ -19,6 +17,7 @@ import {
   getThumbnailImage,
   searchThumbnailSize,
 } from "../utils";
+import ArtistLink from "./ArtistLInk";
 
 interface PlaylistItemsProps {
   track: Track;
@@ -31,29 +30,6 @@ interface PlaylistItemsProps {
   openMenu?: (event: React.MouseEvent<HTMLButtonElement>, track: Track) => void;
   index?: number;
 }
-
-interface ArtistLinkProps {
-  pluginId?: string;
-  name?: string;
-  apiId?: string;
-}
-
-const ArtistLink: React.FC<ArtistLinkProps> = (props) => {
-  const { pluginId, name, apiId } = props;
-  const stopPropagation = (e: React.MouseEvent) => {
-    e.stopPropagation();
-  };
-  return (
-    <Link
-      component={RouterLink}
-      key={apiId}
-      to={`/plugins/${pluginId}/artists/${apiId}`}
-      onClick={stopPropagation}
-    >
-      {name}
-    </Link>
-  );
-};
 
 const PlaylistItem: React.FC<PlaylistItemsProps> = (props) => {
   const { track, showTrackLength, openMenu, onSelectClick, isSelected, index } =
@@ -129,15 +105,14 @@ const PlaylistItem: React.FC<PlaylistItemsProps> = (props) => {
                 />
                 {track.addtionalArtists &&
                   track.addtionalArtists.map((a, i) => (
-                    <>
+                    <Fragment key={i}>
                       {", "}
                       <ArtistLink
-                        key={i}
                         pluginId={track.pluginId}
                         name={a.name}
                         apiId={a.apiId}
                       />
-                    </>
+                    </Fragment>
                   ))}
               </>
             ) : (
