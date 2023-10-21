@@ -24,6 +24,7 @@ import { AppState } from "../store/store";
 import { PlayerComponent, PlayerComponentType } from "../types";
 import { defaultSkipTime, filterAsync } from "../utils";
 import { withPlugins } from "../withPlugins";
+import * as Sentry from "@sentry/browser";
 
 export interface AudioComponentProps
   extends StateProps,
@@ -286,8 +287,11 @@ class AudioComponent extends React.Component<
     if (this.props.currentTrack) {
       const message = `${this.props.currentTrack.name}: ${err.message}`;
       this.props.enqueueSnackbar(message, { variant: "error" });
-      console.log(message);
       console.log(err);
+      // Only capture first error message
+      if (this.state.errorCount === 0) {
+        Sentry.captureException(err);
+      }
     }
     this.setState({
       errorCount: this.state.errorCount + 1,
