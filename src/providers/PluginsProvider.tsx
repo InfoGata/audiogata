@@ -123,6 +123,8 @@ const PluginsProvider: React.FC<React.PropsWithChildren> = (props) => {
   const pluginsPreinstalled = useAppSelector(
     (state) => state.settings.pluginsPreinstalled
   );
+  const [preinstallComplete, setPreinstallComplete] =
+    React.useState(pluginsPreinstalled);
 
   // Store variables being used by plugin methods in refs
   // in order to not get stale state
@@ -465,7 +467,7 @@ const PluginsProvider: React.FC<React.PropsWithChildren> = (props) => {
     async (plugin: PluginInfo) => {
       const pluginFrame = await loadPlugin(plugin);
       setPluginFrames((prev) => [...prev, pluginFrame]);
-      await db.plugins.add(plugin);
+      await db.plugins.put(plugin);
       if (!lyricsPluginId && (await pluginFrame.hasDefined.onGetLyrics())) {
         dispatch(setLyricsPluginId(pluginFrame.id));
       }
@@ -496,22 +498,26 @@ const PluginsProvider: React.FC<React.PropsWithChildren> = (props) => {
   React.useEffect(() => {
     const preinstall = async () => {
       if (pluginsLoaded && !pluginsPreinstalled) {
-        // Make sure preinstall plugins aren't already installed
-        const presinstallPlugins = defaultPlugins.filter(
-          (dp) => !!dp.preinstall
-        );
-        const plugs = await db.plugins.toArray();
-        const newPlugins = presinstallPlugins.filter(
-          (preinstall) => !plugs.some((pf) => pf.id === preinstall.id)
-        );
-        await mapAsync(newPlugins, async (newPlugin) => {
-          const fileType = getFileTypeFromPluginUrl(newPlugin.url);
-          const plugin = await getPlugin(fileType, true);
-          if (!plugin) return;
+        try {
+          // Make sure preinstall plugins aren't already installed
+          const presinstallPlugins = defaultPlugins.filter(
+            (dp) => !!dp.preinstall
+          );
+          const plugs = await db.plugins.toArray();
+          const newPlugins = presinstallPlugins.filter(
+            (preinstall) => !plugs.some((pf) => pf.id === preinstall.id)
+          );
+          await mapAsync(newPlugins, async (newPlugin) => {
+            const fileType = getFileTypeFromPluginUrl(newPlugin.url);
+            const plugin = await getPlugin(fileType, true);
+            if (!plugin) return;
 
-          await loadAndAddPlugin(plugin);
-        });
-        dispatch(setPluginsPreInstalled());
+            await loadAndAddPlugin(plugin);
+          });
+          dispatch(setPluginsPreInstalled());
+        } finally {
+          setPreinstallComplete(true);
+        }
       }
     };
 
@@ -574,6 +580,7 @@ const PluginsProvider: React.FC<React.PropsWithChildren> = (props) => {
     pluginMessage: pluginMessage,
     pluginsLoaded,
     pluginsFailed,
+    preinstallComplete: preinstallComplete ?? false,
     reloadPlugins: loadPlugins,
   };
 

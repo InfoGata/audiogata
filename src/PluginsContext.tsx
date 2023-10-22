@@ -90,6 +90,7 @@ export interface PluginContextInterface {
   pluginMessage?: PluginMessage;
   pluginsLoaded: boolean;
   pluginsFailed: boolean;
+  preinstallComplete: boolean;
   reloadPlugins: () => Promise<void>;
 }
 
