@@ -1,81 +1,26 @@
-import { Clear, Favorite, GitHub, Menu, Search } from "@mui/icons-material";
+import { Favorite, GitHub, Menu } from "@mui/icons-material";
 import {
   AppBar,
   Box,
   IconButton,
-  InputAdornment,
-  InputBase,
   Link,
   Toolbar,
   Tooltip,
   Typography,
 } from "@mui/material";
-import { alpha, styled, useTheme } from "@mui/material/styles";
+import { useTheme } from "@mui/material/styles";
 import React from "react";
 import { useTranslation } from "react-i18next";
-import { useNavigate } from "react-router";
 import { Link as RouterLink } from "react-router-dom";
 import { useAppDispatch } from "../store/hooks";
 import { toggleNavbar } from "../store/reducers/uiReducer";
-
-const SearchBar = styled("div")(({ theme }) => ({
-  position: "relative",
-  borderRadius: theme.shape.borderRadius,
-  backgroundColor: alpha(theme.palette.common.white, 0.15),
-  "&:hover": {
-    backgroundColor: alpha(theme.palette.common.white, 0.25),
-  },
-  marginRight: theme.spacing(2),
-  marginLeft: 0,
-  width: "100%",
-  [theme.breakpoints.up("sm")]: {
-    marginLeft: theme.spacing(3),
-    width: "auto",
-  },
-}));
-
-const SearchIconWrapper = styled("div")(({ theme }) => ({
-  padding: theme.spacing(0, 2),
-  height: "100%",
-  position: "absolute",
-  pointerEvents: "none",
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-}));
-
-const StyledInputBase = styled(InputBase)(({ theme }) => ({
-  color: "inherit",
-  "& .MuiInputBase-input": {
-    padding: theme.spacing(1, 1, 1, 0),
-    // vertical padding + font size from searchIcon
-    paddingLeft: `calc(1em + ${theme.spacing(4)})`,
-    transition: theme.transitions.create("width"),
-    width: "100%",
-    [theme.breakpoints.up("md")]: {
-      width: "20ch",
-    },
-  },
-}));
+import SearchBar from "./SearchBar";
 
 const TopBar: React.FC = () => {
   const { t } = useTranslation();
   const theme = useTheme();
-  const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const onToggleNavbar = () => dispatch(toggleNavbar());
-  const [search, setSearch] = React.useState("");
-
-  const onSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSearch(event.currentTarget.value);
-  };
-  const handleSubmit = (event: React.FormEvent<{}>) => {
-    navigate(`/search?q=${search}`);
-    event.preventDefault();
-  };
-  const onClearSearch = (_: React.ChangeEvent<{}>) => {
-    setSearch("");
-  };
 
   return (
     <AppBar position="fixed" sx={{ zIndex: theme.zIndex.drawer + 1 }}>
@@ -92,33 +37,13 @@ const TopBar: React.FC = () => {
         <Typography
           variant="h6"
           noWrap={true}
-          sx={{ display: { xs: "none", sm: "block" } }}
+          sx={{ display: { xs: "none", sm: "block" }, pr: 2 }}
         >
           <Link color="inherit" underline="none" component={RouterLink} to="/">
             AudioGata
           </Link>
         </Typography>
-        <form onSubmit={handleSubmit}>
-          <SearchBar>
-            <SearchIconWrapper>
-              <Search />
-            </SearchIconWrapper>
-            <StyledInputBase
-              placeholder={t("search")}
-              inputProps={{ "aria-label": "search" }}
-              onChange={onSearchChange}
-              value={search}
-              name="query"
-              endAdornment={
-                <InputAdornment position="end">
-                  <IconButton onClick={onClearSearch} size="small">
-                    <Clear />
-                  </IconButton>
-                </InputAdornment>
-              }
-            />
-          </SearchBar>
-        </form>
+        <SearchBar />
         <Box sx={{ flexGrow: 1 }} />
         <Box sx={{ display: { xs: "none", sm: "flex" } }}>
           <IconButton component={RouterLink} to="/donate">
