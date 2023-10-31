@@ -78,7 +78,6 @@ const ImportDialog: React.FC<ImportDialogProps> = (props) => {
     const parsers = await filterAsync(parserPlugins, (p) =>
       p.remote.onCanParseUrl(url, parseType)
     );
-    console.log(parsers);
     const parser = parsers[0];
     if (parser) {
       const item = await lookupUrl(parser, parseType, url);
@@ -86,6 +85,7 @@ const ImportDialog: React.FC<ImportDialogProps> = (props) => {
     } else {
       enqueueSnackbar(t("noImporters"), { variant: "error" });
     }
+    setUrl("");
     handleClose();
   };
 
