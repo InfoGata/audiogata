@@ -1,24 +1,27 @@
-import { useLiveQuery } from "dexie-react-hooks";
-import React from "react";
-import { db } from "../database";
-import useTrackMenu from "../hooks/useTrackMenu";
-import { Playlist, Track } from "../plugintypes";
-import { useAppDispatch, useAppSelector } from "../store/hooks";
-import { playQueue, setTrack, setTracks } from "../store/reducers/trackReducer";
-import TrackList from "./TrackList";
-import ImportDialog from "./ImportDialog";
-import PlaylistMenu from "./PlaylistMenu";
+import { MoreHoriz, PlayCircle, UploadFile } from "@mui/icons-material";
 import {
+  Backdrop,
+  CircularProgress,
   IconButton,
   ListItemIcon,
   ListItemText,
   MenuItem,
 } from "@mui/material";
-import { MoreHoriz, PlayCircle, UploadFile } from "@mui/icons-material";
+import { useLiveQuery } from "dexie-react-hooks";
+import React from "react";
 import { useTranslation } from "react-i18next";
+import { db } from "../database";
+import useTrackMenu from "../hooks/useTrackMenu";
+import { Playlist, Track } from "../plugintypes";
+import { useAppDispatch, useAppSelector } from "../store/hooks";
+import { playQueue, setTrack, setTracks } from "../store/reducers/trackReducer";
+import ImportDialog from "./ImportDialog";
+import PlaylistMenu from "./PlaylistMenu";
+import TrackList from "./TrackList";
 
 const FavoriteTracks: React.FC = () => {
   const dispatch = useAppDispatch();
+  const playlists = useAppSelector((state) => state.playlist.playlists);
   const { t } = useTranslation();
   const [importDialogOpen, setImportDialogOpen] = React.useState(false);
   const [favoritesMenuAnchorEl, setFavoriteseMenuAnchorEl] =
@@ -54,8 +57,6 @@ const FavoriteTracks: React.FC = () => {
     }
   };
 
-  const playlists = useAppSelector((state) => state.playlist.playlists);
-
   const onPlay = () => {
     if (!tracks) return;
     dispatch(setTracks(tracks));
@@ -70,6 +71,14 @@ const FavoriteTracks: React.FC = () => {
       <ListItemText primary={t("importTrackByUrl")} />
     </MenuItem>,
   ];
+
+  if (!tracks) {
+    return (
+      <Backdrop open={true}>
+        <CircularProgress />
+      </Backdrop>
+    );
+  }
 
   return (
     <>

@@ -1,8 +1,10 @@
 import { MoreHoriz } from "@mui/icons-material";
 import {
+  Backdrop,
   Card,
   CardActionArea,
   CardActions,
+  CircularProgress,
   Grid,
   IconButton,
   Stack,
@@ -21,6 +23,14 @@ const FavoriteArtists: React.FC = () => {
   const sanitizer = DOMPurify.sanitize;
 
   const { openMenu } = useItemMenu();
+
+  if (!artists) {
+    return (
+      <Backdrop open={true}>
+        <CircularProgress />
+      </Backdrop>
+    );
+  }
 
   const artistCards = artists?.map((a) => {
     const openArtistMenu = (event: React.MouseEvent<HTMLButtonElement>) => {

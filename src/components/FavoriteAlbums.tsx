@@ -1,8 +1,10 @@
 import { MoreHoriz } from "@mui/icons-material";
 import {
+  Backdrop,
   Card,
   CardActionArea,
   CardActions,
+  CircularProgress,
   Grid,
   IconButton,
   Stack,
@@ -19,6 +21,14 @@ const FavoriteAlbums: React.FC = () => {
   const albums = useLiveQuery(() => db.favoriteAlbums.toArray());
 
   const { openMenu } = useItemMenu();
+
+  if (!albums) {
+    return (
+      <Backdrop open={true}>
+        <CircularProgress />
+      </Backdrop>
+    );
+  }
 
   const albumCards = albums?.map((a) => {
     const openAlbumMenu = (event: React.MouseEvent<HTMLButtonElement>) => {
