@@ -1,10 +1,8 @@
 import {
-  Backdrop,
   Button,
   Card,
   CardActions,
   CardContent,
-  CircularProgress,
   Fade,
   Grid,
   Typography,
@@ -20,6 +18,7 @@ import {
   getFileTypeFromPluginUrl,
   getPlugin,
 } from "../utils";
+import Spinner from "./Spinner";
 
 const PluginCards: React.FC = () => {
   const { t } = useTranslation();
@@ -74,9 +73,7 @@ const PluginCards: React.FC = () => {
     <>
       {pluginCards.length > 0 && (
         <Grid>
-          <Backdrop open={backdropOpen}>
-            <CircularProgress color="inherit" />
-          </Backdrop>
+          <Spinner open={backdropOpen} />
           <Typography variant="h6">{t("plugins")}</Typography>
           <Fade in={pluginsLoaded}>
             <Grid container spacing={2}>

@@ -1,10 +1,8 @@
 import { MoreHoriz } from "@mui/icons-material";
 import {
-  Backdrop,
   Card,
   CardActionArea,
   CardActions,
-  CircularProgress,
   Grid,
   IconButton,
   Stack,
@@ -17,6 +15,7 @@ import { Link } from "react-router-dom";
 import { db } from "../database";
 import useItemMenu from "../hooks/useItemMenu";
 import PlaylistImage from "./PlaylistImage";
+import Spinner from "./Spinner";
 
 const FavoriteArtists: React.FC = () => {
   const artists = useLiveQuery(() => db.favoriteArtists.toArray());
@@ -25,11 +24,7 @@ const FavoriteArtists: React.FC = () => {
   const { openMenu } = useItemMenu();
 
   if (!artists) {
-    return (
-      <Backdrop open={true}>
-        <CircularProgress />
-      </Backdrop>
-    );
+    return <Spinner />;
   }
 
   const artistCards = artists?.map((a) => {

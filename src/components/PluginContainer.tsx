@@ -1,10 +1,4 @@
-import {
-  Backdrop,
-  Button,
-  CircularProgress,
-  Grid,
-  Typography,
-} from "@mui/material";
+import { Button, Grid, Typography } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import React from "react";
 import { useTranslation } from "react-i18next";
@@ -18,6 +12,7 @@ import {
   getFileTypeFromPluginUrl,
   getPlugin,
 } from "../utils";
+import Spinner from "./Spinner";
 
 const FileInput = styled("input")({
   display: "none",
@@ -106,9 +101,7 @@ const PluginContainer: React.FC<PluginContainerProps> = (props) => {
 
   return (
     <Grid>
-      <Backdrop open={backdropOpen}>
-        <CircularProgress color="inherit" />
-      </Backdrop>
+      <Spinner open={backdropOpen} />
       <Typography>
         {plugin.name} {plugin.version}
       </Typography>

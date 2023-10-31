@@ -1,5 +1,5 @@
 import { MoreHoriz } from "@mui/icons-material";
-import { Backdrop, CircularProgress, IconButton, List } from "@mui/material";
+import { IconButton, List } from "@mui/material";
 import React from "react";
 import { useQuery } from "react-query";
 import { useParams } from "react-router";
@@ -13,6 +13,7 @@ import AlbumSearchResult from "./AlbumSearchResult";
 import ConfirmPluginDialog from "./ConfirmPluginDialog";
 import Pager from "./Pager";
 import PlaylistInfoCard from "./PlaylistInfoCard";
+import Spinner from "./Spinner";
 
 const ArtistPage: React.FC = () => {
   const { pluginId } = useParams<"pluginId">();
@@ -61,9 +62,7 @@ const ArtistPage: React.FC = () => {
 
   return (
     <>
-      <Backdrop open={query.isLoading || isLoading}>
-        <CircularProgress color="inherit" />
-      </Backdrop>
+      <Spinner open={query.isLoading || isLoading} />
       {artistInfo && (
         <PlaylistInfoCard
           name={artistInfo.name || ""}

@@ -1,4 +1,4 @@
-import { Backdrop, Button, CircularProgress, Grid } from "@mui/material";
+import { Button, Grid } from "@mui/material";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { useParams } from "react-router-dom";
@@ -7,6 +7,7 @@ import usePlugins from "../hooks/usePlugins";
 import { Track } from "../plugintypes";
 import { useAppDispatch } from "../store/hooks";
 import { setPlaylistTracks } from "../store/reducers/playlistReducer";
+import Spinner from "./Spinner";
 import TrackInfo from "./TrackInfo";
 
 const PlaylistTrackInfo: React.FC = () => {
@@ -72,9 +73,7 @@ const PlaylistTrackInfo: React.FC = () => {
 
   return (
     <>
-      <Backdrop open={backdropOpen || isUpdating}>
-        <CircularProgress color="inherit" />
-      </Backdrop>
+      <Spinner open={backdropOpen || isUpdating} />
       {track ? (
         <Grid>
           <TrackInfo track={track} />

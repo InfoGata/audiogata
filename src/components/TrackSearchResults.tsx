@@ -1,4 +1,3 @@
-import { Backdrop, CircularProgress } from "@mui/material";
 import React from "react";
 import { useQuery } from "react-query";
 import usePagination from "../hooks/usePagination";
@@ -9,6 +8,7 @@ import { useAppDispatch } from "../store/hooks";
 import { addTrack, setTrack } from "../store/reducers/trackReducer";
 import Filtering from "./Filtering";
 import Pager from "./Pager";
+import Spinner from "./Spinner";
 import TrackList from "./TrackList";
 
 interface TrackSearchResultsProps {
@@ -79,9 +79,7 @@ const TrackSearchResults: React.FC<TrackSearchResultsProps> = (props) => {
 
   return (
     <>
-      <Backdrop open={query.isLoading}>
-        <CircularProgress color="inherit" />
-      </Backdrop>
+      <Spinner open={query.isLoading} />
       {!!initialFilter && (
         <Filtering filters={initialFilter} setFilters={applyFilters} />
       )}

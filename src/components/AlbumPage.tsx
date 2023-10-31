@@ -1,5 +1,5 @@
 import { MoreHoriz, PlayCircle } from "@mui/icons-material";
-import { Backdrop, CircularProgress, IconButton } from "@mui/material";
+import { IconButton } from "@mui/material";
 import React from "react";
 import { useQuery } from "react-query";
 import { useLocation, useParams } from "react-router-dom";
@@ -16,6 +16,7 @@ import ConfirmPluginDialog from "./ConfirmPluginDialog";
 import Pager from "./Pager";
 import PlaylistInfoCard from "./PlaylistInfoCard";
 import PlaylistMenu from "./PlaylistMenu";
+import Spinner from "./Spinner";
 import TrackList from "./TrackList";
 
 const AlbumPage: React.FC = () => {
@@ -101,9 +102,7 @@ const AlbumPage: React.FC = () => {
 
   return (
     <>
-      <Backdrop open={query.isLoading || isLoading}>
-        <CircularProgress color="inherit" />
-      </Backdrop>
+      <Spinner open={query.isLoading || isLoading} />
       {albumInfo && (
         <PlaylistInfoCard
           name={albumInfo.name || ""}

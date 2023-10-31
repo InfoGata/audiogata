@@ -1,5 +1,5 @@
 import { MoreHoriz, PlayCircle } from "@mui/icons-material";
-import { Backdrop, CircularProgress, IconButton } from "@mui/material";
+import { IconButton } from "@mui/material";
 import React from "react";
 import { useQuery } from "react-query";
 import { useParams } from "react-router";
@@ -16,6 +16,7 @@ import ConfirmPluginDialog from "./ConfirmPluginDialog";
 import Pager from "./Pager";
 import PlaylistInfoCard from "./PlaylistInfoCard";
 import PlaylistMenu from "./PlaylistMenu";
+import Spinner from "./Spinner";
 import TrackList from "./TrackList";
 
 const PluginPlaylist: React.FC = () => {
@@ -86,9 +87,7 @@ const PluginPlaylist: React.FC = () => {
 
   return (
     <>
-      <Backdrop open={query.isLoading || isLoading}>
-        <CircularProgress color="inherit" />
-      </Backdrop>
+      <Spinner open={query.isLoading || isLoading} />
       {playlistInfo && (
         <PlaylistInfoCard
           name={playlistInfo.name || ""}

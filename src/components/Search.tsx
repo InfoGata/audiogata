@@ -1,12 +1,4 @@
-import {
-  AppBar,
-  Backdrop,
-  Box,
-  CircularProgress,
-  Tab,
-  Tabs,
-  Typography,
-} from "@mui/material";
+import { AppBar, Box, Tab, Tabs, Typography } from "@mui/material";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { useQuery, useQueryClient } from "react-query";
@@ -24,6 +16,7 @@ import AlbumSearchResults from "./AlbumSearchResults";
 import ArtistSearchResults from "./ArtistSearchResults";
 import PlaylistSearchResults from "./PlaylistSearchResults";
 import SelectPlugin from "./SelectPlugin";
+import Spinner from "./Spinner";
 import TrackSearchResults from "./TrackSearchResults";
 
 interface TabPanelProps {
@@ -115,9 +108,7 @@ const Search: React.FC = () => {
         useCurrentPlugin={true}
       />
       <AppBar position="static">
-        <Backdrop open={query.isLoading}>
-          <CircularProgress color="inherit" />
-        </Backdrop>
+        <Spinner open={query.isLoading} />
         <Tabs
           value={tabValue}
           onChange={handleChange}

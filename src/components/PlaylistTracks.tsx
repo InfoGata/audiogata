@@ -7,8 +7,6 @@ import {
   UploadFile,
 } from "@mui/icons-material";
 import {
-  Backdrop,
-  CircularProgress,
   Grid,
   IconButton,
   ListItemIcon,
@@ -37,6 +35,7 @@ import EditPlaylistDialog from "./EditPlaylistDialog";
 import ImportDialog from "./ImportDialog";
 import PlaylistMenu from "./PlaylistMenu";
 import SelectTrackListPlugin from "./SelectTrackListPlugin";
+import Spinner from "./Spinner";
 import TrackList from "./TrackList";
 
 const PlaylistTracks: React.FC = () => {
@@ -194,9 +193,7 @@ const PlaylistTracks: React.FC = () => {
 
   return (
     <>
-      <Backdrop open={playlist === false}>
-        <CircularProgress color="inherit" />
-      </Backdrop>
+      <Spinner open={playlist === false} />
       {playlist ? (
         <>
           <Grid sx={{ display: "flex" }}>

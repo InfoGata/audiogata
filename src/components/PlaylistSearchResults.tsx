@@ -1,4 +1,4 @@
-import { Backdrop, CircularProgress, List } from "@mui/material";
+import { List } from "@mui/material";
 import React from "react";
 import { useQuery } from "react-query";
 import usePagination from "../hooks/usePagination";
@@ -7,6 +7,7 @@ import { FilterInfo, PageInfo } from "../plugintypes";
 import Filtering from "./Filtering";
 import Pager from "./Pager";
 import PlaylistSearchResult from "./PlaylistSearchResult";
+import Spinner from "./Spinner";
 
 interface PlaylistSearchResultsProps {
   pluginId: string;
@@ -77,9 +78,7 @@ const PlaylistSearchResults: React.FC<PlaylistSearchResultsProps> = (props) => {
 
   return (
     <>
-      <Backdrop open={query.isLoading}>
-        <CircularProgress color="inherit" />
-      </Backdrop>
+      <Spinner open={query.isLoading} />
       {!!initialFilter && (
         <Filtering filters={initialFilter} setFilters={applyFilters} />
       )}

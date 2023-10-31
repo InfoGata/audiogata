@@ -1,7 +1,5 @@
 import { MoreHoriz, PlayCircle, UploadFile } from "@mui/icons-material";
 import {
-  Backdrop,
-  CircularProgress,
   IconButton,
   ListItemIcon,
   ListItemText,
@@ -17,6 +15,7 @@ import { useAppDispatch, useAppSelector } from "../store/hooks";
 import { playQueue, setTrack, setTracks } from "../store/reducers/trackReducer";
 import ImportDialog from "./ImportDialog";
 import PlaylistMenu from "./PlaylistMenu";
+import Spinner from "./Spinner";
 import TrackList from "./TrackList";
 
 const FavoriteTracks: React.FC = () => {
@@ -73,11 +72,7 @@ const FavoriteTracks: React.FC = () => {
   ];
 
   if (!tracks) {
-    return (
-      <Backdrop open={true}>
-        <CircularProgress />
-      </Backdrop>
-    );
+    return <Spinner />;
   }
 
   return (

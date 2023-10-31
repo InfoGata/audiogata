@@ -1,10 +1,11 @@
-import { Backdrop, Button, CircularProgress, Grid } from "@mui/material";
+import { Button, Grid } from "@mui/material";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { useParams } from "react-router";
 import usePlugins from "../hooks/usePlugins";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
 import { updateTrack } from "../store/reducers/trackReducer";
+import Spinner from "./Spinner";
 import TrackInfo from "./TrackInfo";
 
 const QueueTrackInfo: React.FC = () => {
@@ -51,9 +52,7 @@ const QueueTrackInfo: React.FC = () => {
 
   return track ? (
     <Grid>
-      <Backdrop open={isUpdating}>
-        <CircularProgress color="inherit" />
-      </Backdrop>
+      <Spinner open={isUpdating} />
       <TrackInfo track={track} />
       {showUpdateButton && (
         <Button variant="contained" onClick={onUpdateTrack}>

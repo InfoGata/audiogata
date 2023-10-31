@@ -1,4 +1,4 @@
-import { Backdrop, CircularProgress, Typography } from "@mui/material";
+import { Typography } from "@mui/material";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -6,6 +6,7 @@ import { PluginInfo } from "../plugintypes";
 import { FileType } from "../types";
 import { generatePluginId, getPlugin } from "../utils";
 import ConfirmPluginDialog from "./ConfirmPluginDialog";
+import Spinner from "./Spinner";
 
 const PluginInstall: React.FC = () => {
   const [isInstalling, setIsInstalling] = React.useState(true);
@@ -70,9 +71,7 @@ const PluginInstall: React.FC = () => {
 
   return (
     <>
-      <Backdrop open={isLoading}>
-        <CircularProgress color="inherit" />
-      </Backdrop>
+      <Spinner open={isLoading} />
       {isInstalling ? (
         <Typography variant="h4">
           {t("installingPlugin", { manifestUrl })}

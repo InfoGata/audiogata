@@ -1,10 +1,11 @@
-import React, { useEffect } from "react";
-import usePlugins from "../hooks/usePlugins";
-import { useLocation } from "react-router-dom";
-import { Backdrop, Box, CircularProgress, Typography } from "@mui/material";
-import { useAppSelector } from "../store/hooks";
-import { useQuery } from "react-query";
+import { Box, Typography } from "@mui/material";
 import DOMPurify from "dompurify";
+import React from "react";
+import { useQuery } from "react-query";
+import { useLocation } from "react-router-dom";
+import usePlugins from "../hooks/usePlugins";
+import { useAppSelector } from "../store/hooks";
+import Spinner from "./Spinner";
 
 const Lyrics: React.FC = () => {
   const { plugins, pluginsLoaded } = usePlugins();
@@ -38,9 +39,7 @@ const Lyrics: React.FC = () => {
 
   return (
     <Box>
-      <Backdrop open={query.isLoading}>
-        <CircularProgress color="inherit" />
-      </Backdrop>
+      <Spinner open={query.isLoading} />
       <Typography align="center" variant="h4">
         {trackName}
       </Typography>
