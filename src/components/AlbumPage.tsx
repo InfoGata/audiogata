@@ -82,7 +82,7 @@ const AlbumPage: React.FC = () => {
     return [];
   };
 
-  const query = useQuery(["albumpage", pluginId, apiId], onGetAlbum, {
+  const query = useQuery(["albumpage", pluginId, apiId, page], onGetAlbum, {
     enabled: pluginsLoaded && !!plugin,
   });
   const tracklist = query.data || [];
