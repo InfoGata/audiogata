@@ -13,23 +13,35 @@ import { Link } from "react-router-dom";
 import usePlugins from "../hooks/usePlugins";
 import PlaylistImage from "./PlaylistImage";
 import Spinner from "./Spinner";
+import { PageInfo, UserPlaylistRequest } from "../plugintypes";
+import Pager from "./Pager";
+import usePagination from "../hooks/usePagination";
 
 const PluginPlaylists: React.FC = () => {
-  const { plugins } = usePlugins();
+  const { plugins, pluginsLoaded } = usePlugins();
   const { pluginId } = useParams<"pluginId">();
   const { t } = useTranslation();
+  const [currentPage, setCurrentPage] = React.useState<PageInfo>();
   const plugin = plugins.find((p) => p.id === pluginId);
+
+  const { page, hasNextPage, hasPreviousPage, onPreviousPage, onNextPage } =
+    usePagination(currentPage);
 
   const getPlaylists = async () => {
     if (plugin && (await plugin.hasDefined.onGetUserPlaylists())) {
-      const request = {};
+      const request: UserPlaylistRequest = {
+        pageInfo: page,
+      };
       const p = await plugin.remote.onGetUserPlaylists(request);
+      setCurrentPage(p.pageInfo);
       return p.items;
     }
     return [];
   };
 
-  const query = useQuery(["pluginplaylists", pluginId], getPlaylists);
+  const query = useQuery(["pluginplaylists", pluginId, page], getPlaylists, {
+    enabled: pluginsLoaded && !!plugin,
+  });
   const playlists = query.data || [];
 
   const playlistLinks = playlists.map((p, i) => (
@@ -55,6 +67,12 @@ const PluginPlaylists: React.FC = () => {
       <Grid container spacing={2}>
         {playlistLinks}
       </Grid>
+      <Pager
+        hasNextPage={hasNextPage}
+        hasPreviousPage={hasPreviousPage}
+        onPreviousPage={onPreviousPage}
+        onNextPage={onNextPage}
+      />
     </>
   ) : (
     <>{t("notFound")}</>
