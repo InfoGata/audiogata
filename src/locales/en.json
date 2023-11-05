@@ -4,9 +4,10 @@
     "home": "Home",
     "playQueue": "Now Playing",
     "plugin": "Plugin",
+    "plugins": "Plugins",
+    "availablePlugins": "Available Plugins",
     "selectPlugin": "Select Plugin",
     "none": "None",
-    "plugins": "Plugins",
     "settings": "Settings",
     "about": "About",
     "playlists": "Playlists",
@@ -118,7 +119,8 @@
     "pluginAlreadyInstalled": "A plugin with Id {{id}} is already installed",
     "homepage": "Home Page",
     "failedPlugins": "Failed to load plugins",
-    "clickReload": "Click to reload plugins"
+    "clickReload": "Click to reload plugins",
+    "installedPlugins": "Installed Plugins"
   },
   "settings": {
     "playCurrentTrack": "Autoplay current track on start up",

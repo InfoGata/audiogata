@@ -1,4 +1,4 @@
-import { Button, Grid } from "@mui/material";
+import { Button, Grid, Typography } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import React from "react";
 import { useTranslation } from "react-i18next";
@@ -8,6 +8,7 @@ import { FileType } from "../types";
 import { directoryProps, generatePluginId, getPlugin } from "../utils";
 import AddPluginUrlDialog from "./AddPluginUrlDialog";
 import ConfirmPluginDialog from "./ConfirmPluginDialog";
+import PluginCards from "./PluginCards";
 import PluginContainer from "./PluginContainer";
 
 const FileInput = styled("input")({
@@ -101,6 +102,9 @@ const Plugins: React.FC = () => {
           >{`${t("failedPlugins")}: ${t("clickReload")}`}</Button>
         </Grid>
       )}
+      {plugins.length > 0 && (
+        <Typography variant="h6">{t("installedPlugins")}</Typography>
+      )}
       <Grid>{pluginComponents}</Grid>
       <ConfirmPluginDialog
         open={Boolean(pendingPlugin)}
@@ -112,6 +116,7 @@ const Plugins: React.FC = () => {
         handleConfirm={onConfirmUrlDialog}
         handleClose={onCloseUrlDialog}
       />
+      <PluginCards />
     </Grid>
   );
 };

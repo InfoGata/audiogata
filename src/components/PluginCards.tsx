@@ -74,7 +74,7 @@ const PluginCards: React.FC = () => {
       {pluginCards.length > 0 && (
         <Grid>
           <Spinner open={backdropOpen} />
-          <Typography variant="h6">{t("plugins")}</Typography>
+          <Typography variant="h6">{t("availablePlugins")}</Typography>
           <Fade in={pluginsLoaded}>
             <Grid container spacing={2}>
               {pluginCards}
