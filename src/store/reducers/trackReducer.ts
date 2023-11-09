@@ -484,8 +484,12 @@ export const setElapsed =
       "setPositionState" in navigator.mediaSession &&
       state.track.currentTrack?.duration
     ) {
+      const actualElapsed = Math.min(
+        elapsed,
+        state.track.currentTrack.duration
+      );
       navigator.mediaSession.setPositionState({
-        position: elapsed,
+        position: actualElapsed,
         duration: state.track.currentTrack.duration,
       });
     }
