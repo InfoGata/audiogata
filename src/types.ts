@@ -42,22 +42,6 @@ export interface FileType {
   url?: UrlInfo;
 }
 
-export interface Manifest {
-  name: string;
-  script: string;
-  id?: string;
-  version?: string;
-  description?: string;
-  options?: string | ManifestOptions;
-  homepage?: string;
-  updateUrl?: string;
-}
-
-export interface ManifestOptions {
-  page: string;
-  sameOrigin?: boolean;
-}
-
 export const enum SearchResultType {
   Tracks = "tracks",
   Albums = "albums",

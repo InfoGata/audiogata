@@ -8,6 +8,7 @@ export interface PluginInfo {
   optionsSameOrigin?: boolean;
   manifestUrl?: string;
   homepage?: string;
+  manifest?: Manifest;
 }
 
 export interface Track {
@@ -198,4 +199,18 @@ export interface GetLyricsRequest {
 
 export interface GetLyricsResponse {
   lyrics: string;
+}
+export interface Manifest {
+  name: string;
+  script: string;
+  id?: string;
+  version?: string;
+  description?: string;
+  options?: string | ManifestOptions;
+  homepage?: string;
+  updateUrl?: string;
+}
+export interface ManifestOptions {
+  page: string;
+  sameOrigin?: boolean;
 }

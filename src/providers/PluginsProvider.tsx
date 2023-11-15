@@ -21,6 +21,7 @@ import i18n from "../i18n";
 import {
   AlbumTracksResult,
   ArtistAlbumsResult,
+  Manifest,
   NotificationMessage,
   Playlist,
   PlaylistInfo,
@@ -46,7 +47,7 @@ import {
   setElapsed,
   setTracks,
 } from "../store/reducers/trackReducer";
-import { Manifest, NetworkRequest } from "../types";
+import { NetworkRequest } from "../types";
 import {
   getFileText,
   getFileTypeFromPluginUrl,

@@ -5,7 +5,8 @@ import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import { PluginFrameContainer } from "../PluginsContext";
 import usePlugins from "../hooks/usePlugins";
-import { FileType, Manifest } from "../types";
+import { Manifest } from "../plugintypes";
+import { FileType } from "../types";
 import {
   directoryProps,
   getFileText,

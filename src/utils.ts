@@ -1,9 +1,9 @@
 import { Capacitor } from "@capacitor/core";
 import { customAlphabet } from "nanoid";
 import i18next from "./i18n";
-import { ImageInfo, PluginInfo, Track } from "./plugintypes";
+import { ImageInfo, Manifest, PluginInfo, Track } from "./plugintypes";
 import thumbnail from "./thumbnail.png";
-import { DirectoryFile, FileType, Manifest } from "./types";
+import { DirectoryFile, FileType } from "./types";
 
 export function formatSeconds(seconds?: number) {
   if (!seconds) {
@@ -138,6 +138,7 @@ export async function getPlugin(
     version: manifest.version,
     manifestUrl: manifest.updateUrl || fileType.url?.url,
     homepage: manifest.homepage,
+    manifest,
   };
 
   if (manifest.options) {
