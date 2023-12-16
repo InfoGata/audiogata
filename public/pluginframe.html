@@ -13,6 +13,9 @@
 
     const prepare = {
       networkRequest: (input, init) => {
+        if (input instanceof URL) {
+          input = input.toString();
+        }
         if (init) {
           const requestHeaders = Array.isArray(init.headers) ?
             init.headers : Object.entries(init.headers);
