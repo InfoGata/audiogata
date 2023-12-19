@@ -11,12 +11,26 @@
   <script type="module">
     import { ChildPlugin } from "https://cdn.jsdelivr.net/npm/plugin-frame@0.5.0/dist/plugin-frame.esm.js";
 
+    const headersInitToEntries = (headers) => {
+      if (!headers) {
+        return headers;
+      }
+
+      if (Array.isArray(headers)) {
+        return headers;
+      }
+
+      return headers instanceof Headers
+        ? Object.fromEntries(headers.entries())
+        : headers;
+    };
+
     const requestToInit = (request, init) => {
       let newInit =  {
         body: request.body,
         cache: request.cache,
         credentials: request.credentials,
-        headers: request.headers,
+        headers: headersInitToEntries(request.headers),
         integrity: request.integrity,
         keepalive: request.keepalive,
         method: request.method,
@@ -24,7 +38,7 @@
         redirect: request.redirect,
         referrer: request.referrer,
         referrerPolicy: request.referrerPolicy,
-        signal: request.signal,
+        duplex: request.duplex
       };
 
       if (init) {
@@ -36,18 +50,17 @@
 
     const prepare = {
       networkRequest: (input, init) => {
+        if (init) {
+          const requestHeaders = headersInitToEntries(init.headers);
+          init.headers = requestHeaders;
+          init.signal = undefined;
+        }
         if (input instanceof Request) {
           init = requestToInit(input, init);
           input = input.url;
         }
         if (input instanceof URL) {
           input = input.toString();
-        }
-        if (init) {
-          const requestHeaders = Array.isArray(init.headers) ?
-            init.headers : Object.entries(init.headers);
-          init.headers = requestHeaders;
-          init.signal = undefined;
         }
         return [input, init];
       }

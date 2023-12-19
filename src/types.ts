@@ -7,7 +7,7 @@ import {
 } from "./plugintypes";
 
 export interface NetworkRequest {
-  body: Blob | ArrayBuffer;
+  body: Blob | ArrayBuffer | null;
   headers: { [k: string]: string };
   status: number;
   statusText: string;
@@ -16,7 +16,7 @@ export interface NetworkRequest {
 
 export interface InfoGataExtension {
   networkRequest: (
-    input: RequestInfo,
+    input: string,
     init?: RequestInit
   ) => Promise<NetworkRequest>;
 }
