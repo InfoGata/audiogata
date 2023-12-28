@@ -88,3 +88,9 @@ export interface PlayerComponent {
   [PlayerComponentType.onPlay]: (request: PlayTrackRequest) => Promise<void>;
   [PlayerComponentType.onSetPlaybackRate]: (rate: number) => Promise<void>;
 }
+
+export interface NavigationLinkItem {
+  title: string;
+  link: string;
+  icon: React.JSX.Element;
+}
