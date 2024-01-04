@@ -6,10 +6,10 @@ import usePlugins from "../hooks/usePlugins";
 import { PluginInfo } from "../plugintypes";
 import { FileType } from "../types";
 import { directoryProps, generatePluginId, getPlugin } from "../utils";
-import AddPluginUrlDialog from "./AddPluginUrlDialog";
-import ConfirmPluginDialog from "./ConfirmPluginDialog";
-import PluginCards from "./PluginCards";
-import PluginContainer from "./PluginContainer";
+import AddPluginUrlDialog from "../components/AddPluginUrlDialog";
+import ConfirmPluginDialog from "../components/ConfirmPluginDialog";
+import PluginCards from "../components/PluginCards";
+import PluginContainer from "../components/PluginContainer";
 
 const FileInput = styled("input")({
   display: "none",

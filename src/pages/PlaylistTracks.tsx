@@ -29,14 +29,14 @@ import {
   setPlaylistTracks,
 } from "../store/reducers/playlistReducer";
 import { playQueue, setTrack, setTracks } from "../store/reducers/trackReducer";
-import AddPlaylistDialog from "./AddPlaylistDialog";
-import ConvertTracksDialog from "./ConvertTracksDialog";
-import EditPlaylistDialog from "./EditPlaylistDialog";
-import ImportDialog from "./ImportDialog";
-import PlaylistMenu from "./PlaylistMenu";
-import SelectTrackListPlugin from "./SelectTrackListPlugin";
-import Spinner from "./Spinner";
-import TrackList from "./TrackList";
+import AddPlaylistDialog from "../components/AddPlaylistDialog";
+import ConvertTracksDialog from "../components/ConvertTracksDialog";
+import EditPlaylistDialog from "../components/EditPlaylistDialog";
+import ImportDialog from "../components/ImportDialog";
+import PlaylistMenu from "../components/PlaylistMenu";
+import SelectTrackListPlugin from "../components/SelectTrackListPlugin";
+import Spinner from "../components/Spinner";
+import TrackList from "../components/TrackList";
 
 const PlaylistTracks: React.FC = () => {
   const { playlistId } = useParams<"playlistId">();

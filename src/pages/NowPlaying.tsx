@@ -1,10 +1,8 @@
-import { Delete, Info, MoreHoriz, PlaylistAdd } from "@mui/icons-material";
+import { Delete, Info, MoreHoriz } from "@mui/icons-material";
 import {
-  Divider,
   IconButton,
   ListItemIcon,
   ListItemText,
-  Menu,
   MenuItem,
   Tooltip,
   Typography,
@@ -12,6 +10,9 @@ import {
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
+import PlaylistMenu from "../components/PlaylistMenu";
+import SelectTrackListPlugin from "../components/SelectTrackListPlugin";
+import TrackList from "../components/TrackList";
 import { db } from "../database";
 import useSelected from "../hooks/useSelected";
 import useTrackMenu from "../hooks/useTrackMenu";
@@ -24,11 +25,6 @@ import {
   setTrack,
   setTracks,
 } from "../store/reducers/trackReducer";
-import AddPlaylistDialog from "./AddPlaylistDialog";
-import PlaylistMenuItem from "./PlaylistMenuItem";
-import SelectTrackListPlugin from "./SelectTrackListPlugin";
-import TrackList from "./TrackList";
-import PlaylistMenu from "./PlaylistMenu";
 
 const NowPlaying: React.FC = () => {
   const { t } = useTranslation();

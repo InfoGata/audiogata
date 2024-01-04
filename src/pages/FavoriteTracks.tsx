@@ -13,10 +13,10 @@ import useTrackMenu from "../hooks/useTrackMenu";
 import { Playlist, Track } from "../plugintypes";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
 import { playQueue, setTrack, setTracks } from "../store/reducers/trackReducer";
-import ImportDialog from "./ImportDialog";
-import PlaylistMenu from "./PlaylistMenu";
-import Spinner from "./Spinner";
-import TrackList from "./TrackList";
+import ImportDialog from "../components/ImportDialog";
+import PlaylistMenu from "../components/PlaylistMenu";
+import Spinner from "../components/Spinner";
+import TrackList from "../components/TrackList";
 
 const FavoriteTracks: React.FC = () => {
   const dispatch = useAppDispatch();

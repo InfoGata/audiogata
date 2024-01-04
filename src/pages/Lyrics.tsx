@@ -5,7 +5,7 @@ import { useQuery } from "react-query";
 import { useLocation } from "react-router-dom";
 import usePlugins from "../hooks/usePlugins";
 import { useAppSelector } from "../store/hooks";
-import Spinner from "./Spinner";
+import Spinner from "../components/Spinner";
 
 const Lyrics: React.FC = () => {
   const { plugins, pluginsLoaded } = usePlugins();

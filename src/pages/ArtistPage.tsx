@@ -9,11 +9,11 @@ import useItemMenu from "../hooks/useItemMenu";
 import usePagination from "../hooks/usePagination";
 import usePlugins from "../hooks/usePlugins";
 import { Artist, PageInfo } from "../plugintypes";
-import AlbumSearchResult from "./AlbumSearchResult";
-import ConfirmPluginDialog from "./ConfirmPluginDialog";
-import Pager from "./Pager";
-import PlaylistInfoCard from "./PlaylistInfoCard";
-import Spinner from "./Spinner";
+import AlbumSearchResult from "../components/AlbumSearchResult";
+import ConfirmPluginDialog from "../components/ConfirmPluginDialog";
+import Pager from "../components/Pager";
+import PlaylistInfoCard from "../components/PlaylistInfoCard";
+import Spinner from "../components/Spinner";
 
 const ArtistPage: React.FC = () => {
   const { pluginId } = useParams<"pluginId">();

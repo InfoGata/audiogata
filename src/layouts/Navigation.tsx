@@ -20,7 +20,7 @@ import React from "react";
 import { useTranslation } from "react-i18next";
 import { useAppSelector } from "../store/hooks";
 import { NavigationLinkItem } from "../types";
-import AddPlaylistDialog from "./AddPlaylistDialog";
+import AddPlaylistDialog from "../components/AddPlaylistDialog";
 import NavigationLink from "./NavigationLink";
 import NavigationPlaylistItem from "./NavigationPlaylistItem";
 

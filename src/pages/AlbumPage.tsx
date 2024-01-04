@@ -12,12 +12,12 @@ import useTrackMenu from "../hooks/useTrackMenu";
 import { Album, PageInfo, Track } from "../plugintypes";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
 import { playQueue, setTrack, setTracks } from "../store/reducers/trackReducer";
-import ConfirmPluginDialog from "./ConfirmPluginDialog";
-import Pager from "./Pager";
-import PlaylistInfoCard from "./PlaylistInfoCard";
-import PlaylistMenu from "./PlaylistMenu";
-import Spinner from "./Spinner";
-import TrackList from "./TrackList";
+import ConfirmPluginDialog from "../components/ConfirmPluginDialog";
+import Pager from "../components/Pager";
+import PlaylistInfoCard from "../components/PlaylistInfoCard";
+import PlaylistMenu from "../components/PlaylistMenu";
+import Spinner from "../components/Spinner";
+import TrackList from "../components/TrackList";
 
 const AlbumPage: React.FC = () => {
   const { pluginId } = useParams<"pluginId">();

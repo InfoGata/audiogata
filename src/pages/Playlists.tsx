@@ -23,7 +23,7 @@ import { Playlist, PlaylistInfo, Track } from "../plugintypes";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
 import { addPlaylist, deletePlaylist } from "../store/reducers/playlistReducer";
 import { filterAsync } from "../utils";
-import ImportDialog from "./ImportDialog";
+import ImportDialog from "../components/ImportDialog";
 
 interface PlaylistsItemProps {
   playlist: PlaylistInfo;

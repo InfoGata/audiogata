@@ -22,7 +22,7 @@ import {
   setLyricsPluginId,
 } from "../store/reducers/settingsReducer";
 import { defaultSkipTime } from "../utils";
-import SelectPlugin from "./SelectPlugin";
+import SelectPlugin from "../components/SelectPlugin";
 
 const Settings: React.FC = () => {
   const dispatch = useAppDispatch();

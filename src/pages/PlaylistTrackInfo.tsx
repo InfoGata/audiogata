@@ -7,8 +7,8 @@ import usePlugins from "../hooks/usePlugins";
 import { Track } from "../plugintypes";
 import { useAppDispatch } from "../store/hooks";
 import { setPlaylistTracks } from "../store/reducers/playlistReducer";
-import Spinner from "./Spinner";
-import TrackInfo from "./TrackInfo";
+import Spinner from "../components/Spinner";
+import TrackInfo from "../components/TrackInfo";
 
 const PlaylistTrackInfo: React.FC = () => {
   const [showUpdateButton, setShowUpdateButton] = React.useState(false);

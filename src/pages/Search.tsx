@@ -12,12 +12,12 @@ import {
   Track,
 } from "../plugintypes";
 import { SearchResultType } from "../types";
-import AlbumSearchResults from "./AlbumSearchResults";
-import ArtistSearchResults from "./ArtistSearchResults";
-import PlaylistSearchResults from "./PlaylistSearchResults";
-import SelectPlugin from "./SelectPlugin";
-import Spinner from "./Spinner";
-import TrackSearchResults from "./TrackSearchResults";
+import AlbumSearchResults from "../components/AlbumSearchResults";
+import ArtistSearchResults from "../components/ArtistSearchResults";
+import PlaylistSearchResults from "../components/PlaylistSearchResults";
+import SelectPlugin from "../components/SelectPlugin";
+import Spinner from "../components/Spinner";
+import TrackSearchResults from "../components/TrackSearchResults";
 
 interface TabPanelProps {
   children?: React.ReactNode;

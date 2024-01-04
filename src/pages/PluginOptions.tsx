@@ -6,7 +6,7 @@ import { useParams } from "react-router-dom";
 import { db } from "../database";
 import usePlugins from "../hooks/usePlugins";
 import { getPluginSubdomain } from "../utils";
-import Spinner from "./Spinner";
+import Spinner from "../components/Spinner";
 
 const PluginOptions: React.FC = () => {
   const { pluginId } = useParams<"pluginId">();

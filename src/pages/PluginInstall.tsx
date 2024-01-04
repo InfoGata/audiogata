@@ -5,8 +5,8 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { PluginInfo } from "../plugintypes";
 import { FileType } from "../types";
 import { generatePluginId, getPlugin } from "../utils";
-import ConfirmPluginDialog from "./ConfirmPluginDialog";
-import Spinner from "./Spinner";
+import ConfirmPluginDialog from "../components/ConfirmPluginDialog";
+import Spinner from "../components/Spinner";
 
 const PluginInstall: React.FC = () => {
   const [isInstalling, setIsInstalling] = React.useState(true);

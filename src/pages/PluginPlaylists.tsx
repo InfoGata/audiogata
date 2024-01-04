@@ -11,10 +11,10 @@ import { useQuery } from "react-query";
 import { useParams } from "react-router";
 import { Link } from "react-router-dom";
 import usePlugins from "../hooks/usePlugins";
-import PlaylistImage from "./PlaylistImage";
-import Spinner from "./Spinner";
+import PlaylistImage from "../components/PlaylistImage";
+import Spinner from "../components/Spinner";
 import { PageInfo, UserPlaylistRequest } from "../plugintypes";
-import Pager from "./Pager";
+import Pager from "../components/Pager";
 import usePagination from "../hooks/usePagination";
 
 const PluginPlaylists: React.FC = () => {

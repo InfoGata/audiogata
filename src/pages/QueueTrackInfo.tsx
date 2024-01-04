@@ -5,8 +5,8 @@ import { useParams } from "react-router";
 import usePlugins from "../hooks/usePlugins";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
 import { updateTrack } from "../store/reducers/trackReducer";
-import Spinner from "./Spinner";
-import TrackInfo from "./TrackInfo";
+import Spinner from "../components/Spinner";
+import TrackInfo from "../components/TrackInfo";
 
 const QueueTrackInfo: React.FC = () => {
   const [showUpdateButton, setShowUpdateButton] = React.useState(false);

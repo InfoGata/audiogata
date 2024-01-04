@@ -9,41 +9,42 @@ import {
   Typography,
 } from "@mui/material";
 import { useLiveQuery } from "dexie-react-hooks";
+import DOMPurify from "dompurify";
 import React from "react";
 import { Link } from "react-router-dom";
 import { db } from "../database";
 import useItemMenu from "../hooks/useItemMenu";
-import PlaylistImage from "./PlaylistImage";
-import Spinner from "./Spinner";
+import PlaylistImage from "../components/PlaylistImage";
+import Spinner from "../components/Spinner";
 
-const FavoriteAlbums: React.FC = () => {
-  const albums = useLiveQuery(() => db.favoriteAlbums.toArray());
+const FavoriteArtists: React.FC = () => {
+  const artists = useLiveQuery(() => db.favoriteArtists.toArray());
+  const sanitizer = DOMPurify.sanitize;
 
   const { openMenu } = useItemMenu();
 
-  if (!albums) {
+  if (!artists) {
     return <Spinner />;
   }
 
-  const albumCards = albums?.map((a) => {
-    const openAlbumMenu = (event: React.MouseEvent<HTMLButtonElement>) => {
+  const artistCards = artists?.map((a) => {
+    const openArtistMenu = (event: React.MouseEvent<HTMLButtonElement>) => {
       if (openMenu) {
-        openMenu(event, { type: "album", item: a });
+        openMenu(event, { type: "artist", item: a });
       }
     };
-
     return (
       <Grid item xs={2} key={a.apiId}>
         <Card>
           <CardActionArea
             component={Link}
-            to={`/plugins/${a.pluginId}/albums/${a.apiId}`}
+            to={`/plugins/${a.pluginId}/artists/${a.apiId}`}
           >
             <PlaylistImage images={a.images} />
           </CardActionArea>
           <CardActions>
             <Stack direction="row" alignItems="center" gap={1}>
-              <IconButton size="small" onClick={openAlbumMenu}>
+              <IconButton size="small" onClick={openArtistMenu}>
                 <MoreHoriz />
               </IconButton>
               <Typography
@@ -53,9 +54,10 @@ const FavoriteAlbums: React.FC = () => {
                 component="span"
                 width={230}
                 noWrap
-              >
-                {a.name}
-              </Typography>
+                dangerouslySetInnerHTML={{
+                  __html: sanitizer(a.name || ""),
+                }}
+              />
             </Stack>
           </CardActions>
         </Card>
@@ -65,9 +67,9 @@ const FavoriteAlbums: React.FC = () => {
 
   return (
     <Grid container spacing={2}>
-      {albumCards}
+      {artistCards}
     </Grid>
   );
 };
 
-export default FavoriteAlbums;
+export default FavoriteArtists;
