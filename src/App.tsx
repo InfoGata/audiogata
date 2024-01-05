@@ -9,12 +9,12 @@ import { BrowserRouter, HashRouter } from "react-router-dom";
 import callConfig from "./call-config";
 import AudioComponent from "./components/AudioComponent";
 import MatomoRouterProvider from "./components/MatomoRouterProvider";
-import PlayerBar from "./layouts/PlayerBar";
-import Routing from "./components/Routing";
-import SideBar from "./layouts/SideBar";
-import TopBar from "./layouts/TopBar";
 import useOffline from "./hooks/useOffline";
 import useUpdateServiceWorker from "./hooks/useUpdateServiceWorker";
+import Routing from "./layouts/MainContainer";
+import PlayerBar from "./layouts/PlayerBar";
+import SideBar from "./layouts/SideBar";
+import TopBar from "./layouts/TopBar";
 import ItemMenuProvider from "./providers/ItemMenuProvider";
 import PluginsProvider from "./providers/PluginsProvider";
 import TrackMenuProvider from "./providers/TrackMenuProvider";
@@ -54,26 +54,24 @@ const App: React.FC = () => {
       )}
     >
       <QueryClientProvider client={queryClient}>
-        <Router>
-          <MatomoRouterProvider>
-            <PluginsProvider>
-              <TrackMenuProvider>
-                <ItemMenuProvider>
-                  <OutsideCallConsumer config={callConfig}>
-                    <Box sx={{ display: "flex" }}>
-                      <CssBaseline />
-                      <TopBar />
-                      <SideBar />
-                      <Routing />
-                      <PlayerBar />
-                      <AudioComponent />
-                    </Box>
-                  </OutsideCallConsumer>
-                </ItemMenuProvider>
-              </TrackMenuProvider>
-            </PluginsProvider>
-          </MatomoRouterProvider>
-        </Router>
+        <MatomoRouterProvider>
+          <PluginsProvider>
+            <TrackMenuProvider>
+              <ItemMenuProvider>
+                <OutsideCallConsumer config={callConfig}>
+                  <Box sx={{ display: "flex" }}>
+                    <CssBaseline />
+                    <TopBar />
+                    <SideBar />
+                    <Routing />
+                    <PlayerBar />
+                    <AudioComponent />
+                  </Box>
+                </OutsideCallConsumer>
+              </ItemMenuProvider>
+            </TrackMenuProvider>
+          </PluginsProvider>
+        </MatomoRouterProvider>
       </QueryClientProvider>
     </SnackbarProvider>
   );

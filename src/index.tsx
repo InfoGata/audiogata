@@ -12,6 +12,8 @@ import App from "./App";
 import "./i18n";
 import "./index.css";
 import store, { persistor } from "./store/store";
+import { RouterProvider } from "react-router-dom";
+import router from "./routes";
 
 Sentry.init({
   dsn: "https://d99bb253ac5a4b53a32d48697f165e34@app.glitchtip.com/4798",
@@ -28,7 +30,7 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
         <ThemeProvider theme={theme}>
-          <App />
+          <RouterProvider router={router} />
         </ThemeProvider>
       </PersistGate>
     </Provider>
