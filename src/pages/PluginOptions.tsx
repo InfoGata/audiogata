@@ -16,6 +16,15 @@ const PluginOptions: React.FC = () => {
   const [optionsHtml, setOptionsHtml] = React.useState<string>();
   const { t } = useTranslation(["plugins", "common"]);
 
+  React.useEffect(() => {
+    const getOptionsHtml = async () => {
+      const pluginData = await db.plugins.get(plugin?.id || "");
+      setOptionsHtml(pluginData?.optionsHtml);
+    };
+
+    getOptionsHtml();
+  }, [plugin]);
+
   const iframeListener = React.useCallback(
     async (event: MessageEvent<any>) => {
       if (ref.current?.contentWindow === event.source && plugin) {
@@ -38,33 +47,8 @@ const PluginOptions: React.FC = () => {
     }
   }, [pluginMessage, plugin?.id]);
 
-  React.useEffect(() => {
-    const getOptionsHtml = async () => {
-      if (plugin) {
-        if (!plugin.optionsSameOrigin) {
-          const pluginData = await db.plugins.get(plugin.id || "");
-          setOptionsHtml(pluginData?.optionsHtml);
-        }
-      }
-    };
-
-    getOptionsHtml();
-  }, [plugin]);
-
-  if (!pluginsLoaded) {
-    return <Spinner />;
-  }
-  if (!plugin) return <>{t("common:notFound")}</>;
-
-  const srcUrl = `${getPluginSubdomain(plugin.id)}/ui.html`;
-  let sandbox = "allow-scripts allow-popups allow-popups-to-escape-sandbox";
-  if (plugin.optionsSameOrigin) sandbox = sandbox.concat(" allow-same-origin");
-  // window.open needs allow-top-navigation-by-user-activiation
-  if (Capacitor.isNativePlatform())
-    sandbox = sandbox.concat(" allow-top-navigation-by-user-activation");
-
   const iframeOnload = async () => {
-    const pluginData = await db.plugins.get(plugin.id || "");
+    const pluginData = await db.plugins.get(plugin?.id || "");
     if (pluginData) {
       ref.current?.contentWindow?.postMessage(
         {
@@ -76,37 +60,35 @@ const PluginOptions: React.FC = () => {
     }
   };
 
-  const pluginIframe = plugin.optionsSameOrigin ? (
-    <iframe
-      ref={ref}
-      name={plugin.id}
-      title={plugin.name}
-      sandbox={sandbox}
-      src={srcUrl}
-      onLoad={iframeOnload}
-      width="100%"
-      frameBorder="0"
-      style={{ height: "80vh" }}
-    />
-  ) : (
-    <iframe
-      ref={ref}
-      name={plugin.id}
-      title={plugin.name}
-      sandbox={sandbox}
-      srcDoc={optionsHtml}
-      width="100%"
-      frameBorder="0"
-      style={{ height: "80vh" }}
-    />
-  );
+  if (!pluginsLoaded) {
+    return <Spinner />;
+  }
+  if (!plugin) return <>{t("common:notFound")}</>;
 
+  let sandbox =
+    "allow-scripts allow-popups allow-popups-to-escape-sandbox allow-same-origin";
+  // window.open needs allow-top-navigation-by-user-activiation
+  if (Capacitor.isNativePlatform())
+    sandbox = sandbox.concat(" allow-top-navigation-by-user-activation");
+  const srcUrl = `${getPluginSubdomain(plugin.id)}/ui.html`;
   return (
     <Grid>
       <Typography variant="h3">
         {t("plugins:pluginOptions", { pluginName: plugin.name })}
       </Typography>
-      {optionsHtml && pluginIframe}
+      {optionsHtml && (
+        <iframe
+          ref={ref}
+          name={plugin.id}
+          title={plugin.name}
+          sandbox={sandbox}
+          src={srcUrl}
+          onLoad={iframeOnload}
+          width="100%"
+          frameBorder="0"
+          style={{ height: "80vh" }}
+        />
+      )}
     </Grid>
   );
 };
