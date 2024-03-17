@@ -150,7 +150,6 @@ const PlaylistTracks: React.FC = () => {
   );
 
   const [playlistDialogOpen, setPlaylistDialogOpen] = React.useState(false);
-  const closePlaylistDialog = () => setPlaylistDialogOpen(false);
 
   const selectedTracks = tracklist.filter((t) => selected.has(t.id ?? ""));
 
@@ -239,7 +238,7 @@ const PlaylistTracks: React.FC = () => {
           <AddPlaylistDialog
             tracks={selectedTracks}
             open={playlistDialogOpen}
-            handleClose={closePlaylistDialog}
+            setOpen={setPlaylistDialogOpen}
           />
           <ImportDialog
             open={importDialogOpen}

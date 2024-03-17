@@ -67,7 +67,7 @@ const Navigation: React.FC = () => {
         </ListItemButton>
       </ListItem>
       {navbarOpen ? playlistItems : null}
-      <AddPlaylistDialog handleClose={closeDialog} open={dialogOpen} />
+      <AddPlaylistDialog open={dialogOpen} setOpen={setDialogOpen} />
     </List>
   );
 };

@@ -32,7 +32,6 @@ const TrackMenuProvider: React.FC<React.PropsWithChildren> = (props) => {
   const [noQueue, setNoQueue] = React.useState(false);
   const [isFavorited, setIsFavorited] = React.useState(false);
   const closeMenu = () => setAnchorEl(null);
-  const closePlaylistDialog = () => setPlaylistDialogOpen(false);
   const dispatch = useAppDispatch();
   const lyricsPluginId = useAppSelector(
     (state) => state.settings.lyricsPluginId
@@ -195,8 +194,8 @@ const TrackMenuProvider: React.FC<React.PropsWithChildren> = (props) => {
       </Menu>
       <AddPlaylistDialog
         tracks={menuTrack ? [menuTrack] : []}
-        handleClose={closePlaylistDialog}
         open={playlistDialogOpen}
+        setOpen={setPlaylistDialogOpen}
       />
     </TrackMenuContext.Provider>
   );

@@ -55,7 +55,6 @@ const PlaylistMenu: React.FC<PlaylistMenuProps> = (props) => {
     Track[]
   >([]);
   const [playlistDialogOpen, setPlaylistDialogOpen] = React.useState(false);
-  const closePlaylistDialog = () => setPlaylistDialogOpen(false);
   const dispatch = useAppDispatch();
   const { enqueueSnackbar } = useSnackbar();
 
@@ -182,7 +181,7 @@ const PlaylistMenu: React.FC<PlaylistMenuProps> = (props) => {
       <AddPlaylistDialog
         tracks={playlistDialogTracks}
         open={playlistDialogOpen}
-        handleClose={closePlaylistDialog}
+        setOpen={setPlaylistDialogOpen}
       />
     </>
   );
