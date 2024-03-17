@@ -55,7 +55,9 @@ const PlaylistTrackInfo: React.FC = () => {
       const plugin = plugins.find((p) => p.id === track.pluginId);
       try {
         if (playlistId && plugin && (await plugin.hasDefined.onGetTrack())) {
-          let newTrack = await plugin.remote.onGetTrack({ apiId: track.apiId });
+          const newTrack = await plugin.remote.onGetTrack({
+            apiId: track.apiId,
+          });
           newTrack.id = track.id;
           const playlist = await db.playlists.get(playlistId);
           if (playlist) {
@@ -66,7 +68,9 @@ const PlaylistTrackInfo: React.FC = () => {
             setTrack(newTrack);
           }
         }
-      } catch {}
+      } catch {
+        /* empty */
+      }
       setIsUpdating(false);
     }
   };

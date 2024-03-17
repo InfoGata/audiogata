@@ -1,11 +1,9 @@
 import { Box, Button, CssBaseline } from "@mui/material";
-import isElectron from "is-electron";
 import { SnackbarKey, SnackbarProvider } from "notistack";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import OutsideCallConsumer from "react-outside-call";
 import { QueryClient, QueryClientProvider } from "react-query";
-import { BrowserRouter, HashRouter } from "react-router-dom";
 import callConfig from "./call-config";
 import AudioComponent from "./components/AudioComponent";
 import MatomoRouterProvider from "./components/MatomoRouterProvider";
@@ -20,8 +18,6 @@ import PluginsProvider from "./providers/PluginsProvider";
 import TrackMenuProvider from "./providers/TrackMenuProvider";
 import { useAppDispatch } from "./store/hooks";
 import { initializePlaylists } from "./store/reducers/playlistReducer";
-
-const Router = isElectron() ? HashRouter : BrowserRouter;
 
 const queryClient = new QueryClient({
   defaultOptions: {

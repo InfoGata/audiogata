@@ -26,7 +26,7 @@ const SearchBar: React.FC = () => {
   const navigate = useNavigate();
   const { t } = useTranslation();
 
-  const handleSubmit = (event: React.FormEvent<{}>) => {
+  const handleSubmit = (event: React.FormEvent<unknown>) => {
     navigate(`/search?q=${search}`);
     event.preventDefault();
   };

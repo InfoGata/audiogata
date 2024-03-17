@@ -1,5 +1,6 @@
 /// <reference types="vitest" />
 import react from "@vitejs/plugin-react";
+import path from "path";
 import { defineConfig } from "vite";
 import { VitePWA } from "vite-plugin-pwa";
 import svgrPlugin from "vite-plugin-svgr";
@@ -9,6 +10,7 @@ export default defineConfig({
   resolve: {
     alias: {
       "hls.js": "hls.js/dist/hls.min.js",
+      "@": path.resolve(__dirname, "./src"),
     },
   },
   test: {

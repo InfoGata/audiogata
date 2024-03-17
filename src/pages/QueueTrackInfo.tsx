@@ -41,11 +41,15 @@ const QueueTrackInfo: React.FC = () => {
       const plugin = plugins.find((p) => p.id === track.pluginId);
       try {
         if (plugin && (await plugin.hasDefined.onGetTrack())) {
-          let newTrack = await plugin.remote.onGetTrack({ apiId: track.apiId });
+          const newTrack = await plugin.remote.onGetTrack({
+            apiId: track.apiId,
+          });
           newTrack.id = track.id;
           dispatch(updateTrack(newTrack));
         }
-      } catch {}
+      } catch {
+        /* empty */
+      }
       setIsUpdating(false);
     }
   };

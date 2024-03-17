@@ -402,7 +402,9 @@ class AudioComponent extends React.Component<
       for (const [action, handler] of handlers) {
         try {
           navigator.mediaSession.setActionHandler(action, handler);
-        } catch {}
+        } catch {
+          /* empty */
+        }
       }
     }
 

@@ -405,7 +405,9 @@ const pauseDeletedTrack = async (
       await plugin.remote.onPause();
     }
     await localPlayer.onPause();
-  } catch {}
+  } catch {
+    /* empty */
+  }
   dispatch(trackSlice.actions.pause);
 };
 

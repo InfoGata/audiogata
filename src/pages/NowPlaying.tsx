@@ -74,8 +74,6 @@ const NowPlaying: React.FC = () => {
   const { onSelect, onSelectAll, isSelected, selected, setSelected } =
     useSelected(trackList);
 
-  const selectedTracks = trackList.filter((t) => selected.has(t.id ?? ""));
-
   const clearSelectedTracks = () => {
     dispatch(deleteTracks(selected));
     closeQueueMenu();

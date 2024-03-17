@@ -12,7 +12,9 @@ const usePagination = (currentPage?: PageInfo) => {
       page: undefined,
       hasPreviousPage: false,
       hasNextPage: false,
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
       onPreviousPage: () => {},
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
       onNextPage: () => {},
       resetPage,
     };

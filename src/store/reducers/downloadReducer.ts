@@ -53,7 +53,9 @@ export const downloadTrack =
     try {
       try {
         response = await fetch(url);
-      } catch {}
+      } catch {
+        /* empty */
+      }
       // Error maybe because of cors so try a the proxy
       if (!response) {
         response = await fetch(`http://localhost:8085/${url}`);
@@ -63,7 +65,8 @@ export const downloadTrack =
         const contentLenghStr = response.headers.get("Content-Length") || "";
         const contentLength = +contentLenghStr;
         let receivedLength = 0;
-        let chunks: Uint8Array[] = [];
+        const chunks: Uint8Array[] = [];
+        // eslint-disable-next-line no-constant-condition
         while (true) {
           const { done, value } = await reader.read();
 

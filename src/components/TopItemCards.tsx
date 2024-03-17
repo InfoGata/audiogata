@@ -17,7 +17,6 @@ import usePlugins from "../hooks/usePlugins";
 import useTrackMenu from "../hooks/useTrackMenu";
 import { useAppDispatch } from "../store/hooks";
 import { addTrack, setTrack } from "../store/reducers/trackReducer";
-import { getThumbnailImage, playlistThumbnailSize } from "../utils";
 import PlaylistImage from "./PlaylistImage";
 import SelectPlugin from "./SelectPlugin";
 
@@ -43,8 +42,6 @@ const TopItemCards: React.FC = () => {
   });
 
   const topTrackComponents = query.data?.tracks?.items.map((t) => {
-    const image = getThumbnailImage(t.images, playlistThumbnailSize);
-
     const onClickTrack = () => {
       dispatch(addTrack(t));
       dispatch(setTrack(t));

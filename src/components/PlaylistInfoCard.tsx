@@ -1,10 +1,8 @@
-import { Box, Card, CardContent, CardMedia, Typography } from "@mui/material";
+import { Box, Card, CardContent, Typography } from "@mui/material";
 import DOMPurify from "dompurify";
 import React from "react";
 import { Link } from "react-router-dom";
 import { ImageInfo } from "../plugintypes";
-import thumbnail from "../thumbnail.png";
-import { getThumbnailImage, playlistThumbnailSize } from "../utils";
 import PlaylistImage from "./PlaylistImage";
 
 interface SubtitleLink {

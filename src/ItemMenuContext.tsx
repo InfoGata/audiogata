@@ -8,6 +8,7 @@ export interface ItemMenuInterface {
   ) => Promise<void>;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 const ItemMenuContext = React.createContext<ItemMenuInterface>(undefined!);
 
 export default ItemMenuContext;

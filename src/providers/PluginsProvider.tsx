@@ -78,9 +78,9 @@ interface ApplicationPluginInterface extends PluginInterface {
 }
 
 function iteratorFor(items: any) {
-  var iterator = {
+  const iterator = {
     next: function () {
-      var value = items.shift();
+      const value = items.shift();
       return { done: value === undefined, value: value };
     },
     [Symbol.iterator]: () => {
@@ -94,7 +94,7 @@ function iteratorFor(items: any) {
 const getHeaderEntries = (
   headers: Headers
 ): IterableIterator<[string, string]> => {
-  var items: string[][] = [];
+  const items: string[][] = [];
   headers.forEach(function (value, name) {
     items.push([name, value]);
   });

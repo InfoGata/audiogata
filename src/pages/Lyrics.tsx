@@ -21,7 +21,7 @@ const Lyrics: React.FC = () => {
   const getLyrics = async () => {
     const plugin = plugins.find((p) => p.id === lyricsPluginId);
     if (trackName && plugin && (await plugin.hasDefined.onGetLyrics())) {
-      let lyricsResponse = await plugin.remote.onGetLyrics({
+      const lyricsResponse = await plugin.remote.onGetLyrics({
         trackName,
         artistName,
       });

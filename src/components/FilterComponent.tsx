@@ -84,7 +84,6 @@ const FilterComponent: React.FC<FilterComponentProps> = (props) => {
         />
       );
     default:
-      const _exhaustive: never = filter.type;
       return <></>;
   }
 };
