@@ -42,6 +42,7 @@ const PlayerBar: React.FC = () => {
   return (
     <AppBar
       position="fixed"
+      color="default"
       sx={{ bottom: 0, top: "auto", zIndex: theme.zIndex.drawer + 1 }}
     >
       <Toolbar

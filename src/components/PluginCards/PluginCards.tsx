@@ -1,28 +1,19 @@
-import {
-  Button,
-  Card,
-  CardActions,
-  CardContent,
-  Fade,
-  Grid,
-  Typography,
-} from "@mui/material";
-import { useSnackbar } from "notistack";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router";
-import { PluginDescription, defaultPlugins } from "../default-plugins";
-import usePlugins from "../hooks/usePlugins";
+import { PluginDescription, defaultPlugins } from "../../default-plugins";
+import usePlugins from "../../hooks/usePlugins";
 import {
   generatePluginId,
   getFileTypeFromPluginUrl,
   getPlugin,
-} from "../utils";
-import Spinner from "./Spinner";
+} from "../../utils";
+import Spinner from "../Spinner";
+import PluginCard from "./PluginCard";
+import { toast } from "sonner";
 
 const PluginCards: React.FC = () => {
   const { t } = useTranslation();
-  const { enqueueSnackbar } = useSnackbar();
   const { plugins, addPlugin, pluginsLoaded, preinstallComplete } =
     usePlugins();
   const [backdropOpen, setBackdropOpen] = React.useState(false);
@@ -39,48 +30,34 @@ const PluginCards: React.FC = () => {
         plugin.id = generatePluginId();
       }
       await addPlugin(plugin);
-      enqueueSnackbar(`${t("addPluginSuccess")}: ${plugin.name}`);
+      toast(`${t("addPluginSuccess")}: ${plugin.name}`);
       navigate("/plugins");
     }
     setBackdropOpen(false);
   };
 
   const pluginCards = defaultPlugins
-    // Filter out already installed plugins
-    // and preinstall plugins if preinstalling
     .filter(
       (dp) =>
         !plugins.some((p) => dp.id === p.id) &&
         (preinstallComplete || !dp.preinstall)
     )
-    .map((p) => (
-      <Grid item xs={4} key={p.id}>
-        <Card>
-          <CardContent>
-            <Typography>{p.name}</Typography>
-            <Typography color="text.secondary">{p.description}</Typography>
-          </CardContent>
-          <CardActions>
-            <Button size="small" onClick={() => onAddPlugin(p)}>
-              {t("addPlugin")}
-            </Button>
-          </CardActions>
-        </Card>
-      </Grid>
+    .map((dp) => (
+      <PluginCard addPlugin={onAddPlugin} plugin={dp} key={dp.id} />
     ));
 
   return (
     <>
       {pluginCards.length > 0 && (
-        <Grid>
+        <div className="space-y-2">
           <Spinner open={backdropOpen} />
-          <Typography variant="h6">{t("availablePlugins")}</Typography>
-          <Fade in={pluginsLoaded}>
-            <Grid container spacing={2}>
+          <h2 className="text-2xl font-bold">{t("availablePlugins")}</h2>
+          {pluginsLoaded && (
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3 animate-in fade-in">
               {pluginCards}
-            </Grid>
-          </Fade>
-        </Grid>
+            </div>
+          )}
+        </div>
       )}
     </>
   );

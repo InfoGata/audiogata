@@ -121,13 +121,17 @@
     "homepage": "Home Page",
     "failedPlugins": "Failed to load plugins",
     "clickReload": "Click to reload plugins",
-    "installedPlugins": "Installed Plugins"
+    "installedPlugins": "Installed Plugins",
+    "openMenu": "Open Menu",
+    "updateFound": "Update Found",
+    "noUpdateFound": "No Update Found"
   },
   "settings": {
     "playCurrentTrack": "Autoplay current track on start up",
     "showFastForwardRewind": "Show Fast Forward and Rewind Buttons",
     "forwardRewindTime": "Forward and Rewind Skip Time in Seconds",
     "disableAutoUpdatePlugins": "Disable plugins updating automatically",
-    "lyricsPlugin": "Lyrics Plugin"
+    "lyricsPlugin": "Lyrics Plugin",
+    "corsProxy": "Cors Proxy Url"
   }
 }

@@ -23,7 +23,11 @@ const TopBar: React.FC = () => {
   const onToggleNavbar = () => dispatch(toggleNavbar());
 
   return (
-    <AppBar position="fixed" sx={{ zIndex: theme.zIndex.drawer + 1 }}>
+    <AppBar
+      position="fixed"
+      color="default"
+      sx={{ zIndex: theme.zIndex.drawer + 1 }}
+    >
       <Toolbar>
         <IconButton
           edge="start"

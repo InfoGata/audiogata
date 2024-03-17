@@ -1,23 +1,21 @@
-import {
-  Button,
-  Checkbox,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  Grid,
-  Link,
-  List,
-  ListItem,
-  ListItemText,
-} from "@mui/material";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import usePlugins from "../hooks/usePlugins";
 import { PluginInfo } from "../plugintypes";
+import { Button } from "./ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "./ui/dialog";
+import AboutLink from "./AboutLink";
+import { Checkbox } from "./ui/checkbox";
 
 interface ConfirmPluginDialogProps {
   open: boolean;
+  setOpen?: (open: boolean) => void;
   plugins: PluginInfo[];
   handleClose: () => void;
   afterConfirm?: () => void;
@@ -26,8 +24,15 @@ interface ConfirmPluginDialogProps {
 }
 
 const ConfirmPluginDialog: React.FC<ConfirmPluginDialogProps> = (props) => {
-  const { open, plugins, handleClose, afterConfirm, afterCancel, installUrl } =
-    props;
+  const {
+    open,
+    plugins,
+    handleClose,
+    afterConfirm,
+    afterCancel,
+    installUrl,
+    setOpen,
+  } = props;
   const [checked, setChecked] = React.useState<Set<string>>(new Set());
   const { addPlugin } = usePlugins();
   const { t } = useTranslation(["plugins", "common"]);
@@ -50,30 +55,31 @@ const ConfirmPluginDialog: React.FC<ConfirmPluginDialogProps> = (props) => {
     handleClose();
   };
 
-  const onChange =
-    (pluginId: string) => (e: React.ChangeEvent<HTMLInputElement>) => {
-      setChecked((prev) => {
-        const next = new Set(prev);
-        e.target.checked ? next.add(pluginId) : next.delete(pluginId);
-        return next;
-      });
-    };
+  const onChange = (pluginId: string) => (checked: boolean) => {
+    setChecked((prev) => {
+      const next = new Set(prev);
+      checked ? next.add(pluginId) : next.delete(pluginId);
+      return next;
+    });
+  };
 
   const info = plugins.map((p) => (
-    <ListItem key={p.id}>
+    <div className="flex items-center">
       {plugins.length > 1 && (
         <Checkbox
-          edge="start"
+          className="rounded-none"
           checked={checked.has(p.id || "")}
-          tabIndex={-1}
-          onChange={onChange(p.id || "")}
+          onCheckedChange={onChange(p.id || "")}
         />
       )}
-      <ListItemText
-        primary={`${p.name} ${p.version || ""}`}
-        secondary={p.description}
-      />
-    </ListItem>
+      <div className="flex-grow">
+        <AboutLink
+          title={`${p.name} ${p.version || ""}`}
+          description={p.description}
+          key={p.id}
+        />
+      </div>
+    </div>
   ));
 
   const onCancel = () => {
@@ -84,39 +90,43 @@ const ConfirmPluginDialog: React.FC<ConfirmPluginDialogProps> = (props) => {
   };
 
   return (
-    <Dialog
-      open={open}
-      onClose={handleClose}
-      aria-labelledby="form-dialog-title"
-    >
-      <DialogTitle id="form-dialog-title">
-        {t("plugins:addPlugin", { count: plugins.length })}
-      </DialogTitle>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent>
-        <List>{info}</List>
-        {plugins.length === 1 &&
-          installUrl &&
-          plugins[0].manifestUrl !== installUrl && (
-            <Grid>
-              {t("plugins:installManifestUrl")}:{" "}
-              <Link href={installUrl} target="_blank">
-                {installUrl}
-              </Link>
-            </Grid>
+        <DialogHeader>
+          <DialogTitle>
+            {t("plugins:addPlugin", { count: plugins.length })}
+          </DialogTitle>
+        </DialogHeader>
+        <div>
+          <div>{info}</div>
+          {plugins.length === 1 &&
+            installUrl &&
+            plugins[0].manifestUrl !== installUrl && (
+              <div>
+                {t("plugins:installManifestUrl")}:{" "}
+                <a href={installUrl} target="_blank">
+                  {installUrl}
+                </a>
+              </div>
+            )}
+          {plugins.length === 1 && plugins[0].manifestUrl && (
+            <div>
+              {t("plugins:updateManifestUrl")}:{" "}
+              <a href={plugins[0].manifestUrl} target="_blank">
+                {plugins[0].manifestUrl}
+              </a>
+            </div>
           )}
-        {plugins.length === 1 && plugins[0].manifestUrl && (
-          <Grid>
-            {t("plugins:updateManifestUrl")}:{" "}
-            <Link href={plugins[0].manifestUrl} target="_blank">
-              {plugins[0].manifestUrl}
-            </Link>
-          </Grid>
-        )}
+        </div>
+        <DialogFooter>
+          <Button variant="outline" onClick={onCancel}>
+            {t("common:cancel")}
+          </Button>
+          <Button variant="outline" onClick={onConfirm}>
+            {t("common:confirm")}
+          </Button>
+        </DialogFooter>
       </DialogContent>
-      <DialogActions>
-        <Button onClick={onCancel}>{t("common:cancel")}</Button>
-        <Button onClick={onConfirm}>{t("common:confirm")}</Button>
-      </DialogActions>
     </Dialog>
   );
 };

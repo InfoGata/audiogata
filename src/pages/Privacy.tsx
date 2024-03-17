@@ -1,11 +1,10 @@
 /* eslint-disable i18next/no-literal-string */
-import { Box } from "@mui/material";
 import React from "react";
 
 const Privacy: React.FC = () => {
   return (
-    <Box sx={{ maxWidth: 600 }}>
-      <h1>🔒 Privacy Overview</h1>
+    <div className="max-w-xl">
+      <h1 className="text-xl font-bold">🔒 Privacy Overview</h1>
       <p>
         <b>
           Personal Data collected for the following purposes and using the
@@ -91,7 +90,7 @@ const Privacy: React.FC = () => {
           Privacy Policy
         </a>
       </p>
-    </Box>
+    </div>
   );
 };
 

@@ -1,4 +1,4 @@
-import { Backdrop, CircularProgress } from "@mui/material";
+import { Loader2 } from "lucide-react";
 import React from "react";
 
 interface SpinnerProps {
@@ -7,10 +7,13 @@ interface SpinnerProps {
 
 const Spinner: React.FC<SpinnerProps> = (props) => {
   const { open } = props;
+  const isOpen = open ?? true;
+  if (!isOpen) return null;
+
   return (
-    <Backdrop open={open ?? true}>
-      <CircularProgress color="inherit" />
-    </Backdrop>
+    <div className="fixed flex items-center justify-center bg-black/50 top-0 left-0 right-0 bottom-0">
+      <Loader2 className="w-8 h-8 animate-spin" />
+    </div>
   );
 };
 export default Spinner;

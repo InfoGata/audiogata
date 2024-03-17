@@ -1,12 +1,11 @@
 import { Capacitor } from "@capacitor/core";
-import { Grid, Typography } from "@mui/material";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { useParams } from "react-router-dom";
+import Spinner from "../components/Spinner";
 import { db } from "../database";
 import usePlugins from "../hooks/usePlugins";
 import { getPluginSubdomain } from "../utils";
-import Spinner from "../components/Spinner";
 
 const PluginOptions: React.FC = () => {
   const { pluginId } = useParams<"pluginId">();
@@ -75,10 +74,10 @@ const PluginOptions: React.FC = () => {
     sandbox = sandbox.concat(" allow-top-navigation-by-user-activation");
   const srcUrl = `${getPluginSubdomain(plugin.id)}/ui.html`;
   return (
-    <Grid>
-      <Typography variant="h3">
+    <div>
+      <h2 className="text-3xl font-bold">
         {t("plugins:pluginOptions", { pluginName: plugin.name })}
-      </Typography>
+      </h2>
       {optionsHtml && (
         <iframe
           ref={ref}
@@ -92,7 +91,7 @@ const PluginOptions: React.FC = () => {
           style={{ height: "80vh", visibility: "hidden" }}
         />
       )}
-    </Grid>
+    </div>
   );
 };
 
