@@ -2,18 +2,19 @@ import {
   Album,
   ArrowRight,
   Link as LinkIcon,
+  Lyrics,
   Person,
   PlaylistAdd,
   PlaylistPlay,
   Star,
   StarBorder,
-  Lyrics,
 } from "@mui/icons-material";
 import { ListItemIcon, ListItemText, Menu, MenuItem } from "@mui/material";
-import { useSnackbar } from "notistack";
+import { NestedMenuItem } from "mui-nested-menu";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
+import { toast } from "sonner";
 import TrackMenuContext, { TrackMenuInterface } from "../TrackMenuContext";
 import AddPlaylistDialog from "../components/AddPlaylistDialog";
 import PlaylistMenuItem from "../components/PlaylistMenuItem";
@@ -21,7 +22,6 @@ import { db } from "../database";
 import { PlaylistInfo, Track } from "../plugintypes";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
 import { addTrack } from "../store/reducers/trackReducer";
-import { NestedMenuItem } from "mui-nested-menu";
 
 const TrackMenuProvider: React.FC<React.PropsWithChildren> = (props) => {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -37,7 +37,6 @@ const TrackMenuProvider: React.FC<React.PropsWithChildren> = (props) => {
     (state) => state.settings.lyricsPluginId
   );
   const { t } = useTranslation();
-  const { enqueueSnackbar } = useSnackbar();
 
   const openTrackMenu = async (
     event: React.MouseEvent<HTMLButtonElement>,
@@ -68,21 +67,21 @@ const TrackMenuProvider: React.FC<React.PropsWithChildren> = (props) => {
   const addTrackToQueue = () => {
     if (menuTrack) {
       dispatch(addTrack(menuTrack));
-      enqueueSnackbar(t("trackAddedToQueue"));
+      toast(t("trackAddedToQueue"));
     }
   };
 
   const favoriteTrack = async () => {
     if (menuTrack) {
       await db.favoriteTracks.add(menuTrack);
-      enqueueSnackbar(t("addedToFavorites"));
+      toast(t("addedToFavorites"));
     }
   };
 
   const removeFavorite = async () => {
     if (menuTrack?.id) {
       await db.favoriteTracks.delete(menuTrack.id);
-      enqueueSnackbar(t("removedFromFavorites"));
+      toast(t("removedFromFavorites"));
     }
   };
 

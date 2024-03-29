@@ -2,7 +2,6 @@ import { App, URLOpenListenerEvent } from "@capacitor/app";
 import { Capacitor } from "@capacitor/core";
 import { nanoid } from "@reduxjs/toolkit";
 import isElectron from "is-electron";
-import { useSnackbar } from "notistack";
 import { PluginInterface } from "plugin-frame";
 import React from "react";
 import { useTranslation } from "react-i18next";
@@ -56,6 +55,7 @@ import {
   hasExtension,
   mapAsync,
 } from "../utils";
+import { toast } from "sonner";
 
 interface ApplicationPluginInterface extends PluginInterface {
   networkRequest(input: string, init?: RequestInit): Promise<NetworkRequest>;
@@ -142,7 +142,6 @@ const PluginsProvider: React.FC<React.PropsWithChildren> = (props) => {
     (state) => state.settings.disableAutoUpdatePlugins
   );
 
-  const { enqueueSnackbar } = useSnackbar();
   const [pendingPlugins, setPendingPlugins] = React.useState<
     PluginInfo[] | null
   >(null);
@@ -207,7 +206,22 @@ const PluginsProvider: React.FC<React.PropsWithChildren> = (props) => {
           dispatch(setTracks(tracks));
         },
         createNotification: async (notification: NotificationMessage) => {
-          enqueueSnackbar(notification.message, { variant: notification.type });
+          let toaster = toast.message;
+          switch (notification.type) {
+            case "error":
+              toaster = toast.error;
+              break;
+            case "success":
+              toaster = toast.success;
+              break;
+            case "info":
+              toaster = toast.info;
+              break;
+            case "warning":
+              toaster = toast.warning;
+              break;
+          }
+          toaster(notification.message);
         },
         getCorsProxy: async () => {
           if (import.meta.env.PROD || corsProxyUrlRef.current) {
@@ -411,7 +425,7 @@ const PluginsProvider: React.FC<React.PropsWithChildren> = (props) => {
       await host.executeCode(plugin.script);
       return host;
     },
-    [dispatch, enqueueSnackbar]
+    [dispatch]
   );
 
   const loadPlugins = React.useCallback(async () => {
@@ -423,12 +437,12 @@ const PluginsProvider: React.FC<React.PropsWithChildren> = (props) => {
       const frames = await Promise.all(framePromises);
       setPluginFrames(frames);
     } catch {
-      enqueueSnackbar(t("failedPlugins"), { variant: "error" });
+      toast.error(t("failedPlugins"));
       setPluginsFailed(true);
     } finally {
       setPluginsLoaded(true);
     }
-  }, [loadPlugin, enqueueSnackbar, t]);
+  }, [loadPlugin, t]);
 
   React.useEffect(() => {
     if (loadingPlugin.current) return;
@@ -454,7 +468,7 @@ const PluginsProvider: React.FC<React.PropsWithChildren> = (props) => {
 
   const addPlugin = async (plugin: PluginInfo) => {
     if (pluginFrames.some((p) => p.id === plugin.id)) {
-      enqueueSnackbar(t("pluginAlreadyInstalled", { id: plugin.id }));
+      toast(t("pluginAlreadyInstalled", { id: plugin.id }));
       return;
     }
 

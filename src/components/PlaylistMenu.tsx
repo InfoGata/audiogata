@@ -1,39 +1,37 @@
+import { DropdownMenu } from "@radix-ui/react-dropdown-menu";
 import {
-  ArrowRight,
-  PlaylistAdd,
-  PlaylistPlay,
-  Star,
-  StarBorder,
-} from "@mui/icons-material";
-import {
-  Divider,
-  ListItemIcon,
-  ListItemText,
-  Menu,
-  MenuItem,
-} from "@mui/material";
-import { useSnackbar } from "notistack";
+  ListPlusIcon,
+  ListVideoIcon,
+  MoreHorizontalIcon,
+  StarIcon,
+  StarOffIcon,
+} from "lucide-react";
 import React from "react";
 import { useTranslation } from "react-i18next";
+import { toast } from "sonner";
 import { PlaylistInfo, Track } from "../plugintypes";
 import { useAppDispatch } from "../store/hooks";
 import { addTracks } from "../store/reducers/trackReducer";
 import AddPlaylistDialog from "./AddPlaylistDialog";
-import PlaylistMenuItem from "./PlaylistMenuItem";
-import { NestedMenuItem } from "mui-nested-menu";
+import DropdownItem, { DropdownItemProps } from "./DropdownItem";
+import PlaylistSubMenu from "./PlaylistSubMenu";
+import { Button } from "./ui/button";
+import {
+  DropdownMenuContent,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "./ui/dropdown-menu";
 
 interface PlaylistMenuProps {
   playlists: PlaylistInfo[];
   selected?: Set<string>;
   tracklist: Track[];
-  menuItems?: JSX.Element[];
-  selectedMenuItems?: JSX.Element[];
-  anchorElement: HTMLElement | null;
   isFavorite?: boolean;
   noQueueItem?: boolean;
   onFavorite?: () => void;
   onRemoveFavorite?: () => void;
-  onClose: () => void;
+  dropdownItems?: DropdownItemProps[];
+  selectedDropdownItems?: DropdownItemProps[];
 }
 
 const PlaylistMenu: React.FC<PlaylistMenuProps> = (props) => {
@@ -41,14 +39,12 @@ const PlaylistMenu: React.FC<PlaylistMenuProps> = (props) => {
     playlists,
     selected,
     tracklist,
-    menuItems,
-    selectedMenuItems,
-    anchorElement,
-    onClose,
     isFavorite,
     onFavorite,
     onRemoveFavorite,
     noQueueItem,
+    dropdownItems,
+    selectedDropdownItems,
   } = props;
   const { t } = useTranslation();
   const [playlistDialogTracks, setPlaylistDialogTracks] = React.useState<
@@ -56,7 +52,6 @@ const PlaylistMenu: React.FC<PlaylistMenuProps> = (props) => {
   >([]);
   const [playlistDialogOpen, setPlaylistDialogOpen] = React.useState(false);
   const dispatch = useAppDispatch();
-  const { enqueueSnackbar } = useSnackbar();
 
   const selectedTracks = selected
     ? tracklist.filter((t) => selected.has(t.id ?? ""))
@@ -64,120 +59,98 @@ const PlaylistMenu: React.FC<PlaylistMenuProps> = (props) => {
 
   const addPlaylistToQueue = () => {
     dispatch(addTracks(tracklist));
-    enqueueSnackbar(t("tracksAddedToQueue"));
-    onClose();
+    toast(t("tracksAddedToQueue"));
   };
 
   const addSelectedToQueue = () => {
     dispatch(addTracks(selectedTracks));
-    enqueueSnackbar(t("tracksAddedToQueue"));
-    onClose();
+    toast(t("tracksAddedToQueue"));
   };
 
   const addSelectedToNewPlaylist = () => {
     setPlaylistDialogTracks(selectedTracks);
     setPlaylistDialogOpen(true);
-    onClose();
   };
 
   const addToNewPlaylist = () => {
     setPlaylistDialogTracks(tracklist);
     setPlaylistDialogOpen(true);
-    onClose();
   };
+
+  const items: (DropdownItemProps | undefined)[] = [
+    ...(dropdownItems || []),
+    noQueueItem
+      ? undefined
+      : {
+          title: t("addTracksToQueue"),
+          icon: <ListVideoIcon />,
+          action: addPlaylistToQueue,
+        },
+    {
+      title: t("addTracksToNewPlaylist"),
+      icon: <ListPlusIcon />,
+      action: addToNewPlaylist,
+    },
+    onFavorite
+      ? {
+          title: isFavorite ? t("removeFromFavorites") : t("addToFavorites"),
+          icon: isFavorite ? <StarOffIcon /> : <StarIcon />,
+          action: isFavorite ? onRemoveFavorite : onFavorite,
+        }
+      : undefined,
+  ];
+  const definedItems = items.filter((i): i is DropdownItemProps => !!i);
+
+  const selectedItems: (DropdownItemProps | undefined)[] = [
+    ...(selectedDropdownItems || []),
+    noQueueItem
+      ? undefined
+      : {
+          title: t("addSelectedToQueue"),
+          icon: <ListVideoIcon />,
+          action: addSelectedToQueue,
+        },
+    {
+      title: t("addSelectedToNewPlaylist"),
+      icon: <ListPlusIcon />,
+      action: addSelectedToNewPlaylist,
+    },
+  ];
+  const definedSelectedItems = selectedItems.filter(
+    (i): i is DropdownItemProps => !!i
+  );
 
   return (
     <>
-      <Menu
-        open={Boolean(anchorElement)}
-        onClose={onClose}
-        anchorEl={anchorElement}
-        onClick={onClose}
-      >
-        {menuItems}
-        {!noQueueItem && (
-          <MenuItem onClick={addPlaylistToQueue}>
-            <ListItemIcon>
-              <PlaylistPlay />
-            </ListItemIcon>
-            <ListItemText primary={t("addTracksToQueue")} />
-          </MenuItem>
-        )}
-        <MenuItem onClick={addToNewPlaylist}>
-          <ListItemIcon>
-            <PlaylistAdd />
-          </ListItemIcon>
-          <ListItemText primary={t("addTracksToNewPlaylist")} />
-        </MenuItem>
-        {playlists.length > 0 && (
-          <NestedMenuItem
-            parentMenuOpen={Boolean(anchorElement)}
-            label={t("addTracksToPlaylist")}
-            rightIcon={<ArrowRight />}
-            onClick={(e) => e.stopPropagation()}
-          >
-            {playlists.map((p) => (
-              <PlaylistMenuItem
-                key={p.id}
-                playlist={p}
-                tracks={tracklist}
-                closeMenu={onClose}
-                title={p.name ?? ""}
-              />
-            ))}
-          </NestedMenuItem>
-        )}
-        {onFavorite && (
-          <MenuItem onClick={isFavorite ? onRemoveFavorite : onFavorite}>
-            <ListItemIcon>
-              {isFavorite ? <StarBorder /> : <Star />}
-            </ListItemIcon>
-            <ListItemText
-              primary={
-                isFavorite ? t("removeFromFavorites") : t("addToFavorites")
-              }
-            />
-          </MenuItem>
-        )}
-        {selected &&
-          selected.size > 0 && [
-            <Divider key="divider" />,
-            selectedMenuItems,
-            !noQueueItem && (
-              <MenuItem onClick={addSelectedToQueue} key="add">
-                <ListItemIcon>
-                  <PlaylistPlay />
-                </ListItemIcon>
-                <ListItemText primary={t("addSelectedToQueue")} />
-              </MenuItem>
-            ),
-            <MenuItem onClick={addSelectedToNewPlaylist} key="selectednew">
-              <ListItemIcon>
-                <PlaylistAdd />
-              </ListItemIcon>
-              <ListItemText primary={t("addSelectedToNewPlaylist")} />
-            </MenuItem>,
-            playlists.length > 0 && (
-              <NestedMenuItem
-                key="selectednested"
-                parentMenuOpen={Boolean(anchorElement)}
-                label={t("addSelectedToPlaylist")}
-                rightIcon={<ArrowRight />}
-                onClick={(e) => e.stopPropagation()}
-              >
-                {playlists.map((p) => (
-                  <PlaylistMenuItem
-                    key={p.id}
-                    playlist={p}
-                    tracks={selectedTracks}
-                    closeMenu={onClose}
-                    title={p.name ?? ""}
-                  />
-                ))}
-              </NestedMenuItem>
-            ),
-          ]}
-      </Menu>
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button size="icon" variant="ghost">
+            <MoreHorizontalIcon fontSize="large" />
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent>
+          {definedItems.map((i) => (
+            <DropdownItem key={i.title} {...i} />
+          ))}
+          <PlaylistSubMenu
+            title={t("addToPlaylist")}
+            playlists={playlists}
+            tracks={tracklist}
+          />
+          {selected &&
+            selected.size && [
+              <DropdownMenuSeparator />,
+              ...definedSelectedItems.map((i) => (
+                <DropdownItem key={i.title} {...i} />
+              )),
+              <PlaylistSubMenu
+                title={t("addSelectedToPlaylist")}
+                playlists={playlists}
+                tracks={selectedTracks}
+              />,
+            ]}
+        </DropdownMenuContent>
+      </DropdownMenu>
       <AddPlaylistDialog
         tracks={playlistDialogTracks}
         open={playlistDialogOpen}

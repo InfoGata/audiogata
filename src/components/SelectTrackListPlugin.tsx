@@ -1,14 +1,14 @@
-import {
-  FormControl,
-  InputLabel,
-  MenuItem,
-  Select,
-  SelectChangeEvent,
-} from "@mui/material";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import usePlugins from "../hooks/usePlugins";
 import { Track } from "../plugintypes";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "./ui/select";
 
 interface SelectTrackListPluginProps {
   trackList: Track[];
@@ -26,13 +26,12 @@ const SelectTrackListPlugin: React.FC<SelectTrackListPluginProps> = (props) => {
     pluginNameMap.has(p) ? pluginNameMap.get(p) : p,
   ]);
   const optionsComponents = options.map((option) => (
-    <MenuItem key={option[0]} value={option[0]}>
+    <SelectItem key={option[0]} value={option[0] || ""}>
       {option[1]}
-    </MenuItem>
+    </SelectItem>
   ));
   const [pluginId, setPluginId] = React.useState<string>("");
-  const onSelectPluginChange = (e: SelectChangeEvent<string>) => {
-    const value = e.target.value;
+  const onSelectPluginChange = (value: string) => {
     setPluginId(value);
     if (value) {
       const filterdList = trackList
@@ -44,18 +43,15 @@ const SelectTrackListPlugin: React.FC<SelectTrackListPluginProps> = (props) => {
     }
   };
   return (
-    <FormControl fullWidth>
-      <InputLabel id="select-plugin">{t("selectPlugin")}</InputLabel>
-      <Select
-        id="select-plugin"
-        value={pluginId}
-        label="Select Plugin"
-        onChange={onSelectPluginChange}
-      >
-        <MenuItem value={""}>{t("none")}</MenuItem>
+    <Select onValueChange={onSelectPluginChange} value={pluginId}>
+      <SelectTrigger>
+        <SelectValue placeholder={t("selectPlugin")} />
+      </SelectTrigger>
+      <SelectContent>
+        <SelectItem value={"none"}>{t("none")}</SelectItem>
         {optionsComponents}
-      </Select>
-    </FormControl>
+      </SelectContent>
+    </Select>
   );
 };
 

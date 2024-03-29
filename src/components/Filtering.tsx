@@ -1,9 +1,14 @@
-import { ExpandMore } from "@mui/icons-material";
-import { Box, Button, Collapse, Grid } from "@mui/material";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { Filter, FilterInfo } from "../plugintypes";
 import FilterComponent from "./FilterComponent";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "./ui/accordion";
+import { Button } from "./ui/button";
 
 interface FilteringProps {
   filters: FilterInfo;
@@ -13,7 +18,6 @@ interface FilteringProps {
 const Filtering: React.FC<FilteringProps> = (props) => {
   const { filters, setFilters } = props;
   const [newFilters, setNewFilters] = React.useState(filters.filters);
-  const [showFilter, setShowFilter] = React.useState(false);
   const { t } = useTranslation();
 
   const onValueChange = (filter?: Filter) => {
@@ -28,35 +32,22 @@ const Filtering: React.FC<FilteringProps> = (props) => {
     setFilters({ filters: newFilters });
   };
 
-  const onToggleFilter = () => {
-    setShowFilter(!showFilter);
-  };
-
   const filterComponents = newFilters.map((f) => (
-    <Grid key={f.id} item xs={2} sm={4} md={4}>
-      <FilterComponent filter={f} onValueChange={onValueChange} />
-    </Grid>
+    <FilterComponent key={f.id} filter={f} onValueChange={onValueChange} />
   ));
+
   return (
-    <Box sx={{ "& button": { m: 2 } }}>
-      <Grid>
-        <Button
-          variant="outlined"
-          onClick={onToggleFilter}
-          endIcon={<ExpandMore />}
-        >
-          {t("filters")}
-        </Button>
-      </Grid>
-      <Collapse in={showFilter}>
-        <Grid container spacing={4} columns={{ xs: 4, sm: 8, md: 12 }}>
-          {filterComponents}
-        </Grid>
-        <Button variant="contained" onClick={onApplyFilters}>
-          {t("applyFilters")}
-        </Button>
-      </Collapse>
-    </Box>
+    <Accordion type="single" collapsible className="w-full">
+      <AccordionItem value="item-1">
+        <AccordionTrigger>{t("filters")}</AccordionTrigger>
+        <AccordionContent>
+          <div className="grid gap-4 lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1">
+            {filterComponents}
+          </div>
+          <Button onClick={onApplyFilters}>{t("applyFilters")}</Button>
+        </AccordionContent>
+      </AccordionItem>
+    </Accordion>
   );
 };
 

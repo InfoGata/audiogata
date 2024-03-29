@@ -6,10 +6,10 @@ import {
 } from "@mui/icons-material";
 import { ListItemIcon, ListItemText, Menu, MenuItem } from "@mui/material";
 import Dexie from "dexie";
-import { useSnackbar } from "notistack";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
+import { toast } from "sonner";
 import ItemMenuContext, { ItemMenuInterface } from "../ItemMenuContext";
 import { db } from "../database";
 import { ItemMenuType } from "../types";
@@ -33,7 +33,6 @@ const ItemMenuProvider: React.FC<React.PropsWithChildren> = (props) => {
   const [isFavorited, setIsFavorited] = React.useState(false);
   const closeMenu = () => setAnchorEl(null);
   const { t } = useTranslation();
-  const { enqueueSnackbar } = useSnackbar();
 
   const openItemMenu = async (
     event: React.MouseEvent<HTMLButtonElement>,
@@ -62,7 +61,7 @@ const ItemMenuProvider: React.FC<React.PropsWithChildren> = (props) => {
     if (menuItem) {
       const table = getTable(menuItem);
       await table.add(menuItem.item);
-      enqueueSnackbar(t("addedToFavorites"));
+      toast(t("addedToFavorites"));
     }
   };
 
@@ -70,7 +69,7 @@ const ItemMenuProvider: React.FC<React.PropsWithChildren> = (props) => {
     if (menuItem?.item?.id) {
       const table = getTable(menuItem);
       await table.delete(menuItem.item.id);
-      enqueueSnackbar(t("removedFromFavorites"));
+      toast(t("removedFromFavorites"));
     }
   };
 

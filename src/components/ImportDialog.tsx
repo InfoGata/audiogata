@@ -1,27 +1,26 @@
-import {
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  List,
-  ListItem,
-  TextField,
-  Typography,
-} from "@mui/material";
-import { useSnackbar } from "notistack";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { PluginFrameContainer } from "../PluginsContext";
 import usePlugins from "../hooks/usePlugins";
 import { ParseUrlType, Playlist, Track } from "../plugintypes";
 import { filterAsync } from "../utils";
+import { Button } from "./ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "./ui/dialog";
+import { Input } from "./ui/input";
+import { toast } from "sonner";
 
 interface ImportDialogProps {
   open: boolean;
-  handleClose: () => void;
+  title?: string;
   parseType: ParseUrlType;
   onSuccess: (item: Track[] | Playlist) => void;
+  setOpen: (open: boolean) => void;
 }
 
 const parseTypeToMethod = async (
@@ -50,11 +49,11 @@ const lookupUrl = async (
 };
 
 const ImportDialog: React.FC<ImportDialogProps> = (props) => {
-  const { open, handleClose, parseType, onSuccess } = props;
-  const { enqueueSnackbar } = useSnackbar();
+  const { open, parseType, onSuccess, title, setOpen } = props;
   const { plugins } = usePlugins();
   const [url, setUrl] = React.useState("");
   const formId = React.useId();
+
   const [parserPlugins, setParserPlugins] = React.useState<
     PluginFrameContainer[]
   >([]);
@@ -83,10 +82,10 @@ const ImportDialog: React.FC<ImportDialogProps> = (props) => {
       const item = await lookupUrl(parser, parseType, url);
       onSuccess(item);
     } else {
-      enqueueSnackbar(t("noImporters"), { variant: "error" });
+      toast.error(t("noImporters"));
     }
     setUrl("");
-    handleClose();
+    setOpen(false);
   };
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -95,46 +94,40 @@ const ImportDialog: React.FC<ImportDialogProps> = (props) => {
   };
 
   return (
-    <Dialog
-      open={open}
-      onClose={handleClose}
-      aria-labelledby="form-dialog-title"
-    >
-      <DialogTitle id="form-dialog-title">{t("import")}</DialogTitle>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent>
-        <form id={formId} onSubmit={onSubmit}>
-          <TextField
-            autoFocus={true}
-            margin="dense"
-            id="name"
-            label="Url"
-            type="text"
-            fullWidth={true}
-            value={url}
-            onChange={onChange}
-          />
-        </form>
-        <Typography>{t("plugins")}:</Typography>
-        {parserPlugins.length > 0 ? (
-          <List>
-            {parserPlugins.map((p) => (
-              <ListItem key={p.id}>{p.name}</ListItem>
-            ))}
-          </List>
-        ) : (
-          <Typography>{t("noImporters")}</Typography>
-        )}
+        <DialogHeader>
+          <DialogTitle>{title ? title : t("import")}</DialogTitle>
+        </DialogHeader>
+        <div className="flex flex-col gap-2">
+          <form id={formId} onSubmit={onSubmit}>
+            <Input
+              autoFocus={true}
+              type="text"
+              value={url}
+              onChange={onChange}
+            />
+          </form>
+          <h3 className="font-bold">{t("plugins")}:</h3>
+          {parserPlugins.length > 0 ? (
+            <ul>
+              {parserPlugins.map((p) => (
+                <li key={p.id}>{p.name}</li>
+              ))}
+            </ul>
+          ) : (
+            <h4>{t("noImporters")}</h4>
+          )}
+        </div>
+        <DialogFooter>
+          <Button variant="outline" onClick={() => setOpen(false)}>
+            {t("cancel")}
+          </Button>
+          <Button variant="outline" type="submit" form={formId}>
+            {t("confirm")}
+          </Button>
+        </DialogFooter>
       </DialogContent>
-      <DialogActions>
-        <Button onClick={handleClose}>{t("cancel")}</Button>
-        <Button
-          disabled={parserPlugins.length === 0}
-          type="submit"
-          form={formId}
-        >
-          {t("import")}
-        </Button>
-      </DialogActions>
     </Dialog>
   );
 };

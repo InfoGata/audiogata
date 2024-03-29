@@ -1,34 +1,19 @@
-import {
-  Delete,
-  Edit,
-  Info,
-  MoreHoriz,
-  PlayCircle,
-  UploadFile,
-} from "@mui/icons-material";
-import {
-  Grid,
-  IconButton,
-  ListItemIcon,
-  ListItemText,
-  MenuItem,
-  Typography,
-} from "@mui/material";
+import { DropdownItemProps } from "@/components/DropdownItem";
+import { Button } from "@/components/ui/button";
+import { ItemMenuType } from "@/types";
 import { useLiveQuery } from "dexie-react-hooks";
+import {
+  CirclePlayIcon,
+  InfoIcon,
+  PencilIcon,
+  Trash,
+  TrashIcon,
+} from "lucide-react";
 import React from "react";
 import { useTranslation } from "react-i18next";
+import { MdUploadFile } from "react-icons/md";
 import { useParams } from "react-router";
-import { Link } from "react-router-dom";
-import { db } from "../database";
-import useSelected from "../hooks/useSelected";
-import useTrackMenu from "../hooks/useTrackMenu";
-import { Playlist, Track } from "../plugintypes";
-import { useAppDispatch, useAppSelector } from "../store/hooks";
-import {
-  addPlaylistTracks,
-  setPlaylistTracks,
-} from "../store/reducers/playlistReducer";
-import { playQueue, setTrack, setTracks } from "../store/reducers/trackReducer";
+import { useNavigate } from "react-router-dom";
 import AddPlaylistDialog from "../components/AddPlaylistDialog";
 import ConvertTracksDialog from "../components/ConvertTracksDialog";
 import EditPlaylistDialog from "../components/EditPlaylistDialog";
@@ -37,18 +22,22 @@ import PlaylistMenu from "../components/PlaylistMenu";
 import SelectTrackListPlugin from "../components/SelectTrackListPlugin";
 import Spinner from "../components/Spinner";
 import TrackList from "../components/TrackList";
+import { db } from "../database";
+import useSelected from "../hooks/useSelected";
+import { Playlist, Track } from "../plugintypes";
+import { useAppDispatch, useAppSelector } from "../store/hooks";
+import {
+  addPlaylistTracks,
+  setPlaylistTracks,
+} from "../store/reducers/playlistReducer";
+import { playQueue, setTrack, setTracks } from "../store/reducers/trackReducer";
 
 const PlaylistTracks: React.FC = () => {
   const { playlistId } = useParams<"playlistId">();
+  const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const [openEditMenu, setOpenEditMenu] = React.useState(false);
   const [openConvertDialog, setOpenConvertDialog] = React.useState(false);
-  const [queueMenuAnchorEl, setQueueMenuAnchorEl] =
-    React.useState<null | HTMLElement>(null);
-  const openQueueMenu = (event: React.MouseEvent<HTMLButtonElement>) => {
-    setQueueMenuAnchorEl(event.currentTarget);
-  };
-  const closeQueueMenu = () => setQueueMenuAnchorEl(null);
   const [importDialogOpen, setImportDialogOpen] = React.useState(false);
 
   const { t } = useTranslation();
@@ -57,45 +46,31 @@ const PlaylistTracks: React.FC = () => {
     [playlistId],
     false
   );
-  const tracklist = (playlist && playlist?.tracks) || [];
+  const tracks = (playlist && playlist?.tracks) || [];
 
-  const getListItems = (track?: Track) => {
-    const deleteClick = async () => {
-      if (track?.id) {
-        await db.audioBlobs.delete(track.id);
-      }
-      if (playlist && track) {
-        const newTracklist = tracklist.filter((t) => t.id !== track.id);
-        dispatch(setPlaylistTracks(playlist, newTracklist));
-      }
-    };
-    return [
-      <MenuItem onClick={deleteClick} key="Delete">
-        <ListItemIcon>
-          <Delete />
-        </ListItemIcon>
-        <ListItemText primary={t("delete")} />
-      </MenuItem>,
-      <MenuItem
-        key="Info"
-        component={Link}
-        to={`/playlists/${playlistId}/tracks/${track?.id}`}
-      >
-        <ListItemIcon>
-          <Info />
-        </ListItemIcon>
-        <ListItemText primary={t("info")} />
-      </MenuItem>,
-    ];
+  const onDelete = async (item?: ItemMenuType) => {
+    if (playlist && item?.type === "track") {
+      const newTracklist = tracks.filter((t) => t.id !== item.item.id);
+      dispatch(setPlaylistTracks(playlist, newTracklist));
+    }
   };
+
+  const trackMenuItems: DropdownItemProps[] = [
+    { title: t("delete"), icon: <Trash />, action: onDelete },
+    {
+      title: t("info"),
+      icon: <InfoIcon />,
+      action: (item) =>
+        navigate(`/playlists/${playlistId}/tracks/${item?.item.id}`),
+    },
+  ];
 
   const clearSelectedTracks = async () => {
     await db.audioBlobs.bulkDelete(Array.from(selected));
     if (playlist) {
-      const newTracklist = tracklist.filter((t) => !selected.has(t.id ?? ""));
+      const newTracklist = tracks.filter((t) => !selected.has(t.id ?? ""));
       dispatch(setPlaylistTracks(playlist, newTracklist));
     }
-    closeQueueMenu();
   };
 
   const onConvertTracksOpen = () => {
@@ -120,45 +95,22 @@ const PlaylistTracks: React.FC = () => {
     }
   };
 
-  const selectedMenuItems = [
-    <MenuItem onClick={clearSelectedTracks} key="clear">
-      <ListItemIcon>
-        <Delete />
-      </ListItemIcon>
-      <ListItemText primary={t("deleteSelectedTracks")} />
-    </MenuItem>,
-    <MenuItem onClick={onConvertTracksOpen} key="convert">
-      <ListItemIcon>
-        <Edit />
-      </ListItemIcon>
-      <ListItemText primary={t("convertSelectedTracks")} />
-    </MenuItem>,
-  ];
-
   const playlists = useAppSelector((state) =>
     state.playlist.playlists.filter((p) => p.id !== playlistId)
   );
 
-  const { openMenu } = useTrackMenu({
-    playlists,
-    getListItems,
-  });
   const { onSelect, onSelectAll, isSelected, selected, setSelected } =
-    useSelected(tracklist || []);
+    useSelected(tracks || []);
   const playlistInfo = useAppSelector((state) =>
     state.playlist.playlists.find((p) => p.id === playlistId)
   );
 
   const [playlistDialogOpen, setPlaylistDialogOpen] = React.useState(false);
 
-  const selectedTracks = tracklist.filter((t) => selected.has(t.id ?? ""));
+  const selectedTracks = tracks.filter((t) => selected.has(t.id ?? ""));
 
   const onEditMenuOpen = () => {
     setOpenEditMenu(true);
-  };
-
-  const onEditMenuClose = () => {
-    setOpenEditMenu(false);
   };
 
   const playPlaylist = () => {
@@ -166,13 +118,13 @@ const PlaylistTracks: React.FC = () => {
       return;
     }
 
-    dispatch(setTracks(tracklist));
+    dispatch(setTracks(tracks));
     dispatch(playQueue());
   };
 
   const onTrackClick = (track: Track) => {
     dispatch(setTrack(track));
-    dispatch(setTracks(tracklist));
+    dispatch(setTracks(tracks));
   };
 
   const onDragOver = (trackList: Track[]) => {
@@ -181,13 +133,25 @@ const PlaylistTracks: React.FC = () => {
     }
   };
 
-  const menuItems = [
-    <MenuItem onClick={openImportDialog} key="import">
-      <ListItemIcon>
-        <UploadFile />
-      </ListItemIcon>
-      <ListItemText primary={t("importTrackByUrl")} />
-    </MenuItem>,
+  const menuItems: DropdownItemProps[] = [
+    {
+      title: t("importTrackByUrl"),
+      icon: <MdUploadFile />,
+      action: openImportDialog,
+    },
+  ];
+
+  const selectedMenuItems: DropdownItemProps[] = [
+    {
+      title: t("deleteSelectedTracks"),
+      icon: <TrashIcon />,
+      action: clearSelectedTracks,
+    },
+    {
+      title: t("convertSelectedTracks"),
+      icon: <PencilIcon />,
+      action: onConvertTracksOpen,
+    },
   ];
 
   return (
@@ -195,45 +159,37 @@ const PlaylistTracks: React.FC = () => {
       <Spinner open={playlist === false} />
       {playlist ? (
         <>
-          <Grid sx={{ display: "flex" }}>
-            <Typography variant="h3">{playlistInfo?.name}</Typography>
-            <IconButton onClick={onEditMenuOpen}>
-              <Edit />
-            </IconButton>
-          </Grid>
-          <IconButton size="large" onClick={playPlaylist}>
-            <PlayCircle color="success" sx={{ fontSize: 45 }} />
-          </IconButton>
-          <IconButton onClick={openQueueMenu}>
-            <MoreHoriz fontSize="large" />
-          </IconButton>
+          <div className="flex">
+            <h3 className="text-4xl font-bold">{playlistInfo?.name}</h3>
+            <Button variant="ghost" size="icon" onClick={onEditMenuOpen}>
+              <PencilIcon />
+            </Button>
+          </div>
+          <Button variant="ghost" size="icon" onClick={playPlaylist}>
+            <CirclePlayIcon />
+          </Button>
           <PlaylistMenu
             selected={selected}
-            tracklist={tracklist}
+            tracklist={tracks}
             playlists={playlists}
-            selectedMenuItems={selectedMenuItems}
-            anchorElement={queueMenuAnchorEl}
-            onClose={closeQueueMenu}
-            menuItems={menuItems}
+            dropdownItems={menuItems}
+            selectedDropdownItems={selectedMenuItems}
           />
-          <SelectTrackListPlugin
-            trackList={tracklist}
-            setSelected={setSelected}
-          />
+          <SelectTrackListPlugin trackList={tracks} setSelected={setSelected} />
           <TrackList
-            tracks={tracklist}
-            openMenu={openMenu}
+            tracks={tracks}
             onTrackClick={onTrackClick}
             onDragOver={onDragOver}
             onSelect={onSelect}
             isSelected={isSelected}
             onSelectAll={onSelectAll}
             selected={selected}
+            menuItems={trackMenuItems}
           />
           <EditPlaylistDialog
             open={openEditMenu}
+            setOpen={setOpenEditMenu}
             playlist={playlist}
-            handleClose={onEditMenuClose}
           />
           <AddPlaylistDialog
             tracks={selectedTracks}
@@ -242,9 +198,9 @@ const PlaylistTracks: React.FC = () => {
           />
           <ImportDialog
             open={importDialogOpen}
-            handleClose={closeImportDialog}
             parseType="track"
             onSuccess={onImport}
+            setOpen={setImportDialogOpen}
           />
           {openConvertDialog && (
             <ConvertTracksDialog
@@ -256,7 +212,7 @@ const PlaylistTracks: React.FC = () => {
           )}
         </>
       ) : (
-        <>{playlist !== false && <Typography>{t("notFound")}</Typography>}</>
+        <>{playlist !== false && <h3>{t("notFound")}</h3>}</>
       )}
     </>
   );

@@ -1,11 +1,10 @@
-import { Box, Typography } from "@mui/material";
 import DOMPurify from "dompurify";
 import React from "react";
 import { useQuery } from "react-query";
 import { useLocation } from "react-router-dom";
+import Spinner from "../components/Spinner";
 import usePlugins from "../hooks/usePlugins";
 import { useAppSelector } from "../store/hooks";
-import Spinner from "../components/Spinner";
 
 const Lyrics: React.FC = () => {
   const { plugins, pluginsLoaded } = usePlugins();
@@ -38,22 +37,15 @@ const Lyrics: React.FC = () => {
   );
 
   return (
-    <Box>
+    <div>
       <Spinner open={query.isLoading} />
-      <Typography align="center" variant="h4">
-        {trackName}
-      </Typography>
-      {artistName && (
-        <Typography align="center" variant="h5">
-          {artistName}
-        </Typography>
-      )}
-      <Typography
-        align="center"
-        sx={{ whiteSpace: "pre-line" }}
+      <h2 className="text-3xl text-center">{trackName}</h2>
+      {artistName && <h3 className="text-2xl text-center">{artistName}</h3>}
+      <p
+        className="whitespace-pre-line text-center"
         dangerouslySetInnerHTML={{ __html: sanitizer(query.data ?? "") }}
       />
-    </Box>
+    </div>
   );
 };
 

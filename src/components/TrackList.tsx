@@ -1,34 +1,26 @@
 import { DragEndEvent, DragOverlay, DragStartEvent } from "@dnd-kit/core";
 import { arrayMove } from "@dnd-kit/sortable";
-import {
-  Checkbox,
-  Paper,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  useMediaQuery,
-} from "@mui/material";
-import { useTheme } from "@mui/material/styles";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { Track } from "../plugintypes";
 import PlaylistItem from "./PlaylistItem";
 import Sortable from "./Sortable";
 import SortableRow from "./SortableRow";
+import { Table, TableBody, TableHead, TableHeader, TableRow } from "./ui/table";
+import { Checkbox } from "./ui/checkbox";
+import { CheckedState } from "@radix-ui/react-checkbox";
+import { DropdownItemProps } from "./DropdownItem";
 
 interface TrackListProps {
   tracks: Track[];
-  onTrackClick: (track: Track) => void;
-  openMenu: (event: React.MouseEvent<HTMLButtonElement>, track: Track) => void;
-  onSelect?: (e: React.ChangeEvent<HTMLInputElement>, id: string) => void;
-  onSelectAll?: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  isSelected?: (id: string) => boolean;
-  selected?: Set<string>;
-  onDragOver?: (newTrackList: Track[]) => void;
   dragDisabled?: boolean;
+  onDragOver?: (newTrackList: Track[]) => void;
+  selected?: Set<string>;
+  onSelect?: (e: React.MouseEvent, id: string, index: number) => void;
+  onSelectAll?: (state: CheckedState) => void;
+  isSelected?: (id: string) => boolean;
+  onTrackClick: (track: Track) => void;
+  menuItems?: DropdownItemProps[];
 }
 
 const TrackList: React.FC<TrackListProps> = (props) => {
@@ -36,16 +28,14 @@ const TrackList: React.FC<TrackListProps> = (props) => {
     tracks,
     onDragOver,
     onTrackClick,
-    openMenu,
     onSelect,
     onSelectAll,
     isSelected,
     selected,
     dragDisabled,
+    menuItems,
   } = props;
   const [activeId, setActiveId] = React.useState<string | null>(null);
-  const theme = useTheme();
-  const showTrackLength = useMediaQuery(theme.breakpoints.up("sm"));
   const { t } = useTranslation();
 
   const handleDragStart = (event: DragStartEvent) => {
@@ -71,66 +61,59 @@ const TrackList: React.FC<TrackListProps> = (props) => {
       onDragStart={handleDragStart}
       onDragEnd={handleDragEnd}
     >
-      <TableContainer component={Paper}>
-        <Table size="small" sx={{ tableLayout: "fixed" }}>
-          <TableHead>
-            <TableRow>
-              <TableCell padding="none" width="4%">
-                {selected && (
-                  <Checkbox
-                    color="primary"
-                    indeterminate={
-                      selected.size > 0 && selected.size < tracks.length
-                    }
-                    checked={
-                      tracks.length > 0 && selected.size === tracks.length
-                    }
-                    onChange={onSelectAll}
-                    size="small"
-                    inputProps={{
-                      "aria-label": "select all tracks",
-                    }}
-                  />
-                )}
-              </TableCell>
-              <TableCell width="80%">{t("title")}</TableCell>
-              {showTrackLength && <TableCell>{t("trackDuration")}</TableCell>}
-              <TableCell></TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {tracks.map((track, i) => (
-              <SortableRow
-                id={track.id || ""}
-                key={track.id || track.apiId}
-                onClick={() => onTrackClick(track)}
-                disabled={dragDisabled}
-              >
-                <PlaylistItem
-                  showTrackLength={showTrackLength}
-                  track={track}
-                  openMenu={openMenu}
-                  isSelected={isSelected}
-                  onSelectClick={onSelect}
-                  index={i}
-                />
-              </SortableRow>
-            ))}
-            <DragOverlay wrapperElement="tr">
-              {activeId ? (
-                <PlaylistItem
-                  showTrackLength={showTrackLength}
-                  key={activeId}
-                  track={
-                    tracks.find((track) => track.id === activeId) ||
-                    ({} as Track)
+      <Table>
+        <TableHeader>
+          <TableRow>
+            {selected && (
+              <TableHead>
+                <Checkbox
+                  onCheckedChange={onSelectAll}
+                  checked={
+                    (selected.size > 0 && selected.size === tracks.length) ||
+                    (selected.size > 0 &&
+                      selected.size < tracks.length &&
+                      "indeterminate")
                   }
+                  aria-label="select all videos"
                 />
-              ) : null}
-            </DragOverlay>
-          </TableBody>
-        </Table>
-      </TableContainer>
+              </TableHead>
+            )}
+            <TableHead>{t("title")}</TableHead>
+            <TableHead className="hidden md:table-cell">
+              {t("trackDuration")}
+            </TableHead>
+            <TableHead></TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {tracks.map((track, i) => (
+            <SortableRow
+              id={track.id || ""}
+              key={track.id || track.apiId}
+              onClick={() => onTrackClick(track)}
+              disabled={dragDisabled}
+            >
+              <PlaylistItem
+                track={track}
+                isSelected={isSelected}
+                onSelectClick={onSelect}
+                index={i}
+                menuItems={menuItems}
+              />
+            </SortableRow>
+          ))}
+          <DragOverlay wrapperElement="tr">
+            {activeId ? (
+              <PlaylistItem
+                key={activeId}
+                track={
+                  tracks.find((track) => track.id === activeId) || ({} as Track)
+                }
+              />
+            ) : null}
+          </DragOverlay>
+        </TableBody>
+      </Table>
     </Sortable>
   );
 };

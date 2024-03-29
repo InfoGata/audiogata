@@ -1,4 +1,3 @@
-import { Button, Grid } from "@mui/material";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { useParams } from "react-router-dom";
@@ -9,6 +8,7 @@ import { useAppDispatch } from "../store/hooks";
 import { setPlaylistTracks } from "../store/reducers/playlistReducer";
 import Spinner from "../components/Spinner";
 import TrackInfo from "../components/TrackInfo";
+import { Button } from "@/components/ui/button";
 
 const PlaylistTrackInfo: React.FC = () => {
   const [showUpdateButton, setShowUpdateButton] = React.useState(false);
@@ -79,14 +79,12 @@ const PlaylistTrackInfo: React.FC = () => {
     <>
       <Spinner open={backdropOpen || isUpdating} />
       {track ? (
-        <Grid>
+        <div>
           <TrackInfo track={track} />
           {showUpdateButton && (
-            <Button variant="contained" onClick={onUpdateTrack}>
-              {t("updateTrackInfo")}
-            </Button>
+            <Button onClick={onUpdateTrack}>{t("updateTrackInfo")}</Button>
           )}
-        </Grid>
+        </div>
       ) : (
         <>{t("notFound")}</>
       )}

@@ -1,4 +1,3 @@
-import { Box, Card, CardContent, Typography } from "@mui/material";
 import DOMPurify from "dompurify";
 import React from "react";
 import { Link } from "react-router-dom";
@@ -15,43 +14,43 @@ interface PlaylistInfoCardProps {
   subtitleLinks?: SubtitleLink[];
   images?: ImageInfo[];
 }
-
 const PlaylistInfoCard: React.FC<PlaylistInfoCardProps> = (props) => {
   const { name, images, subtitleLinks } = props;
   const sanitizer = DOMPurify.sanitize;
 
+  const subtitles = subtitleLinks?.map((sl, i) => {
+    const Component = sl.link
+      ? Link
+      : (props: any) => React.createElement("div", props);
+    return (
+      <>
+        {i !== 0 && ", "}
+        <Component
+          to={sl.link ?? ""}
+          className="text-2xl"
+          dangerouslySetInnerHTML={{
+            __html: sanitizer(name),
+          }}
+        />
+      </>
+    );
+  });
+
   return (
-    <Card sx={{ display: "flex" }}>
-      <Box>
+    <div className="flex">
+      <div>
         <PlaylistImage images={images} />
-      </Box>
-      <Box sx={{ display: "flex", flexDirection: "column" }}>
-        <CardContent sx={{ flex: "1 0 auto" }}>
-          <Typography
-            component="div"
-            variant="h5"
-            dangerouslySetInnerHTML={{
-              __html: sanitizer(name),
-            }}
-          />
-          {subtitleLinks &&
-            subtitleLinks.map((s, i) => (
-              <>
-                {i !== 0 && ", "}
-                <Typography
-                  component={s.link ? Link : "div"}
-                  to={s.link}
-                  variant="subtitle1"
-                  color="text.secondary"
-                  dangerouslySetInnerHTML={{
-                    __html: sanitizer(s.name || ""),
-                  }}
-                />
-              </>
-            ))}
-        </CardContent>
-      </Box>
-    </Card>
+      </div>
+      <div>
+        <h2
+          className="text-2xl"
+          dangerouslySetInnerHTML={{
+            __html: sanitizer(name),
+          }}
+        />
+        {subtitles}
+      </div>
+    </div>
   );
 };
 

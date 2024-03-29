@@ -13,17 +13,17 @@ import {
   MenuItem,
   Typography,
 } from "@mui/material";
-import { useSnackbar } from "notistack";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
+import { toast } from "sonner";
 import { PluginFrameContainer } from "../PluginsContext";
+import ImportDialog from "../components/ImportDialog";
 import usePlugins from "../hooks/usePlugins";
 import { Playlist, PlaylistInfo, Track } from "../plugintypes";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
 import { addPlaylist, deletePlaylist } from "../store/reducers/playlistReducer";
 import { filterAsync } from "../utils";
-import ImportDialog from "../components/ImportDialog";
 
 interface PlaylistsItemProps {
   playlist: PlaylistInfo;
@@ -57,7 +57,6 @@ const PlaylistsItem: React.FC<PlaylistsItemProps> = (props) => {
 const Playlists: React.FC = () => {
   const { t } = useTranslation();
   const { plugins } = usePlugins();
-  const { enqueueSnackbar } = useSnackbar();
   const [playlistPlugins, setPlaylistPlugins] = React.useState<
     PluginFrameContainer[]
   >([]);
@@ -68,7 +67,6 @@ const Playlists: React.FC = () => {
   >();
   const [openImportDialog, setOpenImportDialog] = React.useState(false);
   const onOpenImportDialog = () => setOpenImportDialog(true);
-  const onCloseImportDialog = () => setOpenImportDialog(false);
 
   React.useEffect(() => {
     const setPlugins = async () => {
@@ -111,7 +109,7 @@ const Playlists: React.FC = () => {
   const onImport = (item: Playlist | Track[]) => {
     if ("tracks" in item) {
       dispatch(addPlaylist(item));
-      enqueueSnackbar(t("playlistImported", { playlistName: item.name }));
+      toast(t("playlistImported", { playlistName: item.name }));
     }
   };
 
@@ -139,7 +137,7 @@ const Playlists: React.FC = () => {
       </Menu>
       <ImportDialog
         open={openImportDialog}
-        handleClose={onCloseImportDialog}
+        setOpen={setOpenImportDialog}
         parseType="playlist"
         onSuccess={onImport}
       />

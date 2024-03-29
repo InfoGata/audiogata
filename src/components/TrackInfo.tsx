@@ -1,19 +1,9 @@
-import {
-  Avatar,
-  List,
-  ListItem,
-  ListItemAvatar,
-  ListItemText,
-} from "@mui/material";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import usePlugins from "../hooks/usePlugins";
 import { Track } from "../plugintypes";
-import {
-  formatSeconds,
-  getThumbnailImage,
-  searchThumbnailSize,
-} from "../utils";
+import { formatSeconds } from "../utils";
+import AboutLink, { AboutLinkProps } from "./AboutLink";
 
 interface TrackInfoProps {
   track: Track;
@@ -24,47 +14,35 @@ const TrackInfo: React.FC<TrackInfoProps> = (props) => {
   const { plugins } = usePlugins();
   const { t } = useTranslation();
   const plugin = plugins.find((p) => p.id === track.pluginId);
-  const image = getThumbnailImage(track.images, searchThumbnailSize);
 
-  return (
-    <>
-      <List>
-        <ListItem>
-          <ListItemText primary={t("trackName")} secondary={track.name} />
-        </ListItem>
-        <ListItem>
-          <ListItemText primary="Id" secondary={track.id} />
-        </ListItem>
-        <ListItem>
-          <ListItemText
-            primary={`${t("plugin")} Id`}
-            secondary={track.pluginId}
-          />
-        </ListItem>
-        <ListItem>
-          <ListItemText primary={t("plugin")} secondary={plugin?.name} />
-        </ListItem>
-        <ListItem>
-          <ListItemText primary="API Id" secondary={track.apiId} />
-        </ListItem>
-        <ListItem>
-          <ListItemText
-            primary={t("trackDuration")}
-            secondary={formatSeconds(track.duration)}
-          />
-        </ListItem>
-        <ListItem>
-          <ListItemAvatar>
-            <Avatar alt={track.name} src={image} style={{ borderRadius: 0 }} />
-          </ListItemAvatar>
-          <ListItemText
-            primary={t("trackArt")}
-            secondary={track.images?.map((i) => i.url).join(", ")}
-          />
-        </ListItem>
-      </List>
-    </>
-  );
+  const aboutLinks: (AboutLinkProps | null)[] = [
+    {
+      title: t("trackName"),
+      description: track.name,
+    },
+    {
+      title: "Id",
+      description: track.id,
+    },
+    {
+      title: t("pluginId"),
+      description: track.pluginId,
+    },
+    {
+      title: t("plugin"),
+      description: plugin?.name,
+    },
+    {
+      title: "API Id",
+      description: track.apiId,
+    },
+    {
+      title: t("trackDuration"),
+      description: formatSeconds(track.duration),
+    },
+  ];
+
+  return <>{aboutLinks.map((a) => a && <AboutLink {...a} key={a.title} />)}</>;
 };
 
 export default TrackInfo;

@@ -2,7 +2,6 @@ import React from "react";
 import { useQuery } from "react-query";
 import usePagination from "../hooks/usePagination";
 import usePlugins from "../hooks/usePlugins";
-import useTrackMenu from "../hooks/useTrackMenu";
 import { FilterInfo, PageInfo, Track } from "../plugintypes";
 import { useAppDispatch } from "../store/hooks";
 import { addTrack, setTrack } from "../store/reducers/trackReducer";
@@ -36,7 +35,6 @@ const TrackSearchResults: React.FC<TrackSearchResultsProps> = (props) => {
     getHasSearch();
   }, [plugin]);
 
-  const { openMenu } = useTrackMenu();
   const [currentPage, setCurrentPage] = React.useState<PageInfo | undefined>(
     initialPage
   );
@@ -85,7 +83,6 @@ const TrackSearchResults: React.FC<TrackSearchResultsProps> = (props) => {
       )}
       <TrackList
         tracks={query.data || []}
-        openMenu={openMenu}
         onTrackClick={onTrackClick}
         dragDisabled={true}
       />

@@ -1,46 +1,27 @@
-import { Button } from "@mui/material";
-import { OptionsObject, SnackbarKey, SnackbarMessage } from "notistack";
 import React from "react";
 import { useTranslation } from "react-i18next";
+import { toast } from "sonner";
 import { useRegisterSW } from "virtual:pwa-register/react";
 
-const useUpdateServiceWorker = (
-  enqueueSnackbar:
-    | ((message: SnackbarMessage, options?: OptionsObject) => SnackbarKey)
-    | undefined,
-  onClickDismiss: (key: SnackbarKey) => void
-) => {
+const useUpdateServiceWorker = () => {
   const { t } = useTranslation();
   const {
     needRefresh: [needRefresh, setNeedRefresh],
     updateServiceWorker,
   } = useRegisterSW();
 
-  const onDismiss = React.useCallback(
-    (key: SnackbarKey) => {
-      setNeedRefresh(false);
-      onClickDismiss(key);
-    },
-    [onClickDismiss, setNeedRefresh]
-  );
+  const onDismiss = React.useCallback(() => {
+    setNeedRefresh(false);
+  }, [setNeedRefresh]);
 
   React.useEffect(() => {
-    if (needRefresh && enqueueSnackbar) {
-      enqueueSnackbar(t("newVersion"), {
-        persist: true,
-        action: (key) => (
-          <>
-            <Button color="primary" onClick={() => updateServiceWorker()}>
-              {t("reload")}
-            </Button>
-            <Button color="error" onClick={() => onDismiss(key)}>
-              {t("dismiss")}
-            </Button>
-          </>
-        ),
+    if (needRefresh) {
+      toast(t("newVersion"), {
+        action: { label: t("reload"), onClick: () => updateServiceWorker() },
+        onDismiss: () => onDismiss(),
       });
     }
-  }, [t, enqueueSnackbar, needRefresh, updateServiceWorker, onDismiss]);
+  }, [t, needRefresh, updateServiceWorker, onDismiss]);
 };
 
 export default useUpdateServiceWorker;

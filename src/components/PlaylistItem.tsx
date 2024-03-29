@@ -1,13 +1,3 @@
-import { MoreHoriz } from "@mui/icons-material";
-import {
-  Avatar,
-  Box,
-  Checkbox,
-  IconButton,
-  LinearProgress,
-  TableCell,
-  Typography,
-} from "@mui/material";
 import DOMPurify from "dompurify";
 import React, { Fragment } from "react";
 import { Track } from "../plugintypes";
@@ -18,83 +8,59 @@ import {
   searchThumbnailSize,
 } from "../utils";
 import ArtistLink from "./ArtistLInk";
+import { TableCell } from "./ui/table";
+import { Checkbox } from "./ui/checkbox";
+import { Avatar, AvatarImage } from "./ui/avatar";
+import { Progress } from "./ui/progress";
+import { cn } from "@/lib/utils";
+import TrackMenu from "./TrackMenu";
+import { DropdownItemProps } from "./DropdownItem";
 
 interface PlaylistItemsProps {
   track: Track;
-  showTrackLength: boolean;
   isSelected?: (id: string) => boolean;
-  onSelectClick?: (
-    event: React.ChangeEvent<HTMLInputElement>,
-    id: string
-  ) => void;
-  openMenu?: (event: React.MouseEvent<HTMLButtonElement>, track: Track) => void;
+  onSelectClick?: (event: React.MouseEvent, id: string, index: number) => void;
   index?: number;
+  menuItems?: DropdownItemProps[];
 }
 
 const PlaylistItem: React.FC<PlaylistItemsProps> = (props) => {
-  const { track, showTrackLength, openMenu, onSelectClick, isSelected, index } =
-    props;
+  const { track, onSelectClick, isSelected, index } = props;
   const sanitizer = DOMPurify.sanitize;
-  const currentTrack = useAppSelector((state) => state.track.currentTrack);
   const progress = useAppSelector(
     (state) => state.download.progress[track.id || ""]
   );
 
-  const openTrackMenu = (event: React.MouseEvent<HTMLButtonElement>) => {
-    if (openMenu) {
-      openMenu(event, track);
-    }
-  };
-
-  const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (onSelectClick) {
-      onSelectClick(event, track.id || "");
-    }
-  };
-
-  const stopPropagation = (e: React.MouseEvent) => {
+  const onCheckboxClick = (e: React.MouseEvent) => {
     e.stopPropagation();
+    if (onSelectClick && index !== undefined) {
+      onSelectClick(e, track.id || "", index);
+    }
   };
 
   const image = getThumbnailImage(track.images, searchThumbnailSize);
   return (
     <>
-      <TableCell padding="none">
-        {isSelected && (
-          <Checkbox
-            color="primary"
-            checked={isSelected(track.id || "")}
-            onChange={onChange}
-            onClick={stopPropagation}
-            size="small"
-            inputProps={
-              {
-                "data-index": index,
-              } as any
-            }
-          />
-        )}
-      </TableCell>
+      {isSelected && (
+        <TableCell>
+          {
+            <Checkbox
+              checked={isSelected(track.id || "")}
+              onClick={onCheckboxClick}
+            />
+          }
+        </TableCell>
+      )}
       <TableCell>
-        <Box
-          sx={{
-            display: "flex",
-            overflow: "hidden",
-            textOverflow: "ellipsis",
-          }}
-        >
-          <Avatar alt={track.name} src={image} style={{ borderRadius: 0 }} />
-          <Box sx={{ minWidth: 0 }}>
-            <Typography
-              color={
-                currentTrack && currentTrack?.id === track.id
-                  ? "primary.main"
-                  : undefined
-              }
-              noWrap={true}
+        <div className="flex">
+          <Avatar className="rounded-none">
+            <AvatarImage src={image} />
+          </Avatar>
+          <div className="min-w-0">
+            <p
               dangerouslySetInnerHTML={{ __html: sanitizer(track.name) }}
               title={track.name}
-              sx={{ overflow: "hidden", textOverflow: "ellipsis" }}
+              className="truncate"
             />
             {track.artistApiId ? (
               <>
@@ -116,37 +82,25 @@ const PlaylistItem: React.FC<PlaylistItemsProps> = (props) => {
                   ))}
               </>
             ) : (
-              <Typography
-                variant="body2"
-                color={
-                  currentTrack && currentTrack?.id === track.id
-                    ? "primary.main"
-                    : undefined
-                }
-                noWrap={true}
+              <p
                 dangerouslySetInnerHTML={{
                   __html: sanitizer(track.artistName || ""),
                 }}
-                sx={{ overflow: "hidden", textOverflow: "ellipsis" }}
+                className="truncate"
               />
             )}
-            <LinearProgress
-              variant="determinate"
+            <Progress
+              className={cn(!progress && "hidden")}
               value={progress?.progress || 0}
-              sx={{ visibility: progress ? "visible" : "hidden" }}
             />
-          </Box>
-        </Box>
+          </div>
+        </div>
       </TableCell>
-      {showTrackLength && (
-        <TableCell>{formatSeconds(track.duration)}</TableCell>
-      )}
-      <TableCell align="right" padding="checkbox">
-        {openMenu && (
-          <IconButton aria-label="options" size="small" onClick={openTrackMenu}>
-            <MoreHoriz />
-          </IconButton>
-        )}
+      <TableCell className="hidden md:table-cell">
+        {formatSeconds(track.duration)}
+      </TableCell>
+      <TableCell align="right">
+        <TrackMenu track={track} />
       </TableCell>
     </>
   );

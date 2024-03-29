@@ -1,29 +1,20 @@
-import { OptionsObject, SnackbarKey, SnackbarMessage } from "notistack";
 import React from "react";
 import { useTranslation } from "react-i18next";
-const useOffline = (
-  enqueueSnackbar:
-    | ((message: SnackbarMessage, options?: OptionsObject) => SnackbarKey)
-    | undefined,
-  onClickDismiss: (key: SnackbarKey) => void
-) => {
-  const [key, setKey] = React.useState<SnackbarKey>();
+import { toast } from "sonner";
+
+const useOffline = () => {
+  const [key, setKey] = React.useState<string | number>();
   const { t } = useTranslation();
 
   React.useEffect(() => {
     const onOnline = () => {
       if (key) {
-        onClickDismiss(key);
+        toast.dismiss(key);
       }
     };
     const onOffline = () => {
-      if (enqueueSnackbar) {
-        const newKey = enqueueSnackbar(t("offline"), {
-          variant: "error",
-          persist: true,
-        });
-        setKey(newKey);
-      }
+      const newKey = toast.error(t("offline"), { duration: Infinity });
+      setKey(newKey);
     };
     window.addEventListener("online", onOnline);
     window.addEventListener("offline", onOffline);
@@ -31,7 +22,7 @@ const useOffline = (
       window.removeEventListener("online", onOnline);
       window.removeEventListener("offline", onOffline);
     };
-  }, [enqueueSnackbar, key, onClickDismiss, t]);
+  }, [key, t]);
 };
 
 export default useOffline;

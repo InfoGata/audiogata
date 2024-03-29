@@ -55,7 +55,7 @@ const Root = () => {
           <Route path="playlists" element={<FavoritePlayists />} />
         </Route>
         <Route path="/lyrics" element={<Lyrics />} />
-        <Route path="/track/:trackId" element={<QueueTrackInfo />} />
+        <Route path="/tracks/:trackId" element={<QueueTrackInfo />} />
         <Route
           path="/playlists/:playlistId/tracks/:trackId"
           element={<PlaylistTrackInfo />}

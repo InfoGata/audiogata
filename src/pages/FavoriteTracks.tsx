@@ -1,41 +1,25 @@
-import { MoreHoriz, PlayCircle, UploadFile } from "@mui/icons-material";
-import {
-  IconButton,
-  ListItemIcon,
-  ListItemText,
-  MenuItem,
-} from "@mui/material";
+import { DropdownItemProps } from "@/components/DropdownItem";
+import { Button } from "@/components/ui/button";
 import { useLiveQuery } from "dexie-react-hooks";
+import { CirclePlayIcon, FileUpIcon } from "lucide-react";
 import React from "react";
 import { useTranslation } from "react-i18next";
-import { db } from "../database";
-import useTrackMenu from "../hooks/useTrackMenu";
-import { Playlist, Track } from "../plugintypes";
-import { useAppDispatch, useAppSelector } from "../store/hooks";
-import { playQueue, setTrack, setTracks } from "../store/reducers/trackReducer";
 import ImportDialog from "../components/ImportDialog";
 import PlaylistMenu from "../components/PlaylistMenu";
 import Spinner from "../components/Spinner";
 import TrackList from "../components/TrackList";
+import { db } from "../database";
+import { Playlist, Track } from "../plugintypes";
+import { useAppDispatch, useAppSelector } from "../store/hooks";
+import { playQueue, setTrack, setTracks } from "../store/reducers/trackReducer";
 
 const FavoriteTracks: React.FC = () => {
   const dispatch = useAppDispatch();
   const playlists = useAppSelector((state) => state.playlist.playlists);
   const { t } = useTranslation();
   const [importDialogOpen, setImportDialogOpen] = React.useState(false);
-  const [favoritesMenuAnchorEl, setFavoriteseMenuAnchorEl] =
-    React.useState<null | HTMLElement>(null);
 
-  const { openMenu } = useTrackMenu();
   const tracks = useLiveQuery(() => db.favoriteTracks.toArray());
-
-  const openFavoritesMenu = (event: React.MouseEvent<HTMLButtonElement>) => {
-    setFavoriteseMenuAnchorEl(event.currentTarget);
-  };
-
-  const closeFavoritesMenu = () => {
-    setFavoriteseMenuAnchorEl(null);
-  };
 
   const onTrackClick = (track: Track) => {
     dispatch(setTrack(track));
@@ -62,13 +46,12 @@ const FavoriteTracks: React.FC = () => {
     dispatch(playQueue());
   };
 
-  const menuItems = [
-    <MenuItem onClick={openImportDialog} key="import">
-      <ListItemIcon>
-        <UploadFile />
-      </ListItemIcon>
-      <ListItemText primary={t("importTrackByUrl")} />
-    </MenuItem>,
+  const dropdownItems: DropdownItemProps[] = [
+    {
+      title: t("importTrackByUrl"),
+      icon: <FileUpIcon />,
+      action: openImportDialog,
+    },
   ];
 
   if (!tracks) {
@@ -77,29 +60,20 @@ const FavoriteTracks: React.FC = () => {
 
   return (
     <>
-      <IconButton size="large" onClick={onPlay}>
-        <PlayCircle color="success" sx={{ fontSize: 45 }} />
-      </IconButton>
-      <IconButton onClick={openFavoritesMenu}>
-        <MoreHoriz fontSize="large" />
-      </IconButton>
-      <TrackList
-        tracks={tracks || []}
-        openMenu={openMenu}
-        onTrackClick={onTrackClick}
-      />
-      <ImportDialog
-        open={importDialogOpen}
-        handleClose={closeImportDialog}
-        parseType="track"
-        onSuccess={onImport}
-      />
+      <Button variant="ghost" size="icon" onClick={onPlay}>
+        <CirclePlayIcon />
+      </Button>
       <PlaylistMenu
         playlists={playlists}
         tracklist={tracks ?? []}
-        anchorElement={favoritesMenuAnchorEl}
-        onClose={closeFavoritesMenu}
-        menuItems={menuItems}
+        dropdownItems={dropdownItems}
+      />
+      <TrackList tracks={tracks || []} onTrackClick={onTrackClick} />
+      <ImportDialog
+        open={importDialogOpen}
+        parseType="track"
+        onSuccess={onImport}
+        setOpen={setImportDialogOpen}
       />
     </>
   );

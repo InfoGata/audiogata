@@ -1,7 +1,6 @@
 import { MusicControls } from "@awesome-cordova-plugins/music-controls/index";
 import { Capacitor } from "@capacitor/core";
 import canAutoPlay from "can-autoplay";
-import { ProviderContext, withSnackbar } from "notistack";
 import React from "react";
 import { withTranslation, WithTranslation } from "react-i18next";
 import { connect } from "react-redux";
@@ -25,11 +24,11 @@ import { PlayerComponent, PlayerComponentType } from "../types";
 import { defaultSkipTime, filterAsync } from "../utils";
 import { withPlugins } from "../withPlugins";
 import * as Sentry from "@sentry/browser";
+import { toast } from "sonner";
 
 export interface AudioComponentProps
   extends StateProps,
     DispatchProps,
-    ProviderContext,
     PluginContextInterface,
     WithTranslation {}
 interface AudioComponentState {
@@ -95,9 +94,7 @@ class AudioComponent extends React.Component<
         if (canAutoPlayResponse.result) {
           await this.playTrack(currentProps.currentTrack, currentProps.elapsed);
         } else {
-          this.props.enqueueSnackbar(this.props.t("cantAutoplay"), {
-            variant: "error",
-          });
+          toast.error(this.props.t("cantAutoplay"));
           this.props.toggleIsPlaying();
         }
       } else if (currentProps.isPlaying) {
@@ -286,7 +283,7 @@ class AudioComponent extends React.Component<
 
     if (this.props.currentTrack) {
       const message = `${this.props.currentTrack.name}: ${err.message}`;
-      this.props.enqueueSnackbar(message, { variant: "error" });
+      toast.error(message);
       console.log(err);
       // Only capture first error message
       if (this.state.errorCount === 0) {
@@ -466,4 +463,4 @@ type DispatchProps = ReturnType<typeof mapDispatchToProps>;
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(withSnackbar(withPlugins(withTranslation()(AudioComponent))));
+)(withPlugins(withTranslation()(AudioComponent)));

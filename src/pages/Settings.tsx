@@ -7,7 +7,7 @@ import React from "react";
 
 const Settings: React.FC = () => {
   return (
-    <div>
+    <div className="flex flex-col gap-4">
       <DisableAutoUpdateSetting />
       <PlayCurrentTrackStartup />
       <ShowForwardAndRewind />

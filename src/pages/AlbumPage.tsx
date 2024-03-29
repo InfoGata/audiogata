@@ -1,23 +1,22 @@
-import { MoreHoriz, PlayCircle } from "@mui/icons-material";
+import { PlayCircle } from "@mui/icons-material";
 import { IconButton } from "@mui/material";
 import React from "react";
 import { useQuery } from "react-query";
 import { useLocation, useParams } from "react-router-dom";
-import { db } from "../database";
-import useFindPlugin from "../hooks/useFindPlugin";
-import usePagination from "../hooks/usePagination";
-import usePlugins from "../hooks/usePlugins";
-import useSelected from "../hooks/useSelected";
-import useTrackMenu from "../hooks/useTrackMenu";
-import { Album, PageInfo, Track } from "../plugintypes";
-import { useAppDispatch, useAppSelector } from "../store/hooks";
-import { playQueue, setTrack, setTracks } from "../store/reducers/trackReducer";
 import ConfirmPluginDialog from "../components/ConfirmPluginDialog";
 import Pager from "../components/Pager";
 import PlaylistInfoCard from "../components/PlaylistInfoCard";
 import PlaylistMenu from "../components/PlaylistMenu";
 import Spinner from "../components/Spinner";
 import TrackList from "../components/TrackList";
+import { db } from "../database";
+import useFindPlugin from "../hooks/useFindPlugin";
+import usePagination from "../hooks/usePagination";
+import usePlugins from "../hooks/usePlugins";
+import useSelected from "../hooks/useSelected";
+import { Album, PageInfo, Track } from "../plugintypes";
+import { useAppDispatch, useAppSelector } from "../store/hooks";
+import { playQueue, setTrack, setTracks } from "../store/reducers/trackReducer";
 
 const AlbumPage: React.FC = () => {
   const { pluginId } = useParams<"pluginId">();
@@ -25,25 +24,14 @@ const AlbumPage: React.FC = () => {
   const { plugins, pluginsLoaded } = usePlugins();
   const state = useLocation().state as Album | null;
   const [albumInfo, setAlbumInfo] = React.useState<Album | null>(state);
-  const [isFavorite, setIsFavorite] = React.useState(false);
 
-  const [queueMenuAnchorEl, setQueueMenuAnchorEl] =
-    React.useState<null | HTMLElement>(null);
-  const openQueueMenu = async (event: React.MouseEvent<HTMLButtonElement>) => {
-    setQueueMenuAnchorEl(event.currentTarget);
-    const hasFavorite = await db.favoriteAlbums.get({ pluginId, apiId });
-    setIsFavorite(!!hasFavorite);
-  };
-  const closeQueueMenu = () => setQueueMenuAnchorEl(null);
   const dispatch = useAppDispatch();
-  const { openMenu } = useTrackMenu();
   const plugin = plugins.find((p) => p.id === pluginId);
 
   const onFavorite = async () => {
     if (albumInfo) {
       await db.favoriteAlbums.add(albumInfo);
     }
-    closeQueueMenu();
   };
 
   const onRemoveFavorite = async () => {
@@ -53,7 +41,6 @@ const AlbumPage: React.FC = () => {
         await db.favoriteAlbums.delete(record.id);
       }
     }
-    closeQueueMenu();
   };
 
   const { isLoading, pendingPlugin, removePendingPlugin } = useFindPlugin({
@@ -124,22 +111,15 @@ const AlbumPage: React.FC = () => {
       <IconButton size="large" onClick={onPlayClick}>
         <PlayCircle color="success" sx={{ fontSize: 45 }} />
       </IconButton>
-      <IconButton onClick={openQueueMenu}>
-        <MoreHoriz fontSize="large" />
-      </IconButton>
       <PlaylistMenu
         selected={selected}
         tracklist={tracklist}
         playlists={playlists}
-        anchorElement={queueMenuAnchorEl}
-        onClose={closeQueueMenu}
-        isFavorite={isFavorite}
         onFavorite={onFavorite}
         onRemoveFavorite={onRemoveFavorite}
       />
       <TrackList
         tracks={tracklist}
-        openMenu={openMenu}
         onTrackClick={onTrackClick}
         onSelect={onSelect}
         isSelected={isSelected}

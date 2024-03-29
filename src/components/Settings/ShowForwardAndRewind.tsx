@@ -1,13 +1,8 @@
 import { defaultSkipTime } from "@/utils";
 import {
-  FormControl,
-  FormControlLabel,
-  FormLabel,
-  Radio,
-  RadioGroup,
-  Switch,
-  TextField,
-} from "@mui/material";
+  RadioGroupItem,
+  RadioGroup as ShadRadioGroup,
+} from "@/components/ui/radio-group";
 import React from "react";
 import { useDispatch } from "react-redux";
 import {
@@ -16,6 +11,9 @@ import {
 } from "../../store/reducers/settingsReducer";
 import { useTranslation } from "react-i18next";
 import { useAppSelector } from "@/store/hooks";
+import { Label } from "../ui/label";
+import { Switch } from "../ui/switch";
+import { Input } from "../ui/input";
 
 const ShowForwardAndRewind: React.FC = () => {
   const { t } = useTranslation(["common", "settings"]);
@@ -27,57 +25,65 @@ const ShowForwardAndRewind: React.FC = () => {
     (state) => state.settings.customFowardAndRewindTime
   );
 
-  const onChangeShowForwardAndRewind = (
-    _e: React.ChangeEvent,
-    checked: boolean
-  ) => {
+  const onChangeShowForwardAndRewind = (checked: boolean) => {
     dispatch(saveShowForwardAndRewind(checked));
   };
 
-  const onChangeCustomFowardAndRewindTime = (
+  const onChangeCustomFowardAndRewindTimeInput = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    const value = Number(event.target.value);
+    onChangeCustomFowardAndRewindTime(event.target.value);
+  };
+
+  const onChangeCustomFowardAndRewindTime = (strValue: string) => {
+    const value = Number(strValue);
     dispatch(saveCustomFowardAndRewindTime(value));
   };
 
   return (
     <>
-      <FormControlLabel
-        control={
-          <Switch
-            checked={showForwardAndRewind}
-            onChange={onChangeShowForwardAndRewind}
-          />
-        }
-        label={t("settings:showFastForwardRewind")}
-      />
+      <div className="flex items-center space-x-2">
+        <Switch
+          id="show-forward-rewind"
+          checked={showForwardAndRewind}
+          onCheckedChange={onChangeShowForwardAndRewind}
+        />
+        <Label htmlFor="show-forward-rewind">
+          {t("settings:showFastForwardRewind")}
+        </Label>
+      </div>
       {showForwardAndRewind && (
-        <FormControl>
-          <FormLabel id="radio-buttons-skip-time-label">
-            {t("settings:forwardRewindTime")}
-          </FormLabel>
-          <RadioGroup
-            row
-            aria-labelledby="demo-radio-buttons-group-label"
-            value={customFowardAndRewindTime || defaultSkipTime}
-            onChange={onChangeCustomFowardAndRewindTime}
-            name="radio-buttons-group"
+        <div>
+          <Label>{t("settings:forwardRewindTime")}</Label>
+          <ShadRadioGroup
+            value={
+              customFowardAndRewindTime?.toString() ||
+              defaultSkipTime.toString()
+            }
+            onValueChange={onChangeCustomFowardAndRewindTime}
+            className="flex gap-4"
           >
-            <FormControlLabel value={5} control={<Radio />} label="5" />
-            <FormControlLabel value={10} control={<Radio />} label="10" />
-            <FormControlLabel value={30} control={<Radio />} label="30" />
-            <TextField
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem value="5" id="option-5" />
+              <Label htmlFor="option-5">5</Label>
+            </div>
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem value="10" id="option-10" />
+              <Label htmlFor="option-10">10</Label>
+            </div>
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem value="30" id="option-30" />
+              <Label htmlFor="option-30">30</Label>
+            </div>
+
+            <Input
               type="number"
-              sx={{ width: "10ch" }}
+              className="w-24"
               value={customFowardAndRewindTime || defaultSkipTime}
-              onChange={onChangeCustomFowardAndRewindTime}
-              inputProps={{
-                shrink: "true",
-              }}
+              onChange={onChangeCustomFowardAndRewindTimeInput}
             />
-          </RadioGroup>
-        </FormControl>
+          </ShadRadioGroup>
+        </div>
       )}
     </>
   );

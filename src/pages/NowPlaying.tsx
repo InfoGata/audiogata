@@ -1,21 +1,14 @@
-import { Delete, Info, MoreHoriz } from "@mui/icons-material";
-import {
-  IconButton,
-  ListItemIcon,
-  ListItemText,
-  MenuItem,
-  Tooltip,
-  Typography,
-} from "@mui/material";
+import { DropdownItemProps } from "@/components/DropdownItem";
+import { ItemMenuType } from "@/types";
+import { InfoIcon, TrashIcon } from "lucide-react";
 import React from "react";
 import { useTranslation } from "react-i18next";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import PlaylistMenu from "../components/PlaylistMenu";
 import SelectTrackListPlugin from "../components/SelectTrackListPlugin";
 import TrackList from "../components/TrackList";
 import { db } from "../database";
 import useSelected from "../hooks/useSelected";
-import useTrackMenu from "../hooks/useTrackMenu";
 import { Track } from "../plugintypes";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
 import {
@@ -25,49 +18,33 @@ import {
   setTrack,
   setTracks,
 } from "../store/reducers/trackReducer";
+import { Button } from "@/components/ui/button";
 
 const NowPlaying: React.FC = () => {
   const { t } = useTranslation();
-  const [queueMenuAnchorEl, setQueueMenuAnchorEl] =
-    React.useState<null | HTMLElement>(null);
+  const navigate = useNavigate();
   const dispatch = useAppDispatch();
 
-  const getListItems = (track?: Track) => {
-    const deleteClick = async () => {
+  const onDelete = async (item?: ItemMenuType) => {
+    if (item?.type === "track") {
+      const track = item.item;
       if (track?.id) {
         await db.audioBlobs.delete(track.id);
       }
       if (track) {
         dispatch(deleteTrack(track));
       }
-    };
-
-    return [
-      <MenuItem onClick={deleteClick} key="Delete">
-        <ListItemIcon>
-          <Delete />
-        </ListItemIcon>
-        <ListItemText primary="Delete" />
-      </MenuItem>,
-      <MenuItem key="Info" component={Link} to={`/track/${track?.id}`}>
-        <ListItemIcon>
-          <Info />
-        </ListItemIcon>
-        <ListItemText primary="Info" />
-      </MenuItem>,
-    ];
+    }
   };
 
-  const { openMenu } = useTrackMenu({
-    getListItems,
-    noQueueItem: true,
-  });
-
-  const openQueueMenu = (event: React.MouseEvent<HTMLButtonElement>) => {
-    setQueueMenuAnchorEl(event.currentTarget);
-  };
-
-  const closeQueueMenu = () => setQueueMenuAnchorEl(null);
+  const trackMenuItems: DropdownItemProps[] = [
+    { title: t("delete"), icon: <TrashIcon />, action: onDelete },
+    {
+      title: t("info"),
+      icon: <InfoIcon />,
+      action: (item) => navigate(`/tracks/${item?.item.id}`),
+    },
+  ];
 
   const trackList = useAppSelector((state) => state.track.tracks);
 
@@ -76,7 +53,6 @@ const NowPlaying: React.FC = () => {
 
   const clearSelectedTracks = () => {
     dispatch(deleteTracks(selected));
-    closeQueueMenu();
   };
 
   const playlists = useAppSelector((state) => state.playlist.playlists);
@@ -93,56 +69,51 @@ const NowPlaying: React.FC = () => {
     dispatch(setTracks(newTrackList));
   };
 
-  const selectedMenuItems = [
-    <MenuItem onClick={clearSelectedTracks} key="clear">
-      <ListItemIcon>
-        <Delete />
-      </ListItemIcon>
-      <ListItemText primary={t("deleteSelectedTracks")} />
-    </MenuItem>,
+  const menuItems: DropdownItemProps[] = [
+    {
+      title: t("clearAllTracks"),
+      icon: <TrashIcon />,
+      action: clearQueue,
+    },
   ];
-  const menuItems = [
-    <MenuItem onClick={clearQueue} key="clearQueue">
-      <ListItemIcon>
-        <Delete />
-      </ListItemIcon>
-      <ListItemText primary="Clear All Tracks" />
-    </MenuItem>,
+
+  const selectedMenuItems = [
+    {
+      title: t("deleteSelectedTracks"),
+      icon: <TrashIcon />,
+      action: clearSelectedTracks,
+    },
   ];
 
   return (
     <>
-      <Typography variant="h3" gutterBottom>
-        {t("playQueue")}
-      </Typography>
-      <IconButton aria-label="clear" onClick={clearQueue}>
-        <Tooltip title="Clear All Tracks">
-          <Delete fontSize="large" />
-        </Tooltip>
-      </IconButton>
-      <IconButton onClick={openQueueMenu}>
-        <MoreHoriz fontSize="large" />
-      </IconButton>
+      <h2 className="text-2xl">{t("playQueue")}</h2>
+      <Button
+        variant="ghost"
+        size="icon"
+        aria-label="clear"
+        onClick={clearQueue}
+      >
+        <TrashIcon />
+      </Button>
+      <PlaylistMenu
+        noQueueItem={true}
+        selected={selected}
+        tracklist={trackList}
+        playlists={playlists}
+        dropdownItems={menuItems}
+        selectedDropdownItems={selectedMenuItems}
+      />
       <SelectTrackListPlugin trackList={trackList} setSelected={setSelected} />
       <TrackList
         tracks={trackList}
-        openMenu={openMenu}
         onTrackClick={onTrackClick}
         onDragOver={onDragOver}
         onSelect={onSelect}
         isSelected={isSelected}
         onSelectAll={onSelectAll}
         selected={selected}
-      />
-      <PlaylistMenu
-        noQueueItem={true}
-        selected={selected}
-        tracklist={trackList}
-        playlists={playlists}
-        selectedMenuItems={selectedMenuItems}
-        anchorElement={queueMenuAnchorEl}
-        onClose={closeQueueMenu}
-        menuItems={menuItems}
+        menuItems={trackMenuItems}
       />
     </>
   );

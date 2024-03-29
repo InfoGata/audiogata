@@ -1,12 +1,12 @@
-import { Button, Grid } from "@mui/material";
+import { Button } from "@/components/ui/button";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { useParams } from "react-router";
+import Spinner from "../components/Spinner";
+import TrackInfo from "../components/TrackInfo";
 import usePlugins from "../hooks/usePlugins";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
 import { updateTrack } from "../store/reducers/trackReducer";
-import Spinner from "../components/Spinner";
-import TrackInfo from "../components/TrackInfo";
 
 const QueueTrackInfo: React.FC = () => {
   const [showUpdateButton, setShowUpdateButton] = React.useState(false);
@@ -55,15 +55,13 @@ const QueueTrackInfo: React.FC = () => {
   };
 
   return track ? (
-    <Grid>
+    <div>
       <Spinner open={isUpdating} />
       <TrackInfo track={track} />
       {showUpdateButton && (
-        <Button variant="contained" onClick={onUpdateTrack}>
-          {t("updateTrackInfo")}
-        </Button>
+        <Button onClick={onUpdateTrack}>{t("updateTrackInfo")}</Button>
       )}
-    </Grid>
+    </div>
   ) : (
     <>{t("notFound")}</>
   );

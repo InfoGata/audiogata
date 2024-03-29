@@ -4,6 +4,7 @@
     "home": "Home",
     "playQueue": "Now Playing",
     "plugin": "Plugin",
+    "pluginId": "Plugin Id",
     "plugins": "Plugins",
     "availablePlugins": "Available Plugins",
     "selectPlugin": "Select Plugin",
@@ -85,7 +86,8 @@
     "convert": "Convert",
     "convertSelectedTracks": "Convert Selected Tracks",
     "conversionFailed": "Conversion Failed",
-    "lyrics": "Lyrics"
+    "lyrics": "Lyrics",
+    "clearAllTracks": "Clear All Tracks"
   },
   "plugins": {
     "addPlugin_one": "Add Plugin",

@@ -1,17 +1,15 @@
-import {
-  FormControl,
-  FormControlLabel,
-  FormLabel,
-  InputLabel,
-  MenuItem,
-  Radio,
-  RadioGroup,
-  Select,
-  SelectChangeEvent,
-  TextField,
-} from "@mui/material";
 import React from "react";
 import { Filter } from "../plugintypes";
+import { Input } from "./ui/input";
+import { Label } from "./ui/label";
+import { RadioGroup, RadioGroupItem } from "./ui/radio-group";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "./ui/select";
 
 interface FilterComponentProps {
   filter: Filter;
@@ -21,14 +19,13 @@ interface FilterComponentProps {
 const FilterComponent: React.FC<FilterComponentProps> = (props) => {
   const { filter, onValueChange } = props;
 
-  const onSelectChange = (e: SelectChangeEvent) => {
-    const value = e.target.value;
+  const onInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.currentTarget.value;
     const newFilter: Filter = { ...filter, value };
     onValueChange(newFilter);
   };
 
-  const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.currentTarget.value;
+  const onChange = (value: string) => {
     const newFilter: Filter = { ...filter, value };
     onValueChange(newFilter);
   };
@@ -36,52 +33,48 @@ const FilterComponent: React.FC<FilterComponentProps> = (props) => {
   switch (filter.type) {
     case "radio":
       return (
-        <FormControl>
-          <FormLabel id={filter.id}>{filter.displayName}</FormLabel>
+        <div>
+          <Label htmlFor={filter.id}>{filter.displayName}</Label>
           <RadioGroup
-            row
-            aria-labelledby={filter.id}
+            id={filter.id}
             value={filter.value}
             name={filter.id}
-            onChange={onChange}
+            onValueChange={onChange}
+            className="flex"
           >
             {filter.options?.map((o) => (
-              <FormControlLabel
-                key={o.value}
-                value={o.value}
-                control={<Radio />}
-                label={o.displayName}
-              />
+              <div key={o.value} className="flex items-center gap-1">
+                <RadioGroupItem value={o.value} id={o.value} />
+                <Label htmlFor={o.value}>{o.displayName}</Label>
+              </div>
             ))}
           </RadioGroup>
-        </FormControl>
+        </div>
       );
     case "select":
       return (
-        <FormControl fullWidth>
-          <InputLabel id={filter.id}>{filter.displayName}</InputLabel>
-          <Select
-            labelId={filter.id}
-            value={filter.value}
-            label={filter.displayName}
-            onChange={onSelectChange}
-          >
-            {filter.options?.map((option) => (
-              <MenuItem key={option.value} value={option.value}>
-                {option.displayName}
-              </MenuItem>
-            ))}
+        <div>
+          <Label htmlFor={filter.id}>{filter.displayName}</Label>
+          <Select value={filter.value} onValueChange={onChange}>
+            <SelectTrigger>
+              <SelectValue placeholder={filter.displayName} />
+            </SelectTrigger>
+            <SelectContent id={filter.id}>
+              {filter.options?.map((option) => (
+                <SelectItem key={option.value} value={option.value}>
+                  {option.displayName}
+                </SelectItem>
+              ))}
+            </SelectContent>
           </Select>
-        </FormControl>
+        </div>
       );
     case "text":
       return (
-        <TextField
-          required
-          onChange={onChange}
-          label={filter.displayName}
-          value={filter.value}
-        />
+        <div>
+          <Label htmlFor={filter.id}>{filter.displayName}</Label>
+          <Input onChange={onInputChange} value={filter.value} />
+        </div>
       );
     default:
       return <></>;

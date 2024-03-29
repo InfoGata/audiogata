@@ -1,7 +1,5 @@
-import { Box, Button, CssBaseline } from "@mui/material";
-import { SnackbarKey, SnackbarProvider } from "notistack";
+import { Box, CssBaseline } from "@mui/material";
 import React from "react";
-import { useTranslation } from "react-i18next";
 import OutsideCallConsumer from "react-outside-call";
 import { QueryClient, QueryClientProvider } from "react-query";
 import callConfig from "./call-config";
@@ -28,48 +26,35 @@ const queryClient = new QueryClient({
 });
 
 const App: React.FC = () => {
-  const { t } = useTranslation();
   const dispatch = useAppDispatch();
-  const notistackRef = React.useRef<SnackbarProvider>(null);
-  const onClickDismiss = (key: SnackbarKey) => {
-    notistackRef?.current?.closeSnackbar(key);
-  };
-  useUpdateServiceWorker(notistackRef.current?.enqueueSnackbar, onClickDismiss);
-  useOffline(notistackRef.current?.enqueueSnackbar, onClickDismiss);
+  useUpdateServiceWorker();
+  useOffline();
 
   React.useEffect(() => {
     dispatch(initializePlaylists());
   }, [dispatch]);
 
   return (
-    <SnackbarProvider
-      maxSnack={3}
-      ref={notistackRef}
-      action={(key) => (
-        <Button onClick={() => onClickDismiss(key)}>{t("dismiss")}</Button>
-      )}
-    >
-      <QueryClientProvider client={queryClient}>
-        <MatomoRouterProvider>
-          <PluginsProvider>
-            <TrackMenuProvider>
-              <ItemMenuProvider>
-                <OutsideCallConsumer config={callConfig}>
-                  <Box sx={{ display: "flex" }}>
-                    <CssBaseline />
-                    <TopBar />
-                    <SideBar />
-                    <Routing />
-                    <PlayerBar />
-                    <AudioComponent />
-                  </Box>
-                </OutsideCallConsumer>
-              </ItemMenuProvider>
-            </TrackMenuProvider>
-          </PluginsProvider>
-        </MatomoRouterProvider>
-      </QueryClientProvider>
-    </SnackbarProvider>
+    <QueryClientProvider client={queryClient}>
+      <MatomoRouterProvider>
+        <PluginsProvider>
+          <TrackMenuProvider>
+            <ItemMenuProvider>
+              <OutsideCallConsumer config={callConfig}>
+                <Box sx={{ display: "flex" }}>
+                  <CssBaseline />
+                  <TopBar />
+                  <SideBar />
+                  <Routing />
+                  <PlayerBar />
+                  <AudioComponent />
+                </Box>
+              </OutsideCallConsumer>
+            </ItemMenuProvider>
+          </TrackMenuProvider>
+        </PluginsProvider>
+      </MatomoRouterProvider>
+    </QueryClientProvider>
   );
 };
 

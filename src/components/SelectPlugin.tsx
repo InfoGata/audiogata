@@ -1,4 +1,3 @@
-import { FormControl, InputLabel, NativeSelect } from "@mui/material";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { PluginMethodInterface } from "../PluginsContext";
@@ -6,14 +5,22 @@ import usePlugins from "../hooks/usePlugins";
 import { useAppDispatch, useAppStore } from "../store/hooks";
 import { setCurrentPluginId } from "../store/reducers/settingsReducer";
 import { filterAsync } from "../utils";
+import { Label } from "./ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "./ui/select";
 
 interface SelectPluginProps {
   methodName: keyof PluginMethodInterface;
   pluginId: string;
   setPluginId: (value: string) => void;
   noneOption?: boolean;
-  useCurrentPlugin?: boolean;
   labelText?: string;
+  useCurrentPlugin?: boolean;
 }
 
 const SelectPlugin: React.FC<SelectPluginProps> = (props) => {
@@ -22,8 +29,8 @@ const SelectPlugin: React.FC<SelectPluginProps> = (props) => {
     setPluginId,
     pluginId,
     noneOption,
-    useCurrentPlugin,
     labelText,
+    useCurrentPlugin,
   } = props;
   const { plugins } = usePlugins();
   const [options, setOptions] = React.useState<[string, string][]>();
@@ -58,40 +65,31 @@ const SelectPlugin: React.FC<SelectPluginProps> = (props) => {
   }, [plugins, methodName, setPluginId, store, useCurrentPlugin]);
 
   const optionsComponents = options?.map((option) => (
-    <option key={option[0]} value={option[0]}>
+    <SelectItem key={option[0]} value={option[0]}>
       {option[1]}
-    </option>
+    </SelectItem>
   ));
 
-  const onSelectPluginChange = (e: React.FormEvent<HTMLSelectElement>) => {
-    const selectedPluginId = e.currentTarget.value;
-    if (useCurrentPlugin) {
-      dispatch(setCurrentPluginId(selectedPluginId));
-    }
-    setPluginId(e.currentTarget.value);
+  const onSelectPluginChange = (pluginId: string) => {
+    dispatch(setCurrentPluginId(pluginId));
+    setPluginId(pluginId);
   };
 
   return (
-    <FormControl fullWidth>
-      <InputLabel
-        variant="standard"
-        htmlFor="uncontrolled-native"
-        shrink={true}
-      >
+    <div className="grid w-full items-center gap-1.5">
+      <Label htmlFor="select-plugin">
         {labelText ? labelText : t("plugin")}
-      </InputLabel>
-      <NativeSelect
-        value={pluginId}
-        onChange={onSelectPluginChange}
-        inputProps={{
-          name: "plugin",
-          id: "uncontrolled-native",
-        }}
-      >
-        {!!noneOption && <option value="">{t("none")}</option>}
-        {optionsComponents}
-      </NativeSelect>
-    </FormControl>
+      </Label>
+      <Select value={pluginId} onValueChange={onSelectPluginChange}>
+        <SelectTrigger>
+          <SelectValue placeholder={t("plugin")} />
+        </SelectTrigger>
+        <SelectContent id="select-plugin">
+          {!!noneOption && <SelectItem value="">{t("none")}</SelectItem>}
+          {optionsComponents}
+        </SelectContent>
+      </Select>
+    </div>
   );
 };
 

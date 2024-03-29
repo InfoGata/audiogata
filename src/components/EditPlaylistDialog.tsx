@@ -1,25 +1,26 @@
-import {
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  TextField,
-} from "@mui/material";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { PlaylistInfo } from "../plugintypes";
 import { useAppDispatch } from "../store/hooks";
 import { updatePlaylist } from "../store/reducers/playlistReducer";
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "./ui/dialog";
+import { Button } from "./ui/button";
+import { Input } from "./ui/input";
 
 interface EditPlaylistDialogProps {
   open: boolean;
   playlist: PlaylistInfo;
-  handleClose: () => void;
+  setOpen: (open: boolean) => void;
 }
 
 const EditPlaylistDialog: React.FC<EditPlaylistDialogProps> = (props) => {
-  const { open, playlist, handleClose } = props;
+  const { open, playlist, setOpen } = props;
   const [name, setName] = React.useState(playlist.name);
   const dispatch = useAppDispatch();
   const { t } = useTranslation();
@@ -34,39 +35,35 @@ const EditPlaylistDialog: React.FC<EditPlaylistDialogProps> = (props) => {
     e.preventDefault();
     const editedPlaylist = { ...playlist, name: name };
     dispatch(updatePlaylist(editedPlaylist));
-    handleClose();
   };
 
   return (
-    <>
-      <Dialog
-        open={open}
-        onClose={handleClose}
-        aria-labelledby="form-dialog-title"
-      >
-        <DialogTitle id="form-dialog-title">{t("editPlaylist")}</DialogTitle>
-        <DialogContent>
-          <form onSubmit={onSubmit} id={formId}>
-            <TextField
-              autoFocus={true}
-              margin="dense"
-              id="name"
-              label={t("playlistName")}
-              type="text"
-              value={name}
-              fullWidth={true}
-              onChange={onChange}
-            />
-          </form>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleClose}>{t("cancel")}</Button>
-          <Button type="submit" form={formId}>
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>{t("editPlaylist")}</DialogTitle>
+        </DialogHeader>
+        <form onSubmit={onSubmit} id={formId}>
+          <Input
+            autoFocus={true}
+            id="name"
+            placeholder={t("playlistName")}
+            type="text"
+            value={name}
+            onChange={onChange}
+          />
+        </form>
+
+        <DialogFooter>
+          <Button variant="outline" onClick={() => setOpen(false)}>
+            {t("cancel")}
+          </Button>
+          <Button variant="outline" type="submit" form={formId}>
             {t("updatePlaylist")}
           </Button>
-        </DialogActions>
-      </Dialog>
-    </>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
 };
 

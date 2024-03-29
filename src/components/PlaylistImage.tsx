@@ -1,7 +1,7 @@
 import React from "react";
-import { getThumbnailImage, playlistThumbnailSize } from "../utils";
 import { ImageInfo } from "../plugintypes";
-import { Image } from "mui-image";
+import thumbnail from "../thumbnail.png";
+import { getThumbnailImage, playlistThumbnailSize } from "../utils";
 
 interface PlaylistImageProps {
   images?: ImageInfo[];
@@ -10,7 +10,7 @@ interface PlaylistImageProps {
 const PlaylistImage: React.FC<PlaylistImageProps> = (props) => {
   const { images } = props;
   const image = getThumbnailImage(images, playlistThumbnailSize);
-  return <Image src={image} height={playlistThumbnailSize} />;
+  return <img src={image || thumbnail} className="h-48" />;
 };
 
 export default PlaylistImage;
