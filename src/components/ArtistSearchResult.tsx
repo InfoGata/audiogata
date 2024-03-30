@@ -1,7 +1,5 @@
-import { MoreHoriz } from "@mui/icons-material";
 import {
   Avatar,
-  IconButton,
   ListItem,
   ListItemAvatar,
   ListItemButton,
@@ -10,9 +8,9 @@ import {
 } from "@mui/material";
 import React from "react";
 import { Link } from "react-router-dom";
-import useItemMenu from "../hooks/useItemMenu";
 import { Artist } from "../plugintypes";
 import { getThumbnailImage, searchThumbnailSize } from "../utils";
+import ItemMenu from "./ItemMenu";
 
 interface ArtistSearchResultProps {
   artist: Artist;
@@ -21,13 +19,6 @@ interface ArtistSearchResultProps {
 
 const ArtistSearchResult: React.FC<ArtistSearchResultProps> = (props) => {
   const { artist, pluginId } = props;
-  const { openMenu } = useItemMenu();
-
-  const openArtistMenu = (event: React.MouseEvent<HTMLButtonElement>) => {
-    if (openMenu) {
-      openMenu(event, { type: "artist", item: artist });
-    }
-  };
 
   const image = getThumbnailImage(artist.images, searchThumbnailSize);
   return (
@@ -43,9 +34,7 @@ const ArtistSearchResult: React.FC<ArtistSearchResultProps> = (props) => {
         <ListItemText>{artist.name}</ListItemText>
       </ListItemButton>
       <ListItemSecondaryAction>
-        <IconButton onClick={openArtistMenu} size="large">
-          <MoreHoriz />
-        </IconButton>
+        <ItemMenu itemType={{ type: "artist", item: artist }} />
       </ListItemSecondaryAction>
     </ListItem>
   );

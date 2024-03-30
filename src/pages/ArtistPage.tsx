@@ -1,19 +1,18 @@
-import { MoreHoriz } from "@mui/icons-material";
-import { IconButton, List } from "@mui/material";
+import ItemMenu from "@/components/ItemMenu";
+import { List } from "@mui/material";
 import React from "react";
 import { useQuery } from "react-query";
 import { useParams } from "react-router";
 import { useLocation } from "react-router-dom";
-import useFindPlugin from "../hooks/useFindPlugin";
-import useItemMenu from "../hooks/useItemMenu";
-import usePagination from "../hooks/usePagination";
-import usePlugins from "../hooks/usePlugins";
-import { Artist, PageInfo } from "../plugintypes";
 import AlbumSearchResult from "../components/AlbumSearchResult";
 import ConfirmPluginDialog from "../components/ConfirmPluginDialog";
 import Pager from "../components/Pager";
 import PlaylistInfoCard from "../components/PlaylistInfoCard";
 import Spinner from "../components/Spinner";
+import useFindPlugin from "../hooks/useFindPlugin";
+import usePagination from "../hooks/usePagination";
+import usePlugins from "../hooks/usePlugins";
+import { Artist, PageInfo } from "../plugintypes";
 
 const ArtistPage: React.FC = () => {
   const { pluginId } = useParams<"pluginId">();
@@ -27,12 +26,6 @@ const ArtistPage: React.FC = () => {
     pluginId,
     plugin,
   });
-  const { openMenu } = useItemMenu();
-  const openArtistMenu = (event: React.MouseEvent<HTMLButtonElement>) => {
-    if (artistInfo) {
-      openMenu(event, { type: "artist", item: artistInfo });
-    }
-  };
 
   const [currentPage, setCurrentPage] = React.useState<PageInfo>();
   const { page, hasNextPage, hasPreviousPage, onPreviousPage, onNextPage } =
@@ -69,9 +62,9 @@ const ArtistPage: React.FC = () => {
           images={artistInfo.images}
         />
       )}
-      <IconButton onClick={openArtistMenu}>
-        <MoreHoriz fontSize="large" />
-      </IconButton>
+      {artistInfo && (
+        <ItemMenu itemType={{ type: "artist", item: artistInfo }} />
+      )}
       <List>{albumsList}</List>
       <Pager
         hasNextPage={hasNextPage}

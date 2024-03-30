@@ -1,17 +1,15 @@
-import { MoreHoriz } from "@mui/icons-material";
+import TrackMenu from "@/components/TrackMenu";
 import {
   AppBar,
   Box,
   CircularProgress,
   Grid,
-  IconButton,
   Toolbar,
   Typography,
 } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import DOMPurify from "dompurify";
 import React from "react";
-import useTrackMenu from "../hooks/useTrackMenu";
 import { useAppSelector } from "../store/hooks";
 import { getThumbnailImage } from "../utils";
 import Controls from "./Controls";
@@ -23,16 +21,6 @@ const PlayerBar: React.FC = () => {
   const currentTrack = useAppSelector((state) => state.track.currentTrack);
   const trackLoading = useAppSelector((state) => state.ui.trackLoading);
   const sanitizer = DOMPurify.sanitize;
-
-  const { openMenu } = useTrackMenu({
-    noQueueItem: true,
-  });
-
-  const onMenuClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-    if (currentTrack) {
-      openMenu(event, currentTrack);
-    }
-  };
 
   const image = getThumbnailImage(
     currentTrack && currentTrack.images,
@@ -91,9 +79,7 @@ const PlayerBar: React.FC = () => {
                 }}
               />
               {currentTrack && (
-                <IconButton size="small" onClick={onMenuClick}>
-                  <MoreHoriz fontSize="small" />
-                </IconButton>
+                <TrackMenu track={currentTrack} noQueueItem={true} />
               )}
             </Grid>
             <Grid item={true}>

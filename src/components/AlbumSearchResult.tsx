@@ -1,7 +1,5 @@
-import { MoreHoriz } from "@mui/icons-material";
 import {
   Avatar,
-  IconButton,
   ListItem,
   ListItemAvatar,
   ListItemButton,
@@ -11,9 +9,9 @@ import {
 } from "@mui/material";
 import React from "react";
 import { Link } from "react-router-dom";
-import useItemMenu from "../hooks/useItemMenu";
 import { Album } from "../plugintypes";
 import { getThumbnailImage, searchThumbnailSize } from "../utils";
+import ItemMenu from "./ItemMenu";
 
 interface AlbumSearchResultProps {
   album: Album;
@@ -22,13 +20,6 @@ interface AlbumSearchResultProps {
 
 const AlbumSearchResult: React.FC<AlbumSearchResultProps> = (props) => {
   const { album, pluginId } = props;
-  const { openMenu } = useItemMenu();
-
-  const openAlbumMenu = (event: React.MouseEvent<HTMLButtonElement>) => {
-    if (openMenu) {
-      openMenu(event, { type: "album", item: album });
-    }
-  };
 
   const image = getThumbnailImage(album.images, searchThumbnailSize);
 
@@ -70,9 +61,7 @@ const AlbumSearchResult: React.FC<AlbumSearchResultProps> = (props) => {
         />
       </ListItemButton>
       <ListItemSecondaryAction>
-        <IconButton onClick={openAlbumMenu} size="large">
-          <MoreHoriz />
-        </IconButton>
+        <ItemMenu itemType={{ type: "album", item: album }} />
       </ListItemSecondaryAction>
     </ListItem>
   );

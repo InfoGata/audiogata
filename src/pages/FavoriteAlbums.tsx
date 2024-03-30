@@ -1,37 +1,27 @@
-import { MoreHoriz } from "@mui/icons-material";
+import ItemMenu from "@/components/ItemMenu";
 import {
   Card,
   CardActionArea,
   CardActions,
   Grid,
-  IconButton,
   Stack,
   Typography,
 } from "@mui/material";
 import { useLiveQuery } from "dexie-react-hooks";
 import React from "react";
 import { Link } from "react-router-dom";
-import { db } from "../database";
-import useItemMenu from "../hooks/useItemMenu";
 import PlaylistImage from "../components/PlaylistImage";
 import Spinner from "../components/Spinner";
+import { db } from "../database";
 
 const FavoriteAlbums: React.FC = () => {
   const albums = useLiveQuery(() => db.favoriteAlbums.toArray());
-
-  const { openMenu } = useItemMenu();
 
   if (!albums) {
     return <Spinner />;
   }
 
   const albumCards = albums?.map((a) => {
-    const openAlbumMenu = (event: React.MouseEvent<HTMLButtonElement>) => {
-      if (openMenu) {
-        openMenu(event, { type: "album", item: a });
-      }
-    };
-
     return (
       <Grid item xs={2} key={a.apiId}>
         <Card>
@@ -43,9 +33,7 @@ const FavoriteAlbums: React.FC = () => {
           </CardActionArea>
           <CardActions>
             <Stack direction="row" alignItems="center" gap={1}>
-              <IconButton size="small" onClick={openAlbumMenu}>
-                <MoreHoriz />
-              </IconButton>
+              <ItemMenu itemType={{ type: "album", item: a }} />
               <Typography
                 title={a.name}
                 gutterBottom

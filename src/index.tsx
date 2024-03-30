@@ -13,6 +13,7 @@ import "./i18n";
 import "./index.css";
 import router from "./routes";
 import store, { persistor } from "./store/store";
+import { IconContext } from "react-icons";
 
 Sentry.init({
   dsn: "https://d99bb253ac5a4b53a32d48697f165e34@app.glitchtip.com/4798",
@@ -23,7 +24,9 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
     <StyledEngineProvider injectFirst>
       <Provider store={store}>
         <PersistGate loading={null} persistor={persistor}>
-          <RouterProvider router={router} />
+          <IconContext.Provider value={{ className: "w-5 h-5" }}>
+            <RouterProvider router={router} />
+          </IconContext.Provider>
         </PersistGate>
       </Provider>
     </StyledEngineProvider>

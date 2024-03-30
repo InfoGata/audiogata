@@ -1,10 +1,9 @@
-import { MoreHoriz } from "@mui/icons-material";
+import ItemMenu from "@/components/ItemMenu";
 import {
   Card,
   CardActionArea,
   CardActions,
   Grid,
-  IconButton,
   Stack,
   Typography,
 } from "@mui/material";
@@ -12,27 +11,19 @@ import { useLiveQuery } from "dexie-react-hooks";
 import DOMPurify from "dompurify";
 import React from "react";
 import { Link } from "react-router-dom";
-import { db } from "../database";
-import useItemMenu from "../hooks/useItemMenu";
 import PlaylistImage from "../components/PlaylistImage";
 import Spinner from "../components/Spinner";
+import { db } from "../database";
 
 const FavoriteArtists: React.FC = () => {
   const artists = useLiveQuery(() => db.favoriteArtists.toArray());
   const sanitizer = DOMPurify.sanitize;
-
-  const { openMenu } = useItemMenu();
 
   if (!artists) {
     return <Spinner />;
   }
 
   const artistCards = artists?.map((a) => {
-    const openArtistMenu = (event: React.MouseEvent<HTMLButtonElement>) => {
-      if (openMenu) {
-        openMenu(event, { type: "artist", item: a });
-      }
-    };
     return (
       <Grid item xs={2} key={a.apiId}>
         <Card>
@@ -44,9 +35,7 @@ const FavoriteArtists: React.FC = () => {
           </CardActionArea>
           <CardActions>
             <Stack direction="row" alignItems="center" gap={1}>
-              <IconButton size="small" onClick={openArtistMenu}>
-                <MoreHoriz />
-              </IconButton>
+              <ItemMenu itemType={{ type: "artist", item: a }} />
               <Typography
                 title={a.name}
                 gutterBottom

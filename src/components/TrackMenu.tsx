@@ -8,9 +8,10 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { db } from "@/database";
 import { Track } from "@/plugintypes";
-import { useAppSelector } from "@/store/hooks";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import {
   ExternalLink,
+  ListMusicIcon,
   ListPlusIcon,
   MoreHorizontal,
   StarIcon,
@@ -21,20 +22,28 @@ import { useTranslation } from "react-i18next";
 import { MdAlbum, MdPerson } from "react-icons/md";
 import { toast } from "sonner";
 import PlaylistSubMenu from "./PlaylistSubMenu";
+import { MdLyrics } from "react-icons/md";
+import { addTrack } from "@/store/reducers/trackReducer";
 
 interface Props {
+  noQueueItem?: boolean;
   track: Track;
   dropdownItems?: DropdownItemProps[];
 }
 
 const TrackMenu: React.FC<Props> = (props) => {
-  const { track, dropdownItems } = props;
+  const { track, dropdownItems, noQueueItem } = props;
+  const dispatch = useAppDispatch();
   const { t } = useTranslation();
   const [isFavorited, setIsFavorited] = React.useState(false);
   const [playlistDialogOpen, setPlaylistDialogOpen] = React.useState(false);
   const addVideoToNewPlaylist = () => {
     setPlaylistDialogOpen(true);
   };
+
+  const lyricsPluginId = useAppSelector(
+    (state) => state.settings.lyricsPluginId
+  );
   const playlists = useAppSelector((state) => state.playlist.playlists);
 
   const favoriteTrack = async () => {
@@ -51,7 +60,19 @@ const TrackMenu: React.FC<Props> = (props) => {
     }
   };
 
+  const addTrackToQueue = () => {
+    dispatch(addTrack(track));
+    toast(t("trackAddedToQueue"));
+  };
+
   const items: (DropdownItemProps | undefined)[] = [
+    !noQueueItem
+      ? {
+          title: t("addToQueue"),
+          icon: <ListMusicIcon />,
+          action: addTrackToQueue,
+        }
+      : undefined,
     {
       title: isFavorited ? t("removeFromFavorites") : t("addToFavorites"),
       icon: isFavorited ? <StarOffIcon /> : <StarIcon />,
@@ -76,6 +97,15 @@ const TrackMenu: React.FC<Props> = (props) => {
           title: t("originalUrl"),
           icon: <ExternalLink />,
           url: track.originalUrl,
+        }
+      : undefined,
+    lyricsPluginId
+      ? {
+          title: t("lyrics"),
+          icon: <MdLyrics />,
+          internalPath: `/lyrics?trackName=${encodeURIComponent(track.name)}${
+            track.artistName ? `&artistName=${track.artistName}` : ""
+          }`,
         }
       : undefined,
     ...(dropdownItems || []),

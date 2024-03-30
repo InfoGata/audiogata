@@ -11,9 +11,7 @@ import Routing from "./layouts/MainContainer";
 import PlayerBar from "./layouts/PlayerBar";
 import SideBar from "./layouts/SideBar";
 import TopBar from "./layouts/TopBar";
-import ItemMenuProvider from "./providers/ItemMenuProvider";
 import PluginsProvider from "./providers/PluginsProvider";
-import TrackMenuProvider from "./providers/TrackMenuProvider";
 import { useAppDispatch } from "./store/hooks";
 import { initializePlaylists } from "./store/reducers/playlistReducer";
 
@@ -38,20 +36,16 @@ const App: React.FC = () => {
     <QueryClientProvider client={queryClient}>
       <MatomoRouterProvider>
         <PluginsProvider>
-          <TrackMenuProvider>
-            <ItemMenuProvider>
-              <OutsideCallConsumer config={callConfig}>
-                <Box sx={{ display: "flex" }}>
-                  <CssBaseline />
-                  <TopBar />
-                  <SideBar />
-                  <Routing />
-                  <PlayerBar />
-                  <AudioComponent />
-                </Box>
-              </OutsideCallConsumer>
-            </ItemMenuProvider>
-          </TrackMenuProvider>
+          <OutsideCallConsumer config={callConfig}>
+            <Box sx={{ display: "flex" }}>
+              <CssBaseline />
+              <TopBar />
+              <SideBar />
+              <Routing />
+              <PlayerBar />
+              <AudioComponent />
+            </Box>
+          </OutsideCallConsumer>
         </PluginsProvider>
       </MatomoRouterProvider>
     </QueryClientProvider>

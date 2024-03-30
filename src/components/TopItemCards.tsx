@@ -1,11 +1,9 @@
-import { MoreHoriz } from "@mui/icons-material";
 import {
   Card,
   CardActionArea,
   CardActions,
   Fade,
   Grid,
-  IconButton,
   Stack,
   Typography,
 } from "@mui/material";
@@ -14,17 +12,16 @@ import React from "react";
 import { useTranslation } from "react-i18next";
 import { useQuery } from "react-query";
 import usePlugins from "../hooks/usePlugins";
-import useTrackMenu from "../hooks/useTrackMenu";
 import { useAppDispatch } from "../store/hooks";
 import { addTrack, setTrack } from "../store/reducers/trackReducer";
 import PlaylistImage from "./PlaylistImage";
 import SelectPlugin from "./SelectPlugin";
+import TrackMenu from "./TrackMenu";
 
 const TopItemCards: React.FC = () => {
   const [pluginId, setPluginId] = React.useState("");
   const { plugins } = usePlugins();
   const dispatch = useAppDispatch();
-  const { openMenu } = useTrackMenu();
   const { t } = useTranslation();
   const sanitizer = DOMPurify.sanitize;
 
@@ -47,10 +44,6 @@ const TopItemCards: React.FC = () => {
       dispatch(setTrack(t));
     };
 
-    const openTrackMenu = (event: React.MouseEvent<HTMLButtonElement>) => {
-      openMenu(event, t);
-    };
-
     return (
       <Card
         key={t.apiId}
@@ -67,9 +60,7 @@ const TopItemCards: React.FC = () => {
         </CardActionArea>
         <CardActions>
           <Stack direction="row" alignItems="center" gap={1}>
-            <IconButton size="small" onClick={openTrackMenu}>
-              <MoreHoriz />
-            </IconButton>
+            <TrackMenu track={t} />
             <Typography
               title={t.name}
               gutterBottom
