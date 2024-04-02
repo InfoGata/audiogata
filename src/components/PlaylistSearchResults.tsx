@@ -1,4 +1,3 @@
-import { List } from "@mui/material";
 import React from "react";
 import { useQuery } from "react-query";
 import usePagination from "../hooks/usePagination";
@@ -6,7 +5,7 @@ import usePlugins from "../hooks/usePlugins";
 import { FilterInfo, PageInfo } from "../plugintypes";
 import Filtering from "./Filtering";
 import Pager from "./Pager";
-import PlaylistSearchResult from "./PlaylistSearchResult";
+import PlaylistListItem from "./PlaylistListItem";
 import Spinner from "./Spinner";
 
 interface PlaylistSearchResultsProps {
@@ -18,20 +17,10 @@ interface PlaylistSearchResultsProps {
 
 const PlaylistSearchResults: React.FC<PlaylistSearchResultsProps> = (props) => {
   const { pluginId, searchQuery, initialPage, initialFilter } = props;
+
   const { plugins } = usePlugins();
   const plugin = plugins.find((p) => p.id === pluginId);
   const [filters, setFilters] = React.useState<FilterInfo | undefined>();
-
-  const [hasSearch, setHasSearch] = React.useState(false);
-  React.useEffect(() => {
-    const getHasSearch = async () => {
-      if (plugin) {
-        const hasSearch = await plugin.hasDefined.onSearchPlaylists();
-        setHasSearch(hasSearch);
-      }
-    };
-    getHasSearch();
-  }, [plugin]);
 
   const [currentPage, setCurrentPage] = React.useState<PageInfo | undefined>(
     initialPage
@@ -45,6 +34,17 @@ const PlaylistSearchResults: React.FC<PlaylistSearchResultsProps> = (props) => {
     resetPage,
   } = usePagination(currentPage);
 
+  const [hasSearch, setHasSearch] = React.useState(false);
+  React.useEffect(() => {
+    const getHasSearch = async () => {
+      if (plugin) {
+        const hasSearch = await plugin.hasDefined.onSearchPlaylists();
+        setHasSearch(hasSearch);
+      }
+    };
+    getHasSearch();
+  }, [plugin]);
+
   const search = async () => {
     if (plugin && (await plugin.hasDefined.onSearchPlaylists())) {
       const searchPlaylists = await plugin.remote.onSearchPlaylists({
@@ -57,18 +57,18 @@ const PlaylistSearchResults: React.FC<PlaylistSearchResultsProps> = (props) => {
     }
   };
 
+  const filteredKey = filters?.filters.map((f) => ({
+    id: f.id,
+    value: f.value,
+  }));
   const query = useQuery(
-    ["searchPlaylists", pluginId, searchQuery, page, filters],
+    ["searchPlaylists", pluginId, searchQuery, page, filteredKey],
     search,
     { staleTime: 60 * 1000 }
   );
 
   const playlistList = query.data?.map((playlist) => (
-    <PlaylistSearchResult
-      key={playlist.apiId}
-      playlist={playlist}
-      pluginId={pluginId}
-    />
+    <PlaylistListItem key={playlist.apiId} playlist={playlist} />
   ));
 
   const applyFilters = (filters: FilterInfo) => {
@@ -82,7 +82,7 @@ const PlaylistSearchResults: React.FC<PlaylistSearchResultsProps> = (props) => {
       {!!initialFilter && (
         <Filtering filters={initialFilter} setFilters={applyFilters} />
       )}
-      <List>{playlistList}</List>
+      <div>{playlistList}</div>
       {hasSearch && (
         <Pager
           hasNextPage={hasNextPage}

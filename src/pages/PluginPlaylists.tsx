@@ -1,21 +1,13 @@
-import {
-  Card,
-  CardActionArea,
-  CardContent,
-  Grid,
-  Typography,
-} from "@mui/material";
+import PlaylistListItem from "@/components/PlaylistListItem";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { useQuery } from "react-query";
 import { useParams } from "react-router";
-import { Link } from "react-router-dom";
-import usePlugins from "../hooks/usePlugins";
-import PlaylistImage from "../components/PlaylistImage";
-import Spinner from "../components/Spinner";
-import { PageInfo, UserPlaylistRequest } from "../plugintypes";
 import Pager from "../components/Pager";
+import Spinner from "../components/Spinner";
 import usePagination from "../hooks/usePagination";
+import usePlugins from "../hooks/usePlugins";
+import { PageInfo, UserPlaylistRequest } from "../plugintypes";
 
 const PluginPlaylists: React.FC = () => {
   const { plugins, pluginsLoaded } = usePlugins();
@@ -44,29 +36,16 @@ const PluginPlaylists: React.FC = () => {
   });
   const playlists = query.data || [];
 
-  const playlistLinks = playlists.map((p, i) => (
-    <Grid item xs={2} key={i}>
-      <Card>
-        <CardActionArea
-          component={Link}
-          to={`/plugins/${pluginId}/playlists/${p.apiId}?isuserplaylist`}
-        >
-          <PlaylistImage images={p.images} />
-          <CardContent>
-            <Typography gutterBottom variant="h6" component="div">
-              {p.name}
-            </Typography>
-          </CardContent>
-        </CardActionArea>
-      </Card>
-    </Grid>
+  const playlistList = playlists.map((p) => (
+    <PlaylistListItem key={p.id} playlist={p} isUserPlaylist={true} />
   ));
   return plugin ? (
     <>
       <Spinner open={query.isLoading} />
-      <Grid container spacing={2}>
-        {playlistLinks}
-      </Grid>
+      <h1 className="text-4xl">
+        {t("playlists")}: {plugin.name}
+      </h1>
+      <div>{playlistList}</div>
       <Pager
         hasNextPage={hasNextPage}
         hasPreviousPage={hasPreviousPage}

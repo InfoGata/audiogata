@@ -87,7 +87,9 @@
     "convertSelectedTracks": "Convert Selected Tracks",
     "conversionFailed": "Conversion Failed",
     "lyrics": "Lyrics",
-    "clearAllTracks": "Clear All Tracks"
+    "clearAllTracks": "Clear All Tracks",
+    "noFavoriteTracks": "No tracks have been added to favorites.",
+    "noFavoritePlaylists": "No playlists have been added to favorites."
   },
   "plugins": {
     "addPlugin_one": "Add Plugin",

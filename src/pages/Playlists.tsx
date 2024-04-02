@@ -1,72 +1,39 @@
-import { Delete, MoreHoriz } from "@mui/icons-material";
-import {
-  Button,
-  Grid,
-  IconButton,
-  List,
-  ListItem,
-  ListItemButton,
-  ListItemIcon,
-  ListItemSecondaryAction,
-  ListItemText,
-  Menu,
-  MenuItem,
-  Typography,
-} from "@mui/material";
+import PlaylistListItem from "@/components/PlaylistListItem";
+import { Button, buttonVariants } from "@/components/ui/button";
+import { Trash } from "lucide-react";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
-import { toast } from "sonner";
 import { PluginFrameContainer } from "../PluginsContext";
 import ImportDialog from "../components/ImportDialog";
 import usePlugins from "../hooks/usePlugins";
-import { Playlist, PlaylistInfo, Track } from "../plugintypes";
+import { Playlist, Track } from "../plugintypes";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
 import { addPlaylist, deletePlaylist } from "../store/reducers/playlistReducer";
 import { filterAsync } from "../utils";
-
-interface PlaylistsItemProps {
-  playlist: PlaylistInfo;
-  openMenu: (
-    event: React.MouseEvent<HTMLButtonElement>,
-    playlist: PlaylistInfo
-  ) => void;
-}
-
-const PlaylistsItem: React.FC<PlaylistsItemProps> = (props) => {
-  const { openMenu, playlist } = props;
-  const playlistPath = `/playlists/${props.playlist.id}`;
-  const openPlaylistMenu = (event: React.MouseEvent<HTMLButtonElement>) => {
-    event.preventDefault();
-    openMenu(event, playlist);
-  };
-  return (
-    <ListItem disablePadding>
-      <ListItemButton component={Link} to={playlistPath}>
-        <ListItemText>{playlist.name}</ListItemText>
-        <ListItemSecondaryAction>
-          <IconButton onClick={openPlaylistMenu} size="large">
-            <MoreHoriz />
-          </IconButton>
-        </ListItemSecondaryAction>
-      </ListItemButton>
-    </ListItem>
-  );
-};
+import { ItemMenuType } from "@/types";
+import { toast } from "sonner";
 
 const Playlists: React.FC = () => {
-  const { t } = useTranslation();
   const { plugins } = usePlugins();
+  const dispatch = useAppDispatch();
   const [playlistPlugins, setPlaylistPlugins] = React.useState<
     PluginFrameContainer[]
   >([]);
   const playlists = useAppSelector((state) => state.playlist.playlists);
-  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-  const [menuPlaylist, setMenuPlaylist] = React.useState<
-    PlaylistInfo | undefined
-  >();
+  const { t } = useTranslation();
   const [openImportDialog, setOpenImportDialog] = React.useState(false);
   const onOpenImportDialog = () => setOpenImportDialog(true);
+
+  const pluginPlaylists = playlistPlugins.map((p) => (
+    <Link
+      className={buttonVariants({ variant: "outline" })}
+      to={`/plugins/${p.id}/playlists?isuserplaylist`}
+      key={p.id}
+    >
+      {p.name}
+    </Link>
+  ));
 
   React.useEffect(() => {
     const setPlugins = async () => {
@@ -80,31 +47,12 @@ const Playlists: React.FC = () => {
     };
     setPlugins();
   }, [plugins]);
-  const closeMenu = () => setAnchorEl(null);
-  const dispatch = useAppDispatch();
-  const openMenu = (
-    event: React.MouseEvent<HTMLButtonElement>,
-    playlist: PlaylistInfo
-  ) => {
-    setAnchorEl(event.currentTarget);
-    setMenuPlaylist(playlist);
-  };
-  const deleteClick = () => {
-    if (menuPlaylist) {
-      dispatch(deletePlaylist(menuPlaylist));
-    }
-    closeMenu();
-  };
 
-  const pluginPlaylists = playlistPlugins.map((p) => (
-    <Button
-      component={Link}
-      to={`/plugins/${p.id}/playlists?isuserplaylist`}
-      key={p.id}
-    >
-      {p.name}
-    </Button>
-  ));
+  const onDelete = (item?: ItemMenuType) => {
+    if (item?.type === "playlist") {
+      dispatch(deletePlaylist(item.item));
+    }
+  };
 
   const onImport = (item: Playlist | Track[]) => {
     if ("tracks" in item) {
@@ -115,29 +63,34 @@ const Playlists: React.FC = () => {
 
   return (
     <>
-      <Typography variant="h5" gutterBottom>
-        {t("playlists")}
-      </Typography>
-      <Button variant="contained" onClick={onOpenImportDialog}>
-        {t("importPlaylistByUrl")}
-      </Button>
-      <Grid>{pluginPlaylists}</Grid>
-      <List>
+      <div className="flex flex-col gap-2">
+        <h2 className="text-2xl font-bold">{t("playlists")}</h2>
+        <div>{pluginPlaylists}</div>
+        <div>
+          <Button variant="outline" onClick={onOpenImportDialog}>
+            {t("importPlaylistByUrl")}
+          </Button>
+        </div>
+      </div>
+      <div>
         {playlists.map((p) => (
-          <PlaylistsItem key={p.id} playlist={p} openMenu={openMenu} />
+          <PlaylistListItem
+            key={p.id}
+            playlist={p}
+            noFavorite={true}
+            dropdownItems={[
+              {
+                icon: <Trash />,
+                title: t("delete"),
+                action: onDelete,
+              },
+            ]}
+          />
         ))}
-      </List>
-      <Menu open={Boolean(anchorEl)} onClose={closeMenu} anchorEl={anchorEl}>
-        <MenuItem onClick={deleteClick}>
-          <ListItemIcon>
-            <Delete />
-          </ListItemIcon>
-          <ListItemText primary={t("delete")} />
-        </MenuItem>
-      </Menu>
+      </div>
       <ImportDialog
-        open={openImportDialog}
         setOpen={setOpenImportDialog}
+        open={openImportDialog}
         parseType="playlist"
         onSuccess={onImport}
       />
