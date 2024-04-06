@@ -1,10 +1,10 @@
-import { List } from "@mui/material";
 import React from "react";
 import { useQuery } from "react-query";
 import usePagination from "../hooks/usePagination";
 import usePlugins from "../hooks/usePlugins";
 import { FilterInfo, PageInfo } from "../plugintypes";
-import ArtistSearchResult from "./ArtistSearchResult";
+import ArtistCard from "./ArtistCard";
+import CardContainer from "./CardContainer";
 import Filtering from "./Filtering";
 import Pager from "./Pager";
 import Spinner from "./Spinner";
@@ -65,14 +65,6 @@ const ArtistSearchResults: React.FC<ArtistSearchResultsProps> = (props) => {
     }
   );
 
-  const artistList = query.data?.map((artist) => (
-    <ArtistSearchResult
-      key={artist.apiId}
-      artist={artist}
-      pluginId={pluginId}
-    />
-  ));
-
   const applyFilters = (filters: FilterInfo) => {
     setFilters(filters);
     resetPage();
@@ -84,7 +76,11 @@ const ArtistSearchResults: React.FC<ArtistSearchResultsProps> = (props) => {
       {!!initialFilter && (
         <Filtering filters={initialFilter} setFilters={applyFilters} />
       )}
-      <List>{artistList}</List>
+      <CardContainer>
+        {query.data?.map((a) => (
+          <ArtistCard artist={a} />
+        ))}
+      </CardContainer>
       {hasSearch && (
         <Pager
           hasNextPage={hasNextPage}

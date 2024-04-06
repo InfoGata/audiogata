@@ -1,10 +1,10 @@
+import AlbumCard from "@/components/AlbumCard";
+import CardContainer from "@/components/CardContainer";
 import ItemMenu from "@/components/ItemMenu";
-import { List } from "@mui/material";
 import React from "react";
 import { useQuery } from "react-query";
 import { useParams } from "react-router";
 import { useLocation } from "react-router-dom";
-import AlbumSearchResult from "../components/AlbumSearchResult";
 import ConfirmPluginDialog from "../components/ConfirmPluginDialog";
 import Pager from "../components/Pager";
 import PlaylistInfoCard from "../components/PlaylistInfoCard";
@@ -49,10 +49,6 @@ const ArtistPage: React.FC = () => {
     enabled: pluginsLoaded && !!plugin,
   });
 
-  const albumsList = query.data?.map((a) => (
-    <AlbumSearchResult key={a.apiId} album={a} pluginId={pluginId || ""} />
-  ));
-
   return (
     <>
       <Spinner open={query.isLoading || isLoading} />
@@ -65,7 +61,11 @@ const ArtistPage: React.FC = () => {
       {artistInfo && (
         <ItemMenu itemType={{ type: "artist", item: artistInfo }} />
       )}
-      <List>{albumsList}</List>
+      <CardContainer>
+        {query.data?.map((a) => (
+          <AlbumCard album={a} />
+        ))}
+      </CardContainer>
       <Pager
         hasNextPage={hasNextPage}
         hasPreviousPage={hasPreviousPage}

@@ -1,5 +1,5 @@
-import { PlayCircle } from "@mui/icons-material";
-import { IconButton } from "@mui/material";
+import { Button } from "@/components/ui/button";
+import { CirclePlayIcon } from "lucide-react";
 import React from "react";
 import { useQuery } from "react-query";
 import { useLocation, useParams } from "react-router-dom";
@@ -108,9 +108,9 @@ const AlbumPage: React.FC = () => {
           images={albumInfo.images}
         />
       )}
-      <IconButton size="large" onClick={onPlayClick}>
-        <PlayCircle color="success" sx={{ fontSize: 45 }} />
-      </IconButton>
+      <Button variant="ghost" size="icon" onClick={onPlayClick}>
+        <CirclePlayIcon />
+      </Button>
       <PlaylistMenu
         selected={selected}
         tracklist={tracklist}

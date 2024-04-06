@@ -1,4 +1,3 @@
-import { AppBar, Box, Tab, Tabs, Typography } from "@mui/material";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { useQuery, useQueryClient } from "react-query";
@@ -18,33 +17,11 @@ import PlaylistSearchResults from "../components/PlaylistSearchResults";
 import SelectPlugin from "../components/SelectPlugin";
 import Spinner from "../components/Spinner";
 import TrackSearchResults from "../components/TrackSearchResults";
-
-interface TabPanelProps {
-  children?: React.ReactNode;
-  index: any;
-  value: any;
-}
-
-const TabPanel: React.FC<TabPanelProps> = (props) => {
-  const { children, value, index, ...other } = props;
-
-  return (
-    <Typography
-      component="div"
-      role="tabpanel"
-      hidden={value !== index}
-      id={`wrapped-tabpanel-${index}`}
-      aria-labelledby={`wrapped-tab-${index}`}
-      {...other}
-    >
-      {value === index && <Box p={3}>{children}</Box>}
-    </Typography>
-  );
-};
+import { Tabs, TabsContent, TabsTrigger } from "@/components/ui/tabs";
 
 const Search: React.FC = () => {
   const [pluginId, setPluginId] = React.useState("");
-  const [tabValue, setTabValue] = React.useState<string | boolean>(false);
+  const [tabValue, setTabValue] = React.useState<string>("tracks");
   const location = useLocation();
   const params = new URLSearchParams(location.search);
   const searchQuery = params.get("q") || "";
@@ -95,45 +72,42 @@ const Search: React.FC = () => {
   const artistList = query?.data?.artists?.items || [];
   const playlistList = query?.data?.playlists?.items || [];
 
-  const handleChange = (
-    _event: React.ChangeEvent<unknown>,
-    newValue: string
-  ) => {
+  const handleChange = (newValue: string) => {
     setTabValue(newValue);
   };
 
   return (
     <>
+      <Spinner open={query.isLoading} />
       <SelectPlugin
         pluginId={pluginId}
         setPluginId={setPluginId}
         methodName="onSearchAll"
         useCurrentPlugin={true}
       />
-      <AppBar position="static">
-        <Spinner open={query.isLoading} />
-        <Tabs
-          value={tabValue}
-          onChange={handleChange}
-          indicatorColor="primary"
-          textColor="primary"
-          variant="fullWidth"
-        >
-          {trackList.length > 0 ? (
-            <Tab label={t("tracks")} value={SearchResultType.Tracks} />
-          ) : null}
-          {albumList.length > 0 ? (
-            <Tab label={t("albums")} value={SearchResultType.Albums} />
-          ) : null}
-          {artistList && artistList.length > 0 ? (
-            <Tab label={t("artists")} value={SearchResultType.Artists} />
-          ) : null}
-          {playlistList && playlistList.length > 0 ? (
-            <Tab label={t("playlists")} value={SearchResultType.Playlists} />
-          ) : null}
-        </Tabs>
-      </AppBar>
-      <TabPanel value={tabValue} index={SearchResultType.Tracks}>
+      <Tabs value={tabValue} onValueChange={handleChange}>
+        {trackList.length > 0 ? (
+          <TabsTrigger value={SearchResultType.Tracks} className="flex-1">
+            {t("tracks")}
+          </TabsTrigger>
+        ) : null}
+        {albumList.length > 0 ? (
+          <TabsTrigger value={SearchResultType.Albums}>
+            {t("albums")}
+          </TabsTrigger>
+        ) : null}
+        {artistList && artistList.length > 0 ? (
+          <TabsTrigger value={SearchResultType.Artists}>
+            {t("artists")}
+          </TabsTrigger>
+        ) : null}
+        {playlistList && playlistList.length > 0 ? (
+          <TabsTrigger value={SearchResultType.Playlists}>
+            {t("playlists")}
+          </TabsTrigger>
+        ) : null}
+      </Tabs>
+      <TabsContent value={tabValue}>
         {trackList.length > 0 ? (
           <TrackSearchResults
             pluginId={pluginId}
@@ -141,8 +115,8 @@ const Search: React.FC = () => {
             initialPage={query.data?.tracks?.pageInfo}
           />
         ) : null}
-      </TabPanel>
-      <TabPanel value={tabValue} index={SearchResultType.Albums}>
+      </TabsContent>
+      <TabsContent value={tabValue}>
         {albumList.length > 0 ? (
           <AlbumSearchResults
             pluginId={pluginId}
@@ -150,8 +124,8 @@ const Search: React.FC = () => {
             initialPage={query.data?.albums?.pageInfo}
           />
         ) : null}
-      </TabPanel>
-      <TabPanel value={tabValue} index={SearchResultType.Artists}>
+      </TabsContent>
+      <TabsContent value={tabValue}>
         {artistList.length > 0 ? (
           <ArtistSearchResults
             pluginId={pluginId}
@@ -159,8 +133,8 @@ const Search: React.FC = () => {
             initialPage={query.data?.artists?.pageInfo}
           />
         ) : null}
-      </TabPanel>
-      <TabPanel value={tabValue} index={SearchResultType.Playlists}>
+      </TabsContent>
+      <TabsContent value={tabValue}>
         {playlistList.length > 0 ? (
           <PlaylistSearchResults
             pluginId={pluginId}
@@ -168,7 +142,7 @@ const Search: React.FC = () => {
             initialPage={query.data?.playlists?.pageInfo}
           />
         ) : null}
-      </TabPanel>
+      </TabsContent>
     </>
   );
 };

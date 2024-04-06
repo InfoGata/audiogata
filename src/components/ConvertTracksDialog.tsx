@@ -1,65 +1,28 @@
-import {
-  Box,
-  Button,
-  CircularProgress,
-  CircularProgressProps,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  FormControl,
-  InputLabel,
-  List,
-  ListItem,
-  NativeSelect,
-  Typography,
-} from "@mui/material";
 import React from "react";
 import { useTranslation } from "react-i18next";
-import { PluginFrameContainer } from "../PluginsContext";
 import usePlugins from "../hooks/usePlugins";
 import { PlaylistInfo, Track } from "../plugintypes";
 import { useAppDispatch } from "../store/hooks";
 import { addPlaylistTracks } from "../store/reducers/playlistReducer";
-import { filterAsync } from "../utils";
+import SelectPlugin from "./SelectPlugin";
+import { Button } from "./ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "./ui/dialog";
 
 interface ConvertTracksProps {
   playlist?: PlaylistInfo;
   tracks: Track[];
   open: boolean;
-  handleClose: () => void;
-}
-
-function CircularProgressWithLabel(
-  props: CircularProgressProps & { value: number }
-) {
-  return (
-    <Box sx={{ position: "relative", display: "inline-flex" }}>
-      <CircularProgress variant="determinate" {...props} />
-      <Box
-        sx={{
-          top: 0,
-          left: 0,
-          bottom: 0,
-          right: 0,
-          position: "absolute",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
-        <Typography
-          variant="caption"
-          component="div"
-          color="text.secondary"
-        >{`${Math.round(props.value)}%`}</Typography>
-      </Box>
-    </Box>
-  );
+  setOpen: (open: boolean) => void;
 }
 
 const ConvertTracksDialog: React.FC<ConvertTracksProps> = (props) => {
-  const { tracks, playlist, open, handleClose } = props;
+  const { tracks, playlist, open, setOpen } = props;
   const dispatch = useAppDispatch();
   const [inProgess, setInProgress] = React.useState(false);
   const [completed, setCompleted] = React.useState(false);
@@ -69,21 +32,7 @@ const ConvertTracksDialog: React.FC<ConvertTracksProps> = (props) => {
   const [successfulTracks, setSuccessfulTracks] = React.useState<Track[]>([]);
   const { plugins } = usePlugins();
   const [pluginId, setPluginId] = React.useState<string>();
-  const [convertPlugins, setConvertPlugins] = React.useState<
-    PluginFrameContainer[]
-  >([]);
   const { t } = useTranslation();
-
-  React.useEffect(() => {
-    const getPlugins = async () => {
-      const convertPlugins = await filterAsync(plugins, (p) =>
-        p.hasDefined.onLookupTrack()
-      );
-      setConvertPlugins(convertPlugins);
-      setPluginId(convertPlugins[0]?.id);
-    };
-    getPlugins();
-  }, [plugins]);
 
   const onConvert = async () => {
     setInProgress(true);
@@ -95,9 +44,7 @@ const ConvertTracksDialog: React.FC<ConvertTracksProps> = (props) => {
       const failed: Track[] = [];
 
       for (const track of tracks) {
-        console.log(tracks);
         try {
-          console.log("success");
           const newTrack = await plugin.remote.onLookupTrack({
             artistName: track.artistName,
             trackName: track.name,
@@ -108,7 +55,6 @@ const ConvertTracksDialog: React.FC<ConvertTracksProps> = (props) => {
           success.push(newTrack);
           setNumCompleted((n) => n + 1);
         } catch {
-          console.log("fail");
           failed.push(track);
         }
       }
@@ -120,68 +66,35 @@ const ConvertTracksDialog: React.FC<ConvertTracksProps> = (props) => {
 
   const onConfirm = () => {
     if (playlist) {
-      console.log(successfulTracks);
       dispatch(addPlaylistTracks(playlist, successfulTracks));
-      handleClose();
+      setOpen(false);
     }
   };
 
-  const onSelectPluginChange = (e: React.FormEvent<HTMLSelectElement>) => {
-    setPluginId(e.currentTarget.value);
-  };
-
   return (
-    <Dialog
-      open={open}
-      onClose={handleClose}
-      aria-labelledby="form-dialog-title"
-    >
-      <DialogTitle id="form-dialog-title">{t("convert")}</DialogTitle>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent>
-        <FormControl fullWidth>
-          <InputLabel variant="standard" htmlFor="uncontrolled-native">
-            {t("plugin")}
-          </InputLabel>
-          <NativeSelect
-            value={pluginId}
-            onChange={onSelectPluginChange}
-            inputProps={{
-              name: "plugin",
-              id: "uncontrolled-native",
-            }}
-          >
-            {convertPlugins.map((c) => (
-              <option key={c.id} value={c.id}>
-                {c.name}
-              </option>
-            ))}
-          </NativeSelect>
-        </FormControl>
-        <Button variant="contained" disabled={inProgess} onClick={onConvert}>
+        <DialogHeader>
+          <DialogTitle>{t("convert")}</DialogTitle>
+        </DialogHeader>
+        <SelectPlugin
+          methodName="onLookupTrack"
+          pluginId={pluginId || ""}
+          setPluginId={setPluginId}
+        />
+        <Button disabled={inProgess} onClick={onConvert}>
           {t("convert")}
         </Button>
-        {failedTracks.length > 0 && (
-          <Box>
-            <Typography></Typography>
-            <List>
-              {failedTracks.map((ft) => (
-                <ListItem key={ft.id}>{ft.name}</ListItem>
-              ))}
-            </List>
-          </Box>
-        )}
-        {inProgess && (
-          <CircularProgressWithLabel
-            value={(numCompleted / numOfTracks) * 100}
-          />
-        )}
+        {failedTracks.length > 0 &&
+          failedTracks.map((ft) => <p key={ft.id}>{ft.name}</p>)}
+        {inProgess && <p>{(numCompleted / numOfTracks) * 100} %</p>}
+        <DialogFooter>
+          <Button onClick={() => setOpen(false)}>{t("cancel")}</Button>
+          <Button disabled={!completed} onClick={onConfirm}>
+            {t("confirm")}
+          </Button>
+        </DialogFooter>
       </DialogContent>
-      <DialogActions>
-        <Button onClick={handleClose}>{t("cancel")}</Button>
-        <Button disabled={!completed} onClick={onConfirm}>
-          {t("confirm")}
-        </Button>
-      </DialogActions>
     </Dialog>
   );
 };

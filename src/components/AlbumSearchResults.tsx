@@ -1,10 +1,10 @@
-import { List } from "@mui/material";
 import React from "react";
 import { useQuery } from "react-query";
 import usePagination from "../hooks/usePagination";
 import usePlugins from "../hooks/usePlugins";
 import { FilterInfo, PageInfo } from "../plugintypes";
-import AlbumSearchResult from "./AlbumSearchResult";
+import AlbumCard from "./AlbumCard";
+import CardContainer from "./CardContainer";
 import Filtering from "./Filtering";
 import Pager from "./Pager";
 import Spinner from "./Spinner";
@@ -63,10 +63,6 @@ const AlbumSearchResults: React.FC<AlbumSearchResultsProps> = (props) => {
     { staleTime: 60 * 1000 }
   );
 
-  const albumList = query.data?.map((album) => (
-    <AlbumSearchResult key={album.apiId} album={album} pluginId={pluginId} />
-  ));
-
   const applyFilters = (filters: FilterInfo) => {
     setFilters(filters);
     resetPage();
@@ -78,7 +74,11 @@ const AlbumSearchResults: React.FC<AlbumSearchResultsProps> = (props) => {
       {!!initialFilter && (
         <Filtering filters={initialFilter} setFilters={applyFilters} />
       )}
-      <List>{albumList}</List>
+      <CardContainer>
+        {query.data?.map((a) => (
+          <AlbumCard album={a} />
+        ))}
+      </CardContainer>
       {hasSearch && (
         <Pager
           hasNextPage={hasNextPage}

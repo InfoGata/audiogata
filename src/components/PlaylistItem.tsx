@@ -1,5 +1,6 @@
+import { cn } from "@/lib/utils";
 import DOMPurify from "dompurify";
-import React, { Fragment } from "react";
+import React from "react";
 import { Track } from "../plugintypes";
 import { useAppSelector } from "../store/hooks";
 import {
@@ -7,14 +8,13 @@ import {
   getThumbnailImage,
   searchThumbnailSize,
 } from "../utils";
-import ArtistLink from "./ArtistLInk";
-import { TableCell } from "./ui/table";
-import { Checkbox } from "./ui/checkbox";
-import { Avatar, AvatarImage } from "./ui/avatar";
-import { Progress } from "./ui/progress";
-import { cn } from "@/lib/utils";
-import TrackMenu from "./TrackMenu";
+import ArtistLinks from "./ArtistLinks";
 import { DropdownItemProps } from "./DropdownItem";
+import TrackMenu from "./TrackMenu";
+import { Avatar, AvatarImage } from "./ui/avatar";
+import { Checkbox } from "./ui/checkbox";
+import { Progress } from "./ui/progress";
+import { TableCell } from "./ui/table";
 
 interface PlaylistItemsProps {
   track: Track;
@@ -63,24 +63,7 @@ const PlaylistItem: React.FC<PlaylistItemsProps> = (props) => {
               className="truncate"
             />
             {track.artistApiId ? (
-              <>
-                <ArtistLink
-                  pluginId={track.pluginId}
-                  name={track.artistName}
-                  apiId={track.artistApiId}
-                />
-                {track.addtionalArtists &&
-                  track.addtionalArtists.map((a, i) => (
-                    <Fragment key={i}>
-                      {", "}
-                      <ArtistLink
-                        pluginId={track.pluginId}
-                        name={a.name}
-                        apiId={a.apiId}
-                      />
-                    </Fragment>
-                  ))}
-              </>
+              <ArtistLinks item={track} />
             ) : (
               <p
                 dangerouslySetInnerHTML={{

@@ -77,10 +77,6 @@ const PlaylistTracks: React.FC = () => {
     setOpenConvertDialog(true);
   };
 
-  const onConvertTracksClose = () => {
-    setOpenConvertDialog(false);
-  };
-
   const openImportDialog = () => {
     setImportDialogOpen(true);
   };
@@ -207,7 +203,7 @@ const PlaylistTracks: React.FC = () => {
               playlist={playlist}
               tracks={selectedTracks}
               open={openConvertDialog}
-              handleClose={onConvertTracksClose}
+              setOpen={setOpenConvertDialog}
             />
           )}
         </>

@@ -1,6 +1,7 @@
 import {
   Album,
   Artist,
+  ArtistInfo,
   PlaylistInfo,
   PlayTrackRequest,
   Track,
@@ -93,4 +94,11 @@ export interface NavigationLinkItem {
   title: string;
   link: string;
   icon: React.JSX.Element;
+}
+
+export interface MultipleArtistItem {
+  artistApiId?: string;
+  artistName?: string;
+  addtionalArtists?: ArtistInfo[];
+  pluginId?: string;
 }
