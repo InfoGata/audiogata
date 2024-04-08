@@ -1,13 +1,13 @@
-import { Box, CssBaseline } from "@mui/material";
 import React from "react";
 import OutsideCallConsumer from "react-outside-call";
 import { QueryClient, QueryClientProvider } from "react-query";
+import { Outlet } from "react-router-dom";
 import callConfig from "./call-config";
 import AudioComponent from "./components/AudioComponent";
 import MatomoRouterProvider from "./components/MatomoRouterProvider";
+import { Toaster } from "./components/ui/sonner";
 import useOffline from "./hooks/useOffline";
 import useUpdateServiceWorker from "./hooks/useUpdateServiceWorker";
-import Routing from "./layouts/MainContainer";
 import PlayerBar from "./layouts/PlayerBar";
 import SideBar from "./layouts/SideBar";
 import TopBar from "./layouts/TopBar";
@@ -37,14 +37,16 @@ const App: React.FC = () => {
       <MatomoRouterProvider>
         <PluginsProvider>
           <OutsideCallConsumer config={callConfig}>
-            <Box sx={{ display: "flex" }}>
-              <CssBaseline />
+            <div className="flex h-screen overflow-hidden">
+              <Toaster closeButton />
               <TopBar />
               <SideBar />
-              <Routing />
+              <main className="px-2 flex-1 overflow-auto pb-28 pt-20">
+                <Outlet />
+              </main>
               <PlayerBar />
-              <AudioComponent />
-            </Box>
+            </div>
+            <AudioComponent />
           </OutsideCallConsumer>
         </PluginsProvider>
       </MatomoRouterProvider>

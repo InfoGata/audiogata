@@ -214,3 +214,9 @@ export interface ManifestOptions {
   page: string;
   sameOrigin?: boolean;
 }
+
+export interface GetSearchSuggestionRequest {
+  query: string;
+}
+
+export type Theme = "dark" | "light" | "system";

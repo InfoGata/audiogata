@@ -20,6 +20,9 @@ const uiSlice = createSlice({
         navbarOpen: !state.navbarOpen,
       };
     },
+    setNavbarOpen: (state, action: PayloadAction<boolean>) => {
+      state.navbarOpen = action.payload;
+    },
     setTrackLoading: (state, action: PayloadAction<boolean>) => {
       return {
         ...state,
@@ -29,5 +32,5 @@ const uiSlice = createSlice({
   },
 });
 
-export const { toggleNavbar, setTrackLoading } = uiSlice.actions;
+export const { toggleNavbar, setTrackLoading, setNavbarOpen } = uiSlice.actions;
 export default uiSlice.reducer;

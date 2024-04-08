@@ -2,6 +2,7 @@ import DisableAutoUpdateSetting from "@/components/Settings/DisableAutoUpdateSet
 import PlayCurrentTrackStartup from "@/components/Settings/PlayCurrentTrackStartup";
 import SelectLyricsPlugin from "@/components/Settings/SelectLyricsPlugin";
 import ShowForwardAndRewind from "@/components/Settings/ShowForwardAndRewind";
+import ThemeChangeSetting from "@/components/Settings/ThemeChangeSetting";
 import UpdateCorsSetting from "@/components/Settings/UpdateCorsSettings";
 import React from "react";
 
@@ -11,8 +12,9 @@ const Settings: React.FC = () => {
       <DisableAutoUpdateSetting />
       <PlayCurrentTrackStartup />
       <ShowForwardAndRewind />
-      <SelectLyricsPlugin />
       <UpdateCorsSetting />
+      <SelectLyricsPlugin />
+      <ThemeChangeSetting />
     </div>
   );
 };

@@ -1,93 +1,28 @@
-import MuiDrawer from "@mui/material/Drawer";
-import { CSSObject, Theme, styled } from "@mui/material/styles";
+import { cn } from "@/lib/utils";
 import React from "react";
-import { useAppDispatch, useAppSelector } from "../store/hooks";
-import { toggleNavbar } from "../store/reducers/uiReducer";
-import { navbarWidth } from "../utils";
-import DrawerHeader from "./DrawerHeader";
+import { useAppSelector } from "../store/hooks";
 import Navigation from "./Navigation";
-
-const openedMixin = (theme: Theme): CSSObject => ({
-  width: navbarWidth,
-  transition: theme.transitions.create("width", {
-    easing: theme.transitions.easing.sharp,
-    duration: theme.transitions.duration.enteringScreen,
-  }),
-  overflowX: "hidden",
-});
-
-const closedMixin = (theme: Theme): CSSObject => ({
-  transition: theme.transitions.create("width", {
-    easing: theme.transitions.easing.sharp,
-    duration: theme.transitions.duration.leavingScreen,
-  }),
-  overflowX: "hidden",
-  width: `calc(${theme.spacing(7)} + 1px)`,
-  [theme.breakpoints.up("sm")]: {
-    width: `calc(${theme.spacing(9)} + 1px)`,
-  },
-});
-
-const MiniDrawer = styled(MuiDrawer, {
-  shouldForwardProp: (prop) => prop !== "open",
-})(({ theme, open }) => ({
-  width: navbarWidth,
-  flexShrink: 0,
-  whiteSpace: "nowrap",
-  boxSizing: "border-box",
-  ...(open && {
-    ...openedMixin(theme),
-    "& .MuiDrawer-paper": openedMixin(theme),
-  }),
-  ...(!open && {
-    ...closedMixin(theme),
-    "& .MuiDrawer-paper": closedMixin(theme),
-  }),
-}));
+import { useBreakpoint } from "@/hooks/useBreakpoint";
+import MobileSidebar from "./MobileSidebar";
 
 const SideBar: React.FC = () => {
   const navbarOpen = useAppSelector((state) => state.ui.navbarOpen);
-  const dispatch = useAppDispatch();
-
-  const onNavbarClose = () => {
-    dispatch(toggleNavbar());
-  };
-
-  const drawer = (
-    <>
-      <DrawerHeader />
-      <Navigation />
-      <DrawerHeader />
-    </>
-  );
+  const { isMd } = useBreakpoint("md");
 
   return (
-    <>
-      <MiniDrawer
-        variant="permanent"
-        open={navbarOpen}
-        anchor="left"
-        sx={{
-          display: { xs: "none", sm: "block" },
-        }}
-      >
-        {drawer}
-      </MiniDrawer>
-      <MuiDrawer
-        variant="temporary"
-        open={navbarOpen}
-        anchor="left"
-        onClose={onNavbarClose}
-        sx={{
-          display: { xs: "block", sm: "none" },
-        }}
-        ModalProps={{
-          keepMounted: true, // Better open performance on mobile.
-        }}
-      >
-        {drawer}
-      </MuiDrawer>
-    </>
+    <div
+      className={cn(
+        "pt-16 hidden h-screen flex-shrink-0 md:block duration-500 bg-background",
+        navbarOpen ? "w-52" : "w-20"
+      )}
+    >
+      <div className="border-r h-full">
+        <div className="mt-3 space-y-1 px-3 py-2 text-muted-foreground">
+          <Navigation />
+        </div>
+      </div>
+      {!isMd && <MobileSidebar />}
+    </div>
   );
 };
 

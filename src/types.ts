@@ -93,6 +93,7 @@ export interface PlayerComponent {
 export interface NavigationLinkItem {
   title: string;
   link: string;
+  action?: () => void;
   icon: React.JSX.Element;
 }
 

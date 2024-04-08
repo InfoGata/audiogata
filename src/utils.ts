@@ -220,3 +220,5 @@ export const navbarWidth = 200;
 export const searchThumbnailSize = 40;
 
 export const playlistThumbnailSize = 200;
+
+export const playerThumbnailSize = 70;

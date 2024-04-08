@@ -1,13 +1,17 @@
-import { SlowMotionVideo } from "@mui/icons-material";
-import { Box, IconButton, Popover, Slider } from "@mui/material";
-import { useTheme } from "@mui/material/styles";
 import React from "react";
 import usePlugins from "../hooks/usePlugins";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
 import { setPlaybackRate } from "../store/reducers/trackReducer";
+import { MdSlowMotionVideo } from "react-icons/md";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { Button } from "@/components/ui/button";
+import { Slider } from "@/components/ui/slider";
 
 const PlaybackRate: React.FC = () => {
-  const theme = useTheme();
   const dispatch = useAppDispatch();
   const playbackRate = useAppSelector((state) => state.track.playbackRate);
   const currentPluginId = useAppSelector(
@@ -15,9 +19,6 @@ const PlaybackRate: React.FC = () => {
   );
   const { plugins } = usePlugins();
   const plugin = plugins.find((p) => p.id === currentPluginId);
-  const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(
-    null
-  );
   const [enabled, setEnabled] = React.useState(true);
 
   React.useEffect(() => {
@@ -36,57 +37,35 @@ const PlaybackRate: React.FC = () => {
     enablePlaybackrate();
   }, [plugin, currentPluginId]);
 
-  const onPlaybackRate = (_: Event, newRate: number | number[]) => {
-    const actualRate = (newRate as number) / 100;
+  const onChangePlaybackRate = (value: number[]) => {
+    const newRate = value[0];
+    const actualRate = newRate / 100;
     dispatch(setPlaybackRate(actualRate));
   };
 
-  const onRateButtonClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const onRateButtonClose = () => {
-    setAnchorEl(null);
-  };
-  const open = Boolean(anchorEl);
-  const id = open ? "simple-popover" : undefined;
   const currentRate = (playbackRate || 1.0) * 100;
 
   const formattedRate = new Intl.NumberFormat(undefined, {
     style: "percent",
   }).format(playbackRate || 0);
   return (
-    <>
-      <IconButton disabled={!enabled} size="small" onClick={onRateButtonClick}>
-        <SlowMotionVideo />
-      </IconButton>
-      <Popover
-        id={id}
-        open={open}
-        anchorEl={anchorEl}
-        onClose={onRateButtonClose}
-        anchorOrigin={{
-          horizontal: "center",
-          vertical: "top",
-        }}
-        transformOrigin={{
-          horizontal: "center",
-          vertical: "bottom",
-        }}
-      >
-        <Box sx={{ height: "100px", padding: theme.spacing(1) }}>
-          <Slider
-            orientation="vertical"
-            aria-labelledby="vertical-slider"
-            min={0}
-            max={200}
-            value={currentRate}
-            onChange={onPlaybackRate}
-          />
-          {formattedRate}
-        </Box>
-      </Popover>
-    </>
+    <Popover>
+      <PopoverTrigger asChild>
+        <Button disabled={!enabled} size="icon" variant="ghost">
+          <MdSlowMotionVideo />
+        </Button>
+      </PopoverTrigger>
+      <PopoverContent>
+        <Slider
+          orientation="horizontal"
+          min={0}
+          max={200}
+          value={[currentRate]}
+          onValueChange={onChangePlaybackRate}
+        />
+        {formattedRate}
+      </PopoverContent>
+    </Popover>
   );
 };
 

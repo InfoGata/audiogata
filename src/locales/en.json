@@ -89,7 +89,8 @@
     "lyrics": "Lyrics",
     "clearAllTracks": "Clear All Tracks",
     "noFavoriteTracks": "No tracks have been added to favorites.",
-    "noFavoritePlaylists": "No playlists have been added to favorites."
+    "noFavoritePlaylists": "No playlists have been added to favorites.",
+    "github": "GitHub"
   },
   "plugins": {
     "addPlugin_one": "Add Plugin",
@@ -136,6 +137,9 @@
     "forwardRewindTime": "Forward and Rewind Skip Time in Seconds",
     "disableAutoUpdatePlugins": "Disable plugins updating automatically",
     "lyricsPlugin": "Lyrics Plugin",
-    "corsProxy": "Cors Proxy Url"
+    "corsProxy": "Cors Proxy Url",
+    "light": "Light",
+    "dark": "Dark",
+    "system": "System"
   }
 }

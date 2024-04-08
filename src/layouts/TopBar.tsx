@@ -1,74 +1,71 @@
-import { Favorite, GitHub, Menu } from "@mui/icons-material";
+import { Button, buttonVariants } from "@/components/ui/button";
 import {
-  AppBar,
-  Box,
-  IconButton,
-  Link,
-  Toolbar,
   Tooltip,
-  Typography,
-} from "@mui/material";
-import { useTheme } from "@mui/material/styles";
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { MenuIcon } from "lucide-react";
 import React from "react";
 import { useTranslation } from "react-i18next";
-import { Link as RouterLink } from "react-router-dom";
+import { FaGithub, FaHeart } from "react-icons/fa6";
+import { Link } from "react-router-dom";
 import { useAppDispatch } from "../store/hooks";
 import { toggleNavbar } from "../store/reducers/uiReducer";
 import SearchBar from "./SearchBar";
 
 const TopBar: React.FC = () => {
   const { t } = useTranslation();
-  const theme = useTheme();
   const dispatch = useAppDispatch();
   const onToggleNavbar = () => dispatch(toggleNavbar());
 
   return (
-    <AppBar
-      position="fixed"
-      color="default"
-      sx={{ zIndex: theme.zIndex.drawer + 1 }}
-    >
-      <Toolbar>
-        <IconButton
-          edge="start"
-          aria-label="open drawer"
-          onClick={onToggleNavbar}
-          size="large"
-          sx={{ mr: 2 }}
-        >
-          <Menu />
-        </IconButton>
-        <Typography
-          variant="h6"
-          noWrap={true}
-          sx={{ display: { xs: "none", sm: "block" }, pr: 2 }}
-        >
-          <Link color="inherit" underline="none" component={RouterLink} to="/">
-            AudioGata
-          </Link>
-        </Typography>
+    <div className="fixed top-0 left-0 right-0 w-full shadow-lg z-40 bg-background border-b">
+      <div className="flex items-center min-h-16 gap-3 lg:gap-16">
+        <div className="flex items-center">
+          <Button variant="ghost" size="icon" onClick={onToggleNavbar}>
+            <MenuIcon />
+          </Button>
+          <h1 className="whitespace-nowrap hidden sm:block pr-2 text-xl font-semibold">
+            <Link to="/">AudioGata</Link>
+          </h1>
+        </div>
+
         <SearchBar />
-        <Box sx={{ flexGrow: 1 }} />
-        <Box sx={{ display: { xs: "none", sm: "flex" } }}>
-          <IconButton component={RouterLink} to="/donate">
-            <Tooltip title={t("donate")} placement="bottom">
-              <Favorite />
+        <div className="hidden sm:flex">
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger>
+                <Link
+                  className={buttonVariants({ variant: "ghost", size: "icon" })}
+                  to="/donate"
+                >
+                  <FaHeart />
+                </Link>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>{t("donate")}</p>
+              </TooltipContent>
             </Tooltip>
-          </IconButton>
-          <IconButton
-            size="large"
-            edge="end"
-            color="inherit"
-            href="https://github.com/InfoGata/audiogata"
-            target="_blank"
-          >
-            <Tooltip title="Github" placement="bottom">
-              <GitHub />
+
+            <Tooltip>
+              <TooltipTrigger>
+                <a
+                  href="https://github.com/InfoGata/videogata"
+                  target="_blank"
+                  className={buttonVariants({ variant: "ghost", size: "icon" })}
+                >
+                  <FaGithub />
+                </a>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>{t("github")}</p>
+              </TooltipContent>
             </Tooltip>
-          </IconButton>
-        </Box>
-      </Toolbar>
-    </AppBar>
+          </TooltipProvider>
+        </div>
+      </div>
+    </div>
   );
 };
 

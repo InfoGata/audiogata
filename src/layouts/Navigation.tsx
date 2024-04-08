@@ -1,71 +1,49 @@
-import {
-  Extension,
-  Home,
-  Info,
-  Menu,
-  PlaylistAdd,
-  PlaylistPlay,
-  Settings,
-  Star,
-} from "@mui/icons-material";
-import {
-  List,
-  ListItem,
-  ListItemButton,
-  ListItemIcon,
-  ListItemText,
-  Tooltip,
-} from "@mui/material";
+import { ListMusicIcon, ListPlusIcon } from "lucide-react";
 import React from "react";
 import { useTranslation } from "react-i18next";
-import { useAppSelector } from "../store/hooks";
-import { NavigationLinkItem } from "../types";
+import {
+  FaCircleInfo,
+  FaGear,
+  FaHouse,
+  FaPuzzlePiece,
+  FaStar,
+} from "react-icons/fa6";
 import AddPlaylistDialog from "../components/AddPlaylistDialog";
+import { NavigationLinkItem } from "../types";
 import NavigationLink from "./NavigationLink";
-import NavigationPlaylistItem from "./NavigationPlaylistItem";
 
 const Navigation: React.FC = () => {
   const [dialogOpen, setDialogOpen] = React.useState(false);
-  const playlists = useAppSelector((state) => state.playlist.playlists);
-  const navbarOpen = useAppSelector((state) => state.ui.navbarOpen);
   const { t } = useTranslation();
 
   const openDialog = () => {
     setDialogOpen(true);
   };
 
-  const playlistItems = playlists.map((p) => (
-    <NavigationPlaylistItem playlist={p} key={p.id} />
-  ));
-
   const listItems: NavigationLinkItem[] = [
-    { title: t("home"), link: "/", icon: <Home /> },
-    { title: t("playQueue"), link: "/nowplaying", icon: <PlaylistPlay /> },
-    { title: t("plugins"), link: "/plugins", icon: <Extension /> },
-    { title: t("settings"), link: "/settings", icon: <Settings /> },
-    { title: t("about"), link: "/about", icon: <Info /> },
-    { title: t("favorites"), link: "/favorites/tracks", icon: <Star /> },
-    { title: t("playlists"), link: "/playlists", icon: <Menu /> },
+    { title: t("home"), link: "/", icon: <FaHouse /> },
+    { title: t("playQueue"), link: "/nowplaying", icon: <ListMusicIcon /> },
+    { title: t("plugins"), link: "/plugins", icon: <FaPuzzlePiece /> },
+    { title: t("settings"), link: "/settings", icon: <FaGear /> },
+    { title: t("about"), link: "/about", icon: <FaCircleInfo /> },
+    { title: t("favorites"), link: "/favorites/tracks", icon: <FaStar /> },
+    {
+      title: t("playlists"),
+      link: "/playlists",
+      icon: <ListPlusIcon />,
+      action: openDialog,
+    },
   ];
 
   return (
-    <List>
-      {listItems.map((l) => (
-        <NavigationLink key={l.title} item={l} />
-      ))}
-      <ListItem disablePadding>
-        <ListItemButton onClick={openDialog}>
-          <ListItemIcon>
-            <Tooltip title={t("addPlaylist")} placement="right">
-              <PlaylistAdd />
-            </Tooltip>
-          </ListItemIcon>
-          <ListItemText>{t("addPlaylist")}</ListItemText>
-        </ListItemButton>
-      </ListItem>
-      {navbarOpen ? playlistItems : null}
+    <>
+      <div className="flex flex-col">
+        {listItems.map((l) => (
+          <NavigationLink key={l.title} item={l} />
+        ))}
+      </div>
       <AddPlaylistDialog open={dialogOpen} setOpen={setDialogOpen} />
-    </List>
+    </>
   );
 };
 

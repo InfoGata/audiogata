@@ -1,4 +1,4 @@
-import { Grid, Slider, Typography } from "@mui/material";
+import { Slider } from "@/components/ui/slider";
 import React from "react";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
 import { seek } from "../store/reducers/trackReducer";
@@ -12,37 +12,31 @@ const Progress: React.FC = () => {
   const seekTime = useAppSelector((state) => state.track.seekTime);
   const dispatch = useAppDispatch();
 
-  const onChange = (_: Event, value: number | number[]) => {
+  const onChange = (value: number[]) => {
     setIsDragging(true);
-    setNewElapsed(value as number);
+    setNewElapsed(value[0]);
   };
 
-  const onChangeCommited = (_: any, value: number | number[]) => {
+  const onChangeCommited = (value: number[]) => {
     setIsDragging(false);
-    const newSeekTime = value as number;
+    const newSeekTime = value[0];
     dispatch(seek(newSeekTime));
   };
 
   const displayElapsed = isDragging ? newElapsed : seekTime || elapsed || 0;
   const totalDuration = currentTrack && currentTrack.duration;
   return (
-    <Grid item={true} container={true} spacing={1}>
-      <Grid item={true}>
-        <Typography variant="body2">{formatSeconds(displayElapsed)}</Typography>
-      </Grid>
-      <Grid item={true} xs={true}>
-        <Slider
-          min={0}
-          max={totalDuration}
-          value={displayElapsed}
-          onChange={onChange}
-          onChangeCommitted={onChangeCommited}
-        />
-      </Grid>
-      <Grid item={true}>
-        <Typography variant="body2">{formatSeconds(totalDuration)}</Typography>
-      </Grid>
-    </Grid>
+    <div className="flex flex-row w-full items-center gap-1">
+      <p>{formatSeconds(displayElapsed)}</p>
+      <Slider
+        min={0}
+        max={totalDuration}
+        value={[displayElapsed]}
+        onValueChange={onChange}
+        onValueCommit={onChangeCommited}
+      />
+      <p>{formatSeconds(totalDuration)}</p>
+    </div>
   );
 };
 

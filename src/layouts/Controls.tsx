@@ -1,21 +1,4 @@
-import {
-  FastForward,
-  FastRewind,
-  Forward10,
-  Forward30,
-  Forward5,
-  Pause,
-  PlayArrow,
-  Repeat,
-  RepeatOne,
-  Replay10,
-  Replay30,
-  Replay5,
-  Shuffle,
-  SkipNext,
-  SkipPrevious,
-} from "@mui/icons-material";
-import { IconButton } from "@mui/material";
+import { Button } from "@/components/ui/button";
 import React from "react";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
 import {
@@ -30,6 +13,24 @@ import {
 import { defaultSkipTime } from "../utils";
 import PlaybackRate from "./PlaybackRate";
 import Volume from "./Volume";
+import {
+  MdSkipNext,
+  MdSkipPrevious,
+  MdReplay5,
+  MdForward5,
+  MdForward10,
+  MdForward30,
+  MdFastForward,
+  MdReplay10,
+  MdReplay30,
+  MdFastRewind,
+  MdPlayArrow,
+  MdPause,
+  MdShuffle,
+  MdRepeatOne,
+  MdRepeat,
+} from "react-icons/md";
+import { cn } from "@/lib/utils";
 
 const getForwardIcon = (time?: number) => {
   if (!time) {
@@ -38,13 +39,13 @@ const getForwardIcon = (time?: number) => {
 
   switch (time) {
     case 5:
-      return <Forward5 />;
+      return <MdForward5 />;
     case 10:
-      return <Forward10 />;
+      return <MdForward10 />;
     case 30:
-      return <Forward30 />;
+      return <MdForward30 />;
     default:
-      return <FastForward />;
+      return <MdFastForward />;
   }
 };
 
@@ -55,13 +56,13 @@ const getRewindIcon = (time?: number) => {
 
   switch (time) {
     case 5:
-      return <Replay5 />;
+      return <MdReplay5 />;
     case 10:
-      return <Replay10 />;
+      return <MdReplay10 />;
     case 30:
-      return <Replay30 />;
+      return <MdReplay30 />;
     default:
-      return <FastRewind />;
+      return <MdFastRewind />;
   }
 };
 
@@ -78,7 +79,7 @@ const Controls: React.FC = () => {
   );
 
   const dispatch = useAppDispatch();
-  const playIcon = isPlaying ? <Pause /> : <PlayArrow />;
+  const playIcon = isPlaying ? <MdPause /> : <MdPlayArrow />;
 
   const onToggleShuffle = () => dispatch(toggleShuffle());
   const onChangeRepeat = () => dispatch(changeRepeat());
@@ -88,42 +89,44 @@ const Controls: React.FC = () => {
   const onFastFoward = () => dispatch(fastFoward());
   const onRewind = () => dispatch(rewind());
 
-  const shuffleColor = shuffle ? "primary" : "inherit";
-  const repeatColor = repeat ? "primary" : "inherit";
   return (
-    <>
-      <IconButton size="small" onClick={onToggleShuffle}>
-        <Shuffle color={shuffleColor} />
-      </IconButton>
+    <div>
+      <Button size="icon" variant="ghost" onClick={onToggleShuffle}>
+        <MdShuffle
+          className={cn(shuffle ? "text-foreground" : "text-muted-foreground")}
+        />
+      </Button>
       {showForwardAndRewind && (
-        <IconButton size="small" onClick={onRewind}>
+        <Button size="icon" variant="ghost" onClick={onRewind}>
           {getRewindIcon(customForwardAndRewindTime)}
-        </IconButton>
+        </Button>
       )}
-      <IconButton size="small" onClick={onPreviousClick}>
-        <SkipPrevious />
-      </IconButton>
-      <IconButton size="small" onClick={onTogglePlay}>
+      <Button size="icon" variant="ghost" onClick={onPreviousClick}>
+        <MdSkipPrevious />
+      </Button>
+      <Button size="icon" variant="ghost" onClick={onTogglePlay}>
         {playIcon}
-      </IconButton>
-      <IconButton size="small" onClick={onNextClick}>
-        <SkipNext />
-      </IconButton>
+      </Button>
+      <Button size="icon" variant="ghost" onClick={onNextClick}>
+        <MdSkipNext />
+      </Button>
       {showForwardAndRewind && (
-        <IconButton size="small" onClick={onFastFoward}>
+        <Button size="icon" variant="ghost" onClick={onFastFoward}>
           {getForwardIcon(customForwardAndRewindTime)}
-        </IconButton>
+        </Button>
       )}
-      <IconButton size="small" onClick={onChangeRepeat}>
+      <Button size="icon" variant="ghost" onClick={onChangeRepeat}>
         {repeatOne ? (
-          <RepeatOne color="primary" />
+          <MdRepeatOne />
         ) : (
-          <Repeat color={repeatColor} />
+          <MdRepeat
+            className={cn(repeat ? "text-foreground" : "text-muted-foreground")}
+          />
         )}
-      </IconButton>
+      </Button>
       <Volume />
       <PlaybackRate />
-    </>
+    </div>
   );
 };
 

@@ -7,6 +7,7 @@ import {
   ArtistAlbumsResult,
   GetLyricsRequest,
   GetLyricsResponse,
+  GetSearchSuggestionRequest,
   GetTrackRequest,
   GetTrackUrlRequest,
   LookupTrackRequest,
@@ -22,6 +23,7 @@ import {
   SearchPlaylistResult,
   SearchRequest,
   SearchTrackResult,
+  Theme,
   Track,
   UserPlaylistRequest,
 } from "./plugintypes";
@@ -61,6 +63,10 @@ export interface PluginMethodInterface extends PlayerComponent {
   onLookupTrackUrls(url: string[]): Promise<Track[]>;
   onLookupTrack(request: LookupTrackRequest): Promise<Track>;
   onGetLyrics(request: GetLyricsRequest): Promise<GetLyricsResponse>;
+  onGetSearchSuggestions(
+    request: GetSearchSuggestionRequest
+  ): Promise<string[]>;
+  onChangeTheme(theme: Theme): Promise<void>;
 }
 
 export interface PluginMessage {

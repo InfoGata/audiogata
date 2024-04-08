@@ -84,10 +84,7 @@ const SelectPlugin: React.FC<SelectPluginProps> = (props) => {
         <SelectTrigger>
           <SelectValue placeholder={t("plugin")} />
         </SelectTrigger>
-        <SelectContent id="select-plugin">
-          {!!noneOption && <SelectItem value="">{t("none")}</SelectItem>}
-          {optionsComponents}
-        </SelectContent>
+        <SelectContent id="select-plugin">{optionsComponents}</SelectContent>
       </Select>
     </div>
   );
