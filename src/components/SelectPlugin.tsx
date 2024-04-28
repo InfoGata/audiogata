@@ -24,14 +24,8 @@ interface SelectPluginProps {
 }
 
 const SelectPlugin: React.FC<SelectPluginProps> = (props) => {
-  const {
-    methodName,
-    setPluginId,
-    pluginId,
-    noneOption,
-    labelText,
-    useCurrentPlugin,
-  } = props;
+  const { methodName, setPluginId, pluginId, labelText, useCurrentPlugin } =
+    props;
   const { plugins } = usePlugins();
   const [options, setOptions] = React.useState<[string, string][]>();
   const dispatch = useAppDispatch();

@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "homepage": "",
+  "type": "module",
   "main": "./out/main/index.js",
   "dependencies": {
     "@awesome-cordova-plugins/music-controls": "^5.44.0",
@@ -39,7 +40,7 @@
     "@testing-library/user-event": "^13.5.0",
     "@types/can-autoplay": "^3.0.1",
     "@types/dompurify": "^2.3.3",
-    "@types/node": "^16.11.41",
+    "@types/node": "^20.12.7",
     "@types/react-redux": "^7.1.16",
     "@types/webpack-env": "^1.16.0",
     "@types/wicg-mediasession": "^1.1.0",
@@ -80,8 +81,7 @@
     "sonner": "^1.4.3",
     "tailwind-merge": "^2.2.1",
     "tailwindcss-animate": "^1.0.7",
-    "typescript": "^4.7.4",
-    "vite-plugin-pwa": "^0.14.6"
+    "typescript": "^5.2.2"
   },
   "scripts": {
     "start": "vite",
@@ -118,11 +118,11 @@
     "@types/react-dom": "^18.2.7",
     "@typescript-eslint/eslint-plugin": "^5.56.0",
     "@typescript-eslint/parser": "^5.56.0",
-    "@vitejs/plugin-react": "^3.1.0",
+    "@vitejs/plugin-react": "^4.2.1",
     "autoprefixer": "^10.4.18",
     "electron": "github:castlabs/electron-releases#v23.1.4+wvcus",
     "electron-builder": "^24.1.1",
-    "electron-vite": "^1.0.21",
+    "electron-vite": "^2.1.0",
     "eslint": "^8.36.0",
     "eslint-plugin-i18next": "^6.0.0-2",
     "eslint-plugin-import": "^2.27.5",
@@ -134,8 +134,8 @@
     "jsdom": "^21.1.1",
     "postcss": "^8.4.35",
     "tailwindcss": "^3.4.1",
-    "vite": "^4.2.1",
-    "vite-plugin-svgr": "^2.4.0",
-    "vitest": "^0.29.8"
+    "vite": "^5.2.1",
+    "vite-plugin-pwa": "^0.19.8",
+    "vitest": "^1.5.0"
   }
 }
