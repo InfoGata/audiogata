@@ -1,20 +1,21 @@
+import { LinkRouterProps } from "@/types";
+import { Link } from "@tanstack/react-router";
 import React from "react";
-import { Link } from "react-router-dom";
 
 export type AboutLinkProps = {
   icon?: JSX.Element;
   title: string;
   description?: string;
   url?: string;
-  internalPath?: string;
-  onClick?: () => void;
+  link?: LinkRouterProps;
+  action?: () => void;
 };
 
 const AboutLink: React.FC<AboutLinkProps> = (props) => {
-  const { icon, description, title, url, internalPath, onClick } = props;
+  const { icon, description, title, url, action, link } = props;
   const InternalComponent = (props: { children: React.ReactNode }) => {
-    if (internalPath) {
-      return <Link to={internalPath}>{props.children}</Link>;
+    if (link) {
+      return <Link {...link}>{props.children}</Link>;
     }
     if (url) {
       return (
@@ -23,9 +24,9 @@ const AboutLink: React.FC<AboutLinkProps> = (props) => {
         </a>
       );
     }
-    if (onClick) {
+    if (action) {
       return (
-        <button className="w-full" onClick={onClick}>
+        <button className="w-full" onClick={action}>
           {props.children}
         </button>
       );

@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link } from "@tanstack/react-router";
 
 interface ArtistLinkProps {
   pluginId?: string;
@@ -8,12 +8,13 @@ interface ArtistLinkProps {
 
 const ArtistLink: React.FC<ArtistLinkProps> = (props) => {
   const { pluginId, name, apiId } = props;
-  const stopPropagation = (e: React.MouseEvent) => {
+  const stopPropagation = (e: React.MouseEvent<"a">) => {
     e.stopPropagation();
   };
   return (
     <Link
-      to={`/plugins/${pluginId}/artists/${apiId}`}
+      to="/plugins/$pluginId/artists/$apiId"
+      params={{ pluginId: pluginId || "", apiId: apiId || "" }}
       onClick={stopPropagation}
     >
       {name}

@@ -36,6 +36,7 @@
     "@radix-ui/react-tooltip": "^1.0.7",
     "@reduxjs/toolkit": "^1.5.0",
     "@sentry/browser": "^7.74.0",
+    "@tanstack/react-router": "^1.29.2",
     "@testing-library/react": "^13.3.0",
     "@testing-library/user-event": "^13.5.0",
     "@types/can-autoplay": "^3.0.1",
@@ -74,14 +75,14 @@
     "react-query": "^3.39.1",
     "react-redux": "^7.2.2",
     "react-responsive": "^10.0.0",
-    "react-router-dom": "^6.21.1",
     "redux": "^4.0.5",
     "redux-persist": "^6.0.0",
     "semver": "^7.5.0",
     "sonner": "^1.4.3",
     "tailwind-merge": "^2.2.1",
     "tailwindcss-animate": "^1.0.7",
-    "typescript": "^5.2.2"
+    "typescript": "^5.2.2",
+    "zod": "^3.23.4"
   },
   "scripts": {
     "start": "vite",
@@ -113,6 +114,9 @@
   },
   "devDependencies": {
     "@capacitor/cli": "^3.5.0",
+    "@tanstack/router-devtools": "^1.31.1",
+    "@tanstack/router-vite-plugin": "^1.30.0",
+    "@testing-library/jest-dom": "^6.4.2",
     "@types/lodash": "^4.14.182",
     "@types/react": "^18.2.18",
     "@types/react-dom": "^18.2.7",

@@ -1,4 +1,11 @@
 import {
+  AnyRoute,
+  LinkOptions,
+  LinkProps,
+  RegisteredRouter,
+  ToPathOption,
+} from "@tanstack/react-router";
+import {
   Album,
   Artist,
   ArtistInfo,
@@ -89,6 +96,16 @@ export interface PlayerComponent {
   [PlayerComponentType.onPlay]: (request: PlayTrackRequest) => Promise<void>;
   [PlayerComponentType.onSetPlaybackRate]: (rate: number) => Promise<void>;
 }
+
+export type LinkToPathProps<
+  TRouteTree extends AnyRoute = RegisteredRouter["routeTree"],
+  TTo extends string = "",
+> = ToPathOption<TRouteTree, "/", TTo>;
+
+export type LinkRouterProps<
+  TRouteTree extends AnyRoute = RegisteredRouter["routeTree"],
+  TTo extends string = "",
+> = LinkOptions<TRouteTree, "/", TTo> & LinkProps;
 
 export interface NavigationLinkItem {
   title: string;

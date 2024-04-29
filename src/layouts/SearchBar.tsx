@@ -1,5 +1,4 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
 import {
   CommandInput,
   CommandList,
@@ -12,6 +11,7 @@ import usePlugins from "@/hooks/usePlugins";
 import { PluginFrameContainer } from "@/PluginsContext";
 import { filterAsync } from "@/utils";
 import { debounce } from "lodash";
+import { useNavigate } from "@tanstack/react-router";
 
 const SearchBar: React.FC = () => {
   const currentPluginId = useAppSelector(
@@ -99,7 +99,7 @@ const SearchBar: React.FC = () => {
   };
 
   const searchQuery = (query: string) => {
-    navigate(`/search?q=${query}`);
+    navigate({ to: "/search", search: { q: query } });
   };
 
   const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {

@@ -5,7 +5,6 @@ import { MoreHorizontalIcon } from "lucide-react";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { FaTrash } from "react-icons/fa6";
-import { Link } from "react-router-dom";
 import { PluginFrameContainer } from "../../PluginsContext";
 import {
   DropdownMenu,
@@ -13,6 +12,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
+import { Link } from "@tanstack/react-router";
 
 interface PluginContainerProps {
   plugin: PluginFrameContainer;
@@ -42,7 +42,8 @@ const PluginContainer: React.FC<PluginContainerProps> = (props) => {
           {plugin.hasOptions && (
             <Link
               className={cn(buttonVariants({ variant: "outline" }))}
-              to={`/plugins/${plugin.id}/options`}
+              to="/plugins/$pluginId/options"
+              params={{ pluginId: plugin.id || "" }}
             >
               {t("options")}
             </Link>

@@ -1,7 +1,7 @@
 import React from "react";
 import { DropdownMenuItem } from "./ui/dropdown-menu";
-import { Link } from "react-router-dom";
 import { ItemMenuType } from "@/types";
+import { Link } from "@tanstack/react-router";
 
 export interface DropdownItemProps {
   title: string;

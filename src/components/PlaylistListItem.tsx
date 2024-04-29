@@ -3,9 +3,9 @@ import React from "react";
 import { AvatarImage, Avatar } from "./ui/avatar";
 import ItemMenu from "./ItemMenu";
 import { ItemMenuType } from "@/types";
-import { Link } from "react-router-dom";
 import { PlaylistInfo } from "@/plugintypes";
 import { DropdownItemProps } from "./DropdownItem";
+import { Link } from "@tanstack/react-router";
 
 type Props = {
   playlist: PlaylistInfo;

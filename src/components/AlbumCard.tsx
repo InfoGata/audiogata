@@ -2,9 +2,9 @@ import { Album } from "@/plugintypes";
 import { getThumbnailImage, playlistThumbnailSize } from "@/utils";
 import DOMPurify from "dompurify";
 import React from "react";
-import { Link } from "react-router-dom";
 import ItemMenu from "./ItemMenu";
 import ArtistLinks from "./ArtistLinks";
+import { Link } from "@tanstack/react-router";
 
 type Props = {
   album: Album;
@@ -13,12 +13,14 @@ type Props = {
 const AlbumCard: React.FC<Props> = (props) => {
   const { album } = props;
   const image = getThumbnailImage(album.images, playlistThumbnailSize);
-  const url = `/plugins/${album.pluginId}/albums/${album.apiId}`;
   const sanitizer = DOMPurify.sanitize;
 
   return (
     <div>
-      <Link to={url}>
+      <Link
+        to="/plugins/$pluginId/albums/$apiId"
+        params={{ pluginId: album.pluginId || "", apiId: album.apiId || "" }}
+      >
         <img
           src={image}
           className="rounded-md bg-gray-200 w-full h-64 object-cover"
@@ -27,7 +29,13 @@ const AlbumCard: React.FC<Props> = (props) => {
       <div className="mt-3">
         <div>
           <div className="flex justify-between">
-            <Link to={url}>
+            <Link
+              to="/plugins/$pluginId/albums/$apiId"
+              params={{
+                pluginId: album.pluginId || "",
+                apiId: album.apiId || "",
+              }}
+            >
               <h3
                 className="font-medium"
                 dangerouslySetInnerHTML={{

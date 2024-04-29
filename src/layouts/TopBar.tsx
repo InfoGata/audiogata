@@ -9,10 +9,10 @@ import { MenuIcon } from "lucide-react";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { FaGithub, FaHeart } from "react-icons/fa6";
-import { Link } from "react-router-dom";
 import { useAppDispatch } from "../store/hooks";
 import { toggleNavbar } from "../store/reducers/uiReducer";
 import SearchBar from "./SearchBar";
+import { Link } from "@tanstack/react-router";
 
 const TopBar: React.FC = () => {
   const { t } = useTranslation();

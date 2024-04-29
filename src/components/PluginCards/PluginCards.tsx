@@ -1,6 +1,5 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
-import { useNavigate } from "react-router";
 import { PluginDescription, defaultPlugins } from "../../default-plugins";
 import usePlugins from "../../hooks/usePlugins";
 import {
@@ -11,6 +10,7 @@ import {
 import Spinner from "../Spinner";
 import PluginCard from "./PluginCard";
 import { toast } from "sonner";
+import { useNavigate } from "@tanstack/react-router";
 
 const PluginCards: React.FC = () => {
   const { t } = useTranslation();
@@ -31,7 +31,7 @@ const PluginCards: React.FC = () => {
       }
       await addPlugin(plugin);
       toast(`${t("addPluginSuccess")}: ${plugin.name}`);
-      navigate("/plugins");
+      navigate({ to: "/plugins" });
     }
     setBackdropOpen(false);
   };

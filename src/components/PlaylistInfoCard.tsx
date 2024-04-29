@@ -1,8 +1,8 @@
 import DOMPurify from "dompurify";
 import React from "react";
-import { Link } from "react-router-dom";
 import { ImageInfo } from "../plugintypes";
 import PlaylistImage from "./PlaylistImage";
+import { Link } from "@tanstack/react-router";
 
 interface SubtitleLink {
   name?: string;

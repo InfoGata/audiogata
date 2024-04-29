@@ -3,17 +3,38 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import { IconContext } from "react-icons";
 import { Provider } from "react-redux";
-import { RouterProvider } from "react-router-dom";
 import { PersistGate } from "redux-persist/integration/react";
 import "./i18n";
 import "./index.css";
-import router from "./routes";
 import store, { persistor } from "./store/store";
 import { ThemeProvider } from "./providers/ThemeProvider";
+import {
+  RouterProvider,
+  createBrowserHistory,
+  createHashHistory,
+  createRouter,
+} from "@tanstack/react-router";
+import isElectron from "is-electron";
+import { routeTree } from "./routeTree.gen";
+import { Album, Artist, PlaylistInfo } from "./plugintypes";
 
 Sentry.init({
   dsn: "https://d99bb253ac5a4b53a32d48697f165e34@app.glitchtip.com/4798",
 });
+
+const history = isElectron() ? createHashHistory() : createBrowserHistory();
+const router = createRouter({ routeTree, history });
+
+declare module "@tanstack/react-router" {
+  interface Register {
+    router: typeof router;
+  }
+  interface HistoryState {
+    playlistInfo?: PlaylistInfo;
+    album?: Album;
+    artist?: Artist;
+  }
+}
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>

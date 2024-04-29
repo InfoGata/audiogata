@@ -1,5 +1,4 @@
 import React from "react";
-import { NavLink } from "react-router-dom";
 import { NavigationLinkItem } from "../types";
 import { cn } from "@/lib/utils";
 import { Button, buttonVariants } from "@/components/ui/button";
@@ -10,6 +9,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { Link } from "@tanstack/react-router";
 
 interface NavigationLinkProps {
   item: NavigationLinkItem;
@@ -23,15 +23,13 @@ const NavigationLink: React.FC<NavigationLinkProps> = (props) => {
     className?: string;
   }) => {
     return item.link ? (
-      <NavLink
-        className={({ isActive }) =>
-          cn(props.className, isActive && "bg-muted")
-        }
+      <Link
+        className={props.className}
+        activeProps={{ className: "bg-muted" }}
         to={item.link}
-        end
       >
         {props.children}
-      </NavLink>
+      </Link>
     ) : (
       <Button
         className={cn(props.className, "w-full")}
@@ -46,23 +44,25 @@ const NavigationLink: React.FC<NavigationLinkProps> = (props) => {
     <TooltipProvider delayDuration={200}>
       <Tooltip>
         <TooltipTrigger>
-          <Component
-            className={cn(
-              buttonVariants({ variant: "ghost" }),
-              "relative flex h-12 justify-start"
-            )}
-          >
-            {item.icon}
-            <span
+          <span>
+            <Component
               className={cn(
-                "absolute left-12 text-base duration-200",
-                !open &&
-                  "text-background opacity-0 transition-all duration-300 group-hover:z-50 group-hover:ml-4 group-hover:rounded group-hover:bg-foreground group-hover:p-2 group-hover:opacity-100"
+                buttonVariants({ variant: "ghost" }),
+                "relative flex h-12 justify-start"
               )}
             >
-              {item.title}
-            </span>
-          </Component>
+              {item.icon}
+              <span
+                className={cn(
+                  "absolute left-12 text-base duration-200",
+                  !open &&
+                    "text-background opacity-0 transition-all duration-300 group-hover:z-50 group-hover:ml-4 group-hover:rounded group-hover:bg-foreground group-hover:p-2 group-hover:opacity-100"
+                )}
+              >
+                {item.title}
+              </span>
+            </Component>
+          </span>
         </TooltipTrigger>
         <TooltipContent side="right">
           <p>{item.title}</p>
