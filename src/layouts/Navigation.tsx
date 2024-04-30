@@ -37,7 +37,7 @@ const Navigation: React.FC = () => {
 
   return (
     <>
-      <div className="flex flex-col">
+      <div className="flex flex-col gap-1">
         {listItems.map((l) => (
           <NavigationLink key={l.title} item={l} />
         ))}
