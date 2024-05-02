@@ -34,7 +34,7 @@ const TopItemCards: React.FC = () => {
       </div>
       <div className="flex gap-5 w-full overflow-auto mt-5">
         {query.data?.tracks?.items.map((t) => (
-          <TrackCard track={t} />
+          <TrackCard key={t.id} track={t} />
         ))}
       </div>
     </>
