@@ -60,7 +60,7 @@ const FavoriteTracks: React.FC = () => {
   }
 
   return (
-    <>
+    <div>
       <Button variant="ghost" size="icon" onClick={onPlay}>
         <CirclePlayIcon />
       </Button>
@@ -76,7 +76,7 @@ const FavoriteTracks: React.FC = () => {
         onSuccess={onImport}
         setOpen={setImportDialogOpen}
       />
-    </>
+    </div>
   );
 };
 
