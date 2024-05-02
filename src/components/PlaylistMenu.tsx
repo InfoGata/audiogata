@@ -138,7 +138,7 @@ const PlaylistMenu: React.FC<PlaylistMenuProps> = (props) => {
             tracks={tracklist}
           />
           {selected &&
-            selected.size && [
+            selected.size ? [
               <DropdownMenuSeparator />,
               ...definedSelectedItems.map((i) => (
                 <DropdownItem key={i.title} {...i} />
@@ -148,7 +148,7 @@ const PlaylistMenu: React.FC<PlaylistMenuProps> = (props) => {
                 playlists={playlists}
                 tracks={selectedTracks}
               />,
-            ]}
+            ] : []}
         </DropdownMenuContent>
       </DropdownMenu>
       <AddPlaylistDialog
