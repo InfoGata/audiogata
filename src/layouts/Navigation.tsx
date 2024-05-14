@@ -1,4 +1,4 @@
-import { ListMusicIcon, ListPlusIcon } from "lucide-react";
+import { ListMusicIcon, ListPlusIcon, MenuIcon } from "lucide-react";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import {
@@ -27,9 +27,9 @@ const Navigation: React.FC = () => {
     { title: t("settings"), link: "/settings", icon: <FaGear /> },
     { title: t("about"), link: "/about", icon: <FaCircleInfo /> },
     { title: t("favorites"), link: "/favorites/tracks", icon: <FaStar /> },
+    { title: t("playlists"), link: "/playlists", icon: <MenuIcon /> },
     {
-      title: t("playlists"),
-      link: "/playlists",
+      title: t("addPlaylist"),
       icon: <ListPlusIcon />,
       action: openDialog,
     },

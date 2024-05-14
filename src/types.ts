@@ -109,7 +109,7 @@ export type LinkRouterProps<
 
 export interface NavigationLinkItem {
   title: string;
-  link: string;
+  link?: LinkToPathProps;
   action?: () => void;
   icon: React.JSX.Element;
 }
