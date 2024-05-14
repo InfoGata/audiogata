@@ -35,7 +35,7 @@ export const Root: React.FC = () => {
     <QueryClientProvider client={queryClient}>
       <PluginsProvider>
         <OutsideCallConsumer config={callConfig}>
-          <div className="flex min-h-screen overflow-hidden">
+          <div className="flex h-screen overflow-hidden">
             <Toaster closeButton />
             <TopBar />
             <SideBar />
