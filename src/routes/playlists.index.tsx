@@ -67,12 +67,12 @@ const Playlists: React.FC = () => {
     <>
       <div className="flex flex-col gap-2">
         <h2 className="text-2xl font-bold">{t("playlists")}</h2>
-        <div>{pluginPlaylists}</div>
         <div>
           <Button variant="outline" onClick={onOpenImportDialog}>
             {t("importPlaylistByUrl")}
           </Button>
         </div>
+        <div>{pluginPlaylists}</div>
       </div>
       <div>
         {playlists.map((p) => (

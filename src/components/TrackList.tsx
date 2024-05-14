@@ -10,6 +10,7 @@ import { Table, TableBody, TableHead, TableHeader, TableRow } from "./ui/table";
 import { Checkbox } from "./ui/checkbox";
 import { CheckedState } from "@radix-ui/react-checkbox";
 import { DropdownItemProps } from "./DropdownItem";
+import { useAppSelector } from "@/store/hooks";
 
 interface TrackListProps {
   tracks: Track[];
@@ -37,6 +38,7 @@ const TrackList: React.FC<TrackListProps> = (props) => {
   } = props;
   const [activeId, setActiveId] = React.useState<string | null>(null);
   const { t } = useTranslation();
+  const currentTrack = useAppSelector((state) => state.track.currentTrack);
 
   const handleDragStart = (event: DragStartEvent) => {
     setActiveId(event.active.id);
@@ -92,6 +94,7 @@ const TrackList: React.FC<TrackListProps> = (props) => {
               key={track.id || track.apiId}
               onClick={() => onTrackClick(track)}
               disabled={dragDisabled}
+              currentItem={currentTrack?.id === track.id}
             >
               <PlaylistItem
                 track={track}
