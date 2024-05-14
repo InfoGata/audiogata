@@ -16,7 +16,7 @@ const PlayerThumbnail: React.FC = () => {
       {trackLoading && (
         <Loader2 className="w-8 h-8 animate-spin top-12 left-6 absolute" />
       )}
-      <img alt="thumbnail" src={image} />
+      <img alt="" src={image} />
     </div>
   );
 };
