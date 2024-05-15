@@ -6,6 +6,7 @@ import Spinner from "@/components/Spinner";
 import { db } from "@/database";
 import usePlugins from "@/hooks/usePlugins";
 import { getPluginSubdomain } from "@/utils";
+import Title from "@/components/Title";
 
 const PluginOptions: React.FC = () => {
   const { pluginId } = Route.useParams();
@@ -75,9 +76,11 @@ const PluginOptions: React.FC = () => {
   const srcUrl = `${getPluginSubdomain(plugin.id)}/ui.html`;
   return (
     <div>
-      <h2 className="text-3xl font-bold">
-        {t("plugins:pluginOptions", { pluginName: plugin.name })}
-      </h2>
+      <div className="mb-2">
+        <Title
+          title={t("plugins:pluginOptions", { pluginName: plugin.name })}
+        />
+      </div>
       {optionsHtml && (
         <iframe
           ref={ref}

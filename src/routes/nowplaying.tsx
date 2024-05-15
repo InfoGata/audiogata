@@ -19,6 +19,7 @@ import {
   setTracks,
 } from "../store/reducers/trackReducer";
 import { Button } from "@/components/ui/button";
+import Title from "@/components/Title";
 
 const NowPlaying: React.FC = () => {
   const { t } = useTranslation();
@@ -91,7 +92,7 @@ const NowPlaying: React.FC = () => {
 
   return (
     <>
-      <h2 className="text-2xl">{t("playQueue")}</h2>
+      <Title title={t("playQueue")} />
       <Button
         variant="ghost"
         size="icon"

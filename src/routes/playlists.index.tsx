@@ -13,6 +13,7 @@ import { addPlaylist, deletePlaylist } from "../store/reducers/playlistReducer";
 import { filterAsync } from "../utils";
 import { ItemMenuType } from "@/types";
 import { toast } from "sonner";
+import Title from "@/components/Title";
 
 const Playlists: React.FC = () => {
   const { plugins } = usePlugins();
@@ -65,8 +66,10 @@ const Playlists: React.FC = () => {
 
   return (
     <>
+      <div className="mb-2">
+        <Title title={t("playlists")} />
+      </div>
       <div className="flex flex-col gap-2">
-        <h2 className="text-2xl font-bold">{t("playlists")}</h2>
         <div>
           <Button variant="outline" onClick={onOpenImportDialog}>
             {t("importPlaylistByUrl")}
