@@ -56,7 +56,7 @@ const NavigationLink: React.FC<NavigationLinkProps> = (props) => {
                 className={cn(
                   "absolute left-12 text-base duration-200",
                   !open &&
-                    "text-background opacity-0 transition-all duration-300 group-hover:z-50 group-hover:ml-4 group-hover:rounded group-hover:bg-foreground group-hover:p-2 group-hover:opacity-100"
+                    "text-background hidden transition-all duration-300 group-hover:z-50 group-hover:ml-4 group-hover:rounded group-hover:bg-foreground group-hover:p-2 group-hover:opacity-100"
                 )}
               >
                 {item.title}
