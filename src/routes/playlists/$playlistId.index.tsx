@@ -1,26 +1,14 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { DropdownItemProps } from "@/components/DropdownItem";
-import { Button } from "@/components/ui/button";
-import { ItemMenuType } from "@/types";
-import { useLiveQuery } from "dexie-react-hooks";
-import {
-  CirclePlayIcon,
-  InfoIcon,
-  PencilIcon,
-  Trash,
-  TrashIcon,
-} from "lucide-react";
-import React from "react";
-import { useTranslation } from "react-i18next";
-import { MdUploadFile } from "react-icons/md";
 import AddPlaylistDialog from "@/components/AddPlaylistDialog";
 import ConvertTracksDialog from "@/components/ConvertTracksDialog";
+import { DropdownItemProps } from "@/components/DropdownItem";
 import EditPlaylistDialog from "@/components/EditPlaylistDialog";
 import ImportDialog from "@/components/ImportDialog";
+import PlayButton from "@/components/PlayButton";
 import PlaylistMenu from "@/components/PlaylistMenu";
 import SelectTrackListPlugin from "@/components/SelectTrackListPlugin";
 import Spinner from "@/components/Spinner";
 import TrackList from "@/components/TrackList";
+import { Button } from "@/components/ui/button";
 import { db } from "@/database";
 import useSelected from "@/hooks/useSelected";
 import { Playlist, Track } from "@/plugintypes";
@@ -30,6 +18,13 @@ import {
   setPlaylistTracks,
 } from "@/store/reducers/playlistReducer";
 import { playQueue, setTrack, setTracks } from "@/store/reducers/trackReducer";
+import { ItemMenuType } from "@/types";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { useLiveQuery } from "dexie-react-hooks";
+import { InfoIcon, PencilIcon, Trash, TrashIcon } from "lucide-react";
+import React from "react";
+import { useTranslation } from "react-i18next";
+import { MdUploadFile } from "react-icons/md";
 
 const PlaylistTracks: React.FC = () => {
   const { playlistId } = Route.useParams();
@@ -163,9 +158,7 @@ const PlaylistTracks: React.FC = () => {
               <PencilIcon />
             </Button>
           </div>
-          <Button variant="ghost" size="icon" onClick={playPlaylist}>
-            <CirclePlayIcon />
-          </Button>
+          <PlayButton onClick={playPlaylist} />
           <PlaylistMenu
             selected={selected}
             tracklist={tracks}

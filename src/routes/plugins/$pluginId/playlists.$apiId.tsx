@@ -1,10 +1,6 @@
-import { createFileRoute, useRouterState } from "@tanstack/react-router";
-import { Button } from "@/components/ui/button";
-import { CirclePlayIcon } from "lucide-react";
-import React from "react";
-import { useQuery } from "react-query";
 import ConfirmPluginDialog from "@/components/ConfirmPluginDialog";
 import Pager from "@/components/Pager";
+import PlayButton from "@/components/PlayButton";
 import PlaylistInfoCard from "@/components/PlaylistInfoCard";
 import PlaylistMenu from "@/components/PlaylistMenu";
 import Spinner from "@/components/Spinner";
@@ -16,6 +12,9 @@ import useSelected from "@/hooks/useSelected";
 import { PageInfo, PlaylistInfo, Track } from "@/plugintypes";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { playQueue, setTrack, setTracks } from "@/store/reducers/trackReducer";
+import { createFileRoute, useRouterState } from "@tanstack/react-router";
+import React from "react";
+import { useQuery } from "react-query";
 import { z } from "zod";
 
 const PluginPlaylist: React.FC = () => {
@@ -84,9 +83,7 @@ const PluginPlaylist: React.FC = () => {
           images={playlistInfo.images}
         />
       )}
-      <Button variant="ghost" size="icon" onClick={onPlayClick}>
-        <CirclePlayIcon />
-      </Button>
+      <PlayButton onClick={onPlayClick} />
       <PlaylistMenu
         selected={selected}
         tracklist={tracklist}

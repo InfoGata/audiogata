@@ -124,8 +124,8 @@ const PlaylistMenu: React.FC<PlaylistMenuProps> = (props) => {
     <>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button size="icon" variant="ghost">
-            <MoreHorizontalIcon fontSize="large" />
+          <Button size="icon" variant="ghost" className="w-14 h-14">
+            <MoreHorizontalIcon className="w-12 h-12" />
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent>
@@ -137,18 +137,19 @@ const PlaylistMenu: React.FC<PlaylistMenuProps> = (props) => {
             playlists={playlists}
             tracks={tracklist}
           />
-          {selected &&
-            selected.size ? [
-              <DropdownMenuSeparator />,
-              ...definedSelectedItems.map((i) => (
-                <DropdownItem key={i.title} {...i} />
-              )),
-              <PlaylistSubMenu
-                title={t("addSelectedToPlaylist")}
-                playlists={playlists}
-                tracks={selectedTracks}
-              />,
-            ] : []}
+          {selected && selected.size
+            ? [
+                <DropdownMenuSeparator />,
+                ...definedSelectedItems.map((i) => (
+                  <DropdownItem key={i.title} {...i} />
+                )),
+                <PlaylistSubMenu
+                  title={t("addSelectedToPlaylist")}
+                  playlists={playlists}
+                  tracks={selectedTracks}
+                />,
+              ]
+            : []}
         </DropdownMenuContent>
       </DropdownMenu>
       <AddPlaylistDialog

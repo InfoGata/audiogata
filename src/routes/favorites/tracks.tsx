@@ -1,11 +1,6 @@
-import { createFileRoute } from "@tanstack/react-router";
 import { DropdownItemProps } from "@/components/DropdownItem";
-import { Button } from "@/components/ui/button";
-import { useLiveQuery } from "dexie-react-hooks";
-import { CirclePlayIcon, FileUpIcon } from "lucide-react";
-import React from "react";
-import { useTranslation } from "react-i18next";
 import ImportDialog from "@/components/ImportDialog";
+import PlayButton from "@/components/PlayButton";
 import PlaylistMenu from "@/components/PlaylistMenu";
 import Spinner from "@/components/Spinner";
 import TrackList from "@/components/TrackList";
@@ -13,6 +8,11 @@ import { db } from "@/database";
 import { Playlist, Track } from "@/plugintypes";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { playQueue, setTrack, setTracks } from "@/store/reducers/trackReducer";
+import { createFileRoute } from "@tanstack/react-router";
+import { useLiveQuery } from "dexie-react-hooks";
+import { FileUpIcon } from "lucide-react";
+import React from "react";
+import { useTranslation } from "react-i18next";
 
 const FavoriteTracks: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -61,9 +61,7 @@ const FavoriteTracks: React.FC = () => {
 
   return (
     <div>
-      <Button variant="ghost" size="icon" onClick={onPlay}>
-        <CirclePlayIcon />
-      </Button>
+      <PlayButton onClick={onPlay} />
       <PlaylistMenu
         playlists={playlists}
         tracklist={tracks ?? []}
