@@ -7,6 +7,7 @@ import PlayButton from "@/components/PlayButton";
 import PlaylistMenu from "@/components/PlaylistMenu";
 import SelectTrackListPlugin from "@/components/SelectTrackListPlugin";
 import Spinner from "@/components/Spinner";
+import Title from "@/components/Title";
 import TrackList from "@/components/TrackList";
 import { Button } from "@/components/ui/button";
 import { db } from "@/database";
@@ -153,7 +154,7 @@ const PlaylistTracks: React.FC = () => {
       {playlist ? (
         <>
           <div className="flex">
-            <h3 className="text-4xl font-bold">{playlistInfo?.name}</h3>
+            <Title title={playlistInfo?.name} />
             <Button variant="ghost" size="icon" onClick={onEditMenuOpen}>
               <PencilIcon />
             </Button>

@@ -8,6 +8,7 @@ import Spinner from "@/components/Spinner";
 import usePagination from "@/hooks/usePagination";
 import usePlugins from "@/hooks/usePlugins";
 import { PageInfo, UserPlaylistRequest } from "@/plugintypes";
+import Title from "@/components/Title";
 
 const PluginPlaylists: React.FC = () => {
   const { plugins, pluginsLoaded } = usePlugins();
@@ -42,9 +43,7 @@ const PluginPlaylists: React.FC = () => {
   return plugin ? (
     <>
       <Spinner open={query.isLoading} />
-      <h1 className="text-4xl">
-        {t("playlists")}: {plugin.name}
-      </h1>
+      <Title title={t("playlists")} />
       <div>{playlistList}</div>
       <Pager
         hasNextPage={hasNextPage}

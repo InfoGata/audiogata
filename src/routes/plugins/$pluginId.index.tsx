@@ -17,6 +17,7 @@ import {
   getFileTypeFromPluginUrl,
   getPlugin,
 } from "@/utils";
+import Title from "@/components/Title";
 
 const PluginDetails: React.FC = () => {
   const { pluginId } = Route.useParams();
@@ -137,9 +138,7 @@ const PluginDetails: React.FC = () => {
     <>
       <Spinner open={loading} />
       <div>
-        <h1 className="text-3xl font-bold">
-          {t("plugins:pluginDetailsTitle")}
-        </h1>
+        <Title title={t("plugins:pluginDetailsTitle")} />
         <h2 className="text-2xl font-semibold">{pluginInfo.name}</h2>
         <div className="flex gap-2 flex-wrap">
           {pluginInfo.optionsHtml && (

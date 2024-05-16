@@ -22,6 +22,7 @@ interface TrackListProps {
   isSelected?: (id: string) => boolean;
   onTrackClick: (track: Track) => void;
   menuItems?: DropdownItemProps[];
+  noQueueItem?: boolean;
 }
 
 const TrackList: React.FC<TrackListProps> = (props) => {
@@ -35,6 +36,7 @@ const TrackList: React.FC<TrackListProps> = (props) => {
     selected,
     dragDisabled,
     menuItems,
+    noQueueItem,
   } = props;
   const [activeId, setActiveId] = React.useState<string | null>(null);
   const { t } = useTranslation();
@@ -102,6 +104,7 @@ const TrackList: React.FC<TrackListProps> = (props) => {
                 onSelectClick={onSelect}
                 index={i}
                 menuItems={menuItems}
+                noQueueItem={noQueueItem}
               />
             </SortableRow>
           ))}

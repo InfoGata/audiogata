@@ -119,6 +119,7 @@ const NowPlaying: React.FC = () => {
         onSelectAll={onSelectAll}
         selected={selected}
         menuItems={trackMenuItems}
+        noQueueItem={true}
       />
     </>
   );

@@ -22,10 +22,12 @@ interface PlaylistItemsProps {
   onSelectClick?: (event: React.MouseEvent, id: string, index: number) => void;
   index?: number;
   menuItems?: DropdownItemProps[];
+  noQueueItem?: boolean;
 }
 
 const PlaylistItem: React.FC<PlaylistItemsProps> = (props) => {
-  const { track, onSelectClick, isSelected, index } = props;
+  const { track, onSelectClick, isSelected, index, noQueueItem, menuItems } =
+    props;
   const sanitizer = DOMPurify.sanitize;
   const progress = useAppSelector(
     (state) => state.download.progress[track.id || ""]
@@ -83,7 +85,11 @@ const PlaylistItem: React.FC<PlaylistItemsProps> = (props) => {
         {formatSeconds(track.duration)}
       </TableCell>
       <TableCell align="right">
-        <TrackMenu track={track} />
+        <TrackMenu
+          noQueueItem={noQueueItem}
+          track={track}
+          dropdownItems={menuItems}
+        />
       </TableCell>
     </>
   );

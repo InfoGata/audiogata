@@ -1,6 +1,5 @@
 {
   "common": {
-    "greeting": "Hello",
     "home": "Home",
     "playQueue": "Now Playing",
     "plugin": "Plugin",
