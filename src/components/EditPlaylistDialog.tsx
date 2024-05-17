@@ -35,6 +35,7 @@ const EditPlaylistDialog: React.FC<EditPlaylistDialogProps> = (props) => {
     e.preventDefault();
     const editedPlaylist = { ...playlist, name: name };
     dispatch(updatePlaylist(editedPlaylist));
+    setOpen(false);
   };
 
   return (
