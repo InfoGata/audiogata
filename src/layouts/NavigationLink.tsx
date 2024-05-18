@@ -2,7 +2,7 @@ import React from "react";
 import { NavigationLinkItem } from "../types";
 import { cn } from "@/lib/utils";
 import { Button, buttonVariants } from "@/components/ui/button";
-import { useAppSelector } from "@/store/hooks";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import {
   Tooltip,
   TooltipContent,
@@ -10,6 +10,8 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { Link } from "@tanstack/react-router";
+import { useBreakpoint } from "@/hooks/useBreakpoint";
+import { setNavbarOpen } from "@/store/reducers/uiReducer";
 
 interface NavigationLinkProps {
   item: NavigationLinkItem;
@@ -18,6 +20,15 @@ interface NavigationLinkProps {
 const NavigationLink: React.FC<NavigationLinkProps> = (props) => {
   const { item } = props;
   const open = useAppSelector((state) => state.ui.navbarOpen);
+  const dispatch = useAppDispatch();
+  const { isMd } = useBreakpoint("md");
+  const onClick = () => {
+    // if not md, navigation is in a sheet component.
+    if (!isMd) {
+      dispatch(setNavbarOpen(false));
+    }
+  };
+
   const Component = (props: {
     children: React.ReactNode;
     className?: string;
@@ -27,6 +38,7 @@ const NavigationLink: React.FC<NavigationLinkProps> = (props) => {
         className={props.className}
         activeProps={{ className: "bg-muted" }}
         to={item.link}
+        onClick={onClick}
       >
         {props.children}
       </Link>
