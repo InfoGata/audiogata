@@ -96,10 +96,10 @@ const NowPlaying: React.FC = () => {
       <Button
         variant="ghost"
         size="icon"
-        aria-label="clear"
         onClick={clearQueue}
+        className="w-16 h-16"
       >
-        <TrashIcon />
+        <TrashIcon className="w-12 h-12" />
       </Button>
       <PlaylistMenu
         noQueueItem={true}
