@@ -55,7 +55,7 @@ const NavigationLink: React.FC<NavigationLinkProps> = (props) => {
   return (
     <TooltipProvider delayDuration={200}>
       <Tooltip>
-        <TooltipTrigger>
+        <TooltipTrigger asChild>
           <span>
             <Component
               className={cn(
