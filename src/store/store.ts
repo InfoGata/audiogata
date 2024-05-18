@@ -1,9 +1,4 @@
-import {
-  AnyAction,
-  PreloadedState,
-  ThunkAction,
-  configureStore,
-} from "@reduxjs/toolkit";
+import { ThunkAction, UnknownAction, configureStore } from "@reduxjs/toolkit";
 import { persistReducer, persistStore } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 import rootReducer from "./rootReducer";
@@ -15,17 +10,14 @@ const persistConfig = {
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
-export const setupStore = (preloadedState?: PreloadedState<AppState>) => {
-  return configureStore({
-    middleware: (getDefaultMiddleware) =>
-      getDefaultMiddleware({
-        // Setting to false because it causes a warning when using redux-persist
-        serializableCheck: false,
-      }),
-    reducer: persistedReducer,
-    preloadedState,
-  });
-};
+const store = configureStore({
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      // Setting to false because it causes a warning when using redux-persist
+      serializableCheck: false,
+    }),
+  reducer: persistedReducer,
+});
 
 if (import.meta.env.DEV && import.meta.hot) {
   import.meta.hot.accept("./rootReducer", (newModule) => {
@@ -35,15 +27,14 @@ if (import.meta.env.DEV && import.meta.hot) {
   });
 }
 
-const store = setupStore();
 export const persistor = persistStore(store);
 export type AppState = ReturnType<typeof persistedReducer>;
-export type AppStore = ReturnType<typeof setupStore>;
 export type AppDispatch = typeof store.dispatch;
+export type AppStore = typeof store;
 export type AppThunk<ReturnType = void> = ThunkAction<
   ReturnType,
   AppState,
   undefined,
-  AnyAction
+  UnknownAction
 >;
 export default store;

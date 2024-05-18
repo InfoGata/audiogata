@@ -19,7 +19,9 @@ import {
   setPlaylistTracks,
 } from "@/store/reducers/playlistReducer";
 import { playQueue, setTrack, setTracks } from "@/store/reducers/trackReducer";
+import { AppState } from "@/store/store";
 import { ItemMenuType } from "@/types";
+import { createSelector } from "@reduxjs/toolkit";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useLiveQuery } from "dexie-react-hooks";
 import { InfoIcon, PencilIcon, Trash, TrashIcon } from "lucide-react";
@@ -88,10 +90,11 @@ const PlaylistTracks: React.FC = () => {
       closeImportDialog();
     }
   };
-
-  const playlists = useAppSelector((state) =>
-    state.playlist.playlists.filter((p) => p.id !== playlistId)
+  const playlistsSelector = createSelector(
+    [(state: AppState) => state.playlist.playlists],
+    (playlists) => playlists.filter((p) => p.id !== playlistId)
   );
+  const playlists = useAppSelector(playlistsSelector);
 
   const { onSelect, onSelectAll, isSelected, selected, setSelected } =
     useSelected(tracks || []);

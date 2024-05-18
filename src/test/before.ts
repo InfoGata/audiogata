@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
+import ResizeObserver from "resize-observer-polyfill";
 Object.defineProperty(window, "matchMedia", {
   writable: true,
   value: (query: any) => ({
@@ -12,3 +13,5 @@ Object.defineProperty(window, "matchMedia", {
     dispatchEvent: () => {},
   }),
 });
+
+global.ResizeObserver = ResizeObserver;

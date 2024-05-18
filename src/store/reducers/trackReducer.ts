@@ -408,7 +408,7 @@ const pauseDeletedTrack = async (
   } catch {
     /* empty */
   }
-  dispatch(trackSlice.actions.pause);
+  dispatch(trackSlice.actions.pause());
 };
 
 export const deleteTracks =
