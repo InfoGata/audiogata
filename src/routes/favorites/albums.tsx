@@ -16,7 +16,7 @@ const FavoriteAlbums: React.FC = () => {
   return (
     <CardContainer>
       {albums.map((a) => (
-        <AlbumCard album={a} />
+        <AlbumCard key={a.id} album={a} />
       ))}
     </CardContainer>
   );

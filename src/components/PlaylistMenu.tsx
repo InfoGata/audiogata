@@ -139,11 +139,12 @@ const PlaylistMenu: React.FC<PlaylistMenuProps> = (props) => {
           />
           {selected && selected.size
             ? [
-                <DropdownMenuSeparator />,
+                <DropdownMenuSeparator key="seperator" />,
                 ...definedSelectedItems.map((i) => (
                   <DropdownItem key={i.title} {...i} />
                 )),
                 <PlaylistSubMenu
+                  key="playlists"
                   title={t("addSelectedToPlaylist")}
                   playlists={playlists}
                   tracks={selectedTracks}

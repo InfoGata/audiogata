@@ -75,9 +75,7 @@ const AlbumSearchResults: React.FC<AlbumSearchResultsProps> = (props) => {
         <Filtering filters={initialFilter} setFilters={applyFilters} />
       )}
       <CardContainer>
-        {query.data?.map((a) => (
-          <AlbumCard album={a} />
-        ))}
+        {query.data?.map((a) => <AlbumCard key={a.id} album={a} />)}
       </CardContainer>
       {hasSearch && (
         <Pager

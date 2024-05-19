@@ -77,9 +77,7 @@ const ArtistSearchResults: React.FC<ArtistSearchResultsProps> = (props) => {
         <Filtering filters={initialFilter} setFilters={applyFilters} />
       )}
       <CardContainer>
-        {query.data?.map((a) => (
-          <ArtistCard artist={a} />
-        ))}
+        {query.data?.map((a) => <ArtistCard artist={a} key={a.id} />)}
       </CardContainer>
       {hasSearch && (
         <Pager

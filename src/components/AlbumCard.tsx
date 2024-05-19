@@ -8,10 +8,11 @@ import { Link } from "@tanstack/react-router";
 
 type Props = {
   album: Album;
+  noArtist?: boolean;
 };
 
 const AlbumCard: React.FC<Props> = (props) => {
-  const { album } = props;
+  const { album, noArtist } = props;
   const image = getThumbnailImage(album.images, playlistThumbnailSize);
   const sanitizer = DOMPurify.sanitize;
 
@@ -45,7 +46,7 @@ const AlbumCard: React.FC<Props> = (props) => {
             </Link>
             <ItemMenu itemType={{ type: "album", item: album }} />
           </div>
-          <ArtistLinks item={album} />
+          {!noArtist && <ArtistLinks item={album} />}
         </div>
       </div>
     </div>

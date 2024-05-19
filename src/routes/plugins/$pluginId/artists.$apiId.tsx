@@ -62,7 +62,7 @@ const ArtistPage: React.FC = () => {
         <ItemMenu itemType={{ type: "artist", item: artistInfo }} />
       )}
       <CardContainer>
-        {query.data?.map((a) => <AlbumCard album={a} />)}
+        {query.data?.map((a) => <AlbumCard key={a.id} album={a} />)}
       </CardContainer>
       <Pager
         hasNextPage={hasNextPage}
