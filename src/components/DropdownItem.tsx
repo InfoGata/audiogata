@@ -16,7 +16,6 @@ export interface DropdownItemProps {
 const DropdownItem: React.FC<DropdownItemProps> = (props) => {
   const { title, icon, action, url, internalPath, item, setOpen } = props;
   const onLinkClick = () => {
-    console.log(setOpen);
     if (setOpen) {
       setOpen(false);
     }
