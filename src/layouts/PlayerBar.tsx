@@ -4,6 +4,7 @@ import { useAppSelector } from "../store/hooks";
 import Controls from "./Controls";
 import PlayerThumbnail from "./PlayerThumbNail";
 import Progress from "./Progress";
+import TrackMenu from "@/components/TrackMenu";
 
 const PlayerBar: React.FC = () => {
   const currentTrack = useAppSelector((state) => state.track.currentTrack);
@@ -16,7 +17,7 @@ const PlayerBar: React.FC = () => {
       </div>
 
       <div className="flex flex-col items-center col-span-9 mr-2 sm:w-4/5 sm:col-span-10">
-        <div className="flex flex-row">
+        <div className="flex flex-row items-center">
           <p
             className="max-w-64 truncate text-sm"
             title={currentTrack && currentTrack.name}
@@ -24,11 +25,11 @@ const PlayerBar: React.FC = () => {
               __html: sanitizer(currentTrack?.name || ""),
             }}
           />
-          {/* <div>
+          <div>
             {currentTrack && (
               <TrackMenu track={currentTrack} noQueueItem={true} />
             )}
-          </div> */}
+          </div>
         </div>
         <Controls />
         <Progress />
