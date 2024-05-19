@@ -10,21 +10,37 @@ export interface DropdownItemProps {
   item?: ItemMenuType;
   url?: string;
   internalPath?: string;
+  setOpen?: (open: boolean) => void;
 }
 
 const DropdownItem: React.FC<DropdownItemProps> = (props) => {
-  const { title, icon, action, url, internalPath, item } = props;
+  const { title, icon, action, url, internalPath, item, setOpen } = props;
+  const onLinkClick = () => {
+    console.log(setOpen);
+    if (setOpen) {
+      setOpen(false);
+    }
+  };
   const InnerComponent = (props: { children: React.ReactNode }) => {
     if (internalPath) {
       return (
-        <Link to={internalPath} className="flex items-center">
+        <Link
+          to={internalPath}
+          onClick={onLinkClick}
+          className="flex items-center w-full"
+        >
           {props.children}
         </Link>
       );
     }
     if (url) {
       return (
-        <a href={url} target="_blank" className="flex items-center">
+        <a
+          href={url}
+          target="_blank"
+          rel="noreferrer"
+          className="flex items-center w-full"
+        >
           {props.children}
         </a>
       );

@@ -37,6 +37,7 @@ const TrackMenu: React.FC<Props> = (props) => {
   const { t } = useTranslation();
   const [isFavorited, setIsFavorited] = React.useState(false);
   const [playlistDialogOpen, setPlaylistDialogOpen] = React.useState(false);
+  const [open, setOpen] = React.useState(false);
   const addVideoToNewPlaylist = () => {
     setPlaylistDialogOpen(true);
   };
@@ -116,27 +117,30 @@ const TrackMenu: React.FC<Props> = (props) => {
     },
   ];
 
-  const onOpenChange = async (open: boolean) => {
-    if (open) {
-      if (track.pluginId && track.apiId) {
-        const hasFavorite = await db.favoriteTracks.get({
-          pluginId: track.pluginId,
-          apiId: track.apiId,
-        });
-        setIsFavorited(!!hasFavorite);
-      } else if (track.id) {
-        const hasFavorite = await db.favoriteTracks.get(track.id);
-        setIsFavorited(!!hasFavorite);
-      } else {
-        setIsFavorited(false);
+  React.useEffect(() => {
+    const checkFavorite = async () => {
+      if (open) {
+        if (track.pluginId && track.apiId) {
+          const hasFavorite = await db.favoriteTracks.get({
+            pluginId: track.pluginId,
+            apiId: track.apiId,
+          });
+          setIsFavorited(!!hasFavorite);
+        } else if (track.id) {
+          const hasFavorite = await db.favoriteTracks.get(track.id);
+          setIsFavorited(!!hasFavorite);
+        } else {
+          setIsFavorited(false);
+        }
       }
-    }
-  };
+    };
+    checkFavorite();
+  }, [open, track]);
 
   const definedItems = items.filter((i): i is DropdownItemProps => !!i);
   return (
     <>
-      <DropdownMenu onOpenChange={onOpenChange}>
+      <DropdownMenu open={open} onOpenChange={setOpen}>
         <DropdownMenuTrigger asChild>
           <Button variant="ghost" size="icon">
             <MoreHorizontal className="h-4 w-4" />
@@ -148,6 +152,7 @@ const TrackMenu: React.FC<Props> = (props) => {
               key={i.title}
               {...i}
               item={{ type: "track", item: track }}
+              setOpen={setOpen}
             />
           ))}
           <PlaylistSubMenu

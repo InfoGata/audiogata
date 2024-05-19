@@ -41,25 +41,8 @@ const getTable = (item: ItemMenuType): Dexie.Table => {
 const ItemMenu: React.FC<Props> = (props) => {
   const { itemType, dropdownItems, noFavorite } = props;
   const [isFavorited, setIsFavorited] = React.useState(false);
+  const [open, setOpen] = React.useState(false);
   const { t } = useTranslation();
-
-  const onOpenChange = async (open: boolean) => {
-    if (!noFavorite && open) {
-      const table = getTable(itemType);
-      if (itemType.item.pluginId && itemType.item.apiId) {
-        const hasFavorite = await table.get({
-          pluginId: itemType.item.pluginId,
-          apiId: itemType.item.apiId,
-        });
-        setIsFavorited(!!hasFavorite);
-      } else if (itemType.item.id) {
-        const hasFavorite = await table.get(itemType.item.id);
-        setIsFavorited(!!hasFavorite);
-      } else {
-        setIsFavorited(false);
-      }
-    }
-  };
 
   const onFavorite = async () => {
     const table = getTable(itemType);
@@ -100,23 +83,46 @@ const ItemMenu: React.FC<Props> = (props) => {
     ...(dropdownItems || []),
   ];
 
-  const definedItems = items.filter((i): i is DropdownItemProps => !!i);
+  React.useEffect(() => {
+    const checkFavorite = async () => {
+      if (open) {
+        const table = getTable(itemType);
+        if (itemType.item.pluginId && itemType.item.apiId) {
+          const hasFavorite = await table.get({
+            pluginId: itemType.item.pluginId,
+            apiId: itemType.item.apiId,
+          });
+          setIsFavorited(!!hasFavorite);
+        } else if (itemType.item.id) {
+          const hasFavorite = await table.get(itemType.item.id);
+          setIsFavorited(!!hasFavorite);
+        } else {
+          setIsFavorited(false);
+        }
+      }
+    };
+    checkFavorite();
+  }, [open, itemType]);
 
+  const definedItems = items.filter((i): i is DropdownItemProps => !!i);
   return (
-    <>
-      <DropdownMenu onOpenChange={onOpenChange}>
-        <DropdownMenuTrigger asChild>
-          <Button variant="ghost" size="icon">
-            <MoreHorizontal className="h-4 w-4" />
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end">
-          {definedItems.map((i) => (
-            <DropdownItem key={i.title} {...i} item={itemType}></DropdownItem>
-          ))}
-        </DropdownMenuContent>
-      </DropdownMenu>
-    </>
+    <DropdownMenu onOpenChange={setOpen}>
+      <DropdownMenuTrigger asChild>
+        <Button variant="ghost" size="icon">
+          <MoreHorizontal className="h-4 w-4" />
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end">
+        {definedItems.map((i) => (
+          <DropdownItem
+            key={i.title}
+            {...i}
+            item={itemType}
+            setOpen={setOpen}
+          />
+        ))}
+      </DropdownMenuContent>
+    </DropdownMenu>
   );
 };
 
