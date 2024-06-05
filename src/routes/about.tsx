@@ -9,15 +9,15 @@ import {
   FaHeart,
   FaLock,
   FaMastodon,
-  FaTwitter,
+  FaXTwitter,
 } from "react-icons/fa6";
 
 const About: React.FC = () => {
   const { t } = useTranslation();
   const email = "contact@audiogata.com";
   const website = "https://www.infogata.com";
-  const twitterUrl = "https://twitter.com/info_gata";
-  const twitterAt = "@info_gata";
+  const xUrl = "https://x.com/info_gata";
+  const xAt = "@info_gata";
   const mastodonUrl = "https://mastodon.online/@InfoGata";
   const mastodonAt = "@InfoGata@mastodon.online";
   const gitUrl = "https://github.com/InfoGata/audiogata";
@@ -41,10 +41,10 @@ const About: React.FC = () => {
       icon: <FaEnvelope />,
     },
     {
-      title: "Twitter",
-      description: twitterAt,
-      icon: <FaTwitter />,
-      url: twitterUrl,
+      title: "X",
+      description: xAt,
+      icon: <FaXTwitter />,
+      url: xUrl,
     },
     {
       title: "Mastodon",
