@@ -1,3 +1,4 @@
+import AudioComponent from "@/components/AudioComponent";
 import { Toaster } from "@/components/ui/sonner";
 import useOffline from "@/hooks/useOffline";
 import useUpdateServiceWorker from "@/hooks/useUpdateServiceWorker";
@@ -27,6 +28,7 @@ export const Root: React.FC = () => {
         <Outlet />
       </main>
       <PlayerBar />
+      <AudioComponent />
     </div>
   );
 };
