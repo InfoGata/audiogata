@@ -44,7 +44,10 @@ const AlbumCard: React.FC<Props> = (props) => {
                 }}
               />
             </Link>
-            <ItemMenu itemType={{ type: "album", item: album }} />
+            <ItemMenu
+              itemType={{ type: "album", item: album }}
+              noArtist={noArtist}
+            />
           </div>
           {!noArtist && <ArtistLinks item={album} />}
         </div>

@@ -23,6 +23,7 @@ interface Props {
   itemType: ItemMenuType;
   dropdownItems?: DropdownItemProps[];
   noFavorite?: boolean;
+  noArtist?: boolean;
 }
 
 const getTable = (item: ItemMenuType): Dexie.Table => {
@@ -39,7 +40,7 @@ const getTable = (item: ItemMenuType): Dexie.Table => {
 };
 
 const ItemMenu: React.FC<Props> = (props) => {
-  const { itemType, dropdownItems, noFavorite } = props;
+  const { itemType, dropdownItems, noFavorite, noArtist } = props;
   const [isFavorited, setIsFavorited] = React.useState(false);
   const [open, setOpen] = React.useState(false);
   const { t } = useTranslation();
@@ -66,7 +67,7 @@ const ItemMenu: React.FC<Props> = (props) => {
           action: isFavorited ? removeFavorite : onFavorite,
         }
       : undefined,
-    itemType.type === "album"
+    itemType.type === "album" && !noArtist
       ? {
           title: t("goToArtist"),
           icon: <MdPerson />,
