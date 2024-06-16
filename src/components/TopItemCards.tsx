@@ -4,6 +4,8 @@ import { useQuery } from "react-query";
 import usePlugins from "../hooks/usePlugins";
 import SelectPlugin from "./SelectPlugin";
 import TrackCard from "./TrackCard";
+import ArtistCard from "./ArtistCard";
+import AlbumCard from "./AlbumCard";
 
 const TopItemCards: React.FC = () => {
   const [pluginId, setPluginId] = React.useState("");
@@ -35,6 +37,16 @@ const TopItemCards: React.FC = () => {
       <div className="flex gap-5 w-full overflow-auto mt-5">
         {query.data?.tracks?.items.map((t) => (
           <TrackCard key={t.id} track={t} />
+        ))}
+      </div>
+      <div className="flex gap-5 w-full overflow-auto mt-5">
+        {query.data?.albums?.items.map((a) => (
+          <AlbumCard key={a.id} album={a} />
+        ))}
+      </div>
+      <div className="flex gap-5 w-full overflow-auto mt-5">
+        {query.data?.artists?.items.map((i) => (
+          <ArtistCard key={i.id} artist={i} />
         ))}
       </div>
     </>

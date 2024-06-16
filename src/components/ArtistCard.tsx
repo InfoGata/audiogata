@@ -15,7 +15,7 @@ const ArtistCard: React.FC<Props> = (props) => {
   const sanitizer = DOMPurify.sanitize;
 
   return (
-    <div>
+    <div className="min-w-64">
       <Link
         to="/plugins/$pluginId/artists/$apiId"
         params={{ pluginId: artist.pluginId || "", apiId: artist.apiId || "" }}
