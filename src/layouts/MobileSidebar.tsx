@@ -20,7 +20,7 @@ const MobileSidebar: React.FC = () => {
 
   return (
     <Sheet open={open} onOpenChange={setOpen}>
-      <SheetContent side="left" className="w-72 overflow-y-scroll">
+      <SheetContent side="left" className="w-72 overflow-y-auto">
         <Navigation />
       </SheetContent>
     </Sheet>

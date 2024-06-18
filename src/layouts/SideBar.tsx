@@ -16,7 +16,7 @@ const SideBar: React.FC = () => {
         navbarOpen ? "w-52" : "w-20"
       )}
     >
-      <div className="border-r h-full overflow-y-scroll pb-28">
+      <div className="border-r h-full overflow-y-auto pb-28">
         <div className="mt-3 space-y-1 px-3 py-2 text-muted-foreground">
           <Navigation />
         </div>
