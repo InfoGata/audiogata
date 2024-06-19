@@ -1,4 +1,5 @@
 import react from "@vitejs/plugin-react";
+import path from "path";
 import { defineConfig } from "electron-vite";
 import { resolve } from "path";
 import { VitePWA } from "vite-plugin-pwa";
@@ -26,6 +27,7 @@ export default defineConfig({
     resolve: {
       alias: {
         "hls.js": "hls.js/dist/hls.min.js",
+        "@": path.resolve(__dirname, "./src"),
       },
     },
     root: ".",

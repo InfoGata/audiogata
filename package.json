@@ -4,7 +4,7 @@
   "private": true,
   "homepage": "",
   "type": "module",
-  "main": "./out/main/index.js",
+  "main": "./out/main/index.cjs",
   "dependencies": {
     "@awesome-cordova-plugins/music-controls": "^5.44.0",
     "@capacitor/android": "3.6.0",
@@ -123,7 +123,7 @@
     "autoprefixer": "^10.4.18",
     "electron": "github:castlabs/electron-releases#v23.1.4+wvcus",
     "electron-builder": "^24.1.1",
-    "electron-vite": "^2.1.0",
+    "electron-vite": "^2.2.0",
     "eslint": "^8.36.0",
     "eslint-plugin-i18next": "^6.0.0-2",
     "eslint-plugin-import": "^2.27.5",
