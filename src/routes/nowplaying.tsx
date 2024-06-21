@@ -1,6 +1,7 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { DropdownItemProps } from "@/components/DropdownItem";
+import Title from "@/components/Title";
 import { ItemMenuType } from "@/types";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { InfoIcon, TrashIcon } from "lucide-react";
 import React from "react";
 import { useTranslation } from "react-i18next";
@@ -18,8 +19,6 @@ import {
   setTrack,
   setTracks,
 } from "../store/reducers/trackReducer";
-import { Button } from "@/components/ui/button";
-import Title from "@/components/Title";
 
 const NowPlaying: React.FC = () => {
   const { t } = useTranslation();
