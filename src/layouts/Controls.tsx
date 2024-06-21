@@ -90,7 +90,7 @@ const Controls: React.FC = () => {
   const onRewind = () => dispatch(rewind());
 
   return (
-    <div>
+    <div className="text-center">
       <Button size="icon" variant="ghost" onClick={onToggleShuffle}>
         <MdShuffle
           className={cn(shuffle ? "text-foreground" : "text-muted-foreground")}
