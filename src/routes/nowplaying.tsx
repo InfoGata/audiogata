@@ -93,14 +93,6 @@ const NowPlaying: React.FC = () => {
   return (
     <>
       <Title title={t("playQueue")} />
-      <Button
-        variant="ghost"
-        size="icon"
-        onClick={clearQueue}
-        className="w-16 h-16"
-      >
-        <TrashIcon className="w-12 h-12" />
-      </Button>
       <PlaylistMenu
         noQueueItem={true}
         selected={selected}
