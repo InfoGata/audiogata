@@ -175,102 +175,177 @@ const PlaylistsPlaylistIdTracksTrackIdRoute =
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
     '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
       preLoaderRoute: typeof IndexImport
       parentRoute: typeof rootRoute
     }
     '/favorites': {
+      id: '/favorites'
+      path: '/favorites'
+      fullPath: '/favorites'
       preLoaderRoute: typeof FavoritesRouteImport
       parentRoute: typeof rootRoute
     }
     '/about': {
+      id: '/about'
+      path: '/about'
+      fullPath: '/about'
       preLoaderRoute: typeof AboutImport
       parentRoute: typeof rootRoute
     }
     '/donate': {
+      id: '/donate'
+      path: '/donate'
+      fullPath: '/donate'
       preLoaderRoute: typeof DonateImport
       parentRoute: typeof rootRoute
     }
     '/lyrics': {
+      id: '/lyrics'
+      path: '/lyrics'
+      fullPath: '/lyrics'
       preLoaderRoute: typeof LyricsImport
       parentRoute: typeof rootRoute
     }
     '/nowplaying': {
+      id: '/nowplaying'
+      path: '/nowplaying'
+      fullPath: '/nowplaying'
       preLoaderRoute: typeof NowplayingImport
       parentRoute: typeof rootRoute
     }
     '/plugininstall': {
+      id: '/plugininstall'
+      path: '/plugininstall'
+      fullPath: '/plugininstall'
       preLoaderRoute: typeof PlugininstallImport
       parentRoute: typeof rootRoute
     }
     '/privacy': {
+      id: '/privacy'
+      path: '/privacy'
+      fullPath: '/privacy'
       preLoaderRoute: typeof PrivacyImport
       parentRoute: typeof rootRoute
     }
     '/search': {
+      id: '/search'
+      path: '/search'
+      fullPath: '/search'
       preLoaderRoute: typeof SearchImport
       parentRoute: typeof rootRoute
     }
     '/settings': {
+      id: '/settings'
+      path: '/settings'
+      fullPath: '/settings'
       preLoaderRoute: typeof SettingsImport
       parentRoute: typeof rootRoute
     }
     '/favorites/albums': {
+      id: '/favorites/albums'
+      path: '/albums'
+      fullPath: '/favorites/albums'
       preLoaderRoute: typeof FavoritesAlbumsImport
       parentRoute: typeof FavoritesRouteImport
     }
     '/favorites/artists': {
+      id: '/favorites/artists'
+      path: '/artists'
+      fullPath: '/favorites/artists'
       preLoaderRoute: typeof FavoritesArtistsImport
       parentRoute: typeof FavoritesRouteImport
     }
     '/favorites/playlists': {
+      id: '/favorites/playlists'
+      path: '/playlists'
+      fullPath: '/favorites/playlists'
       preLoaderRoute: typeof FavoritesPlaylistsImport
       parentRoute: typeof FavoritesRouteImport
     }
     '/favorites/tracks': {
+      id: '/favorites/tracks'
+      path: '/tracks'
+      fullPath: '/favorites/tracks'
       preLoaderRoute: typeof FavoritesTracksImport
       parentRoute: typeof FavoritesRouteImport
     }
     '/tracks/$trackId': {
+      id: '/tracks/$trackId'
+      path: '/tracks/$trackId'
+      fullPath: '/tracks/$trackId'
       preLoaderRoute: typeof TracksTrackIdImport
       parentRoute: typeof rootRoute
     }
     '/playlists/': {
+      id: '/playlists/'
+      path: '/playlists'
+      fullPath: '/playlists'
       preLoaderRoute: typeof PlaylistsIndexImport
       parentRoute: typeof rootRoute
     }
     '/plugins/': {
+      id: '/plugins/'
+      path: '/plugins'
+      fullPath: '/plugins'
       preLoaderRoute: typeof PluginsIndexImport
       parentRoute: typeof rootRoute
     }
     '/plugins/$pluginId/options': {
+      id: '/plugins/$pluginId/options'
+      path: '/plugins/$pluginId/options'
+      fullPath: '/plugins/$pluginId/options'
       preLoaderRoute: typeof PluginsPluginIdOptionsImport
       parentRoute: typeof rootRoute
     }
     '/playlists/$playlistId/': {
+      id: '/playlists/$playlistId/'
+      path: '/playlists/$playlistId'
+      fullPath: '/playlists/$playlistId'
       preLoaderRoute: typeof PlaylistsPlaylistIdIndexImport
       parentRoute: typeof rootRoute
     }
     '/plugins/$pluginId/': {
+      id: '/plugins/$pluginId/'
+      path: '/plugins/$pluginId'
+      fullPath: '/plugins/$pluginId'
       preLoaderRoute: typeof PluginsPluginIdIndexImport
       parentRoute: typeof rootRoute
     }
     '/playlists/$playlistId/tracks/$trackId': {
+      id: '/playlists/$playlistId/tracks/$trackId'
+      path: '/playlists/$playlistId/tracks/$trackId'
+      fullPath: '/playlists/$playlistId/tracks/$trackId'
       preLoaderRoute: typeof PlaylistsPlaylistIdTracksTrackIdImport
       parentRoute: typeof rootRoute
     }
     '/plugins/$pluginId/albums/$apiId': {
+      id: '/plugins/$pluginId/albums/$apiId'
+      path: '/plugins/$pluginId/albums/$apiId'
+      fullPath: '/plugins/$pluginId/albums/$apiId'
       preLoaderRoute: typeof PluginsPluginIdAlbumsApiIdImport
       parentRoute: typeof rootRoute
     }
     '/plugins/$pluginId/artists/$apiId': {
+      id: '/plugins/$pluginId/artists/$apiId'
+      path: '/plugins/$pluginId/artists/$apiId'
+      fullPath: '/plugins/$pluginId/artists/$apiId'
       preLoaderRoute: typeof PluginsPluginIdArtistsApiIdImport
       parentRoute: typeof rootRoute
     }
     '/plugins/$pluginId/playlists/$apiId': {
+      id: '/plugins/$pluginId/playlists/$apiId'
+      path: '/plugins/$pluginId/playlists/$apiId'
+      fullPath: '/plugins/$pluginId/playlists/$apiId'
       preLoaderRoute: typeof PluginsPluginIdPlaylistsApiIdImport
       parentRoute: typeof rootRoute
     }
     '/plugins/$pluginId/playlists/': {
+      id: '/plugins/$pluginId/playlists/'
+      path: '/plugins/$pluginId/playlists'
+      fullPath: '/plugins/$pluginId/playlists'
       preLoaderRoute: typeof PluginsPluginIdPlaylistsIndexImport
       parentRoute: typeof rootRoute
     }
@@ -279,14 +354,14 @@ declare module '@tanstack/react-router' {
 
 // Create and export the route tree
 
-export const routeTree = rootRoute.addChildren([
+export const routeTree = rootRoute.addChildren({
   IndexRoute,
-  FavoritesRouteRoute.addChildren([
+  FavoritesRouteRoute: FavoritesRouteRoute.addChildren({
     FavoritesAlbumsRoute,
     FavoritesArtistsRoute,
     FavoritesPlaylistsRoute,
     FavoritesTracksRoute,
-  ]),
+  }),
   AboutRoute,
   DonateRoute,
   LyricsRoute,
@@ -306,6 +381,124 @@ export const routeTree = rootRoute.addChildren([
   PluginsPluginIdArtistsApiIdRoute,
   PluginsPluginIdPlaylistsApiIdRoute,
   PluginsPluginIdPlaylistsIndexRoute,
-])
+})
 
 /* prettier-ignore-end */
+
+/* ROUTE_MANIFEST_START
+{
+  "routes": {
+    "__root__": {
+      "filePath": "__root.tsx",
+      "children": [
+        "/",
+        "/favorites",
+        "/about",
+        "/donate",
+        "/lyrics",
+        "/nowplaying",
+        "/plugininstall",
+        "/privacy",
+        "/search",
+        "/settings",
+        "/tracks/$trackId",
+        "/playlists/",
+        "/plugins/",
+        "/plugins/$pluginId/options",
+        "/playlists/$playlistId/",
+        "/plugins/$pluginId/",
+        "/playlists/$playlistId/tracks/$trackId",
+        "/plugins/$pluginId/albums/$apiId",
+        "/plugins/$pluginId/artists/$apiId",
+        "/plugins/$pluginId/playlists/$apiId",
+        "/plugins/$pluginId/playlists/"
+      ]
+    },
+    "/": {
+      "filePath": "index.tsx"
+    },
+    "/favorites": {
+      "filePath": "favorites/route.tsx",
+      "children": [
+        "/favorites/albums",
+        "/favorites/artists",
+        "/favorites/playlists",
+        "/favorites/tracks"
+      ]
+    },
+    "/about": {
+      "filePath": "about.tsx"
+    },
+    "/donate": {
+      "filePath": "donate.tsx"
+    },
+    "/lyrics": {
+      "filePath": "lyrics.tsx"
+    },
+    "/nowplaying": {
+      "filePath": "nowplaying.tsx"
+    },
+    "/plugininstall": {
+      "filePath": "plugininstall.tsx"
+    },
+    "/privacy": {
+      "filePath": "privacy.tsx"
+    },
+    "/search": {
+      "filePath": "search.tsx"
+    },
+    "/settings": {
+      "filePath": "settings.tsx"
+    },
+    "/favorites/albums": {
+      "filePath": "favorites/albums.tsx",
+      "parent": "/favorites"
+    },
+    "/favorites/artists": {
+      "filePath": "favorites/artists.tsx",
+      "parent": "/favorites"
+    },
+    "/favorites/playlists": {
+      "filePath": "favorites/playlists.tsx",
+      "parent": "/favorites"
+    },
+    "/favorites/tracks": {
+      "filePath": "favorites/tracks.tsx",
+      "parent": "/favorites"
+    },
+    "/tracks/$trackId": {
+      "filePath": "tracks.$trackId.tsx"
+    },
+    "/playlists/": {
+      "filePath": "playlists.index.tsx"
+    },
+    "/plugins/": {
+      "filePath": "plugins.index.tsx"
+    },
+    "/plugins/$pluginId/options": {
+      "filePath": "plugins/$pluginId/options.tsx"
+    },
+    "/playlists/$playlistId/": {
+      "filePath": "playlists/$playlistId.index.tsx"
+    },
+    "/plugins/$pluginId/": {
+      "filePath": "plugins/$pluginId.index.tsx"
+    },
+    "/playlists/$playlistId/tracks/$trackId": {
+      "filePath": "playlists/$playlistId.tracks.$trackId.tsx"
+    },
+    "/plugins/$pluginId/albums/$apiId": {
+      "filePath": "plugins/$pluginId/albums.$apiId.tsx"
+    },
+    "/plugins/$pluginId/artists/$apiId": {
+      "filePath": "plugins/$pluginId/artists.$apiId.tsx"
+    },
+    "/plugins/$pluginId/playlists/$apiId": {
+      "filePath": "plugins/$pluginId/playlists.$apiId.tsx"
+    },
+    "/plugins/$pluginId/playlists/": {
+      "filePath": "plugins/$pluginId/playlists.index.tsx"
+    }
+  }
+}
+ROUTE_MANIFEST_END */

@@ -1,18 +1,15 @@
 import {
-  AnyRoute,
-  LinkOptions,
-  LinkProps,
-  RegisteredRouter,
-  ToPathOption,
+  LinkOptions
 } from "@tanstack/react-router";
 import {
   Album,
   Artist,
   ArtistInfo,
-  PlaylistInfo,
   PlayTrackRequest,
+  PlaylistInfo,
   Track,
 } from "./plugintypes";
+import { router } from "./router";
 
 export interface NetworkRequest {
   body: Blob | ArrayBuffer | null;
@@ -97,19 +94,11 @@ export interface PlayerComponent {
   [PlayerComponentType.onSetPlaybackRate]: (rate: number) => Promise<void>;
 }
 
-export type LinkToPathProps<
-  TRouteTree extends AnyRoute = RegisteredRouter["routeTree"],
-  TTo extends string = "",
-> = ToPathOption<TRouteTree, "/", TTo>;
-
-export type LinkRouterProps<
-  TRouteTree extends AnyRoute = RegisteredRouter["routeTree"],
-  TTo extends string = "",
-> = LinkOptions<TRouteTree, "/", TTo> & LinkProps;
+export type LinkRouterProps = LinkOptions<typeof router>;
 
 export interface NavigationLinkItem {
   title: string;
-  link?: LinkToPathProps;
+  link?: LinkRouterProps;
   action?: () => void;
   icon: React.JSX.Element;
 }

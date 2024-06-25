@@ -37,8 +37,8 @@ const NavigationLink: React.FC<NavigationLinkProps> = (props) => {
       <Link
         className={props.className}
         activeProps={{ className: "bg-muted" }}
-        to={item.link}
         onClick={onClick}
+        {...item.link}
       >
         {props.children}
       </Link>

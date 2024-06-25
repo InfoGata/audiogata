@@ -11,7 +11,7 @@ import { Album, Artist, PlaylistInfo } from "./plugintypes";
 import { routeTree } from "./routeTree.gen";
 
 const history = isElectron() ? createHashHistory() : createBrowserHistory();
-const router = createRouter({ routeTree, history, defaultPendingComponent: Spinner });
+export const router = createRouter({ routeTree, history, defaultPendingComponent: Spinner });
 
 declare module "@tanstack/react-router" {
   interface Register {

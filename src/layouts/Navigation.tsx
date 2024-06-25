@@ -21,13 +21,21 @@ const Navigation: React.FC = () => {
   };
 
   const listItems: NavigationLinkItem[] = [
-    { title: t("home"), link: "/", icon: <FaHouse /> },
-    { title: t("playQueue"), link: "/nowplaying", icon: <ListMusicIcon /> },
-    { title: t("plugins"), link: "/plugins", icon: <FaPuzzlePiece /> },
-    { title: t("settings"), link: "/settings", icon: <FaGear /> },
-    { title: t("about"), link: "/about", icon: <FaCircleInfo /> },
-    { title: t("favorites"), link: "/favorites/tracks", icon: <FaStar /> },
-    { title: t("playlists"), link: "/playlists", icon: <MenuIcon /> },
+    { title: t("home"), link: { to: "/" }, icon: <FaHouse /> },
+    {
+      title: t("playQueue"),
+      link: { to: "/nowplaying" },
+      icon: <ListMusicIcon />,
+    },
+    { title: t("plugins"), link: { to: "/plugins" }, icon: <FaPuzzlePiece /> },
+    { title: t("settings"), link: { to: "/settings" }, icon: <FaGear /> },
+    { title: t("about"), link: { to: "/about" }, icon: <FaCircleInfo /> },
+    {
+      title: t("favorites"),
+      link: { to: "/favorites/tracks" },
+      icon: <FaStar />,
+    },
+    { title: t("playlists"), link: { to: "/playlists" }, icon: <MenuIcon /> },
     {
       title: t("addPlaylist"),
       icon: <ListPlusIcon />,
