@@ -7,6 +7,7 @@ import React from "react";
 import { useTranslation } from "react-i18next";
 import semverGt from "semver/functions/gt";
 import semverValid from "semver/functions/parse";
+import { toast } from "sonner";
 import PluginsContext, {
   PluginContextInterface,
   PluginFrameContainer,
@@ -30,6 +31,7 @@ import {
   SearchArtistResult,
   SearchPlaylistResult,
   SearchTrackResult,
+  Theme,
   Track,
 } from "../plugintypes";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
@@ -55,7 +57,7 @@ import {
   hasExtension,
   mapAsync,
 } from "../utils";
-import { toast } from "sonner";
+import { useTheme } from "./ThemeProvider";
 
 interface ApplicationPluginInterface extends PluginInterface {
   networkRequest(input: string, init?: RequestInit): Promise<NetworkRequest>;
@@ -75,6 +77,7 @@ interface ApplicationPluginInterface extends PluginInterface {
   getPlugins(): Promise<PluginInfo[]>;
   getPluginId(): Promise<string>;
   getLocale(): Promise<string>;
+  getTheme(): Promise<Theme>;
 }
 
 function iteratorFor(items: any) {
@@ -141,6 +144,9 @@ const PluginsProvider: React.FC<React.PropsWithChildren> = (props) => {
   const disableAutoUpdatePlugins = useAppSelector(
     (state) => state.settings.disableAutoUpdatePlugins
   );
+  const theme = useTheme();
+  const themeRef = React.useRef(theme.theme)
+  themeRef.current = theme.theme;
 
   const [pendingPlugins, setPendingPlugins] = React.useState<
     PluginInfo[] | null
@@ -183,6 +189,9 @@ const PluginsProvider: React.FC<React.PropsWithChildren> = (props) => {
           const isDisabled =
             hasExtension() || isElectron() || Capacitor.isNativePlatform();
           return isDisabled;
+        },
+        getTheme: async () => {
+          return themeRef.current;
         },
         postUiMessage: async (message: any) => {
           setPluginMessage({ pluginId: plugin.id, message });
