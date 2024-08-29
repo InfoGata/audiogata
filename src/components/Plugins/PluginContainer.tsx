@@ -39,6 +39,12 @@ const PluginContainer: React.FC<PluginContainerProps> = (props) => {
           {plugin.name} {plugin.version}
         </h3>
         <div className="flex gap-2 items-center">
+          <Link
+            className={cn(buttonVariants({ variant: "outline" }))}
+            to={`/plugins/${plugin.id}`}
+          >
+            {t("pluginDetails")}
+          </Link>
           {plugin.hasOptions && (
             <Link
               className={cn(buttonVariants({ variant: "outline" }))}
@@ -48,12 +54,6 @@ const PluginContainer: React.FC<PluginContainerProps> = (props) => {
               {t("options")}
             </Link>
           )}
-          <Link
-            className={cn(buttonVariants({ variant: "outline" }))}
-            to={`/plugins/${plugin.id}`}
-          >
-            {t("pluginDetails")}
-          </Link>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button
