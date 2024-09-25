@@ -354,34 +354,245 @@ declare module '@tanstack/react-router' {
 
 // Create and export the route tree
 
-export const routeTree = rootRoute.addChildren({
-  IndexRoute,
-  FavoritesRouteRoute: FavoritesRouteRoute.addChildren({
-    FavoritesAlbumsRoute,
-    FavoritesArtistsRoute,
-    FavoritesPlaylistsRoute,
-    FavoritesTracksRoute,
-  }),
-  AboutRoute,
-  DonateRoute,
-  LyricsRoute,
-  NowplayingRoute,
-  PlugininstallRoute,
-  PrivacyRoute,
-  SearchRoute,
-  SettingsRoute,
-  TracksTrackIdRoute,
-  PlaylistsIndexRoute,
-  PluginsIndexRoute,
-  PluginsPluginIdOptionsRoute,
-  PlaylistsPlaylistIdIndexRoute,
-  PluginsPluginIdIndexRoute,
-  PlaylistsPlaylistIdTracksTrackIdRoute,
-  PluginsPluginIdAlbumsApiIdRoute,
-  PluginsPluginIdArtistsApiIdRoute,
-  PluginsPluginIdPlaylistsApiIdRoute,
-  PluginsPluginIdPlaylistsIndexRoute,
-})
+interface FavoritesRouteRouteChildren {
+  FavoritesAlbumsRoute: typeof FavoritesAlbumsRoute
+  FavoritesArtistsRoute: typeof FavoritesArtistsRoute
+  FavoritesPlaylistsRoute: typeof FavoritesPlaylistsRoute
+  FavoritesTracksRoute: typeof FavoritesTracksRoute
+}
+
+const FavoritesRouteRouteChildren: FavoritesRouteRouteChildren = {
+  FavoritesAlbumsRoute: FavoritesAlbumsRoute,
+  FavoritesArtistsRoute: FavoritesArtistsRoute,
+  FavoritesPlaylistsRoute: FavoritesPlaylistsRoute,
+  FavoritesTracksRoute: FavoritesTracksRoute,
+}
+
+const FavoritesRouteRouteWithChildren = FavoritesRouteRoute._addFileChildren(
+  FavoritesRouteRouteChildren,
+)
+
+export interface FileRoutesByFullPath {
+  '/': typeof IndexRoute
+  '/favorites': typeof FavoritesRouteRouteWithChildren
+  '/about': typeof AboutRoute
+  '/donate': typeof DonateRoute
+  '/lyrics': typeof LyricsRoute
+  '/nowplaying': typeof NowplayingRoute
+  '/plugininstall': typeof PlugininstallRoute
+  '/privacy': typeof PrivacyRoute
+  '/search': typeof SearchRoute
+  '/settings': typeof SettingsRoute
+  '/favorites/albums': typeof FavoritesAlbumsRoute
+  '/favorites/artists': typeof FavoritesArtistsRoute
+  '/favorites/playlists': typeof FavoritesPlaylistsRoute
+  '/favorites/tracks': typeof FavoritesTracksRoute
+  '/tracks/$trackId': typeof TracksTrackIdRoute
+  '/playlists': typeof PlaylistsIndexRoute
+  '/plugins': typeof PluginsIndexRoute
+  '/plugins/$pluginId/options': typeof PluginsPluginIdOptionsRoute
+  '/playlists/$playlistId': typeof PlaylistsPlaylistIdIndexRoute
+  '/plugins/$pluginId': typeof PluginsPluginIdIndexRoute
+  '/playlists/$playlistId/tracks/$trackId': typeof PlaylistsPlaylistIdTracksTrackIdRoute
+  '/plugins/$pluginId/albums/$apiId': typeof PluginsPluginIdAlbumsApiIdRoute
+  '/plugins/$pluginId/artists/$apiId': typeof PluginsPluginIdArtistsApiIdRoute
+  '/plugins/$pluginId/playlists/$apiId': typeof PluginsPluginIdPlaylistsApiIdRoute
+  '/plugins/$pluginId/playlists': typeof PluginsPluginIdPlaylistsIndexRoute
+}
+
+export interface FileRoutesByTo {
+  '/': typeof IndexRoute
+  '/favorites': typeof FavoritesRouteRouteWithChildren
+  '/about': typeof AboutRoute
+  '/donate': typeof DonateRoute
+  '/lyrics': typeof LyricsRoute
+  '/nowplaying': typeof NowplayingRoute
+  '/plugininstall': typeof PlugininstallRoute
+  '/privacy': typeof PrivacyRoute
+  '/search': typeof SearchRoute
+  '/settings': typeof SettingsRoute
+  '/favorites/albums': typeof FavoritesAlbumsRoute
+  '/favorites/artists': typeof FavoritesArtistsRoute
+  '/favorites/playlists': typeof FavoritesPlaylistsRoute
+  '/favorites/tracks': typeof FavoritesTracksRoute
+  '/tracks/$trackId': typeof TracksTrackIdRoute
+  '/playlists': typeof PlaylistsIndexRoute
+  '/plugins': typeof PluginsIndexRoute
+  '/plugins/$pluginId/options': typeof PluginsPluginIdOptionsRoute
+  '/playlists/$playlistId': typeof PlaylistsPlaylistIdIndexRoute
+  '/plugins/$pluginId': typeof PluginsPluginIdIndexRoute
+  '/playlists/$playlistId/tracks/$trackId': typeof PlaylistsPlaylistIdTracksTrackIdRoute
+  '/plugins/$pluginId/albums/$apiId': typeof PluginsPluginIdAlbumsApiIdRoute
+  '/plugins/$pluginId/artists/$apiId': typeof PluginsPluginIdArtistsApiIdRoute
+  '/plugins/$pluginId/playlists/$apiId': typeof PluginsPluginIdPlaylistsApiIdRoute
+  '/plugins/$pluginId/playlists': typeof PluginsPluginIdPlaylistsIndexRoute
+}
+
+export interface FileRoutesById {
+  __root__: typeof rootRoute
+  '/': typeof IndexRoute
+  '/favorites': typeof FavoritesRouteRouteWithChildren
+  '/about': typeof AboutRoute
+  '/donate': typeof DonateRoute
+  '/lyrics': typeof LyricsRoute
+  '/nowplaying': typeof NowplayingRoute
+  '/plugininstall': typeof PlugininstallRoute
+  '/privacy': typeof PrivacyRoute
+  '/search': typeof SearchRoute
+  '/settings': typeof SettingsRoute
+  '/favorites/albums': typeof FavoritesAlbumsRoute
+  '/favorites/artists': typeof FavoritesArtistsRoute
+  '/favorites/playlists': typeof FavoritesPlaylistsRoute
+  '/favorites/tracks': typeof FavoritesTracksRoute
+  '/tracks/$trackId': typeof TracksTrackIdRoute
+  '/playlists/': typeof PlaylistsIndexRoute
+  '/plugins/': typeof PluginsIndexRoute
+  '/plugins/$pluginId/options': typeof PluginsPluginIdOptionsRoute
+  '/playlists/$playlistId/': typeof PlaylistsPlaylistIdIndexRoute
+  '/plugins/$pluginId/': typeof PluginsPluginIdIndexRoute
+  '/playlists/$playlistId/tracks/$trackId': typeof PlaylistsPlaylistIdTracksTrackIdRoute
+  '/plugins/$pluginId/albums/$apiId': typeof PluginsPluginIdAlbumsApiIdRoute
+  '/plugins/$pluginId/artists/$apiId': typeof PluginsPluginIdArtistsApiIdRoute
+  '/plugins/$pluginId/playlists/$apiId': typeof PluginsPluginIdPlaylistsApiIdRoute
+  '/plugins/$pluginId/playlists/': typeof PluginsPluginIdPlaylistsIndexRoute
+}
+
+export interface FileRouteTypes {
+  fileRoutesByFullPath: FileRoutesByFullPath
+  fullPaths:
+    | '/'
+    | '/favorites'
+    | '/about'
+    | '/donate'
+    | '/lyrics'
+    | '/nowplaying'
+    | '/plugininstall'
+    | '/privacy'
+    | '/search'
+    | '/settings'
+    | '/favorites/albums'
+    | '/favorites/artists'
+    | '/favorites/playlists'
+    | '/favorites/tracks'
+    | '/tracks/$trackId'
+    | '/playlists'
+    | '/plugins'
+    | '/plugins/$pluginId/options'
+    | '/playlists/$playlistId'
+    | '/plugins/$pluginId'
+    | '/playlists/$playlistId/tracks/$trackId'
+    | '/plugins/$pluginId/albums/$apiId'
+    | '/plugins/$pluginId/artists/$apiId'
+    | '/plugins/$pluginId/playlists/$apiId'
+    | '/plugins/$pluginId/playlists'
+  fileRoutesByTo: FileRoutesByTo
+  to:
+    | '/'
+    | '/favorites'
+    | '/about'
+    | '/donate'
+    | '/lyrics'
+    | '/nowplaying'
+    | '/plugininstall'
+    | '/privacy'
+    | '/search'
+    | '/settings'
+    | '/favorites/albums'
+    | '/favorites/artists'
+    | '/favorites/playlists'
+    | '/favorites/tracks'
+    | '/tracks/$trackId'
+    | '/playlists'
+    | '/plugins'
+    | '/plugins/$pluginId/options'
+    | '/playlists/$playlistId'
+    | '/plugins/$pluginId'
+    | '/playlists/$playlistId/tracks/$trackId'
+    | '/plugins/$pluginId/albums/$apiId'
+    | '/plugins/$pluginId/artists/$apiId'
+    | '/plugins/$pluginId/playlists/$apiId'
+    | '/plugins/$pluginId/playlists'
+  id:
+    | '__root__'
+    | '/'
+    | '/favorites'
+    | '/about'
+    | '/donate'
+    | '/lyrics'
+    | '/nowplaying'
+    | '/plugininstall'
+    | '/privacy'
+    | '/search'
+    | '/settings'
+    | '/favorites/albums'
+    | '/favorites/artists'
+    | '/favorites/playlists'
+    | '/favorites/tracks'
+    | '/tracks/$trackId'
+    | '/playlists/'
+    | '/plugins/'
+    | '/plugins/$pluginId/options'
+    | '/playlists/$playlistId/'
+    | '/plugins/$pluginId/'
+    | '/playlists/$playlistId/tracks/$trackId'
+    | '/plugins/$pluginId/albums/$apiId'
+    | '/plugins/$pluginId/artists/$apiId'
+    | '/plugins/$pluginId/playlists/$apiId'
+    | '/plugins/$pluginId/playlists/'
+  fileRoutesById: FileRoutesById
+}
+
+export interface RootRouteChildren {
+  IndexRoute: typeof IndexRoute
+  FavoritesRouteRoute: typeof FavoritesRouteRouteWithChildren
+  AboutRoute: typeof AboutRoute
+  DonateRoute: typeof DonateRoute
+  LyricsRoute: typeof LyricsRoute
+  NowplayingRoute: typeof NowplayingRoute
+  PlugininstallRoute: typeof PlugininstallRoute
+  PrivacyRoute: typeof PrivacyRoute
+  SearchRoute: typeof SearchRoute
+  SettingsRoute: typeof SettingsRoute
+  TracksTrackIdRoute: typeof TracksTrackIdRoute
+  PlaylistsIndexRoute: typeof PlaylistsIndexRoute
+  PluginsIndexRoute: typeof PluginsIndexRoute
+  PluginsPluginIdOptionsRoute: typeof PluginsPluginIdOptionsRoute
+  PlaylistsPlaylistIdIndexRoute: typeof PlaylistsPlaylistIdIndexRoute
+  PluginsPluginIdIndexRoute: typeof PluginsPluginIdIndexRoute
+  PlaylistsPlaylistIdTracksTrackIdRoute: typeof PlaylistsPlaylistIdTracksTrackIdRoute
+  PluginsPluginIdAlbumsApiIdRoute: typeof PluginsPluginIdAlbumsApiIdRoute
+  PluginsPluginIdArtistsApiIdRoute: typeof PluginsPluginIdArtistsApiIdRoute
+  PluginsPluginIdPlaylistsApiIdRoute: typeof PluginsPluginIdPlaylistsApiIdRoute
+  PluginsPluginIdPlaylistsIndexRoute: typeof PluginsPluginIdPlaylistsIndexRoute
+}
+
+const rootRouteChildren: RootRouteChildren = {
+  IndexRoute: IndexRoute,
+  FavoritesRouteRoute: FavoritesRouteRouteWithChildren,
+  AboutRoute: AboutRoute,
+  DonateRoute: DonateRoute,
+  LyricsRoute: LyricsRoute,
+  NowplayingRoute: NowplayingRoute,
+  PlugininstallRoute: PlugininstallRoute,
+  PrivacyRoute: PrivacyRoute,
+  SearchRoute: SearchRoute,
+  SettingsRoute: SettingsRoute,
+  TracksTrackIdRoute: TracksTrackIdRoute,
+  PlaylistsIndexRoute: PlaylistsIndexRoute,
+  PluginsIndexRoute: PluginsIndexRoute,
+  PluginsPluginIdOptionsRoute: PluginsPluginIdOptionsRoute,
+  PlaylistsPlaylistIdIndexRoute: PlaylistsPlaylistIdIndexRoute,
+  PluginsPluginIdIndexRoute: PluginsPluginIdIndexRoute,
+  PlaylistsPlaylistIdTracksTrackIdRoute: PlaylistsPlaylistIdTracksTrackIdRoute,
+  PluginsPluginIdAlbumsApiIdRoute: PluginsPluginIdAlbumsApiIdRoute,
+  PluginsPluginIdArtistsApiIdRoute: PluginsPluginIdArtistsApiIdRoute,
+  PluginsPluginIdPlaylistsApiIdRoute: PluginsPluginIdPlaylistsApiIdRoute,
+  PluginsPluginIdPlaylistsIndexRoute: PluginsPluginIdPlaylistsIndexRoute,
+}
+
+export const routeTree = rootRoute
+  ._addFileChildren(rootRouteChildren)
+  ._addFileTypes<FileRouteTypes>()
 
 /* prettier-ignore-end */
 
