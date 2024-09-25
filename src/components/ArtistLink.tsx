@@ -8,7 +8,7 @@ interface ArtistLinkProps {
 
 const ArtistLink: React.FC<ArtistLinkProps> = (props) => {
   const { pluginId, name, apiId } = props;
-  const stopPropagation = (e: React.MouseEvent<"a">) => {
+  const stopPropagation = (e: React.MouseEvent) => {
     e.stopPropagation();
   };
   return (

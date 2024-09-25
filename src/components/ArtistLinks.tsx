@@ -1,4 +1,4 @@
-import ArtistLink from "./ArtistLInk";
+import ArtistLink from "./ArtistLink";
 import { Fragment } from "react";
 import { MultipleArtistItem } from "@/types";
 
