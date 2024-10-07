@@ -1,43 +1,22 @@
+import usePluginWithMethod from "@/hooks/useSearchPlugin";
+import { useNavigate } from "@tanstack/react-router";
+import { Command as CommandPrimitive } from "cmdk";
+import { debounce } from "lodash";
 import React from "react";
 import {
-  CommandInput,
-  CommandList,
   CommandGroup,
+  CommandInput,
   CommandItem,
+  CommandList,
 } from "../components/ui/command";
-import { Command as CommandPrimitive } from "cmdk";
-import { useAppSelector } from "@/store/hooks";
-import usePlugins from "@/hooks/usePlugins";
-import { PluginFrameContainer } from "@/PluginsContext";
-import { filterAsync } from "@/utils";
-import { debounce } from "lodash";
-import { useNavigate } from "@tanstack/react-router";
 
 const SearchBar: React.FC = () => {
-  const currentPluginId = useAppSelector(
-    (state) => state.settings.currentPluginId
-  );
-  const { plugins } = usePlugins();
   const [search, setSearch] = React.useState("");
   const navigate = useNavigate();
   const [open, setOpen] = React.useState(false);
-  const [searchPlugin, setSearchPlugin] =
-    React.useState<PluginFrameContainer>();
+  const searchPlugin = usePluginWithMethod("onGetSearchSuggestions");
   const [options, setOptions] = React.useState<string[]>([]);
   const [selected, setSelected] = React.useState("");
-
-  React.useEffect(() => {
-    const getSearchPlugin = async () => {
-      const validPlugins = await filterAsync(plugins, (p) =>
-        p.hasDefined.onGetSearchSuggestions()
-      );
-      const plugin = validPlugins.some((p) => p.id === currentPluginId)
-        ? validPlugins.find((p) => p.id === currentPluginId)
-        : validPlugins[0];
-      setSearchPlugin(plugin);
-    };
-    getSearchPlugin();
-  }, [currentPluginId, plugins]);
 
   const onGetSuggestions = React.useCallback(
     async (query: string) => {

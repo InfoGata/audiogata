@@ -4,6 +4,7 @@ import path from "path";
 import { defineConfig } from "vite";
 import { VitePWA } from "vite-plugin-pwa";
 import { TanStackRouterVite } from "@tanstack/router-plugin/vite";
+import { nodePolyfills } from "vite-plugin-node-polyfills";
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -20,6 +21,7 @@ export default defineConfig({
   plugins: [
     react(),
     TanStackRouterVite(),
+    nodePolyfills({ include: ["assert"]}),
     VitePWA({
       registerType: "prompt",
       manifest: {

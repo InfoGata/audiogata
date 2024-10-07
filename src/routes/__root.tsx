@@ -1,3 +1,4 @@
+import AudioChatBot from "@/components/AudioChatBot";
 import AudioComponent from "@/components/AudioComponent";
 import { Toaster } from "@/components/ui/sonner";
 import useOffline from "@/hooks/useOffline";
@@ -29,6 +30,7 @@ export const Root: React.FC = () => {
       </main>
       <PlayerBar />
       <AudioComponent />
+      <AudioChatBot />
     </div>
   );
 };

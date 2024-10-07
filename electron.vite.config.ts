@@ -3,6 +3,7 @@ import path from "path";
 import { defineConfig } from "electron-vite";
 import { resolve } from "path";
 import { VitePWA } from "vite-plugin-pwa";
+import { nodePolyfills } from "vite-plugin-node-polyfills";
 
 export default defineConfig({
   main: {
@@ -38,6 +39,6 @@ export default defineConfig({
         },
       },
     },
-    plugins: [react(), VitePWA()],
+    plugins: [react(), VitePWA(), nodePolyfills({ include: ["assert"]})],
   },
 });

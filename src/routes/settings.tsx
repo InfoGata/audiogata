@@ -6,6 +6,7 @@ import ShowForwardAndRewind from "@/components/Settings/ShowForwardAndRewind";
 import ThemeChangeSetting from "@/components/Settings/ThemeChangeSetting";
 import UpdateCorsSetting from "@/components/Settings/UpdateCorsSettings";
 import React from "react";
+import ChatBotSetting from "@/components/Settings/ChatBotSetting";
 
 const Settings: React.FC = () => {
   return (
@@ -16,6 +17,7 @@ const Settings: React.FC = () => {
       <UpdateCorsSetting />
       <SelectLyricsPlugin />
       <ThemeChangeSetting />
+      <ChatBotSetting />
     </div>
   );
 };

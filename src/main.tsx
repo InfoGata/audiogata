@@ -13,6 +13,7 @@ import PluginsProvider from "./providers/PluginsProvider";
 import { ThemeProvider } from "./providers/ThemeProvider";
 import Router from "./router";
 import store, { persistor } from "./store/store";
+import { ChatBotProvider } from "react-chatbotify";
 
 Sentry.init({
   dsn: "https://d99bb253ac5a4b53a32d48697f165e34@app.glitchtip.com/4798",
@@ -35,7 +36,9 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
             <QueryClientProvider client={queryClient}>
               <PluginsProvider>
                 <OutsideCallConsumer config={callConfig}>
-                  <Router />
+                  <ChatBotProvider>
+                    <Router />
+                  </ChatBotProvider>
                 </OutsideCallConsumer>
               </PluginsProvider>
             </QueryClientProvider>

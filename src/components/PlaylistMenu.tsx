@@ -77,7 +77,7 @@ const PlaylistMenu: React.FC<PlaylistMenuProps> = (props) => {
     setPlaylistDialogOpen(true);
   };
 
-  const items: (DropdownItemProps | undefined)[] = [
+  const items: DropdownItemProps[] = [
     ...(dropdownItems || []),
     noQueueItem
       ? undefined
@@ -98,10 +98,9 @@ const PlaylistMenu: React.FC<PlaylistMenuProps> = (props) => {
           action: isFavorite ? onRemoveFavorite : onFavorite,
         }
       : undefined,
-  ];
-  const definedItems = items.filter((i): i is DropdownItemProps => !!i);
+  ].filter((i): i is DropdownItemProps => !!i);
 
-  const selectedItems: (DropdownItemProps | undefined)[] = [
+  const selectedItems: DropdownItemProps[] = [
     ...(selectedDropdownItems || []),
     noQueueItem
       ? undefined
@@ -115,10 +114,7 @@ const PlaylistMenu: React.FC<PlaylistMenuProps> = (props) => {
       icon: <ListPlusIcon />,
       action: addSelectedToNewPlaylist,
     },
-  ];
-  const definedSelectedItems = selectedItems.filter(
-    (i): i is DropdownItemProps => !!i
-  );
+  ].filter((i): i is DropdownItemProps => !!i);
 
   return (
     <>
@@ -129,7 +125,7 @@ const PlaylistMenu: React.FC<PlaylistMenuProps> = (props) => {
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent>
-          {definedItems.map((i) => (
+          {items.map((i) => (
             <DropdownItem key={i.title} {...i} />
           ))}
           <PlaylistSubMenu
@@ -140,7 +136,7 @@ const PlaylistMenu: React.FC<PlaylistMenuProps> = (props) => {
           {selected && selected.size
             ? [
                 <DropdownMenuSeparator key="seperator" />,
-                ...definedSelectedItems.map((i) => (
+                ...selectedItems.map((i) => (
                   <DropdownItem key={i.title} {...i} />
                 )),
                 <PlaylistSubMenu

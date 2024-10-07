@@ -5,6 +5,7 @@
     "plugin": "Plugin",
     "pluginId": "Plugin Id",
     "plugins": "Plugins",
+    "chatbot": "Chatbot",
     "availablePlugins": "Available Plugins",
     "selectPlugin": "Select Plugin",
     "none": "None",
@@ -89,7 +90,8 @@
     "clearAllTracks": "Clear All Tracks",
     "noFavoriteTracks": "No tracks have been added to favorites.",
     "noFavoritePlaylists": "No playlists have been added to favorites.",
-    "github": "GitHub"
+    "github": "GitHub",
+    "clear": "Clear"
   },
   "plugins": {
     "addPlugin_one": "Add Plugin",
@@ -131,6 +133,7 @@
     "noUpdateFound": "No Update Found"
   },
   "settings": {
+    "enableChatBot": "Enable Chat Bot",
     "playCurrentTrack": "Autoplay current track on start up",
     "showFastForwardRewind": "Show Fast Forward and Rewind Buttons",
     "forwardRewindTime": "Forward and Rewind Skip Time in Seconds",
@@ -139,6 +142,7 @@
     "corsProxy": "Cors Proxy Url",
     "light": "Light",
     "dark": "Dark",
-    "system": "System"
+    "system": "System",
+    "openaiKey": "OpenAI Key"
   }
 }
