@@ -1,4 +1,4 @@
-import { MusicControls } from "@awesome-cordova-plugins/music-controls/index";
+// import { MusicControls } from "@awesome-cordova-plugins/music-controls/index";
 import { Capacitor } from "@capacitor/core";
 import canAutoPlay from "can-autoplay";
 import React from "react";
@@ -313,14 +313,14 @@ class AudioComponent extends React.Component<
     }
 
     if (Capacitor.isNativePlatform()) {
-      MusicControls.create({
-        track: this.props.currentTrack.name,
-        artist: this.props.currentTrack.artistName,
-        dismissable: true,
-        cover:
-          this.props.currentTrack.images &&
-          this.props.currentTrack.images[0].url,
-      });
+      // MusicControls.create({
+      //   track: this.props.currentTrack.name,
+      //   artist: this.props.currentTrack.artistName,
+      //   dismissable: true,
+      //   cover:
+      //     this.props.currentTrack.images &&
+      //     this.props.currentTrack.images[0].url,
+      // });
     }
   }
 
@@ -406,28 +406,28 @@ class AudioComponent extends React.Component<
     }
 
     if (Capacitor.isNativePlatform()) {
-      MusicControls.subscribe().subscribe((action) => {
-        const message = JSON.parse(action).message;
-        switch (message) {
-          case "music-controls-next":
-            this.props.nextTrack();
-            break;
-          case "music-controls-previous":
-            this.props.prevTrack();
-            break;
-          case "music-controls-pause":
-            this.props.toggleIsPlaying();
-            MusicControls.updateIsPlaying(false);
-            break;
-          case "music-controls-play":
-            this.props.toggleIsPlaying();
-            MusicControls.updateIsPlaying(true);
-            break;
-          // case "music-controls-destroy":
-          //  break;
-        }
-      });
-      MusicControls.listen();
+      // MusicControls.subscribe().subscribe((action) => {
+      //   const message = JSON.parse(action).message;
+      //   switch (message) {
+      //     case "music-controls-next":
+      //       this.props.nextTrack();
+      //       break;
+      //     case "music-controls-previous":
+      //       this.props.prevTrack();
+      //       break;
+      //     case "music-controls-pause":
+      //       this.props.toggleIsPlaying();
+      //       MusicControls.updateIsPlaying(false);
+      //       break;
+      //     case "music-controls-play":
+      //       this.props.toggleIsPlaying();
+      //       MusicControls.updateIsPlaying(true);
+      //       break;
+      //     // case "music-controls-destroy":
+      //     //  break;
+      //   }
+      // });
+      // MusicControls.listen();
     }
   }
 }
