@@ -1,4 +1,3 @@
-// import { MusicControls } from "@awesome-cordova-plugins/music-controls/index";
 import { Capacitor } from "@capacitor/core";
 import canAutoPlay from "can-autoplay";
 import React from "react";
@@ -25,6 +24,7 @@ import { defaultSkipTime, filterAsync } from "../utils";
 import { withPlugins } from "../withPlugins";
 import * as Sentry from "@sentry/browser";
 import { toast } from "sonner";
+import { CapacitorMusicControls } from "capacitor-music-controls-plugin";
 
 export interface AudioComponentProps
   extends StateProps,
@@ -313,14 +313,13 @@ class AudioComponent extends React.Component<
     }
 
     if (Capacitor.isNativePlatform()) {
-      // MusicControls.create({
-      //   track: this.props.currentTrack.name,
-      //   artist: this.props.currentTrack.artistName,
-      //   dismissable: true,
-      //   cover:
-      //     this.props.currentTrack.images &&
-      //     this.props.currentTrack.images[0].url,
-      // });
+      CapacitorMusicControls.create({
+        track: this.props.currentTrack.name,
+        artist: this.props.currentTrack.artistName,
+        cover:
+          this.props.currentTrack.images &&
+          this.props.currentTrack.images[0].url,
+      });
     }
   }
 
@@ -406,28 +405,27 @@ class AudioComponent extends React.Component<
     }
 
     if (Capacitor.isNativePlatform()) {
-      // MusicControls.subscribe().subscribe((action) => {
-      //   const message = JSON.parse(action).message;
-      //   switch (message) {
-      //     case "music-controls-next":
-      //       this.props.nextTrack();
-      //       break;
-      //     case "music-controls-previous":
-      //       this.props.prevTrack();
-      //       break;
-      //     case "music-controls-pause":
-      //       this.props.toggleIsPlaying();
-      //       MusicControls.updateIsPlaying(false);
-      //       break;
-      //     case "music-controls-play":
-      //       this.props.toggleIsPlaying();
-      //       MusicControls.updateIsPlaying(true);
-      //       break;
-      //     // case "music-controls-destroy":
-      //     //  break;
-      //   }
-      // });
-      // MusicControls.listen();
+      const handleControlsEvent = (action: { message: string; position: number }) => {
+        const message = action.message;
+        switch (message) {
+          case "music-controls-next":
+            this.props.nextTrack();
+            break;
+          case "music-controls-previous":
+            this.props.prevTrack();
+            break;
+          case "music-controls-pause":
+            this.props.toggleIsPlaying();
+            break;
+          case "music-controls-play":
+            this.props.toggleIsPlaying();
+            break;
+        }
+      };
+      document.addEventListener("controlsNotification", (event: any) => {
+        const info = { message: event.message, position: 0 };
+        handleControlsEvent(info);
+      });
     }
   }
 }
