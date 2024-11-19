@@ -5,6 +5,7 @@ import {
   Album,
   Artist,
   ArtistInfo,
+  ManifestAuthentication,
   PlayTrackRequest,
   PlaylistInfo,
   Track,
@@ -19,19 +20,42 @@ export interface NetworkRequest {
   url: string;
 }
 
+export interface NetworkRequestOptions {
+  auth?: ManifestAuthentication;
+}
+
 export interface InfoGataExtension {
   networkRequest: (
     input: string,
-    init?: RequestInit
+    init?: RequestInit,
+    options?: NetworkRequestOptions
   ) => Promise<NetworkRequest>;
+  openLoginWindow?: (
+    auth: ManifestAuthentication,
+    pluginId: string
+  ) => Promise<void>;
+  getVersion?: () => Promise<string>;
 }
 
 declare global {
   interface Window {
-    InfoGata: InfoGataExtension;
-    cordovaFetch: typeof fetch;
+    InfoGata?: InfoGataExtension;
   }
 }
+
+export interface PluginAuthentication {
+  pluginId: string;
+  headers: Record<string, string>;
+  domainHeaders?: Record<string, Record<string, string>>;
+}
+
+export type NotifyLoginMessage = {
+  type: "infogata-extension-notify-login";
+  pluginId: string;
+  headers: Record<string, string>;
+  domainHeaders?: Record<string, Record<string, string>>;
+};
+
 
 export interface DirectoryFile extends File {
   webkitRelativePath: string;

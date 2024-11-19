@@ -77,32 +77,9 @@ interface ApplicationPluginInterface extends PluginInterface {
   getPlugins(): Promise<PluginInfo[]>;
   getPluginId(): Promise<string>;
   getLocale(): Promise<string>;
+  isLoggedIn(): Promise<boolean>;
   getTheme(): Promise<Theme>;
 }
-
-function iteratorFor(items: any) {
-  const iterator = {
-    next: function () {
-      const value = items.shift();
-      return { done: value === undefined, value: value };
-    },
-    [Symbol.iterator]: () => {
-      return iterator;
-    },
-  };
-
-  return iterator;
-}
-
-const getHeaderEntries = (
-  headers: Headers
-): IterableIterator<[string, string]> => {
-  const items: string[][] = [];
-  headers.forEach(function (value, name) {
-    items.push([name, value]);
-  });
-  return iteratorFor(items);
-};
 
 const PluginsProvider: React.FC<React.PropsWithChildren> = (props) => {
   const [pluginsLoaded, setPluginsLoaded] = React.useState(false);
@@ -156,25 +133,17 @@ const PluginsProvider: React.FC<React.PropsWithChildren> = (props) => {
     async (plugin: PluginInfo, pluginFiles?: FileList) => {
       const api: ApplicationPluginInterface = {
         networkRequest: async (input: string, init?: RequestInit) => {
-          if (hasExtension()) {
+          if (hasExtension() && window.InfoGata?.networkRequest) {
             return await window.InfoGata.networkRequest(input, init);
           }
 
-          const response = Capacitor.isNativePlatform()
-            ? await window.cordovaFetch(input, init)
-            : await fetch(input, init);
+          const response = await fetch(input, init);
 
           const body = await response.blob();
 
-          // cordova-plugin-fetch does not support Headers.entries
-          const responseHeaders = Capacitor.isNativePlatform()
-            ? Object.fromEntries(getHeaderEntries(response.headers))
-            : Object.fromEntries(response.headers.entries());
-
-          // Remove forbidden header
-          if (responseHeaders["set-cookie"]) {
-            delete responseHeaders["set-cookie"];
-          }
+          const responseHeaders = Object.fromEntries(
+            response.headers.entries()
+          );
 
           const result = {
             body: body,
@@ -189,6 +158,13 @@ const PluginsProvider: React.FC<React.PropsWithChildren> = (props) => {
           const isDisabled =
             hasExtension() || isElectron() || Capacitor.isNativePlatform();
           return isDisabled;
+        },
+        isLoggedIn: async () => {
+          if (plugin.manifest?.authentication && plugin.id) {
+            const pluginAuth = await db.pluginAuths.get(plugin.id);
+            return !!pluginAuth;
+          }
+          return false;
         },
         getTheme: async () => {
           return themeRef.current;

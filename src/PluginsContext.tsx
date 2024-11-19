@@ -67,6 +67,8 @@ export interface PluginMethodInterface extends PlayerComponent {
     request: GetSearchSuggestionRequest
   ): Promise<string[]>;
   onChangeTheme(theme: Theme): Promise<void>;
+  onPostLogin(): Promise<void>;
+  onPostLogout(): Promise<void>;
 }
 
 export interface PluginMessage {

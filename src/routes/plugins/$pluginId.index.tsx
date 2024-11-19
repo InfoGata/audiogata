@@ -1,29 +1,36 @@
-import { Link, createFileRoute } from "@tanstack/react-router";
 import AboutLink, { AboutLinkProps } from "@/components/AboutLink";
 import Spinner from "@/components/Spinner";
+import Title from "@/components/Title";
 import { Button, buttonVariants } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
-import { useLiveQuery } from "dexie-react-hooks";
-import React from "react";
-import { useTranslation } from "react-i18next";
-import { toast } from "sonner";
 import { db } from "@/database";
 import usePlugins from "@/hooks/usePlugins";
+import { cn } from "@/lib/utils";
 import { Manifest } from "@/plugintypes";
-import { FileType } from "@/types";
+import { FileType, NotifyLoginMessage } from "@/types";
 import {
   directoryProps,
   getFileText,
   getFileTypeFromPluginUrl,
   getPlugin,
+  hasAuthentication,
+  hasExtension,
 } from "@/utils";
-import Title from "@/components/Title";
+import { InAppBrowser } from "@awesome-cordova-plugins/in-app-browser";
+import { Capacitor } from "@capacitor/core";
+import { Link, createFileRoute } from "@tanstack/react-router";
+import { useLiveQuery } from "dexie-react-hooks";
+import isElectron from "is-electron";
+import React from "react";
+import { useTranslation } from "react-i18next";
+import { toast } from "sonner";
 
 const PluginDetails: React.FC = () => {
   const { pluginId } = Route.useParams();
   const { updatePlugin, plugins } = usePlugins();
   const plugin = plugins.find((p) => p.id === pluginId);
   const { t } = useTranslation(["plugins", "common"]);
+  const pluginAuth = useLiveQuery(() => db.pluginAuths.get(pluginId || ""));
+  const [hasAuth, setHasAuth] = React.useState(false);
   const [hasUpdate, setHasUpdate] = React.useState(false);
   const [isCheckingUpdate, setIsCheckingUpdate] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
@@ -71,6 +78,64 @@ const PluginDetails: React.FC = () => {
       : 0;
   }, [pluginInfo]);
 
+  React.useEffect(() => {
+    const getHasAuth = async () => {
+      const platformHasAuth = await hasAuthentication();
+      console.log(platformHasAuth);
+      setHasAuth(platformHasAuth && !!pluginInfo?.manifest?.authentication);
+    };
+    getHasAuth();
+  }, [pluginInfo]);
+
+  const iframeListener = React.useCallback(
+    async (event: MessageEvent<NotifyLoginMessage>) => {
+      if (event.source !== window) {
+        return;
+      }
+
+      console.log("Test iframe listener", event.data);
+      if (event.data.type === "infogata-extension-notify-login") {
+        if (plugin && event.data.pluginId === plugin.id) {
+          db.pluginAuths.put({
+            pluginId: plugin.id || "",
+            headers: event.data.headers,
+            domainHeaders: event.data.domainHeaders,
+          });
+          if (await plugin?.hasDefined.onPostLogin()) {
+            await plugin.remote.onPostLogin();
+          }
+        }
+      }
+    },
+    [plugin]
+  );
+
+  React.useEffect(() => {
+    window.addEventListener("message", iframeListener);
+    return () => window.removeEventListener("message", iframeListener);
+  }, [iframeListener]);
+
+
+  const onLogin = () => {
+    if (pluginInfo?.manifest?.authentication?.loginUrl) {
+      if (hasExtension() && window.InfoGata?.openLoginWindow) {
+        window.InfoGata.openLoginWindow(
+          pluginInfo.manifest.authentication,
+          pluginInfo.id || ""
+        );
+      } else if (Capacitor.isNativePlatform()) {
+        InAppBrowser.create(pluginInfo.manifest.authentication?.loginUrl, "_blank");
+      } else if (isElectron()) {
+        console.log(window.api);
+        console.log(window.electron)
+        window.api.openLoginWindow(
+          pluginInfo.manifest.authentication,
+          pluginInfo.id || ""
+        );
+      }
+    }
+  };
+
   const onUpdate = async () => {
     if (pluginInfo?.manifestUrl) {
       const fileType = getFileTypeFromPluginUrl(pluginInfo.manifestUrl);
@@ -100,6 +165,16 @@ const PluginDetails: React.FC = () => {
       }
     }
     setIsCheckingUpdate(false);
+  };
+
+
+  const onLogout = async () => {
+    if (pluginId) {
+      db.pluginAuths.delete(pluginId);
+      if (plugin && (await plugin.hasDefined.onPostLogout())) {
+        await plugin.remote.onPostLogout();
+      }
+    }
   };
 
   if (!pluginInfo) {
@@ -181,6 +256,16 @@ const PluginDetails: React.FC = () => {
           {plugin?.fileList && (
             <Button className="cursor-pointer" onClick={onReload}>
               <span>{t("plugins:reloadPlugin")}</span>
+            </Button>
+          )}
+          {hasAuth && pluginAuth && (
+            <Button variant="outline" onClick={onLogout}>
+              {t("plugins:logout")}
+            </Button>
+          )}
+          {hasAuth && !pluginAuth && (
+            <Button variant="outline" onClick={onLogin}>
+              {t("plugins:login")}
             </Button>
           )}
         </div>

@@ -128,6 +128,8 @@
     "failedPlugins": "Failed to load plugins",
     "clickReload": "Click to reload plugins",
     "installedPlugins": "Installed Plugins",
+    "login": "Login",
+    "logout": "Logout",
     "openMenu": "Open Menu",
     "updateFound": "Update Found",
     "noUpdateFound": "No Update Found"

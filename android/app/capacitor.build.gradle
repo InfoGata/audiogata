@@ -13,7 +13,7 @@ dependencies {
     implementation project(':capacitor-music-controls-plugin')
 
 }
-apply from: "../../node_modules/cordova-plugin-fetch/src/android/dependencies.gradle"
+
 
 if (hasProperty('postBuildExtras')) {
   postBuildExtras()

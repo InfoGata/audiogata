@@ -1,8 +1,10 @@
 import { Capacitor } from "@capacitor/core";
+import isElectron from "is-electron";
 import { customAlphabet } from "nanoid";
 import i18next from "./i18n";
 import { ImageInfo, Manifest, PluginInfo, Track } from "./plugintypes";
 import { DirectoryFile, FileType } from "./types";
+import semverGte from "semver/functions/gte";
 
 export function formatSeconds(seconds?: number) {
   if (!seconds) {
@@ -183,6 +185,19 @@ export const getPluginSubdomain = (id?: string): string => {
 
 export const hasExtension = () => {
   return typeof window.InfoGata !== "undefined";
+};
+
+export const corsIsDisabled = () => {
+  return hasExtension() || isElectron() || Capacitor.isNativePlatform();
+};
+
+export const hasAuthentication = async () => {
+  const minVersion = "1.1.0";
+  if (hasExtension() && window.InfoGata?.getVersion) {
+    const version = await window.InfoGata.getVersion();
+    return semverGte(version, minVersion);
+  }
+  return Capacitor.isNativePlatform() || isElectron();
 };
 
 export const generatePluginId = () => {

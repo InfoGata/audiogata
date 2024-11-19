@@ -1,5 +1,10 @@
 {
 	"appId": "com.audiogata.app",
 	"appName": "AudioGata",
-	"webDir": "dist"
+	"webDir": "dist",
+	"plugins": {
+		"CapacitorHttp": {
+			"enabled": true
+		}
+	}
 }

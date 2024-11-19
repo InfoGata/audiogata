@@ -7,6 +7,7 @@ import {
   PluginInfo,
   Track,
 } from "./plugintypes";
+import { PluginAuthentication } from "./types";
 
 class AudioDatabase extends Dexie {
   audioBlobs: Dexie.Table<AudioBlob, string>;
@@ -16,6 +17,7 @@ class AudioDatabase extends Dexie {
   favoriteAlbums: Dexie.Table<Album, string>;
   favoriteArtists: Dexie.Table<Artist, string>;
   favoritePlaylists: Dexie.Table<PlaylistInfo, string>;
+  pluginAuths: Dexie.Table<PluginAuthentication, string>;
 
   constructor() {
     super("AudioDatabase");
@@ -30,6 +32,9 @@ class AudioDatabase extends Dexie {
       favoriteArtists: "id, [pluginId+apiId]",
       favoritePlaylists: "id, [pluginId+apiId]",
     });
+    this.version(3).stores({
+      pluginAuths: "pluginId",
+    });
     this.audioBlobs = this.table("audioBlobs");
     this.plugins = this.table("plugins");
     this.playlists = this.table("playlists");
@@ -37,6 +42,7 @@ class AudioDatabase extends Dexie {
     this.favoriteAlbums = this.table("favoriteAlbums");
     this.favoriteArtists = this.table("favoriteArtists");
     this.favoritePlaylists = this.table("favoritePlaylists");
+    this.pluginAuths = this.table("pluginAuths");
   }
 }
 

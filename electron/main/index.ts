@@ -1,6 +1,7 @@
 import { is, optimizer } from "@electron-toolkit/utils";
-import { app, BrowserWindow, components } from "electron";
+import { app, BrowserWindow, components, ipcMain } from "electron";
 import { join } from "path";
+import { ManifestAuthentication } from "../../src/plugintypes";
 
 function UpsertKeyValue(obj: any, keyToChange: string, value: string[]) {
   const keyToChangeLower = keyToChange.toLowerCase();
@@ -23,9 +24,97 @@ function createWindow() {
     show: false,
     autoHideMenuBar: true,
     webPreferences: {
-      preload: join(__dirname, "../preload/index.js"),
+      preload: join(__dirname, "../preload/index.cjs"),
       sandbox: false,
     },
+  });
+
+  ipcMain.handle("open-login-window", (event, auth: ManifestAuthentication, pluginId: string) => {
+    const loginWindow = new BrowserWindow({
+      width: 1024,
+      height: 768,
+    });
+    loginWindow.loadURL(auth.loginUrl);
+    const loginInfo = {
+      foundCompletionUrl: !auth.completionUrl,
+      foundHeaders: !auth.headersToFind,
+      foundDomainHeaders: !auth.domainHeadersToFind,
+      foundCookies: !auth.cookiesToFind,
+      headers: {},
+      domainHeaders: {}
+    }
+    loginWindow.webContents.session.webRequest.onBeforeSendHeaders((details, callback) => {
+      const { requestHeaders, url } = details;
+      const detailsUrl = new URL(url);
+      const urlHost = detailsUrl.host;
+      const headerMap = new Map(Object.entries(requestHeaders));
+
+      if (auth.completionUrl && !loginInfo.foundCompletionUrl) {
+        if (url === auth.completionUrl) {
+          loginInfo.foundCompletionUrl = true;
+        } else if (auth.completionUrl.endsWith("?")) {
+          const urlToCheck = auth.completionUrl.slice(0, -2);
+          const originAndPath = `${detailsUrl.origin}${detailsUrl.pathname}`;
+          loginInfo.foundCompletionUrl = urlToCheck === originAndPath;
+        }
+      }
+
+      if (auth.cookiesToFind && !loginInfo.foundCookies) {
+        const cookies = headerMap.get("Cookie");
+        if (cookies) {
+          const cookieMap = new Map(
+            cookies.split(";")
+            .map(cookie => cookie.trim().split("="))
+            .map(cookie => [cookie[0], cookie[1]])
+          );
+
+          loginInfo.foundCookies = auth.cookiesToFind.every(cookie => cookieMap.has(cookie));
+        }
+      }
+
+      if (auth.domainHeadersToFind && !loginInfo.foundDomainHeaders) {
+        const domainToSearch = Object.keys(auth.domainHeadersToFind).find((d) =>
+          urlHost.endsWith(d)
+        );
+
+      if (domainToSearch && !loginInfo.domainHeaders[domainToSearch]) {
+        const domainHeaders = auth.domainHeadersToFind[domainToSearch];
+        const foundDomainHeaders = domainHeaders.every((dh) =>
+          headerMap.has(dh)
+        );
+          if (foundDomainHeaders) {
+            loginInfo.domainHeaders[domainToSearch] = {};
+            for (const header of domainHeaders) {
+              loginInfo.domainHeaders[domainToSearch][header] =
+                headerMap.get(header);
+            }
+          }
+        }
+
+        if (Object.keys(loginInfo.domainHeaders).length === Object.keys(auth.domainHeadersToFind).length) {
+          loginInfo.foundDomainHeaders = true;
+        }
+      }
+
+      if (auth.headersToFind && !loginInfo.foundHeaders) {
+        loginInfo.foundHeaders = auth.headersToFind.every(header => headerMap.has(header));
+        if (loginInfo.foundHeaders) {
+          for (const header of auth.headersToFind) {
+            loginInfo.headers[header] = headerMap.get(header);
+          }
+        }
+      }
+
+      const { foundCompletionUrl, foundHeaders, foundDomainHeaders, foundCookies } = loginInfo;
+      if (foundCompletionUrl && foundHeaders && foundDomainHeaders && foundCookies) {
+        mainWindow.webContents.send("login-window-response",
+          pluginId,
+          loginInfo.headers,
+          loginInfo.domainHeaders);
+        loginWindow.destroy();
+      }
+      callback({ requestHeaders });
+    });
   });
 
   mainWindow.on("ready-to-show", () => {
