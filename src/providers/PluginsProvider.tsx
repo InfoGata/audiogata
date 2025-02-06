@@ -252,7 +252,10 @@ const PluginsProvider: React.FC<React.PropsWithChildren> = (props) => {
         },
       };
 
-      const srcUrl = `${getPluginSubdomain(plugin.id)}/pluginframe.html`;
+      const srcUrl =
+        import.meta.env.VITE_UNSAFE_SAME_ORIGIN_IFRAME === "true"
+          ? new URL("/pluginframe.html", window.location.origin)
+          : new URL(`${getPluginSubdomain(plugin.id)}/pluginframe.html`);
 
       const completeMethods: {
         [key in keyof PluginMethodInterface]?: (
@@ -391,7 +394,7 @@ const PluginsProvider: React.FC<React.PropsWithChildren> = (props) => {
 
       const host = new PluginFrameContainer(api, {
         completeMethods,
-        frameSrc: new URL(srcUrl),
+        frameSrc: srcUrl,
         sandboxAttributes: ["allow-scripts", "allow-same-origin"],
         allow: "encrypted-media; autoplay;",
       });

@@ -73,7 +73,10 @@ const PluginOptions: React.FC = () => {
   // window.open needs allow-top-navigation-by-user-activiation
   if (Capacitor.isNativePlatform())
     sandbox = sandbox.concat(" allow-top-navigation-by-user-activation");
-  const srcUrl = `${getPluginSubdomain(plugin.id)}/ui.html`;
+  const srcUrl =
+    import.meta.env.VITE_UNSAFE_SAME_ORIGIN_IFRAME === "true"
+      ? "/ui.html"
+      : `${getPluginSubdomain(plugin.id)}/ui.html`;
   return (
     <div>
       <div className="mb-2">
