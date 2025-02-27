@@ -93,7 +93,6 @@ const PluginDetails: React.FC = () => {
         return;
       }
 
-      console.log("Test iframe listener", event.data);
       if (event.data.type === "infogata-extension-notify-login") {
         if (plugin && event.data.pluginId === plugin.id) {
           db.pluginAuths.put({
@@ -124,10 +123,109 @@ const PluginDetails: React.FC = () => {
           pluginInfo.id || ""
         );
       } else if (Capacitor.isNativePlatform()) {
-        InAppBrowser.create(pluginInfo.manifest.authentication?.loginUrl, "_blank");
+        const browser = InAppBrowser.create(pluginInfo.manifest.authentication?.loginUrl, "_blank");
+        const auth = pluginInfo.manifest.authentication;
+
+        const loginInfo = {
+          foundCompletionUrl: !pluginInfo.manifest.authentication?.completionUrl,
+          foundHeaders: !pluginInfo.manifest.authentication?.headersToFind,
+          foundDomainHeaders: !pluginInfo.manifest.authentication?.domainHeadersToFind,
+          foundCookies: !pluginInfo.manifest.authentication?.cookiesToFind,
+          headers: {} as Record<string, string>,
+          domainHeaders: {} as Record<string, Record<string, string>>
+        }
+
+        browser.on("message").subscribe(async (event) => {
+          const data = event.data;
+          const type: string = data.type;
+          const url: string = data.url;
+          const headers: Record<string, string> = data.headers;
+          const headerMap = new Map(Object.entries(headers));
+          const detailsUrl = new URL(url);
+          const urlHost = detailsUrl.host;
+          if (type === "intercept") {
+            if (auth.completionUrl && !loginInfo.foundCompletionUrl) {
+              loginInfo.foundCompletionUrl = true;
+            } else if (auth.completionUrl?.endsWith("?")) {
+              const urlToCheck = auth.completionUrl.slice(0, -2);
+              const originAndPath = `${detailsUrl.origin}${detailsUrl.pathname}`;
+              loginInfo.foundCompletionUrl = urlToCheck === originAndPath;
+            }
+          }
+
+          if (auth.cookiesToFind && !loginInfo.foundCookies) {
+            const cookies = headerMap.get("Cookie");
+            if (cookies) {
+              const cookieMap = new Map(
+                cookies
+                  .split(";")
+                  .map((cookie) => cookie.trim().split("="))
+                  .map((cookie) => [cookie[0], cookie[1]])
+              );
+
+              loginInfo.foundCookies = auth.cookiesToFind.every((cookie) =>
+                cookieMap.has(cookie)
+              );
+            }
+          }
+
+          if (auth.domainHeadersToFind && !loginInfo.foundDomainHeaders) {
+            const domainToSearch = Object.keys(auth.domainHeadersToFind).find(
+              (d) => urlHost.endsWith(d)
+            );
+
+            if (domainToSearch && !loginInfo.domainHeaders[domainToSearch]) {
+              const domainHeaders = auth.domainHeadersToFind[domainToSearch];
+              const foundDomainHeaders = domainHeaders.every((dh) =>
+                headerMap.has(dh)
+              );
+              if (foundDomainHeaders) {
+                loginInfo.domainHeaders[domainToSearch] = {};
+                for (const header of domainHeaders) {
+                  const headerValue = headerMap.get(header);
+                  if (headerValue) {
+                    loginInfo.domainHeaders[domainToSearch][header] =
+                      headerValue;
+                  }
+                }
+              }
+            }
+
+            if (
+              Object.keys(loginInfo.domainHeaders).length ===
+              Object.keys(auth.domainHeadersToFind).length
+            ) {
+              loginInfo.foundDomainHeaders = true;
+            }
+          }
+
+          if (auth.headersToFind && !loginInfo.foundHeaders) {
+            loginInfo.foundHeaders = auth.headersToFind.every((header) =>
+              headerMap.has(header)
+            );
+            if (loginInfo.foundHeaders) {
+              for (const header of auth.headersToFind) {
+                const headerValue = headerMap.get(header);
+                if (headerValue) {
+                  loginInfo.headers[header] = headerValue;
+                }
+              }
+            }
+          }
+
+          if (loginInfo.foundCompletionUrl && loginInfo.foundHeaders && loginInfo.foundDomainHeaders && loginInfo.foundCookies) {
+            db.pluginAuths.put({
+              pluginId: pluginInfo.id || "",
+              headers: loginInfo.headers,
+              domainHeaders: loginInfo.domainHeaders,
+            });
+            if (plugin && await plugin.hasDefined.onPostLogin()) {
+              await plugin.remote.onPostLogin();
+            }
+            browser.close();
+          }
+        });
       } else if (isElectron()) {
-        console.log(window.api);
-        console.log(window.electron)
         window.api.openLoginWindow(
           pluginInfo.manifest.authentication,
           pluginInfo.id || ""
