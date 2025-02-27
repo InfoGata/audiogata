@@ -172,7 +172,7 @@ export async function filterAsync<T>(
   return array.filter((_value, index) => filterMap[index]);
 }
 
-export const getPluginSubdomain = (id?: string): string => {
+const getPluginSubdomain = (id?: string): string => {
   if (import.meta.env.PROD || Capacitor.isNativePlatform()) {
     const domain = import.meta.env.VITE_DOMAIN || "audiogata.com";
     const protocol = domain.startsWith("localhost")
@@ -181,6 +181,12 @@ export const getPluginSubdomain = (id?: string): string => {
     return `${protocol}//${id}.${domain}`;
   }
   return `${window.location.protocol}//${id}.${window.location.host}`;
+};
+
+export const getPluginUrl = (id: string, path: string): URL => {
+  return import.meta.env.VITE_UNSAFE_SAME_ORIGIN_IFRAME === "true"
+    ? new URL(path, window.location.origin)
+    : new URL(`${getPluginSubdomain(id)}${path}`);
 };
 
 export const hasExtension = () => {

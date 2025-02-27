@@ -53,7 +53,7 @@ import {
   getFileText,
   getFileTypeFromPluginUrl,
   getPlugin,
-  getPluginSubdomain,
+  getPluginUrl,
   hasExtension,
   mapAsync,
 } from "../utils";
@@ -252,10 +252,7 @@ const PluginsProvider: React.FC<React.PropsWithChildren> = (props) => {
         },
       };
 
-      const srcUrl =
-        import.meta.env.VITE_UNSAFE_SAME_ORIGIN_IFRAME === "true"
-          ? new URL("/pluginframe.html", window.location.origin)
-          : new URL(`${getPluginSubdomain(plugin.id)}/pluginframe.html`);
+      const srcUrl = getPluginUrl(plugin.id || "", "/pluginframe.html");
 
       const completeMethods: {
         [key in keyof PluginMethodInterface]?: (

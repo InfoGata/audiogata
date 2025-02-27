@@ -5,7 +5,7 @@ import { useTranslation } from "react-i18next";
 import Spinner from "@/components/Spinner";
 import { db } from "@/database";
 import usePlugins from "@/hooks/usePlugins";
-import { getPluginSubdomain } from "@/utils";
+import { getPluginUrl } from "@/utils";
 import Title from "@/components/Title";
 
 const PluginOptions: React.FC = () => {
@@ -73,10 +73,7 @@ const PluginOptions: React.FC = () => {
   // window.open needs allow-top-navigation-by-user-activiation
   if (Capacitor.isNativePlatform())
     sandbox = sandbox.concat(" allow-top-navigation-by-user-activation");
-  const srcUrl =
-    import.meta.env.VITE_UNSAFE_SAME_ORIGIN_IFRAME === "true"
-      ? "/ui.html"
-      : `${getPluginSubdomain(plugin.id)}/ui.html`;
+  const srcUrl = getPluginUrl(plugin.id || "", "/ui.html");
   return (
     <div>
       <div className="mb-2">
@@ -90,7 +87,7 @@ const PluginOptions: React.FC = () => {
           name={plugin.id}
           title={plugin.name}
           sandbox={sandbox}
-          src={srcUrl}
+          src={srcUrl.toString()}
           onLoad={iframeOnload}
           width="100%"
           frameBorder="0"
