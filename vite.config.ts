@@ -17,6 +17,11 @@ export default defineConfig({
   test: {
     environment: "jsdom",
     setupFiles: ["fake-indexeddb/auto", "src/test/before.ts"],
+    server: {
+      deps: {
+        inline: ["react-chatbotify"]
+      },
+    }
   },
   plugins: [
     react(),
