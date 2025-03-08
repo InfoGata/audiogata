@@ -54,7 +54,7 @@ const PluginContainer: React.FC<PluginContainerProps> = (props) => {
               {t("options")}
             </Link>
           )}
-          <DropdownMenu>
+          <DropdownMenu modal={false}>
             <DropdownMenuTrigger asChild>
               <Button
                 variant="ghost"
