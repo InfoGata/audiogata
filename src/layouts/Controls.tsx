@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 import React from "react";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
 import {
@@ -11,8 +12,6 @@ import {
   toggleShuffle,
 } from "../store/reducers/trackReducer";
 import { defaultSkipTime } from "../utils";
-import PlaybackRate from "./PlaybackRate";
-import Volume from "./Volume";
 import {
   MdSkipNext,
   MdSkipPrevious,
@@ -30,7 +29,6 @@ import {
   MdRepeatOne,
   MdRepeat,
 } from "react-icons/md";
-import { cn } from "@/lib/utils";
 
 const getForwardIcon = (time?: number) => {
   if (!time) {
@@ -39,13 +37,13 @@ const getForwardIcon = (time?: number) => {
 
   switch (time) {
     case 5:
-      return <MdForward5 />;
+      return <MdForward5 className="h-5 w-5" />;
     case 10:
-      return <MdForward10 />;
+      return <MdForward10 className="h-5 w-5" />;
     case 30:
-      return <MdForward30 />;
+      return <MdForward30 className="h-5 w-5" />;
     default:
-      return <MdFastForward />;
+      return <MdFastForward className="h-5 w-5" />;
   }
 };
 
@@ -56,13 +54,13 @@ const getRewindIcon = (time?: number) => {
 
   switch (time) {
     case 5:
-      return <MdReplay5 />;
+      return <MdReplay5 className="h-5 w-5" />;
     case 10:
-      return <MdReplay10 />;
+      return <MdReplay10 className="h-5 w-5" />;
     case 30:
-      return <MdReplay30 />;
+      return <MdReplay30 className="h-5 w-5" />;
     default:
-      return <MdFastRewind />;
+      return <MdFastRewind className="h-5 w-5" />;
   }
 };
 
@@ -79,7 +77,11 @@ const Controls: React.FC = () => {
   );
 
   const dispatch = useAppDispatch();
-  const playIcon = isPlaying ? <MdPause /> : <MdPlayArrow />;
+  const playIcon = isPlaying ? (
+    <MdPause className="h-8 w-8" />
+  ) : (
+    <MdPlayArrow className="h-8 w-8" />
+  );
 
   const onToggleShuffle = () => dispatch(toggleShuffle());
   const onChangeRepeat = () => dispatch(changeRepeat());
@@ -90,42 +92,87 @@ const Controls: React.FC = () => {
   const onRewind = () => dispatch(rewind());
 
   return (
-    <div className="text-center">
-      <Button size="icon" variant="ghost" onClick={onToggleShuffle}>
+    <div className="flex items-center gap-x-2">
+      <Button
+        size="icon"
+        variant="ghost"
+        className="text-muted-foreground hover:text-foreground"
+        onClick={onToggleShuffle}
+      >
         <MdShuffle
-          className={cn(shuffle ? "text-foreground" : "text-muted-foreground")}
+          className={cn(
+            "h-5 w-5",
+            shuffle ? "text-primary" : "text-muted-foreground"
+          )}
         />
       </Button>
+
       {showForwardAndRewind && (
-        <Button size="icon" variant="ghost" onClick={onRewind}>
+        <Button
+          size="icon"
+          variant="ghost"
+          className="text-muted-foreground hover:text-foreground"
+          onClick={onRewind}
+        >
           {getRewindIcon(customForwardAndRewindTime)}
         </Button>
       )}
-      <Button size="icon" variant="ghost" onClick={onPreviousClick}>
-        <MdSkipPrevious />
+
+      <Button
+        size="icon"
+        variant="ghost"
+        className="text-muted-foreground hover:text-foreground"
+        onClick={onPreviousClick}
+      >
+        <MdSkipPrevious className="h-7 w-7" />
       </Button>
-      <Button size="icon" variant="ghost" onClick={onTogglePlay}>
+
+      <Button
+        size="icon"
+        variant="ghost"
+        className="h-10 w-10 hover:scale-105 transition-transform"
+        onClick={onTogglePlay}
+      >
         {playIcon}
       </Button>
-      <Button size="icon" variant="ghost" onClick={onNextClick}>
-        <MdSkipNext />
+
+      <Button
+        size="icon"
+        variant="ghost"
+        className="text-muted-foreground hover:text-foreground"
+        onClick={onNextClick}
+      >
+        <MdSkipNext className="h-7 w-7" />
       </Button>
+
       {showForwardAndRewind && (
-        <Button size="icon" variant="ghost" onClick={onFastFoward}>
+        <Button
+          size="icon"
+          variant="ghost"
+          className="text-muted-foreground hover:text-foreground"
+          onClick={onFastFoward}
+        >
           {getForwardIcon(customForwardAndRewindTime)}
         </Button>
       )}
-      <Button size="icon" variant="ghost" onClick={onChangeRepeat}>
+
+      <Button
+        size="icon"
+        variant="ghost"
+        className="text-muted-foreground hover:text-foreground"
+        onClick={onChangeRepeat}
+      >
         {repeatOne ? (
-          <MdRepeatOne />
+          <MdRepeatOne className="h-5 w-5 text-primary" />
         ) : (
           <MdRepeat
-            className={cn(repeat ? "text-foreground" : "text-muted-foreground")}
+            className={cn(
+              "h-5 w-5",
+              repeat ? "text-primary" : "text-muted-foreground"
+            )}
           />
         )}
       </Button>
-      <Volume />
-      <PlaybackRate />
     </div>
   );
 };

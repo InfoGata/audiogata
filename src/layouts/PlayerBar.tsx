@@ -5,34 +5,62 @@ import Controls from "./Controls";
 import PlayerThumbnail from "./PlayerThumbNail";
 import Progress from "./Progress";
 import TrackMenu from "@/components/TrackMenu";
+import Volume from "./Volume";
+import PlaybackRate from "./PlaybackRate";
 
 const PlayerBar: React.FC = () => {
   const currentTrack = useAppSelector((state) => state.track.currentTrack);
   const sanitizer = DOMPurify.sanitize;
 
   return (
-    <div className="bottom-0 left-0 fixed bg-background w-full border-t z-40 grid grid-cols-12 items-center">
-      <div className="col-span-3 sm:col-span-2">
-        <PlayerThumbnail />
+    <div className="fixed bottom-0 left-0 w-full bg-background border-t z-40 flex flex-col">
+      {/* Progress bar at the very top */}
+      <div className="w-full px-2">
+        <Progress />
       </div>
-
-      <div className="flex flex-col items-center col-span-9 mr-2 sm:w-4/5 sm:col-span-10">
-        <div className="flex flex-row items-center">
-          <p
-            className="max-w-64 truncate text-sm"
-            title={currentTrack && currentTrack.name}
-            dangerouslySetInnerHTML={{
-              __html: sanitizer(currentTrack?.name || ""),
-            }}
-          />
-          <div>
-            {currentTrack && (
-              <TrackMenu track={currentTrack} noQueueItem={true} />
+      
+      {/* Main player controls */}
+      <div className="grid grid-cols-12 items-center px-4 h-20">
+        {/* Left section - Now playing */}
+        <div className="col-span-3 flex items-center gap-x-3 min-w-0">
+          <div className="flex-shrink-0">
+            <PlayerThumbnail />
+          </div>
+          <div className="min-w-0 flex-1">
+            <p
+              className="text-sm font-medium truncate"
+              title={currentTrack?.name}
+              dangerouslySetInnerHTML={{
+                __html: sanitizer(currentTrack?.name || ""),
+              }}
+            />
+            {currentTrack?.artistName && (
+              <p
+                className="text-xs text-muted-foreground truncate"
+                title={currentTrack.artistName}
+                dangerouslySetInnerHTML={{
+                  __html: sanitizer(currentTrack.artistName),
+                }}
+              />
             )}
           </div>
+          {currentTrack && (
+            <div className="flex-shrink-0">
+              <TrackMenu track={currentTrack} noQueueItem={true} />
+            </div>
+          )}
         </div>
-        <Controls />
-        <Progress />
+
+        {/* Center section - Controls */}
+        <div className="col-span-6 flex flex-col items-center justify-center">
+          <Controls />
+        </div>
+
+        {/* Right section - Volume & additional controls */}
+        <div className="col-span-3 flex items-center justify-end gap-x-2">
+          <PlaybackRate />
+          <Volume />
+        </div>
       </div>
     </div>
   );

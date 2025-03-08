@@ -24,18 +24,24 @@ const Progress: React.FC = () => {
   };
 
   const displayElapsed = isDragging ? newElapsed : seekTime || elapsed || 0;
-  const totalDuration = currentTrack && currentTrack.duration;
+  const totalDuration = currentTrack?.duration || 0;
+
   return (
-    <div className="flex flex-row w-full items-center gap-1">
-      <p>{formatSeconds(displayElapsed)}</p>
+    <div className="flex flex-row w-full items-center gap-x-2 px-2 py-1">
+      <span className="text-xs text-muted-foreground min-w-[40px] text-right">
+        {formatSeconds(displayElapsed)}
+      </span>
       <Slider
         min={0}
         max={totalDuration}
         value={[displayElapsed]}
         onValueChange={onChange}
         onValueCommit={onChangeCommited}
+        className="h-1"
       />
-      <p>{formatSeconds(totalDuration)}</p>
+      <span className="text-xs text-muted-foreground min-w-[40px]">
+        {formatSeconds(totalDuration)}
+      </span>
     </div>
   );
 };
