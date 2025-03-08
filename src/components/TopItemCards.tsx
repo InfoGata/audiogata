@@ -6,10 +6,12 @@ import SelectPlugin from "./SelectPlugin";
 import TrackCard from "./TrackCard";
 import ArtistCard from "./ArtistCard";
 import AlbumCard from "./AlbumCard";
+import { useTranslation } from "react-i18next";
 
 const TopItemCards: React.FC = () => {
   const [pluginId, setPluginId] = React.useState("");
   const { plugins } = usePlugins();
+  const { t } = useTranslation();
 
   const getTopItems = async () => {
     const plugin = plugins.find((p) => p.id === pluginId);
@@ -34,21 +36,36 @@ const TopItemCards: React.FC = () => {
           useCurrentPlugin={true}
         />
       </div>
-      <div className="flex gap-5 w-full overflow-auto mt-5">
-        {query.data?.tracks?.items.map((t) => (
-          <TrackCard key={t.id} track={t} />
-        ))}
-      </div>
-      <div className="flex gap-5 w-full overflow-auto mt-5">
-        {query.data?.albums?.items.map((a) => (
-          <AlbumCard key={a.id} album={a} />
-        ))}
-      </div>
-      <div className="flex gap-5 w-full overflow-auto mt-5">
-        {query.data?.artists?.items.map((i) => (
-          <ArtistCard key={i.id} artist={i} />
-        ))}
-      </div>
+      {query.data?.tracks?.items.length && (
+        <>
+          <h2 className="text-2xl font-bold">{t("tracks")}</h2>
+          <div className="flex gap-5 w-full overflow-auto mt-5">
+            {query.data?.tracks?.items.map((t) => (
+              <TrackCard key={t.id} track={t} />
+            ))}
+          </div>
+        </>
+      )}
+      {query.data?.albums?.items.length && (
+        <>
+          <h2 className="text-2xl font-bold">{t("albums")}</h2>
+          <div className="flex gap-5 w-full overflow-auto mt-5">
+            {query.data?.albums?.items.map((a) => (
+              <AlbumCard key={a.id} album={a} />
+            ))}
+          </div>
+        </>
+      )}
+      {query.data?.artists?.items.length && (
+        <>
+          <h2 className="text-2xl font-bold">{t("artists")}</h2>
+          <div className="flex gap-5 w-full overflow-auto mt-5">
+            {query.data?.artists?.items.map((i) => (
+              <ArtistCard key={i.id} artist={i} />
+            ))}
+          </div>
+        </>
+      )}
     </>
   );
 };
