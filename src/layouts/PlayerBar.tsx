@@ -11,12 +11,14 @@ import { Button } from "@/components/ui/button";
 import {
   Sheet,
   SheetContent,
+  SheetDescription,
   SheetHeader,
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { MdMoreVert } from "react-icons/md";
 import { useTranslation } from "react-i18next";
+import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 
 const PlayerBar: React.FC = () => {
   const currentTrack = useAppSelector((state) => state.track.currentTrack);
@@ -44,6 +46,11 @@ const PlayerBar: React.FC = () => {
       <SheetContent side="bottom" className="h-auto pb-safe">
         <SheetHeader>
           <SheetTitle>{t("controls")}</SheetTitle>
+          <VisuallyHidden>
+            <SheetDescription>
+              {t("controls")}
+            </SheetDescription>
+          </VisuallyHidden>
         </SheetHeader>
         <div className="flex flex-col gap-6 py-6">
           <div className="flex items-center gap-4">
