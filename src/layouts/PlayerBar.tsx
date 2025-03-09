@@ -7,16 +7,54 @@ import Progress from "./Progress";
 import TrackMenu from "@/components/TrackMenu";
 import Volume from "./Volume";
 import PlaybackRate from "./PlaybackRate";
+import { Button } from "@/components/ui/button";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
+import { MdMoreVert } from "react-icons/md";
+import { useTranslation } from "react-i18next";
 
 const PlayerBar: React.FC = () => {
   const currentTrack = useAppSelector((state) => state.track.currentTrack);
   const sanitizer = DOMPurify.sanitize;
+  const { t } = useTranslation();
 
-  const AdditionalControls = () => (
+  const DesktopAdditionalControls = () => (
     <>
       <PlaybackRate />
       <Volume />
     </>
+  );
+
+  const MobileAdditionalControls = () => (
+    <Sheet>
+      <SheetTrigger asChild>
+        <Button
+          variant="ghost"
+          size="icon"
+          className="text-muted-foreground hover:text-foreground"
+        >
+          <MdMoreVert className="h-5 w-5" />
+        </Button>
+      </SheetTrigger>
+      <SheetContent side="bottom" className="h-auto pb-safe">
+        <SheetHeader>
+          <SheetTitle>{t("controls")}</SheetTitle>
+        </SheetHeader>
+        <div className="flex flex-col gap-6 py-6">
+          <div className="flex items-center gap-4">
+            <PlaybackRate mobile />
+          </div>
+          <div className="flex items-center gap-4">
+            <Volume mobile />
+          </div>
+        </div>
+      </SheetContent>
+    </Sheet>
   );
 
   return (
@@ -62,15 +100,15 @@ const PlayerBar: React.FC = () => {
         <div className="w-full sm:w-auto sm:col-span-6 flex flex-col items-center justify-center order-2 sm:order-none">
           <div className="flex items-center gap-x-2">
             <Controls />
-            <div className="sm:hidden flex items-center gap-x-2">
-              <AdditionalControls />
+            <div className="sm:hidden">
+              <MobileAdditionalControls />
             </div>
           </div>
         </div>
 
         {/* Right section - Volume & additional controls (desktop only) */}
         <div className="hidden sm:flex sm:w-auto sm:col-span-3 items-center justify-end gap-x-2">
-          <AdditionalControls />
+          <DesktopAdditionalControls />
         </div>
       </div>
     </div>

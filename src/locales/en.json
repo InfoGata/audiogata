@@ -91,7 +91,8 @@
     "noFavoriteTracks": "No tracks have been added to favorites.",
     "noFavoritePlaylists": "No playlists have been added to favorites.",
     "github": "GitHub",
-    "clear": "Clear"
+    "clear": "Clear",
+    "controls": "Controls"
   },
   "plugins": {
     "addPlugin_one": "Add Plugin",

@@ -11,7 +11,22 @@ import {
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 
-const PlaybackRate: React.FC = () => {
+interface PlaybackRateProps {
+  mobile?: boolean;
+}
+
+const PLAYBACK_RATES = [
+  { label: "0.25×", value: 0.25 },
+  { label: "0.5×", value: 0.5 },
+  { label: "0.75×", value: 0.75 },
+  { label: "Normal", value: 1 },
+  { label: "1.25×", value: 1.25 },
+  { label: "1.5×", value: 1.5 },
+  { label: "1.75×", value: 1.75 },
+  { label: "2×", value: 2 },
+];
+
+const PlaybackRate: React.FC<PlaybackRateProps> = ({ mobile }) => {
   const dispatch = useAppDispatch();
   const playbackRate = useAppSelector((state) => state.track.playbackRate);
   const currentPluginId = useAppSelector(
@@ -43,11 +58,51 @@ const PlaybackRate: React.FC = () => {
     dispatch(setPlaybackRate(actualRate));
   };
 
-  const currentRate = (playbackRate || 1.0) * 100;
+  const setExactPlaybackRate = (rate: number) => {
+    dispatch(setPlaybackRate(rate));
+  };
 
+  const currentRate = (playbackRate || 1.0) * 100;
   const formattedRate = new Intl.NumberFormat(undefined, {
     style: "percent",
   }).format(playbackRate || 0);
+
+  const PlaybackControls = () => (
+    <div className="flex flex-col gap-4 w-full">
+      <div className="flex justify-between items-center">
+        <MdSlowMotionVideo className="h-5 w-5" />
+        <span className="text-sm font-medium">{formattedRate}</span>
+      </div>
+      <div className="grid grid-cols-4 gap-2">
+        {PLAYBACK_RATES.map((rate) => (
+          <Button
+            key={rate.value}
+            variant={playbackRate === rate.value ? "default" : "outline"}
+            size="sm"
+            className="h-7"
+            onClick={() => setExactPlaybackRate(rate.value)}
+            disabled={!enabled}
+          >
+            {rate.label}
+          </Button>
+        ))}
+      </div>
+      <Slider
+        orientation="horizontal"
+        min={0}
+        max={200}
+        value={[currentRate]}
+        onValueChange={onChangePlaybackRate}
+        disabled={!enabled}
+        className="mt-2"
+      />
+    </div>
+  );
+
+  if (mobile) {
+    return <PlaybackControls />;
+  }
+
   return (
     <Popover>
       <PopoverTrigger asChild>
@@ -56,14 +111,33 @@ const PlaybackRate: React.FC = () => {
         </Button>
       </PopoverTrigger>
       <PopoverContent>
-        <Slider
-          orientation="horizontal"
-          min={0}
-          max={200}
-          value={[currentRate]}
-          onValueChange={onChangePlaybackRate}
-        />
-        {formattedRate}
+        <div className="flex flex-col gap-4">
+          <div className="grid grid-cols-4 gap-2">
+            {PLAYBACK_RATES.map((rate) => (
+              <Button
+                key={rate.value}
+                variant={playbackRate === rate.value ? "default" : "outline"}
+                size="sm"
+                className="h-7"
+                onClick={() => setExactPlaybackRate(rate.value)}
+                disabled={!enabled}
+              >
+                {rate.label}
+              </Button>
+            ))}
+          </div>
+          <div className="flex items-center gap-4">
+            <Slider
+              orientation="horizontal"
+              min={0}
+              max={200}
+              value={[currentRate]}
+              onValueChange={onChangePlaybackRate}
+              disabled={!enabled}
+            />
+            <span className="min-w-[3ch] text-right">{formattedRate}</span>
+          </div>
+        </div>
       </PopoverContent>
     </Popover>
   );
