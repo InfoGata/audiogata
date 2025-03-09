@@ -67,40 +67,38 @@ const PlaybackRate: React.FC<PlaybackRateProps> = ({ mobile }) => {
     style: "percent",
   }).format(playbackRate || 0);
 
-  const PlaybackControls = () => (
-    <div className="flex flex-col gap-4 w-full">
-      <div className="flex justify-between items-center">
-        <MdSlowMotionVideo className="h-5 w-5" />
-        <span className="text-sm font-medium">{formattedRate}</span>
-      </div>
-      <div className="grid grid-cols-4 gap-2">
-        {PLAYBACK_RATES.map((rate) => (
-          <Button
-            key={rate.value}
-            variant={playbackRate === rate.value ? "default" : "outline"}
-            size="sm"
-            className="h-7"
-            onClick={() => setExactPlaybackRate(rate.value)}
-            disabled={!enabled}
-          >
-            {rate.label}
-          </Button>
-        ))}
-      </div>
-      <Slider
-        orientation="horizontal"
-        min={0}
-        max={200}
-        value={[currentRate]}
-        onValueChange={onChangePlaybackRate}
-        disabled={!enabled}
-        className="mt-2"
-      />
-    </div>
-  );
-
   if (mobile) {
-    return <PlaybackControls />;
+    return (
+      <div className="flex flex-col gap-4 w-full">
+        <div className="flex justify-between items-center">
+          <MdSlowMotionVideo className="h-5 w-5" />
+          <span className="text-sm font-medium">{formattedRate}</span>
+        </div>
+        <div className="grid grid-cols-4 gap-2">
+          {PLAYBACK_RATES.map((rate) => (
+            <Button
+              key={rate.value}
+              variant={playbackRate === rate.value ? "default" : "outline"}
+              size="sm"
+              className="h-7"
+              onClick={() => setExactPlaybackRate(rate.value)}
+              disabled={!enabled}
+            >
+              {rate.label}
+            </Button>
+          ))}
+        </div>
+        <Slider
+          orientation="horizontal"
+          min={0}
+          max={200}
+          value={[currentRate]}
+          onValueChange={onChangePlaybackRate}
+          disabled={!enabled}
+          className="mt-2"
+        />
+      </div>
+    );
   }
 
   return (

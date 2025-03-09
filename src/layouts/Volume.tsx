@@ -27,28 +27,26 @@ const Volume: React.FC<VolumeProps> = ({ mobile }) => {
   const volumeIcon = volume === 0 || muted ? <MdVolumeOff /> : <MdVolumeUp />;
   const volumePercentage = Math.round(volume * 100) + "%";
 
-  const VolumeControls = () => (
-    <div className="flex flex-col gap-2 w-full">
-      <div className="flex justify-between items-center">
-        {volume === 0 || muted ? (
-          <MdVolumeOff className="h-5 w-5" />
-        ) : (
-          <MdVolumeUp className="h-5 w-5" />
-        )}
+  if (mobile) {
+    return (
+      <div className="flex flex-col gap-2 w-full">
+        <div className="flex justify-between items-center">
+          {volume === 0 || muted ? (
+            <MdVolumeOff className="h-5 w-5" />
+          ) : (
+            <MdVolumeUp className="h-5 w-5" />
+          )}
         <span className="text-sm font-medium">{volumePercentage}</span>
       </div>
       <Slider
-        orientation="horizontal"
-        min={0}
-        max={100}
-        value={[volume * 100]}
-        onValueChange={onVolumeChange}
-      />
-    </div>
-  );
-
-  if (mobile) {
-    return <VolumeControls />;
+          orientation="horizontal"
+          min={0}
+          max={100}
+          value={[volume * 100]}
+          onValueChange={onVolumeChange}
+        />
+      </div>
+    );
   }
 
   return (
