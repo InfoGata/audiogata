@@ -41,7 +41,8 @@ const PluginContainer: React.FC<PluginContainerProps> = (props) => {
         <div className="flex gap-2 items-center">
           <Link
             className={cn(buttonVariants({ variant: "outline" }))}
-            to={`/plugins/${plugin.id}`}
+            to={`/plugins/$pluginId`}
+            params={{ pluginId: plugin.id || "" }}
           >
             {t("pluginDetails")}
           </Link>
