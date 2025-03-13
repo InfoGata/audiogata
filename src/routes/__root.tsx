@@ -8,7 +8,7 @@ import SideBar from "@/layouts/SideBar";
 import TopBar from "@/layouts/TopBar";
 import { useAppDispatch } from "@/store/hooks";
 import { initializePlaylists } from "@/store/reducers/playlistReducer";
-import { Outlet, ScrollRestoration, createRootRoute } from "@tanstack/react-router";
+import { Outlet, createRootRoute } from "@tanstack/react-router";
 import React from "react";
 
 export const Root: React.FC = () => {
@@ -22,7 +22,6 @@ export const Root: React.FC = () => {
 
   return (
     <div className="flex h-screen overflow-hidden">
-      <ScrollRestoration />
       <Toaster closeButton />
       <TopBar />
       <SideBar />
