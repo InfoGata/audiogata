@@ -206,9 +206,6 @@ const AudioChatBot: React.FC = () => {
     tooltip: {
       mode: "NEVER"
     },
-    botBubble: {
-      dangerouslySetInnerHtml: true
-    }
   }
   return (
     <ChatBot
