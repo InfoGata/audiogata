@@ -30,12 +30,12 @@ export function formatSeconds(seconds?: number) {
   return result;
 }
 
-// Retreive smallest image bigger than thumbnail size
+// Retreive smallest image bigger than thumbnail size, or the largest if none are big enough
 export const getThumbnailImage = (
   images: ImageInfo[] | undefined,
   size: number
 ): string | undefined => {
-  if (!images) {
+  if (!images || images.length === 0) {
     return;
   }
 
@@ -43,7 +43,8 @@ export const getThumbnailImage = (
     (a, b) => (a.height || 0) - (b.height || 0)
   );
   const thumbnailImage = sortedImages.find((i) => (i.height || 0) >= size);
-  return thumbnailImage ? thumbnailImage.url : sortedImages[0]?.url;
+  // Return the image URL if found, otherwise return the largest image URL (the last one in sorted array)
+  return thumbnailImage ? thumbnailImage.url : sortedImages[sortedImages.length - 1]?.url;
 };
 
 export const directoryProps = {

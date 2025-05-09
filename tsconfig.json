@@ -26,5 +26,6 @@
     }
   },
   "include": ["src", "electron/preload/*.d.ts"],
+  "exclude": ["src/test"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }
