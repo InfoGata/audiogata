@@ -8,6 +8,11 @@
     "plugin:@typescript-eslint/recommended",
     "plugin:react/recommended"
   ],
+  "settings": {
+    "react": {
+      "version": "18.2.0"
+    }
+  },
   "rules": {
     "react/prop-types": "off",
     "jam3/no-sanitizer-with-danger": 2,
