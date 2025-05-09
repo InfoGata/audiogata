@@ -6,6 +6,7 @@ import SelectPlugin from "./SelectPlugin";
 import TrackCard from "./TrackCard";
 import ArtistCard from "./ArtistCard";
 import AlbumCard from "./AlbumCard";
+import PlaylistCard from "./PlaylistCard";
 import { useTranslation } from "react-i18next";
 
 const TopItemCards: React.FC = () => {
@@ -62,6 +63,16 @@ const TopItemCards: React.FC = () => {
           <div className="flex gap-5 w-full overflow-auto mt-5">
             {query.data?.artists?.items.map((i) => (
               <ArtistCard key={i.id} artist={i} />
+            ))}
+          </div>
+        </>
+      )}
+      {query.data?.playlists?.items.length && (
+        <>
+          <h2 className="text-2xl font-bold">{t("playlists")}</h2>
+          <div className="flex gap-5 w-full overflow-auto mt-5">
+            {query.data?.playlists?.items.map((p) => (
+              <PlaylistCard key={p.id} playlist={p} />
             ))}
           </div>
         </>
