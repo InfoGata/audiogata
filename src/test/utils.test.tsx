@@ -1,9 +1,9 @@
 import { describe, expect, test } from "vitest";
 import { Track } from "../plugintypes";
-import { mergeTracks } from "../utils";
+import { mergeItems } from "../utils";
 
 describe("utils", () => {
-  test("mergeTracks", () => {
+  test("mergeItems", () => {
     const arr1: Track[] = [
       {
         id: "1",
@@ -26,7 +26,7 @@ describe("utils", () => {
       },
     ];
 
-    const newTracks = mergeTracks(arr1, arr2);
+    const newTracks = mergeItems(arr1, arr2);
     expect(newTracks.length === 3).toBeTruthy();
     expect(newTracks[1].name === "Test Name arr2").toBeTruthy();
   });

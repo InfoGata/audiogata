@@ -1,7 +1,7 @@
 import { createSlice, nanoid, PayloadAction } from "@reduxjs/toolkit";
 import { db } from "../../database";
 import { Playlist, PlaylistInfo, Track } from "../../plugintypes";
-import { mergeTracks } from "../../utils";
+import { mergeItems } from "../../utils";
 import { AppThunk } from "../store";
 
 interface PlaylistState {
@@ -102,7 +102,7 @@ export const addPlaylistTracks =
       }
     });
     if (playlist) {
-      const newTracks = mergeTracks(playlist.tracks, tracks);
+      const newTracks = mergeItems(playlist.tracks, tracks);
       playlist.tracks = newTracks;
       await db.playlists.put(playlist);
     }

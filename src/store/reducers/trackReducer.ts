@@ -4,7 +4,7 @@ import callConfig from "../../call-config";
 import { localPlayer } from "../../LocalPlayer";
 import { PluginFrameContainer } from "../../PluginsContext";
 import { Track } from "../../plugintypes";
-import { defaultSkipTime, filterAsync, mergeTracks } from "../../utils";
+import { defaultSkipTime, filterAsync, mergeItems } from "../../utils";
 import { AppDispatch, AppThunk } from "../store";
 
 interface TrackState {
@@ -339,7 +339,7 @@ export const addTrack =
       const id = nanoid();
       track.id = id;
     }
-    const newTracks = mergeTracks(state.track.tracks, [track]);
+    const newTracks = mergeItems(state.track.tracks, [track]);
     dispatch(trackSlice.actions.setTracks(newTracks));
     const filteredPlugins = await filterAsync(plugins, (p) =>
       p.hasDefined.onNowPlayingTracksAdded()
@@ -361,7 +361,7 @@ export const addTracks =
   async (dispatch, getState) => {
     const plugins = callConfig.call.usePlugins?.plugins || [];
     const state = getState();
-    const newTracks = mergeTracks(state.track.tracks, tracks);
+    const newTracks = mergeItems(state.track.tracks, tracks);
     dispatch(trackSlice.actions.setTracks(newTracks));
     const filteredPlugins = await filterAsync(plugins, (p) =>
       p.hasDefined.onNowPlayingTracksAdded()

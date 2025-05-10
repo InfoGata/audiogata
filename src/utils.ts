@@ -2,7 +2,7 @@ import { Capacitor } from "@capacitor/core";
 import isElectron from "is-electron";
 import { customAlphabet } from "nanoid";
 import i18next from "./i18n";
-import { ImageInfo, Manifest, PluginInfo, Track } from "./plugintypes";
+import { ImageInfo, Manifest, PluginInfo } from "./plugintypes";
 import { DirectoryFile, FileType } from "./types";
 import semverGte from "semver/functions/gte";
 
@@ -216,17 +216,23 @@ export const generatePluginId = () => {
   return nanoid();
 };
 
-// Merge tracks, arr1 and arr2 have tracks with the same id, take arr2's track
-export const mergeTracks = (arr1: Track[], arr2: Track[]): Track[] => {
-  const map = new Map<string, Track>();
-  arr1.forEach((t) => {
-    if (t.id) {
-      map.set(t.id, t);
+/**
+ * Merges two arrays of items that have an id property, with arr2 items taking precedence on duplicates
+ * @template T Type that extends {id?: string}
+ * @param arr1 First array of items
+ * @param arr2 Second array of items (overwrites items with same IDs from arr1)
+ * @returns A new array with merged unique items by ID
+ */
+export const mergeItems = <T extends {id?: string}>(arr1: T[], arr2: T[]): T[] => {
+  const map = new Map<string, T>();
+  arr1.forEach((item) => {
+    if (item.id) {
+      map.set(item.id, item);
     }
   });
-  arr2.forEach((t) => {
-    if (t.id) {
-      map.set(t.id, t);
+  arr2.forEach((item) => {
+    if (item.id) {
+      map.set(item.id, item);
     }
   });
   return Array.from(map.values());
