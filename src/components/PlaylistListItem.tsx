@@ -1,4 +1,5 @@
-import { getThumbnailImage, searchThumbnailSize } from "@/utils";
+import { getThumbnailImage } from "@infogata/utils";
+import { searchThumbnailSize } from "@/utils";
 import React from "react";
 import { AvatarImage, Avatar } from "./ui/avatar";
 import ItemMenu from "./ItemMenu";

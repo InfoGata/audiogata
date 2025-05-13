@@ -10,7 +10,7 @@ import usePlugins from "../hooks/usePlugins";
 import { Playlist, Track } from "../plugintypes";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
 import { addPlaylist, deletePlaylist } from "../store/reducers/playlistReducer";
-import { filterAsync } from "../utils";
+import { filterAsync } from "@infogata/utils";
 import { ItemMenuType } from "@/types";
 import { toast } from "sonner";
 import Title from "@/components/Title";
@@ -42,7 +42,7 @@ const Playlists: React.FC = () => {
     const setPlugins = async () => {
       const filteredPlugins = await filterAsync(
         plugins,
-        async (p) =>
+        async (p: any) =>
           (await p.hasDefined.onGetUserPlaylists()) &&
           (await p.hasDefined.onGetPlaylistTracks())
       );

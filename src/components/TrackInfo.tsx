@@ -2,7 +2,7 @@ import React from "react";
 import { useTranslation } from "react-i18next";
 import usePlugins from "../hooks/usePlugins";
 import { Track } from "../plugintypes";
-import { formatSeconds } from "../utils";
+import { formatSeconds } from "@infogata/utils";
 import AboutLink, { AboutLinkProps } from "./AboutLink";
 
 interface TrackInfoProps {

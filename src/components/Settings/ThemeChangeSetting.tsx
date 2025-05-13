@@ -8,7 +8,7 @@ import {
 import usePlugins from "@/hooks/usePlugins";
 import { Theme } from "@/plugintypes";
 import { useTheme } from "@/providers/ThemeProvider";
-import { filterAsync, mapAsync } from "@/utils";
+import { filterAsync, mapAsync } from "@infogata/utils";
 import React from "react";
 import { useTranslation } from "react-i18next";
 
@@ -19,10 +19,10 @@ const ThemeChangeSetting: React.FC = () => {
   const onThemeChange = async (value: string) => {
     if (value) {
       theme.setTheme(value as Theme);
-      const themePlugins = await filterAsync(plugins, (p) =>
+      const themePlugins = await filterAsync(plugins, (p: any) =>
         p.hasDefined.onChangeTheme()
       );
-      await mapAsync(themePlugins, (p) =>
+      await mapAsync(themePlugins, (p: any) =>
         p.remote.onChangeTheme(value as Theme)
       );
     }

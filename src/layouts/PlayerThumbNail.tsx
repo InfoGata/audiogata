@@ -1,5 +1,6 @@
 import { useAppSelector } from "@/store/hooks";
-import { getThumbnailImage, playerThumbnailSize } from "@/utils";
+import { getThumbnailImage } from "@infogata/utils";
+import { playerThumbnailSize } from "@/utils";
 import { Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 

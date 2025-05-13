@@ -2,7 +2,7 @@ import { PluginFrameContainer, PluginMethodInterface } from "@/PluginsContext";
 import usePlugins from "./usePlugins";
 import React from "react";
 import { useAppSelector } from "@/store/hooks";
-import { filterAsync } from "@/utils";
+import { filterAsync } from "@infogata/utils";
 
 const usePluginWithMethod = (methodName: keyof PluginMethodInterface) => {
   const { plugins } = usePlugins();

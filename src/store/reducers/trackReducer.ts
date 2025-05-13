@@ -4,7 +4,8 @@ import callConfig from "../../call-config";
 import { localPlayer } from "../../LocalPlayer";
 import { PluginFrameContainer } from "../../PluginsContext";
 import { Track } from "../../plugintypes";
-import { defaultSkipTime, filterAsync, mergeItems } from "../../utils";
+import { filterAsync, mergeItems } from "@infogata/utils";
+import { defaultSkipTime } from "../../utils";
 import { AppDispatch, AppThunk } from "../store";
 
 interface TrackState {

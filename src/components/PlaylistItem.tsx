@@ -3,11 +3,8 @@ import DOMPurify from "dompurify";
 import React from "react";
 import { Track } from "../plugintypes";
 import { useAppSelector } from "../store/hooks";
-import {
-  formatSeconds,
-  getThumbnailImage,
-  searchThumbnailSize,
-} from "../utils";
+import { formatSeconds, getThumbnailImage } from "@infogata/utils";
+import { searchThumbnailSize } from "../utils";
 import ArtistLinks from "./ArtistLinks";
 import { DropdownItemProps } from "./DropdownItem";
 import TrackMenu from "./TrackMenu";

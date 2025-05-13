@@ -20,7 +20,8 @@ import {
 import { setTrackLoading } from "../store/reducers/uiReducer";
 import { AppState } from "../store/store";
 import { PlayerComponent, PlayerComponentType } from "../types";
-import { defaultSkipTime, filterAsync } from "../utils";
+import { filterAsync } from "@infogata/utils";
+import { defaultSkipTime } from "../utils";
 import { withPlugins } from "../withPlugins";
 import * as Sentry from "@sentry/browser";
 import { toast } from "sonner";

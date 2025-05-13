@@ -1,5 +1,6 @@
 import { Album } from "@/plugintypes";
-import { getThumbnailImage, playlistThumbnailSize } from "@/utils";
+import { getThumbnailImage } from "@infogata/utils";
+import { playlistThumbnailSize } from "@/utils";
 import DOMPurify from "dompurify";
 import React from "react";
 import ItemMenu from "./ItemMenu";

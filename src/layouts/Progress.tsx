@@ -1,8 +1,8 @@
 import { Slider } from "@/components/ui/slider";
+import { formatSeconds } from "@infogata/utils";
 import React from "react";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
 import { seek } from "../store/reducers/trackReducer";
-import { formatSeconds } from "../utils";
 
 const Progress: React.FC = () => {
   const [isDragging, setIsDragging] = React.useState(false);

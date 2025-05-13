@@ -1,6 +1,7 @@
 import ItemMenu from "@/components/ItemMenu";
 import { Artist } from "@/plugintypes";
-import { getThumbnailImage, playlistThumbnailSize } from "@/utils";
+import { getThumbnailImage } from "@infogata/utils";
+import { playlistThumbnailSize } from "@/utils";
 import { Link } from "@tanstack/react-router";
 import DOMPurify from "dompurify";
 import React from "react";

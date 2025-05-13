@@ -1,6 +1,7 @@
 import React from "react";
 import { ImageInfo } from "../plugintypes";
-import { getThumbnailImage, playlistThumbnailSize } from "../utils";
+import { getThumbnailImage } from "@infogata/utils";
+import { playlistThumbnailSize } from "../utils";
 
 interface PlaylistImageProps {
   images?: ImageInfo[];

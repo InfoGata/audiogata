@@ -12,13 +12,13 @@ export const defaultPlugins: PluginDescription[] = [
     name: "Plugin for Youtube",
     description: "Plugin for playing music from youtube.com",
     url: "https://cdn.jsdelivr.net/gh/InfoGata/youtube-audiogata@latest/manifest.json",
-    preinstall: true,
   },
   {
     id: "B9-GwavJJOQpQXotpLZH",
     name: "Plugin for SoundCloud",
     description: "Play music from SoundCloud.",
     url: "https://cdn.jsdelivr.net/gh/InfoGata/soundcloud-audiogata@latest/manifest.json",
+    preinstall: true,
   },
   {
     id: "uIAyZ62xBHMEY3cwti8AN",

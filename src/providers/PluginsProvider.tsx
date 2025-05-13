@@ -49,13 +49,13 @@ import {
   setTracks,
 } from "../store/reducers/trackReducer";
 import { NetworkRequest } from "../types";
+import { mapAsync } from "@infogata/utils";
 import {
   getFileText,
   getFileTypeFromPluginUrl,
   getPlugin,
   getPluginUrl,
   hasExtension,
-  mapAsync,
 } from "../utils";
 import { useTheme } from "./ThemeProvider";
 

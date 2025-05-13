@@ -4,7 +4,7 @@ import { PluginMethodInterface } from "../PluginsContext";
 import usePlugins from "../hooks/usePlugins";
 import { useAppDispatch, useAppStore } from "../store/hooks";
 import { setCurrentPluginId } from "../store/reducers/settingsReducer";
-import { filterAsync } from "../utils";
+import { filterAsync } from "@infogata/utils";
 import { Label } from "./ui/label";
 import {
   Select,
@@ -34,14 +34,14 @@ const SelectPlugin: React.FC<SelectPluginProps> = (props) => {
 
   React.useEffect(() => {
     const getOptions = async () => {
-      const validPlugins = await filterAsync(plugins, (p) =>
+      const validPlugins = await filterAsync(plugins, (p: any) =>
         p.methodDefined(methodName)
       );
       if (useCurrentPlugin) {
         const currentPluginId = store.getState().settings.currentPluginId;
         if (
           !currentPluginId ||
-          !validPlugins.some((p) => p.id === currentPluginId)
+          !validPlugins.some((p: any) => p.id === currentPluginId)
         ) {
           setPluginId(validPlugins[0]?.id || "");
         } else {
@@ -49,7 +49,7 @@ const SelectPlugin: React.FC<SelectPluginProps> = (props) => {
         }
       }
 
-      const options: [string, string][] = validPlugins.map((p) => [
+      const options: [string, string][] = validPlugins.map((p: any) => [
         p.id || "",
         p.name || "",
       ]);
