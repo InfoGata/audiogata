@@ -6,6 +6,7 @@ import {
   generatePluginId,
   getFileTypeFromPluginUrl,
   getPlugin,
+  isCorsDisabled,
 } from "../../utils";
 import Spinner from "../Spinner";
 import PluginCard from "./PluginCard";
@@ -40,7 +41,8 @@ const PluginCards: React.FC = () => {
     .filter(
       (dp) =>
         !plugins.some((p) => dp.id === p.id) &&
-        (preinstallComplete || !dp.preinstall)
+        (preinstallComplete || !dp.preinstall) &&
+        (!dp.requiresCorsDisabled || isCorsDisabled())
     )
     .map((dp) => (
       <PluginCard addPlugin={onAddPlugin} plugin={dp} key={dp.id} />

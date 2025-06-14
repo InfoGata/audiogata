@@ -4,6 +4,7 @@ export interface PluginDescription {
   url: string;
   description: string;
   preinstall?: boolean;
+  requiresCorsDisabled?: boolean;
 }
 
 export const defaultPlugins: PluginDescription[] = [
@@ -43,6 +44,13 @@ export const defaultPlugins: PluginDescription[] = [
     name: "Plugin for Dropbox",
     description: "Store and retreive playlists from Dropbox",
     url: "https://cdn.jsdelivr.net/gh/InfoGata/dropbox-audiogata@latest/manifest.json",
+  },
+  {
+    id: "6c9178c6-5118-11ee-be56-0242ac120002",
+    name: "Plugin for Azlyrics",
+    description: "Get lyrics from azlyrics.com",
+    url: "https://cdn.jsdelivr.net/gh/InfoGata/azlyrics-audiogata@latest/manifest.json",
+    requiresCorsDisabled: true
   }
 ];
 

@@ -161,6 +161,10 @@ export const generatePluginId = () => {
   return nanoid();
 };
 
+export const isCorsDisabled = () => {
+  return hasExtension() || isElectron() || Capacitor.isNativePlatform();
+}
+
 
 export const defaultSkipTime = 10;
 

@@ -1,7 +1,5 @@
 import { App, URLOpenListenerEvent } from "@capacitor/app";
-import { Capacitor } from "@capacitor/core";
 import { nanoid } from "@reduxjs/toolkit";
-import isElectron from "is-electron";
 import { PluginInterface } from "plugin-frame";
 import React from "react";
 import { useTranslation } from "react-i18next";
@@ -56,6 +54,7 @@ import {
   getPlugin,
   getPluginUrl,
   hasExtension,
+  isCorsDisabled,
 } from "../utils";
 import { useTheme } from "./ThemeProvider";
 
@@ -155,9 +154,7 @@ const PluginsProvider: React.FC<React.PropsWithChildren> = (props) => {
           return result;
         },
         isNetworkRequestCorsDisabled: async () => {
-          const isDisabled =
-            hasExtension() || isElectron() || Capacitor.isNativePlatform();
-          return isDisabled;
+          return isCorsDisabled();
         },
         isLoggedIn: async () => {
           if (plugin.manifest?.authentication && plugin.id) {
