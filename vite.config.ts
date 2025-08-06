@@ -28,7 +28,12 @@ export default defineConfig({
     VitePWA({
       registerType: "prompt",
       workbox: {
-        navigateFallbackDenylist: [/\.html$/],
+        navigateFallback: "/",
+        navigateFallbackDenylist: [
+          /\.html$/,
+          /\.html\?/,
+          /login_popup\.html/,
+        ],
       },
       manifest: {
         short_name: "AudioGata",
