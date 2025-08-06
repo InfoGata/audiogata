@@ -27,6 +27,9 @@ export default defineConfig({
     TanStackRouterVite({ target: "react" }),
     VitePWA({
       registerType: "prompt",
+      workbox: {
+        navigateFallbackDenylist: [/\.html$/],
+      },
       manifest: {
         short_name: "AudioGata",
         name: "AudioGata",
