@@ -117,8 +117,8 @@ const SearchBar: React.FC = () => {
       />
       <div className="relative">
         {open && (
-          <div className="absolute top-1 z-50 w-full rounded-xl bg-stone-50 outline-none animate-in fade-in-0 zoom-in-95">
-            <CommandList className="ring-1 ring-slate-200 rounded-lg">
+          <div className="absolute top-1 z-50 w-full rounded-xl bg-popover outline-none animate-in fade-in-0 zoom-in-95">
+            <CommandList className="ring-1 ring-border rounded-lg">
               {options.length > 0 && (
                 <CommandGroup>
                   {options.map((result) => (
