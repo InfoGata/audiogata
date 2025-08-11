@@ -29,6 +29,6 @@ The plugin scripts are run in sandboxed iframes using [plugin-frame](https://git
 
 ## Plugin Development
 
-[Docs](https://infogata.github.io/audiogata-plugin-typings/plugins/plugin-manifest/)
+[Docs](https://infogata.github.io/audiogata-plugin-typings/plugins/plugin-manifest)
 
 [Types](https://github.com/InfoGata/audiogata-plugin-typings)

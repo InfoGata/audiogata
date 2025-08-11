@@ -96,7 +96,7 @@ The core of AudioGata is its plugin architecture:
 ## Plugin Development
 
 - Plugins must implement specific interfaces defined in [audiogata-plugin-typings](https://github.com/InfoGata/audiogata-plugin-typings)
-- Plugin documentation: [https://infogata.github.io/audiogata-plugin-typings/plugins/plugin-manifest/](https://infogata.github.io/audiogata-plugin-typings/plugins/plugin-manifest/)
+- Plugin documentation: [https://infogata.github.io/audiogata-plugin-typings/plugins/plugin-manifest](https://infogata.github.io/audiogata-plugin-typings/plugins/plugin-manifest)
 - Several reference implementations available:
   - [youtube-audiogata](https://github.com/InfoGata/youtube-audiogata)
   - [soundcloud-audiogata](https://github.com/InfoGata/soundcloud-audiogata)
