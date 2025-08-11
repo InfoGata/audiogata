@@ -4,6 +4,7 @@ import React from "react";
 import { useTranslation } from "react-i18next";
 import Spinner from "../components/Spinner";
 import TrackInfo from "../components/TrackInfo";
+import Waveform from "../components/Waveform";
 import usePlugins from "../hooks/usePlugins";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
 import { updateTrack } from "../store/reducers/trackReducer";
@@ -15,6 +16,7 @@ const QueueTrackInfo: React.FC = () => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const [isUpdating, setIsUpdating] = React.useState(false);
+  const [audioUrl, setAudioUrl] = React.useState<string | undefined>();
 
   const track = useAppSelector((state) =>
     state.track.tracks.find((p) => p.id === trackId)
@@ -33,6 +35,28 @@ const QueueTrackInfo: React.FC = () => {
     };
 
     checkCanUpdate();
+  }, [track, plugins]);
+
+  React.useEffect(() => {
+    const getAudioUrl = async () => {
+      if (track && track.source) {
+        setAudioUrl(track.source);
+      } else if (track && track.apiId) {
+        const plugin = plugins.find((p) => p.id === track.pluginId);
+        if (plugin && (await plugin.hasDefined.onGetTrackUrl())) {
+          try {
+            const url = await plugin.remote.onGetTrackUrl({
+              apiId: track.apiId,
+            });
+            setAudioUrl(url);
+          } catch (error) {
+            console.error("Failed to get track URL:", error);
+          }
+        }
+      }
+    };
+
+    getAudioUrl();
   }, [track, plugins]);
 
   const onUpdateTrack = async () => {
@@ -58,6 +82,7 @@ const QueueTrackInfo: React.FC = () => {
     <div>
       <Spinner open={isUpdating} />
       <TrackInfo track={track} />
+      <Waveform audioUrl={audioUrl} />
       {showUpdateButton && (
         <Button onClick={onUpdateTrack}>{t("updateTrackInfo")}</Button>
       )}
