@@ -5,6 +5,8 @@ import {
   AlbumTracksResult,
   ArtistAlbumRequest,
   ArtistAlbumsResult,
+  ArtistTopTracksRequest,
+  ArtistTopTracksResult,
   GetLyricsRequest,
   GetLyricsResponse,
   GetSearchSuggestionRequest,
@@ -48,6 +50,7 @@ export interface PluginMethodInterface extends PlayerComponent {
     request: PlaylistTrackRequest
   ): Promise<PlaylistTracksResult>;
   onGetArtistAlbums(request: ArtistAlbumRequest): Promise<ArtistAlbumsResult>;
+  onGetArtistTopTracks(request: ArtistTopTracksRequest): Promise<ArtistTopTracksResult>;
   onPlay(request: PlayTrackRequest): Promise<void>;
   onSetVolume(volume: number): Promise<void>;
   onPause(): Promise<void>;

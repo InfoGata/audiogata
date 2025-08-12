@@ -124,6 +124,11 @@ export interface ArtistAlbumRequest {
   pageInfo?: PageInfo;
 }
 
+export interface ArtistTopTracksRequest {
+  apiId?: string;
+  pageInfo?: PageInfo;
+}
+
 export interface UserPlaylistRequest {
   pageInfo?: PageInfo;
 }
@@ -137,6 +142,10 @@ export interface PlaylistTracksResult extends SearchTrackResult {
 }
 
 export interface ArtistAlbumsResult extends SearchAlbumResult {
+  artist?: Artist;
+}
+
+export interface ArtistTopTracksResult extends SearchTrackResult {
   artist?: Artist;
 }
 
