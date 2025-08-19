@@ -122,6 +122,7 @@ export interface AlbumTrackRequest {
 export interface ArtistAlbumRequest {
   apiId?: string;
   pageInfo?: PageInfo;
+  sortBy?: string;
 }
 
 export interface ArtistTopTracksRequest {
@@ -143,6 +144,8 @@ export interface PlaylistTracksResult extends SearchTrackResult {
 
 export interface ArtistAlbumsResult extends SearchAlbumResult {
   artist?: Artist;
+  sortOptions?: SortOption[];
+  sortBy?: string;
 }
 
 export interface ArtistTopTracksResult extends SearchTrackResult {
@@ -190,6 +193,11 @@ export interface Filter {
 }
 
 export interface FilterOption {
+  displayName: string;
+  value: string;
+}
+
+export interface SortOption {
   displayName: string;
   value: string;
 }

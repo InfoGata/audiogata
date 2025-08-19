@@ -95,7 +95,9 @@
     "noFavoritePlaylists": "No playlists have been added to favorites.",
     "github": "GitHub",
     "clear": "Clear",
-    "controls": "Controls"
+    "controls": "Controls",
+    "sortBy": "Sort by:",
+    "noAlbumsFound": "No albums found for this artist."
   },
   "plugins": {
     "addPlugin_one": "Add Plugin",
