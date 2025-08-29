@@ -97,7 +97,11 @@
     "clear": "Clear",
     "controls": "Controls",
     "sortBy": "Sort by:",
-    "noAlbumsFound": "No albums found for this artist."
+    "noAlbumsFound": "No albums found for this artist.",
+    "library": "Library",
+    "libraryTracks": "Library Tracks",
+    "libraryAlbums": "Library Albums",
+    "pluginLibraries": "Plugin Libraries"
   },
   "plugins": {
     "addPlugin_one": "Add Plugin",

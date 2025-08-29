@@ -31,6 +31,8 @@ import { Route as FavoritesAlbumsImport } from './routes/favorites/albums'
 import { Route as PluginsPluginIdIndexImport } from './routes/plugins/$pluginId.index'
 import { Route as PlaylistsPlaylistIdIndexImport } from './routes/playlists/$playlistId.index'
 import { Route as PluginsPluginIdOptionsImport } from './routes/plugins/$pluginId/options'
+import { Route as PluginsPluginIdLibraryImport } from './routes/plugins/$pluginId/library'
+import { Route as PluginsPluginIdAlbumsLibraryImport } from './routes/plugins/$pluginId/albums-library'
 import { Route as PluginsPluginIdPlaylistsIndexImport } from './routes/plugins/$pluginId/playlists.index'
 import { Route as PluginsPluginIdPlaylistsApiIdImport } from './routes/plugins/$pluginId/playlists.$apiId'
 import { Route as PluginsPluginIdArtistsApiIdImport } from './routes/plugins/$pluginId/artists.$apiId'
@@ -158,6 +160,19 @@ const PluginsPluginIdOptionsRoute = PluginsPluginIdOptionsImport.update({
   path: '/plugins/$pluginId/options',
   getParentRoute: () => rootRoute,
 } as any)
+
+const PluginsPluginIdLibraryRoute = PluginsPluginIdLibraryImport.update({
+  id: '/plugins/$pluginId/library',
+  path: '/plugins/$pluginId/library',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const PluginsPluginIdAlbumsLibraryRoute =
+  PluginsPluginIdAlbumsLibraryImport.update({
+    id: '/plugins/$pluginId/albums-library',
+    path: '/plugins/$pluginId/albums-library',
+    getParentRoute: () => rootRoute,
+  } as any)
 
 const PluginsPluginIdPlaylistsIndexRoute =
   PluginsPluginIdPlaylistsIndexImport.update({
@@ -318,6 +333,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PluginsIndexImport
       parentRoute: typeof rootRoute
     }
+    '/plugins/$pluginId/albums-library': {
+      id: '/plugins/$pluginId/albums-library'
+      path: '/plugins/$pluginId/albums-library'
+      fullPath: '/plugins/$pluginId/albums-library'
+      preLoaderRoute: typeof PluginsPluginIdAlbumsLibraryImport
+      parentRoute: typeof rootRoute
+    }
+    '/plugins/$pluginId/library': {
+      id: '/plugins/$pluginId/library'
+      path: '/plugins/$pluginId/library'
+      fullPath: '/plugins/$pluginId/library'
+      preLoaderRoute: typeof PluginsPluginIdLibraryImport
+      parentRoute: typeof rootRoute
+    }
     '/plugins/$pluginId/options': {
       id: '/plugins/$pluginId/options'
       path: '/plugins/$pluginId/options'
@@ -415,6 +444,8 @@ export interface FileRoutesByFullPath {
   '/tracks/$trackId': typeof TracksTrackIdRoute
   '/playlists': typeof PlaylistsIndexRoute
   '/plugins': typeof PluginsIndexRoute
+  '/plugins/$pluginId/albums-library': typeof PluginsPluginIdAlbumsLibraryRoute
+  '/plugins/$pluginId/library': typeof PluginsPluginIdLibraryRoute
   '/plugins/$pluginId/options': typeof PluginsPluginIdOptionsRoute
   '/playlists/$playlistId': typeof PlaylistsPlaylistIdIndexRoute
   '/plugins/$pluginId': typeof PluginsPluginIdIndexRoute
@@ -443,6 +474,8 @@ export interface FileRoutesByTo {
   '/tracks/$trackId': typeof TracksTrackIdRoute
   '/playlists': typeof PlaylistsIndexRoute
   '/plugins': typeof PluginsIndexRoute
+  '/plugins/$pluginId/albums-library': typeof PluginsPluginIdAlbumsLibraryRoute
+  '/plugins/$pluginId/library': typeof PluginsPluginIdLibraryRoute
   '/plugins/$pluginId/options': typeof PluginsPluginIdOptionsRoute
   '/playlists/$playlistId': typeof PlaylistsPlaylistIdIndexRoute
   '/plugins/$pluginId': typeof PluginsPluginIdIndexRoute
@@ -472,6 +505,8 @@ export interface FileRoutesById {
   '/tracks/$trackId': typeof TracksTrackIdRoute
   '/playlists/': typeof PlaylistsIndexRoute
   '/plugins/': typeof PluginsIndexRoute
+  '/plugins/$pluginId/albums-library': typeof PluginsPluginIdAlbumsLibraryRoute
+  '/plugins/$pluginId/library': typeof PluginsPluginIdLibraryRoute
   '/plugins/$pluginId/options': typeof PluginsPluginIdOptionsRoute
   '/playlists/$playlistId/': typeof PlaylistsPlaylistIdIndexRoute
   '/plugins/$pluginId/': typeof PluginsPluginIdIndexRoute
@@ -502,6 +537,8 @@ export interface FileRouteTypes {
     | '/tracks/$trackId'
     | '/playlists'
     | '/plugins'
+    | '/plugins/$pluginId/albums-library'
+    | '/plugins/$pluginId/library'
     | '/plugins/$pluginId/options'
     | '/playlists/$playlistId'
     | '/plugins/$pluginId'
@@ -529,6 +566,8 @@ export interface FileRouteTypes {
     | '/tracks/$trackId'
     | '/playlists'
     | '/plugins'
+    | '/plugins/$pluginId/albums-library'
+    | '/plugins/$pluginId/library'
     | '/plugins/$pluginId/options'
     | '/playlists/$playlistId'
     | '/plugins/$pluginId'
@@ -556,6 +595,8 @@ export interface FileRouteTypes {
     | '/tracks/$trackId'
     | '/playlists/'
     | '/plugins/'
+    | '/plugins/$pluginId/albums-library'
+    | '/plugins/$pluginId/library'
     | '/plugins/$pluginId/options'
     | '/playlists/$playlistId/'
     | '/plugins/$pluginId/'
@@ -581,6 +622,8 @@ export interface RootRouteChildren {
   TracksTrackIdRoute: typeof TracksTrackIdRoute
   PlaylistsIndexRoute: typeof PlaylistsIndexRoute
   PluginsIndexRoute: typeof PluginsIndexRoute
+  PluginsPluginIdAlbumsLibraryRoute: typeof PluginsPluginIdAlbumsLibraryRoute
+  PluginsPluginIdLibraryRoute: typeof PluginsPluginIdLibraryRoute
   PluginsPluginIdOptionsRoute: typeof PluginsPluginIdOptionsRoute
   PlaylistsPlaylistIdIndexRoute: typeof PlaylistsPlaylistIdIndexRoute
   PluginsPluginIdIndexRoute: typeof PluginsPluginIdIndexRoute
@@ -605,6 +648,8 @@ const rootRouteChildren: RootRouteChildren = {
   TracksTrackIdRoute: TracksTrackIdRoute,
   PlaylistsIndexRoute: PlaylistsIndexRoute,
   PluginsIndexRoute: PluginsIndexRoute,
+  PluginsPluginIdAlbumsLibraryRoute: PluginsPluginIdAlbumsLibraryRoute,
+  PluginsPluginIdLibraryRoute: PluginsPluginIdLibraryRoute,
   PluginsPluginIdOptionsRoute: PluginsPluginIdOptionsRoute,
   PlaylistsPlaylistIdIndexRoute: PlaylistsPlaylistIdIndexRoute,
   PluginsPluginIdIndexRoute: PluginsPluginIdIndexRoute,
@@ -638,6 +683,8 @@ export const routeTree = rootRoute
         "/tracks/$trackId",
         "/playlists/",
         "/plugins/",
+        "/plugins/$pluginId/albums-library",
+        "/plugins/$pluginId/library",
         "/plugins/$pluginId/options",
         "/playlists/$playlistId/",
         "/plugins/$pluginId/",
@@ -708,6 +755,12 @@ export const routeTree = rootRoute
     },
     "/plugins/": {
       "filePath": "plugins.index.tsx"
+    },
+    "/plugins/$pluginId/albums-library": {
+      "filePath": "plugins/$pluginId/albums-library.tsx"
+    },
+    "/plugins/$pluginId/library": {
+      "filePath": "plugins/$pluginId/library.tsx"
     },
     "/plugins/$pluginId/options": {
       "filePath": "plugins/$pluginId/options.tsx"

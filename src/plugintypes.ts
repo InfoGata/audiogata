@@ -134,6 +134,14 @@ export interface UserPlaylistRequest {
   pageInfo?: PageInfo;
 }
 
+export interface LibraryTracksRequest {
+  pageInfo?: PageInfo;
+}
+
+export interface LibraryAlbumsRequest {
+  pageInfo?: PageInfo;
+}
+
 export interface SearchTrackResult extends SearchResult {
   items: Track[];
 }

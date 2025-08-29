@@ -12,6 +12,8 @@ import {
   GetSearchSuggestionRequest,
   GetTrackRequest,
   GetTrackUrlRequest,
+  LibraryAlbumsRequest,
+  LibraryTracksRequest,
   LookupTrackRequest,
   ParseUrlType,
   PlayTrackRequest,
@@ -60,6 +62,8 @@ export interface PluginMethodInterface extends PlayerComponent {
   onGetUserPlaylists(
     request: UserPlaylistRequest
   ): Promise<SearchPlaylistResult>;
+  onGetLibraryTracks(request: LibraryTracksRequest): Promise<SearchTrackResult>;
+  onGetLibraryAlbums(request: LibraryAlbumsRequest): Promise<SearchAlbumResult>;
   onGetTopItems(): Promise<SearchAllResult>;
   onCanParseUrl(url: string, type: ParseUrlType): Promise<boolean>;
   onLookupPlaylistUrl(url: string): Promise<Playlist>;
