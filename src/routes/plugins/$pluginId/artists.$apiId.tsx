@@ -15,7 +15,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import useFindPlugin from "@/hooks/useFindPlugin";
 import usePagination from "@/hooks/usePagination";
 import usePlugins from "@/hooks/usePlugins";
-import { Artist, PageInfo, SortOption } from "@/plugintypes";
+import { Artist, PageInfo, SortOption, Track } from "@/plugintypes";
 
 const ArtistPage: React.FC = () => {
   const { pluginId, apiId } = Route.useParams();
@@ -35,6 +35,7 @@ const ArtistPage: React.FC = () => {
   const [currentPage, setCurrentPage] = React.useState<PageInfo>();
   const [sortOptions, setSortOptions] = React.useState<SortOption[]>([]);
   const [currentSort, setCurrentSort] = React.useState<string>("");
+  const [hasTopTracks, setHasTopTracks] = React.useState<boolean>(true);
   const { page, hasNextPage, hasPreviousPage, onPreviousPage, onNextPage } =
     usePagination(currentPage);
   const onGetArtist = async () => {
@@ -69,6 +70,10 @@ const ArtistPage: React.FC = () => {
     }
   };
 
+  const handleTopTracksUpdate = (tracks: Track[]) => {
+    setHasTopTracks(tracks.length > 0);
+  };
+
   return (
     <div className="min-h-screen bg-background">
       <Spinner open={query.isLoading || isLoading} />
@@ -90,33 +95,35 @@ const ArtistPage: React.FC = () => {
 
       {/* Main Content with Tabs */}
       <div className="container mx-auto px-4 pb-8">
-        <Tabs defaultValue="top-tracks" className="w-full">
-          <TabsList className="grid w-full max-w-md grid-cols-2 mb-8">
-            <TabsTrigger value="top-tracks" className="text-sm font-medium">
-              {t("topTracks")}
-            </TabsTrigger>
-            <TabsTrigger value="albums" className="text-sm font-medium">
-              {t("albums")}
-            </TabsTrigger>
-          </TabsList>
+        {hasTopTracks ? (
+          <Tabs defaultValue="top-tracks" className="w-full">
+            <TabsList className="grid w-full max-w-md grid-cols-2 mb-8">
+              <TabsTrigger value="top-tracks" className="text-sm font-medium">
+                {t("topTracks")}
+              </TabsTrigger>
+              <TabsTrigger value="albums" className="text-sm font-medium">
+                {t("albums")}
+              </TabsTrigger>
+            </TabsList>
 
-          {/* Top Tracks Tab */}
-          <TabsContent value="top-tracks" className="space-y-6">
-            <Card>
-              <CardContent className="p-6">
-                <ArtistTopTracks
-                  pluginId={pluginId}
-                  apiId={apiId}
-                  plugin={plugin}
-                  pluginsLoaded={pluginsLoaded}
-                  onArtistInfoUpdate={handleArtistInfoUpdate}
-                />
-              </CardContent>
-            </Card>
-          </TabsContent>
+            {/* Top Tracks Tab */}
+            <TabsContent value="top-tracks" className="space-y-6">
+              <Card>
+                <CardContent className="p-6">
+                  <ArtistTopTracks
+                    pluginId={pluginId}
+                    apiId={apiId}
+                    plugin={plugin}
+                    pluginsLoaded={pluginsLoaded}
+                    onArtistInfoUpdate={handleArtistInfoUpdate}
+                    onTopTracksUpdate={handleTopTracksUpdate}
+                  />
+                </CardContent>
+              </Card>
+            </TabsContent>
 
-          {/* Albums Tab */}
-          <TabsContent value="albums" className="space-y-6">
+            {/* Albums Tab */}
+            <TabsContent value="albums" className="space-y-6">
             {/* Sort Options */}
             {sortOptions.length > 0 && (
               <Card>
@@ -177,6 +184,69 @@ const ArtistPage: React.FC = () => {
             )}
           </TabsContent>
         </Tabs>
+        ) : (
+          /* Albums Only - No Top Tracks Available */
+          <div className="space-y-6">
+            {/* Sort Options */}
+            {sortOptions.length > 0 && (
+              <Card>
+                <CardContent className="p-4">
+                  <div className="flex items-center gap-3">
+                    <span className="text-sm font-medium text-muted-foreground">
+                      {t("sortBy")}
+                    </span>
+                    <div className="flex flex-wrap gap-2">
+                      {sortOptions.map((option) => (
+                        <Button
+                          key={option.value}
+                          size="sm"
+                          variant={currentSort === option.value ? "default" : "outline"}
+                          onClick={() => setCurrentSort(option.value)}
+                          className="h-8 text-xs"
+                        >
+                          {option.displayName}
+                        </Button>
+                      ))}
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+
+            {/* Albums Grid */}
+            {query.data && query.data.length > 0 ? (
+              <div className="grid grid-cols-1 gap-6 mt-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5">
+                {query.data.map((album) => (
+                  <AlbumCard 
+                    key={album.id} 
+                    album={album} 
+                    noArtist={true} 
+                  />
+                ))}
+              </div>
+            ) : (
+              <Card>
+                <CardContent className="p-6">
+                  <div className="text-center text-muted-foreground py-12">
+                    <p>{t("noAlbumsFound")}</p>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+
+            {/* Pagination */}
+            {(hasNextPage || hasPreviousPage) && (
+              <div className="flex justify-center">
+                <Pager
+                  hasNextPage={hasNextPage}
+                  hasPreviousPage={hasPreviousPage}
+                  onPreviousPage={onPreviousPage}
+                  onNextPage={onNextPage}
+                />
+              </div>
+            )}
+          </div>
+        )}
       </div>
 
       <ConfirmPluginDialog

@@ -15,6 +15,7 @@ interface ArtistTopTracksProps {
   plugin: any;
   pluginsLoaded: boolean;
   onArtistInfoUpdate?: (artist: Artist) => void;
+  onTopTracksUpdate?: (tracks: Track[]) => void;
 }
 
 const ArtistTopTracks: React.FC<ArtistTopTracksProps> = ({
@@ -23,6 +24,7 @@ const ArtistTopTracks: React.FC<ArtistTopTracksProps> = ({
   plugin,
   pluginsLoaded,
   onArtistInfoUpdate,
+  onTopTracksUpdate,
 }) => {
   const dispatch = useAppDispatch();
   const { t } = useTranslation();
@@ -54,8 +56,14 @@ const ArtistTopTracks: React.FC<ArtistTopTracksProps> = ({
     }
   );
 
-  const topTracks = topTracksQuery.data || [];
+  const topTracks = React.useMemo(() => topTracksQuery.data || [], [topTracksQuery.data]);
   const { onSelect, onSelectAll, isSelected, selected } = useSelected(topTracks);
+
+  React.useEffect(() => {
+    if (onTopTracksUpdate && !topTracksQuery.isLoading) {
+      onTopTracksUpdate(topTracks);
+    }
+  }, [topTracks, topTracksQuery.isLoading, onTopTracksUpdate]);
 
   const onTrackClick = (track: Track) => {
     dispatch(setTracks(topTracks));
