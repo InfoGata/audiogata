@@ -37,7 +37,7 @@ const TopItemCards: React.FC = () => {
           useCurrentPlugin={true}
         />
       </div>
-      {query.data?.tracks?.items.length && (
+      {query.data?.tracks?.items.length ? (
         <>
           <h2 className="text-2xl font-bold">{t("tracks")}</h2>
           <div className="flex gap-5 w-full overflow-auto mt-5">
@@ -46,8 +46,8 @@ const TopItemCards: React.FC = () => {
             ))}
           </div>
         </>
-      )}
-      {query.data?.albums?.items.length && (
+      ) : null}
+      {query.data?.albums?.items.length ? (
         <>
           <h2 className="text-2xl font-bold">{t("albums")}</h2>
           <div className="flex gap-5 w-full overflow-auto mt-5">
@@ -56,8 +56,8 @@ const TopItemCards: React.FC = () => {
             ))}
           </div>
         </>
-      )}
-      {query.data?.artists?.items.length && (
+      ) : null}
+      {query.data?.artists?.items.length ? (
         <>
           <h2 className="text-2xl font-bold">{t("artists")}</h2>
           <div className="flex gap-5 w-full overflow-auto mt-5">
@@ -66,8 +66,8 @@ const TopItemCards: React.FC = () => {
             ))}
           </div>
         </>
-      )}
-      {query.data?.playlists?.items.length && (
+      ) : null}
+      {query.data?.playlists?.items.length ? (
         <>
           <h2 className="text-2xl font-bold">{t("playlists")}</h2>
           <div className="flex gap-5 w-full overflow-auto mt-5">
@@ -76,7 +76,7 @@ const TopItemCards: React.FC = () => {
             ))}
           </div>
         </>
-      )}
+      ) : null}
     </>
   );
 };
