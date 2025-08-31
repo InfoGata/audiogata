@@ -12,7 +12,7 @@ const Spinner: React.FC<SpinnerProps> = (props) => {
 
   return (
     <div className="fixed flex items-center justify-center bg-black/50 top-0 left-0 right-0 bottom-0">
-      <Loader2 className="w-8 h-8 animate-spin" />
+      <Loader2 className="size-8 animate-spin" />
     </div>
   );
 };

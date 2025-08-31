@@ -13,7 +13,7 @@ const PlaylistImage: React.FC<PlaylistImageProps> = (props) => {
   return (
     <img 
       src={image} 
-      className="w-48 h-48 object-cover rounded-lg shadow-xl" 
+      className="size-48 object-cover rounded-lg shadow-xl" 
       alt="Cover"
     />
   );

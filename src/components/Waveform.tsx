@@ -76,7 +76,7 @@ const Waveform: React.FC<WaveformProps> = ({ audioUrl }) => {
   if (error) {
     return (
       <div className="mt-4 p-3 bg-red-50 border border-red-200 rounded-md flex items-center text-red-700">
-        <AlertCircle className="h-4 w-4 mr-2" />
+        <AlertCircle className="size-4 mr-2" />
         <span className="text-sm">{error}</span>
       </div>
     );
@@ -90,7 +90,7 @@ const Waveform: React.FC<WaveformProps> = ({ audioUrl }) => {
       <div className="relative">
         {isLoading && (
           <div className="absolute inset-0 flex items-center justify-center bg-background/50 rounded">
-            <Loader2 className="h-4 w-4 animate-spin" />
+            <Loader2 className="size-4 animate-spin" />
           </div>
         )}
         <div

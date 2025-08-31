@@ -40,7 +40,7 @@ const PlayerBar: React.FC = () => {
           size="icon"
           className="text-muted-foreground hover:text-foreground"
         >
-          <MdMoreVert className="h-5 w-5" />
+          <MdMoreVert className="size-5" />
         </Button>
       </SheetTrigger>
       <SheetContent side="bottom" className="h-auto pb-safe">

@@ -1,9 +1,12 @@
 import { useMediaQuery } from "react-responsive";
-import resolveConfig from "tailwindcss/resolveConfig";
-import tailwindConfig from "../../tailwind.config";
-import type { Config } from "tailwindcss/types/config";
-const fullConfig = resolveConfig(tailwindConfig as unknown as Config);
-const breakpoints = fullConfig.theme.screens;
+
+const breakpoints = {
+  sm: "640px",
+  md: "768px", 
+  lg: "1024px",
+  xl: "1280px",
+  "2xl": "1536px",
+} as const;
 
 type BreakpointKey = keyof typeof breakpoints;
 
@@ -12,7 +15,6 @@ export function useBreakpoint<K extends BreakpointKey>(breakpointKey: K) {
     query: `(min-width: ${breakpoints[breakpointKey]})`,
   });
   const capitalizedKey =
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     breakpointKey[0]!.toUpperCase() + breakpointKey.substring(1);
   type Key = `is${Capitalize<K>}`;
   return {

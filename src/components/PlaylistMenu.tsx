@@ -120,8 +120,8 @@ const PlaylistMenu: React.FC<PlaylistMenuProps> = (props) => {
     <>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button size="icon" variant="ghost" className="w-16 h-16">
-            <MoreHorizontalIcon className="w-14 h-14" />
+          <Button size="icon" variant="ghost" className="size-16">
+            <MoreHorizontalIcon className="size-14" />
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent>

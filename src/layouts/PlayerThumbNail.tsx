@@ -14,10 +14,10 @@ const PlayerThumbnail: React.FC = () => {
   );
 
   return (
-    <div className="relative w-14 h-14 flex-shrink-0">
+    <div className="relative size-14 flex-shrink-0">
       {trackLoading && (
         <div className="absolute inset-0 flex items-center justify-center bg-black/20 z-10">
-          <Loader2 className="w-6 h-6 animate-spin text-primary" />
+          <Loader2 className="size-6 animate-spin text-primary" />
         </div>
       )}
       <img

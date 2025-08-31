@@ -82,7 +82,7 @@ export const ExtensionBanner: React.FC = () => {
         onClick={handleDismiss}
         className="ml-4"
       >
-        <X className="h-4 w-4" />
+        <X className="size-4" />
         <span className="sr-only">{t("close")}</span>
       </Button>
     </div>

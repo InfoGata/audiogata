@@ -33,7 +33,7 @@ const PlaylistListItem: React.FC<Props> = (props) => {
       to={playlistPath}
       className="flex items-center transition-all hover:bg-accent hover:text-accent-foreground p-2"
     >
-      <Avatar className="h-10 w-10 rounded-none">
+      <Avatar className="size-10 rounded-none">
         <AvatarImage src={image} />
       </Avatar>
       <div className="ml-4 space-y-1">

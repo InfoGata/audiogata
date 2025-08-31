@@ -71,7 +71,7 @@ const PlaybackRate: React.FC<PlaybackRateProps> = ({ mobile }) => {
     return (
       <div className="flex flex-col gap-4 w-full">
         <div className="flex justify-between items-center">
-          <MdSlowMotionVideo className="h-5 w-5" />
+          <MdSlowMotionVideo className="size-5" />
           <span className="text-sm font-medium">{formattedRate}</span>
         </div>
         <div className="grid grid-cols-4 gap-2">

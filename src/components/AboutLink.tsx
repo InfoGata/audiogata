@@ -38,7 +38,7 @@ const AboutLink: React.FC<AboutLinkProps> = (props) => {
     <InternalComponent>
       <div className="m-1 flex space-x-4 rounded-md py-2 pl-4 pr-16 transition-all hover:bg-accent hover:text-accent-foreground items-center">
         {icon && (
-          <div className="w-10 h-10 flex items-center bg-muted-foreground rounded-full justify-center text-background">
+          <div className="size-10 flex items-center bg-muted-foreground rounded-full justify-center text-background">
             {icon}
           </div>
         )}
