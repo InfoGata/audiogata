@@ -59,7 +59,7 @@ export const ExtensionBanner: React.FC = () => {
   return (
     <div className="mb-4 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg flex items-start justify-between">
       <div>
-        <p className="text-sm text-blue-800 dark:text-blue-200 mb-2">
+        <p className="text-sm font-bold mb-2">
           {t("extensionMessage")}
         </p>
         <Button
