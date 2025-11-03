@@ -49,7 +49,6 @@ describe("PlayButton", () => {
     const { container } = render(<PlayButton onClick={mockOnClick} />);
     
     const button = container.querySelector('[data-testid="play-button"]');
-    expect(button).toHaveClass("w-16");
-    expect(button).toHaveClass("h-16");
+    expect(button).toHaveClass("size-16");
   });
 });
