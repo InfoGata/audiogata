@@ -1,3 +1,4 @@
+import { ExtensionProvider } from "@/contexts/ExtensionContext";
 import PluginsProvider from "@/providers/PluginsProvider";
 import { ThemeProvider } from "@/providers/ThemeProvider";
 import { Root } from "@/routes/__root";
@@ -40,11 +41,13 @@ export function renderWithProviders(ui: React.ReactElement) {
     return (
       <Provider store={store}>
         <ThemeProvider defaultTheme="dark">
-          <QueryClientProvider client={queryClient}>
-            <PluginsProvider>
-              <RouterProvider router={router as any} />
-            </PluginsProvider>
-          </QueryClientProvider>
+          <ExtensionProvider>
+            <QueryClientProvider client={queryClient}>
+              <PluginsProvider>
+                <RouterProvider router={router as any} />
+              </PluginsProvider>
+            </QueryClientProvider>
+          </ExtensionProvider>
         </ThemeProvider>
       </Provider>
     );
