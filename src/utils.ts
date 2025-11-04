@@ -136,7 +136,7 @@ export const getPluginUrl = (id: string, path: string): URL => {
 };
 
 export const hasExtension = () => {
-  return typeof window.InfoGata !== "undefined";
+  return typeof window !== "undefined" && typeof window.InfoGata !== "undefined";
 };
 
 export const hasAuthentication = async () => {

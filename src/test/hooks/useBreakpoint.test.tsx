@@ -1,29 +1,10 @@
 import { describe, expect, it as test, vi, beforeEach } from "vitest";
 import { renderHook } from "@testing-library/react";
 
-// IMPORTANT: vi.mock calls are hoisted to the top, so they must come before any imports
 // Mock react-responsive
 vi.mock("react-responsive", () => ({
   useMediaQuery: vi.fn(() => true)
 }));
-
-// Mock tailwind config
-vi.mock("tailwindcss/resolveConfig", () => ({
-  default: () => ({
-    theme: {
-      screens: {
-        sm: "640px",
-        md: "768px",
-        lg: "1024px",
-        xl: "1280px",
-        "2xl": "1536px",
-      }
-    }
-  })
-}));
-
-// Mock imports directly
-vi.mock("../../tailwind.config", () => ({}));
 
 // Import after mocks
 import { useBreakpoint } from "../../hooks/useBreakpoint";
