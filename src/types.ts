@@ -10,8 +10,7 @@ import {
   PlaylistInfo,
   Track,
 } from "./plugintypes";
-import { router } from "./router";
-
+import { RouterType } from "./router";
 export interface NetworkRequest {
   body: Blob | ArrayBuffer | null;
   headers: { [k: string]: string };
@@ -118,7 +117,7 @@ export interface PlayerComponent {
   [PlayerComponentType.onSetPlaybackRate]: (rate: number) => Promise<void>;
 }
 
-export type LinkRouterProps = LinkOptions<typeof router>;
+export type LinkRouterProps = LinkOptions<RouterType>;
 
 export interface NavigationLinkItem {
   title: string;
