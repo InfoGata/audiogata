@@ -23,7 +23,6 @@ import { PlayerComponent, PlayerComponentType } from "../types";
 import { filterAsync } from "@infogata/utils";
 import { defaultSkipTime } from "../utils";
 import { withPlugins } from "../withPlugins";
-import * as Sentry from "@sentry/browser";
 import { toast } from "sonner";
 import { CapacitorMusicControls } from "capacitor-music-controls-plugin";
 
@@ -286,10 +285,6 @@ class AudioComponent extends React.Component<
       const message = `${this.props.currentTrack.name}: ${err.message}`;
       toast.error(message);
       console.log(err);
-      // Only capture first error message
-      if (this.state.errorCount === 0) {
-        Sentry.captureException(err);
-      }
     }
     this.setState({
       errorCount: this.state.errorCount + 1,

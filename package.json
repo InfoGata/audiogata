@@ -34,7 +34,6 @@
     "@radix-ui/react-tabs": "^1.1.13",
     "@radix-ui/react-tooltip": "^1.2.8",
     "@reduxjs/toolkit": "^2.2.3",
-    "@sentry/browser": "^7.74.0",
     "@tailwindcss/vite": "^4.1.12",
     "@tanstack/react-router": "^1.114.17",
     "@testing-library/react": "^13.3.0",

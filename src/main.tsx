@@ -1,4 +1,3 @@
-import * as Sentry from "@sentry/browser";
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { PostHogProvider } from "posthog-js/react";
@@ -17,10 +16,6 @@ import store, { persistor } from "./store/store";
 import { ChatBotProvider } from "react-chatbotify";
 import { ExtensionProvider } from "./contexts/ExtensionContext";
 
-Sentry.init({
-  dsn: "https://d99bb253ac5a4b53a32d48697f165e34@app.glitchtip.com/4798",
-});
-
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -38,6 +33,7 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
         defaults: '2025-05-24',
         capture_exceptions: true,
         debug: import.meta.env.MODE === "development",
+        cookieless_mode: 'always',
       }}
     >
       <Provider store={store}>
