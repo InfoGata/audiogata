@@ -4,93 +4,184 @@ import React from "react";
 
 const Privacy: React.FC = () => {
   return (
-    <div className="max-w-xl">
-      <h1 className="text-xl font-bold">🔒 Privacy Overview</h1>
-      <p>
-        <b>
-          Personal Data collected for the following purposes and using the
-          following services:
-        </b>
-        <br />
-        <br />
-        <b>🧮 Analytics</b>
-        <br />
-        The services contained in this section enable the Owner to monitor and
-        analyze web traffic and can be used to keep track of User behavior.
-        <br />
-        <br />
-        <b>1.) Matomo</b>
-        <br />
-        Personal Data:
-        <i>Usage Data</i>
-        <br />
-        <a
-          href="https://matomo.org/privacy-policy/"
-          target="_blank"
-          rel="noreferrer"
-        >
+    <div className="max-w-4xl mx-auto px-4 py-8 space-y-8">
+      {/* Header */}
+      <div className="space-y-2">
+        <h1 className="text-3xl font-bold flex items-center gap-2">
+          <span>🔒</span>
           Privacy Policy
-        </a>
-        <br />
-        <iframe
-          title="out-opt"
-          style={{ border: 0, height: "200px", width: "600px" }}
-          src="https://matomo.infogata.com/index.php?module=CoreAdminHome&action=optOut&language=en&backgroundColor=121212&fontColor=ffffff&fontSize=16px"
-        ></iframe>
-      </p>
-      {/* End Section */}
-      <p>
-        <b>📦 Displaying Content From External Platforms</b>
-        <br />
-        This type of service allows you to view content hosted on external
-        platforms directly from the pages of this website and interact with
-        them.
-        <br />
-        <br />
-        This type of service might still collect web traffic data for the pages
-        where the service is installed, even when Users do not use it.
-        <br />
-        <br />
-        <b>1.) Google Fonts</b>
-        <br />
-        Personal Data:
-        <i>
-          Usage Data; various types of Data as specified in the privacy policy
-          of the service
-        </i>
-        <br />
-        <a
-          href="https://policies.google.com/privacy"
-          target="_blank"
-          rel="noreferrer"
-        >
-          Privacy Policy
-        </a>
-      </p>
-      <p>
-        <b>📁 Hosting and Backend Infrastructure</b>
-        <br />
-        This type of service has the purpose of hosting Data and files that
-        enable this website to exist.
-        <br />
-        <br />
-        Some services among those listed below, if any, may work through
-        geographically distributed servers, making it difficult to determine the
-        actual location where the Personal Data are stored.
-        <br />
-        <br />
-        <b>1.) Vercel, Inc</b>
-        <br />
-        Personal Data:
-        <i>
-          various types of Data as specified in the privacy policy of the
-          service
-        </i>
-        <br />
-        <a href="https://vercel.com/privacy" target="_blank" rel="noreferrer">
-          Privacy Policy
-        </a>
-      </p>
+        </h1>
+        <p className="text-muted-foreground">
+          Your privacy matters to us. This page outlines what data we collect
+          and how we handle it.
+        </p>
+      </div>
+
+      {/* Privacy Commitment */}
+      <div className="rounded-lg border bg-card p-6 space-y-2">
+        <h2 className="text-lg font-semibold">Our Commitment</h2>
+        <p className="text-sm text-muted-foreground">
+          AudioGata is committed to protecting your privacy. We collect minimal
+          data necessary to improve the service, and we do so transparently.
+          Below are the third-party services we use and the data they collect.
+        </p>
+      </div>
+
+      {/* Analytics Section */}
+      <section className="space-y-4">
+        <div className="flex items-center gap-2">
+          <span className="text-2xl">🧮</span>
+          <h2 className="text-2xl font-semibold">Analytics</h2>
+        </div>
+        <p className="text-sm text-muted-foreground">
+          We use analytics to monitor and analyze web traffic and user behavior
+          to improve the application experience.
+        </p>
+
+        <div className="rounded-lg border bg-card p-5 space-y-3">
+          <div className="flex items-start justify-between">
+            <div>
+              <h3 className="font-semibold text-lg">PostHog</h3>
+              <p className="text-sm text-muted-foreground mt-1">
+                Anonymous usage analytics
+              </p>
+            </div>
+          </div>
+
+          <div className="space-y-2">
+            <div className="flex items-start gap-2">
+              <span className="text-xs font-medium bg-primary/10 text-primary px-2 py-1 rounded mt-0.5">
+                Data Collected
+              </span>
+              <span className="text-sm text-muted-foreground">
+                Usage Data (collected anonymously without cookies)
+              </span>
+            </div>
+
+            <div className="flex items-start gap-2">
+              <span className="text-xs font-medium bg-green-500/10 text-green-600 dark:text-green-400 px-2 py-1 rounded mt-0.5">
+                Privacy-First
+              </span>
+              <span className="text-sm text-muted-foreground">
+                PostHog is configured in cookieless mode to respect user
+                privacy
+              </span>
+            </div>
+
+            <a
+              href="https://posthog.com/privacy"
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex items-center gap-1 text-sm text-primary hover:underline mt-2"
+            >
+              View Privacy Policy →
+            </a>
+          </div>
+        </div>
+      </section>
+
+      {/* External Content Section */}
+      <section className="space-y-4">
+        <div className="flex items-center gap-2">
+          <span className="text-2xl">📦</span>
+          <h2 className="text-2xl font-semibold">External Content</h2>
+        </div>
+        <p className="text-sm text-muted-foreground">
+          We display content from external platforms to enhance functionality.
+          These services may collect data even when not actively used.
+        </p>
+
+        <div className="rounded-lg border bg-card p-5 space-y-3">
+          <div>
+            <h3 className="font-semibold text-lg">Google Fonts</h3>
+            <p className="text-sm text-muted-foreground mt-1">
+              Typography and font delivery
+            </p>
+          </div>
+
+          <div className="space-y-2">
+            <div className="flex items-start gap-2">
+              <span className="text-xs font-medium bg-primary/10 text-primary px-2 py-1 rounded mt-0.5">
+                Data Collected
+              </span>
+              <span className="text-sm text-muted-foreground">
+                Usage Data; various types of Data as specified in the privacy
+                policy of the service
+              </span>
+            </div>
+
+            <a
+              href="https://policies.google.com/privacy"
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex items-center gap-1 text-sm text-primary hover:underline mt-2"
+            >
+              View Privacy Policy →
+            </a>
+          </div>
+        </div>
+      </section>
+
+      {/* Hosting Section */}
+      <section className="space-y-4">
+        <div className="flex items-center gap-2">
+          <span className="text-2xl">📁</span>
+          <h2 className="text-2xl font-semibold">Hosting & Infrastructure</h2>
+        </div>
+        <p className="text-sm text-muted-foreground">
+          These services host data and files that enable this website to
+          function. Data may be stored across geographically distributed
+          servers.
+        </p>
+
+        <div className="rounded-lg border bg-card p-5 space-y-3">
+          <div>
+            <h3 className="font-semibold text-lg">Vercel, Inc</h3>
+            <p className="text-sm text-muted-foreground mt-1">
+              Web hosting and deployment platform
+            </p>
+          </div>
+
+          <div className="space-y-2">
+            <div className="flex items-start gap-2">
+              <span className="text-xs font-medium bg-primary/10 text-primary px-2 py-1 rounded mt-0.5">
+                Data Collected
+              </span>
+              <span className="text-sm text-muted-foreground">
+                Various types of Data as specified in the privacy policy of the
+                service
+              </span>
+            </div>
+
+            <a
+              href="https://vercel.com/privacy"
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex items-center gap-1 text-sm text-primary hover:underline mt-2"
+            >
+              View Privacy Policy →
+            </a>
+          </div>
+        </div>
+      </section>
+
+      {/* Footer Note */}
+      <div className="rounded-lg border bg-muted/50 p-4 text-sm text-muted-foreground">
+        <p>
+          <strong>Last Updated:</strong> This privacy policy reflects our
+          current data collection practices. If you have any questions or
+          concerns, please contact us through our{" "}
+          <a
+            href="https://github.com/InfoGata/audiogata"
+            target="_blank"
+            rel="noreferrer"
+            className="text-primary hover:underline"
+          >
+            GitHub repository
+          </a>
+          .
+        </p>
+      </div>
     </div>
   );
 };
