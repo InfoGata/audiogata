@@ -93,9 +93,9 @@ const Privacy: React.FC = () => {
 
         <div className="rounded-lg border bg-card p-5 space-y-3">
           <div>
-            <h3 className="font-semibold text-lg">Google Fonts</h3>
+            <h3 className="font-semibold text-lg">jsDelivr</h3>
             <p className="text-sm text-muted-foreground mt-1">
-              Typography and font delivery
+              Content delivery network for assets and libraries
             </p>
           </div>
 
@@ -111,7 +111,7 @@ const Privacy: React.FC = () => {
             </div>
 
             <a
-              href="https://policies.google.com/privacy"
+              href="https://www.jsdelivr.com/terms/privacy-policy-jsdelivr-net"
               target="_blank"
               rel="noreferrer"
               className="inline-flex items-center gap-1 text-sm text-primary hover:underline mt-2"
