@@ -1,6 +1,7 @@
 import * as Sentry from "@sentry/browser";
 import React from "react";
 import ReactDOM from "react-dom/client";
+import { PostHogProvider } from "posthog-js/react";
 import { IconContext } from "react-icons";
 import OutsideCallConsumer from "react-outside-call";
 import { QueryClient, QueryClientProvider } from "react-query";
@@ -30,24 +31,34 @@ const queryClient = new QueryClient({
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>
-    <Provider store={store}>
-      <PersistGate loading={null} persistor={persistor}>
-        <ThemeProvider defaultTheme="dark">
-          <ExtensionProvider>
-            <IconContext.Provider value={{ className: "size-5" }}>
-              <QueryClientProvider client={queryClient}>
-                <PluginsProvider>
-                  <OutsideCallConsumer config={callConfig}>
-                    <ChatBotProvider>
-                      <Router />
-                    </ChatBotProvider>
-                  </OutsideCallConsumer>
-                </PluginsProvider>
-              </QueryClientProvider>
-            </IconContext.Provider>
-          </ExtensionProvider>
-        </ThemeProvider>
-      </PersistGate>
-    </Provider>
+    <PostHogProvider
+      apiKey={import.meta.env.VITE_PUBLIC_POSTHOG_KEY}
+      options={{
+        api_host: import.meta.env.VITE_PUBLIC_POSTHOG_HOST,
+        defaults: '2025-05-24',
+        capture_exceptions: true,
+        debug: import.meta.env.MODE === "development",
+      }}
+    >
+      <Provider store={store}>
+        <PersistGate loading={null} persistor={persistor}>
+          <ThemeProvider defaultTheme="dark">
+            <ExtensionProvider>
+              <IconContext.Provider value={{ className: "size-5" }}>
+                <QueryClientProvider client={queryClient}>
+                  <PluginsProvider>
+                    <OutsideCallConsumer config={callConfig}>
+                      <ChatBotProvider>
+                        <Router />
+                      </ChatBotProvider>
+                    </OutsideCallConsumer>
+                  </PluginsProvider>
+                </QueryClientProvider>
+              </IconContext.Provider>
+            </ExtensionProvider>
+          </ThemeProvider>
+        </PersistGate>
+      </Provider>
+    </PostHogProvider>
   </React.StrictMode>
 );
