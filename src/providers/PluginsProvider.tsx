@@ -83,6 +83,7 @@ interface ApplicationPluginInterface extends PluginInterface {
 const PluginsProvider: React.FC<React.PropsWithChildren> = (props) => {
   const [pluginsLoaded, setPluginsLoaded] = React.useState(false);
   const hasUpdated = React.useRef(false);
+  const isMountedRef = React.useRef(true);
 
   const [pluginFrames, setPluginFrames] = React.useState<
     PluginFrameContainer[]
@@ -411,18 +412,25 @@ const PluginsProvider: React.FC<React.PropsWithChildren> = (props) => {
   );
 
   const loadPlugins = React.useCallback(async () => {
+    if (!isMountedRef.current) return;
     setPluginsFailed(false);
     try {
       const plugs = await db.plugins.toArray();
 
       const framePromises = plugs.map((p) => loadPlugin(p));
       const frames = await Promise.all(framePromises);
-      setPluginFrames(frames);
+      if (isMountedRef.current) {
+        setPluginFrames(frames);
+      }
     } catch {
-      toast.error(t("failedPlugins"));
-      setPluginsFailed(true);
+      if (isMountedRef.current) {
+        toast.error(t("failedPlugins"));
+        setPluginsFailed(true);
+      }
     } finally {
-      setPluginsLoaded(true);
+      if (isMountedRef.current) {
+        setPluginsLoaded(true);
+      }
     }
   }, [loadPlugin, t]);
 
@@ -431,6 +439,12 @@ const PluginsProvider: React.FC<React.PropsWithChildren> = (props) => {
     loadingPlugin.current = true;
     loadPlugins();
   }, [loadPlugins]);
+
+  React.useEffect(() => {
+    return () => {
+      isMountedRef.current = false;
+    };
+  }, []);
 
   React.useEffect(() => {
     App.addListener("appUrlOpen", async (event: URLOpenListenerEvent) => {
@@ -459,11 +473,14 @@ const PluginsProvider: React.FC<React.PropsWithChildren> = (props) => {
 
   const loadAndAddPlugin = React.useCallback(
     async (plugin: PluginInfo) => {
+      if (!isMountedRef.current) return;
       const pluginFrame = await loadPlugin(plugin);
-      setPluginFrames((prev) => [...prev, pluginFrame]);
-      await db.plugins.put(plugin);
-      if (!lyricsPluginId && (await pluginFrame.hasDefined.onGetLyrics())) {
-        dispatch(setLyricsPluginId(pluginFrame.id));
+      if (isMountedRef.current) {
+        setPluginFrames((prev) => [...prev, pluginFrame]);
+        await db.plugins.put(plugin);
+        if (!lyricsPluginId && (await pluginFrame.hasDefined.onGetLyrics())) {
+          dispatch(setLyricsPluginId(pluginFrame.id));
+        }
       }
     },
     [dispatch, loadPlugin, lyricsPluginId]
@@ -491,7 +508,7 @@ const PluginsProvider: React.FC<React.PropsWithChildren> = (props) => {
 
   React.useEffect(() => {
     const preinstall = async () => {
-      if (pluginsLoaded && !pluginsPreinstalled) {
+      if (pluginsLoaded && !pluginsPreinstalled && isMountedRef.current) {
         try {
           // Make sure preinstall plugins aren't already installed
           const presinstallPlugins = defaultPlugins.filter(
@@ -502,15 +519,20 @@ const PluginsProvider: React.FC<React.PropsWithChildren> = (props) => {
             (preinstall) => !plugs.some((pf) => pf.id === preinstall.id)
           );
           await mapAsync(newPlugins, async (newPlugin) => {
+            if (!isMountedRef.current) return;
             const fileType = getFileTypeFromPluginUrl(newPlugin.url);
             const plugin = await getPlugin(fileType, true);
             if (!plugin) return;
 
             await loadAndAddPlugin(plugin);
           });
-          dispatch(setPluginsPreInstalled());
+          if (isMountedRef.current) {
+            dispatch(setPluginsPreInstalled());
+          }
         } finally {
-          setPreinstallComplete(true);
+          if (isMountedRef.current) {
+            setPreinstallComplete(true);
+          }
         }
       }
     };
@@ -520,9 +542,10 @@ const PluginsProvider: React.FC<React.PropsWithChildren> = (props) => {
 
   React.useEffect(() => {
     const checkUpdate = async () => {
-      if (pluginsLoaded && !disableAutoUpdatePlugins && !hasUpdated.current) {
+      if (pluginsLoaded && !disableAutoUpdatePlugins && !hasUpdated.current && isMountedRef.current) {
         hasUpdated.current = true;
         await mapAsync(pluginFrames, async (p) => {
+          if (!isMountedRef.current) return;
           // Don't update current track's plugin
           if (currentTrack?.pluginId === p.id) {
             return;
@@ -546,7 +569,7 @@ const PluginsProvider: React.FC<React.PropsWithChildren> = (props) => {
               ) {
                 const newPlugin = await getPlugin(fileType);
 
-                if (newPlugin && p.id) {
+                if (newPlugin && p.id && isMountedRef.current) {
                   newPlugin.id = p.id;
                   newPlugin.manifestUrl = p.manifestUrl;
                   await updatePlugin(newPlugin, p.id);
