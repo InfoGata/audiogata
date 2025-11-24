@@ -1,6 +1,6 @@
 import { ExtensionProvider } from "@/contexts/ExtensionContext";
 import PluginsProvider from "@/providers/PluginsProvider";
-import { ThemeProvider } from "@/providers/ThemeProvider";
+import { ThemeProvider } from "@/contexts/ThemeContext";
 import { Root } from "@/routes/__root";
 import {
   RouterProvider,
