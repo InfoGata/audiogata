@@ -441,6 +441,7 @@ const PluginsProvider: React.FC<React.PropsWithChildren> = (props) => {
   }, [loadPlugins]);
 
   React.useEffect(() => {
+    isMountedRef.current = true;
     return () => {
       isMountedRef.current = false;
     };
