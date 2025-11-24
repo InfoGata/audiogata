@@ -1,5 +1,5 @@
 import { ExtensionProvider } from "@/contexts/ExtensionContext";
-import PluginsProvider from "@/providers/PluginsProvider";
+import { PluginsProvider } from "@/contexts/PluginsContext";
 import { ThemeProvider } from "@/contexts/ThemeContext";
 import { Root } from "@/routes/__root";
 import {

@@ -9,7 +9,7 @@ import { PersistGate } from "redux-persist/integration/react";
 import callConfig from "./call-config";
 import "./i18n";
 import "./index.css";
-import PluginsProvider from "./providers/PluginsProvider";
+import { PluginsProvider } from "./contexts/PluginsContext";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import Router from "./router";
 import store, { persistor } from "./store/store";
