@@ -1,5 +1,5 @@
 import React from "react";
-import PluginsContext, { PluginContextInterface } from "./PluginsContext";
+import PluginsContext, { PluginContextInterface } from "./contexts/PluginsContext";
 
 export const withPlugins = <P extends PluginContextInterface>(
   Component: React.ComponentType<P>

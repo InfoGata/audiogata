@@ -1,5 +1,5 @@
 import React from "react";
-import { PluginFrameContainer } from "../PluginsContext";
+import { PluginFrameContainer } from "../contexts/PluginsContext";
 import { defaultPluginMap } from "../default-plugins";
 import { PluginInfo } from "../plugintypes";
 import { getFileTypeFromPluginUrl, getPlugin } from "../utils";

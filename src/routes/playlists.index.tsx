@@ -4,7 +4,7 @@ import { Button, buttonVariants } from "@/components/ui/button";
 import { Trash } from "lucide-react";
 import React from "react";
 import { useTranslation } from "react-i18next";
-import { PluginFrameContainer } from "../PluginsContext";
+import { PluginFrameContainer } from "../contexts/PluginsContext";
 import ImportDialog from "../components/ImportDialog";
 import usePlugins from "../hooks/usePlugins";
 import { Playlist, Track } from "../plugintypes";

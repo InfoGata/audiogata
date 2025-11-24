@@ -5,7 +5,7 @@ import { MoreHorizontalIcon } from "lucide-react";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { FaTrash } from "react-icons/fa6";
-import { PluginFrameContainer } from "../../PluginsContext";
+import { PluginFrameContainer } from "../../contexts/PluginsContext";
 import {
   DropdownMenu,
   DropdownMenuContent,

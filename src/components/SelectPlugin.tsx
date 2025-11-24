@@ -1,6 +1,6 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
-import { PluginMethodInterface } from "../PluginsContext";
+import { PluginMethodInterface } from "../contexts/PluginsContext";
 import usePlugins from "../hooks/usePlugins";
 import { useAppDispatch, useAppStore } from "../store/hooks";
 import { setCurrentPluginId } from "../store/reducers/settingsReducer";

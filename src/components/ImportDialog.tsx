@@ -1,6 +1,6 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
-import { PluginFrameContainer } from "../PluginsContext";
+import { PluginFrameContainer } from "../contexts/PluginsContext";
 import usePlugins from "../hooks/usePlugins";
 import { ParseUrlType, Playlist, Track } from "../plugintypes";
 import { filterAsync } from "@infogata/utils";

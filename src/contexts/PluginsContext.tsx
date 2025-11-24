@@ -30,8 +30,8 @@ import {
   Theme,
   Track,
   UserPlaylistRequest,
-} from "./plugintypes";
-import { PlayerComponent } from "./types";
+} from "../plugintypes";
+import { PlayerComponent } from "../types";
 
 export interface PluginMethodInterface extends PlayerComponent {
   onSearchAll(request: SearchRequest): Promise<SearchAllResult>;

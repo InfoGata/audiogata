@@ -11,7 +11,7 @@ import PluginsContext, {
   PluginFrameContainer,
   PluginMessage,
   PluginMethodInterface,
-} from "../PluginsContext";
+} from "../contexts/PluginsContext";
 import ConfirmPluginDialog from "../components/ConfirmPluginDialog";
 import { db } from "../database";
 import { defaultPlugins } from "../default-plugins";

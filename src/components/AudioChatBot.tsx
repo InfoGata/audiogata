@@ -12,7 +12,7 @@ import DOMPurify from "dompurify";
 import { addPlaylist, addPlaylistTracks } from "@/store/reducers/playlistReducer";
 import usePluginWithMethod from "@/hooks/useSearchPlugin";
 import { Track } from "@/plugintypes";
-import { PluginFrameContainer } from "@/PluginsContext";
+import { PluginFrameContainer } from "@/contexts/PluginsContext";
 let messages: CoreMessage[]= [];
 let hasError = false;
 const markdownConverter = new Converter();

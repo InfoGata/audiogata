@@ -1,4 +1,4 @@
-import { PluginFrameContainer, PluginMethodInterface } from "@/PluginsContext";
+import { PluginFrameContainer, PluginMethodInterface } from "@/contexts/PluginsContext";
 import usePlugins from "./usePlugins";
 import React from "react";
 import { useAppSelector } from "@/store/hooks";

@@ -6,7 +6,7 @@ import { connect } from "react-redux";
 import { bindActionCreators, Dispatch } from "redux";
 import { db } from "../database";
 import { localPlayer } from "../LocalPlayer";
-import { PluginContextInterface } from "../PluginsContext";
+import { PluginContextInterface } from "../contexts/PluginsContext";
 import { Track } from "../plugintypes";
 import {
   nextTrack,

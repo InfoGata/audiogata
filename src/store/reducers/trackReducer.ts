@@ -2,7 +2,7 @@ import { createSlice, nanoid, PayloadAction } from "@reduxjs/toolkit";
 import intersectionBy from "lodash/intersectionBy";
 import callConfig from "../../call-config";
 import { localPlayer } from "../../LocalPlayer";
-import { PluginFrameContainer } from "../../PluginsContext";
+import { PluginFrameContainer } from "../../contexts/PluginsContext";
 import { Track } from "../../plugintypes";
 import { filterAsync, mergeItems } from "@infogata/utils";
 import { defaultSkipTime } from "../../utils";
