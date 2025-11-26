@@ -36,10 +36,10 @@ import {
   SearchPlaylistResult,
   SearchRequest,
   SearchTrackResult,
-  Theme,
   Track,
   UserPlaylistRequest,
 } from "../plugintypes";
+import { Theme } from "@infogata/shadcn-vite-theme-provider";
 import { NetworkRequest, PlayerComponent } from "../types";
 import { mapAsync } from "@infogata/utils";
 import ConfirmPluginDialog from "../components/ConfirmPluginDialog";
@@ -68,7 +68,7 @@ import {
   hasExtension,
   isCorsDisabled,
 } from "../utils";
-import { useTheme } from "../hooks/useTheme";
+import { useTheme } from "@infogata/shadcn-vite-theme-provider";
 
 export interface PluginMethodInterface extends PlayerComponent {
   onSearchAll(request: SearchRequest): Promise<SearchAllResult>;

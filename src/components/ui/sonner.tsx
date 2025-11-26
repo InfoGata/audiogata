@@ -1,4 +1,4 @@
-import { useTheme } from "@/hooks/useTheme"
+import { useTheme } from "@infogata/shadcn-vite-theme-provider"
 import { Toaster as Sonner } from "sonner"
 
 type ToasterProps = React.ComponentProps<typeof Sonner>

@@ -6,8 +6,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import usePlugins from "@/hooks/usePlugins";
-import { useTheme } from "@/hooks/useTheme";
-import { Theme } from "@/plugintypes";
+import { useTheme, Theme } from "@infogata/shadcn-vite-theme-provider";
 import { filterAsync, mapAsync } from "@infogata/utils";
 import React from "react";
 import { useTranslation } from "react-i18next";

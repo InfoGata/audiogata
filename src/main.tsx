@@ -10,7 +10,7 @@ import callConfig from "./call-config";
 import "./i18n";
 import "./index.css";
 import { PluginsProvider } from "./contexts/PluginsContext";
-import { ThemeProvider } from "./contexts/ThemeContext";
+import { ThemeProvider } from "@infogata/shadcn-vite-theme-provider";
 import Router from "./router";
 import store, { persistor } from "./store/store";
 import { ChatBotProvider } from "react-chatbotify";

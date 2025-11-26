@@ -255,4 +255,3 @@ export interface GetSearchSuggestionRequest {
   query: string;
 }
 
-export type Theme = "dark" | "light" | "system";

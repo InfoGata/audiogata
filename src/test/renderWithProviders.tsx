@@ -1,6 +1,6 @@
 import { ExtensionProvider } from "@/contexts/ExtensionContext";
 import { PluginsProvider } from "@/contexts/PluginsContext";
-import { ThemeProvider } from "@/contexts/ThemeContext";
+import { ThemeProvider } from "@infogata/shadcn-vite-theme-provider";
 import { Root } from "@/routes/__root";
 import {
   RouterProvider,
