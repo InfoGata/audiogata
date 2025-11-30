@@ -31,7 +31,7 @@ export default defineConfig({
     VitePWA({
       registerType: "prompt",
       workbox: {
-        navigateFallback: "/",
+        navigateFallback: "/index.html",
         navigateFallbackDenylist: [
           /\.html$/,
           /\.html\?/,
