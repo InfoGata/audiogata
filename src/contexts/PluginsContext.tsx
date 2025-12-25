@@ -65,6 +65,7 @@ import {
   getFileTypeFromPluginUrl,
   getPlugin,
   getPluginUrl,
+  hasAuthentication,
   hasExtension,
   isCorsDisabled,
 } from "../utils";
@@ -250,7 +251,7 @@ export const PluginsProvider: React.FC<React.PropsWithChildren> = (props) => {
           return isCorsDisabled();
         },
         isLoggedIn: async () => {
-          if (plugin.manifest?.authentication && plugin.id) {
+          if (await hasAuthentication() && plugin.manifest?.authentication && plugin.id) {
             const pluginAuth = await db.pluginAuths.get(plugin.id);
             return !!pluginAuth;
           }
