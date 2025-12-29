@@ -28,7 +28,7 @@ export const ExtensionProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     checkExtension();
 
     if (!detected) {
-      // Keep checking every 100ms for 1 seconds
+      // Keep checking every 100ms for 3 seconds
       intervalId = setInterval(checkExtension, 100);
 
       // After 5 seconds, stop checking and set to false if not found
@@ -37,7 +37,7 @@ export const ExtensionProvider: React.FC<{ children: React.ReactNode }> = ({ chi
         if (!detected) {
           setExtensionDetected(false);
         }
-      }, 1000);
+      }, 3000);
     }
 
     return () => {
