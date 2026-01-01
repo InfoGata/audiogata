@@ -20,7 +20,7 @@ const MobileSidebar: React.FC = () => {
 
   return (
     <Sheet open={open} onOpenChange={setOpen}>
-      <SheetContent side="left" className="w-72 overflow-y-auto">
+      <SheetContent side="left" className="w-72 overflow-y-auto" aria-describedby={undefined}>
         <SheetTitle className="sr-only">Navigation menu</SheetTitle>
         <Navigation />
       </SheetContent>
