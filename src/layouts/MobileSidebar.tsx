@@ -1,4 +1,4 @@
-import { Sheet, SheetContent } from "@/components/ui/sheet";
+import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { setNavbarOpen } from "@/store/reducers/uiReducer";
 import React from "react";
@@ -21,6 +21,7 @@ const MobileSidebar: React.FC = () => {
   return (
     <Sheet open={open} onOpenChange={setOpen}>
       <SheetContent side="left" className="w-72 overflow-y-auto">
+        <SheetTitle className="sr-only">Navigation menu</SheetTitle>
         <Navigation />
       </SheetContent>
     </Sheet>
