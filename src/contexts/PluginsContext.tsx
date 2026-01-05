@@ -300,11 +300,7 @@ export const PluginsProvider: React.FC<React.PropsWithChildren> = (props) => {
           toaster(notification.message);
         },
         getCorsProxy: async () => {
-          if (import.meta.env.PROD || corsProxyUrlRef.current) {
-            return corsProxyUrlRef.current;
-          } else {
-            return "http://localhost:8085/";
-          }
+          return corsProxyUrlRef.current;
         },
         getPlugins: async () => {
           const plugs = await db.plugins.toArray();
