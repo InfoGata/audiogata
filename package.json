@@ -16,6 +16,7 @@
     "@dnd-kit/utilities": "^3.1.0",
     "@electron-toolkit/preload": "^1.0.3",
     "@electron-toolkit/utils": "^1.0.2",
+    "@infogata/extension-components": "^0.1.0",
     "@infogata/shadcn-vite-theme-provider": "^0.1.0",
     "@infogata/utils": "^0.1.2",
     "@radix-ui/react-accordion": "^1.2.12",
