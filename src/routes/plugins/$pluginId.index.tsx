@@ -81,7 +81,6 @@ const PluginDetails: React.FC = () => {
   React.useEffect(() => {
     const getHasAuth = async () => {
       const platformHasAuth = await hasAuthentication();
-      console.log(platformHasAuth);
       setHasAuth(platformHasAuth && !!pluginInfo?.manifest?.authentication);
     };
     getHasAuth();

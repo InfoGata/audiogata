@@ -125,8 +125,6 @@ const AudioChatBot: React.FC = () => {
           async execute(params) {
             const searchQuery = `${params.artistName} - ${params.trackName}`;
             const track = await searchTracks(searchQuery, searchPlugin);
-            console.log(searchPlugin);
-            console.log(track);
             if (track) {
               dispatch(addTrack(track));
             }
