@@ -6,6 +6,7 @@ import { Button } from "./ui/button";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
@@ -96,6 +97,9 @@ const ConfirmPluginDialog: React.FC<ConfirmPluginDialogProps> = (props) => {
           <DialogTitle>
             {t("plugins:addPlugin", { count: plugins.length })}
           </DialogTitle>
+          <DialogDescription className="sr-only">
+            {t("plugins:confirmPluginInstallation")}
+          </DialogDescription>
         </DialogHeader>
         <div>
           <div>{info}</div>

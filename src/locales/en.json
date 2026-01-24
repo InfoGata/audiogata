@@ -142,7 +142,8 @@
     "logout": "Logout",
     "openMenu": "Open Menu",
     "updateFound": "Update Found",
-    "noUpdateFound": "No Update Found"
+    "noUpdateFound": "No Update Found",
+    "confirmPluginInstallation": "Confirm plugin installation"
   },
   "settings": {
     "enableChatBot": "Enable Chat Bot",
