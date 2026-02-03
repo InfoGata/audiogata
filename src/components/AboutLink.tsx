@@ -3,7 +3,7 @@ import { Link } from "@tanstack/react-router";
 import React from "react";
 
 export type AboutLinkProps = {
-  icon?: JSX.Element;
+  icon?: React.JSX.Element;
   title: string;
   description?: string;
   url?: string;

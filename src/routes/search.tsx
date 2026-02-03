@@ -2,7 +2,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { createFileRoute } from "@tanstack/react-router";
 import React from "react";
 import { useTranslation } from "react-i18next";
-import { useQuery, useQueryClient } from "react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { z } from "zod";
 import AlbumSearchResults from "../components/AlbumSearchResults";
 import ArtistSearchResults from "../components/ArtistSearchResults";
@@ -65,7 +65,10 @@ const Search: React.FC = () => {
     return searchAll;
   };
 
-  const query = useQuery(["search", pluginId, q], onSearch);
+  const query = useQuery({
+    queryKey: ["search", pluginId, q],
+    queryFn: onSearch,
+  });
   const trackList = query?.data?.tracks?.items || [];
   const albumList = query?.data?.albums?.items || [];
   const artistList = query?.data?.artists?.items || [];

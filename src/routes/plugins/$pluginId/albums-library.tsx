@@ -4,7 +4,7 @@ import Spinner from "@/components/Spinner";
 import { createFileRoute } from "@tanstack/react-router";
 import React from "react";
 import { useTranslation } from "react-i18next";
-import { useQuery } from "react-query";
+import { useQuery } from "@tanstack/react-query";
 import { Album } from "@/plugintypes";
 import usePlugins from "@/hooks/usePlugins";
 

@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import PlaylistListItem from "@/components/PlaylistListItem";
 import React from "react";
 import { useTranslation } from "react-i18next";
-import { useQuery } from "react-query";
+import { useQuery } from "@tanstack/react-query";
 import Pager from "@/components/Pager";
 import Spinner from "@/components/Spinner";
 import usePagination from "@/hooks/usePagination";
@@ -32,7 +32,9 @@ const PluginPlaylists: React.FC = () => {
     return [];
   };
 
-  const query = useQuery(["pluginplaylists", pluginId, page], getPlaylists, {
+  const query = useQuery({
+    queryKey: ["pluginplaylists", pluginId, page],
+    queryFn: getPlaylists,
     enabled: pluginsLoaded && !!plugin,
   });
   const playlists = query.data || [];

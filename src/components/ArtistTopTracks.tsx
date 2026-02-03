@@ -1,5 +1,5 @@
 import React from "react";
-import { useQuery } from "react-query";
+import { useQuery } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import TrackList from "@/components/TrackList";
 import Pager from "@/components/Pager";
@@ -48,13 +48,11 @@ const ArtistTopTracks: React.FC<ArtistTopTracksProps> = ({
     return [];
   };
 
-  const topTracksQuery = useQuery(
-    ["artisttoptracks", pluginId, apiId, page],
-    onGetTopTracks,
-    {
-      enabled: pluginsLoaded && !!plugin,
-    }
-  );
+  const topTracksQuery = useQuery({
+    queryKey: ["artisttoptracks", pluginId, apiId, page],
+    queryFn: onGetTopTracks,
+    enabled: pluginsLoaded && !!plugin,
+  });
 
   const topTracks = React.useMemo(() => topTracksQuery.data || [], [topTracksQuery.data]);
   const { onSelect, onSelectAll, isSelected, selected } = useSelected(topTracks);

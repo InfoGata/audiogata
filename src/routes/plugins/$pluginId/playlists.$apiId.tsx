@@ -14,7 +14,7 @@ import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { playQueue, setTrack, setTracks } from "@/store/reducers/trackReducer";
 import { createFileRoute, useRouterState } from "@tanstack/react-router";
 import React from "react";
-import { useQuery } from "react-query";
+import { useQuery } from "@tanstack/react-query";
 import { z } from "zod";
 
 const PluginPlaylist: React.FC = () => {
@@ -55,11 +55,11 @@ const PluginPlaylist: React.FC = () => {
     return [];
   };
 
-  const query = useQuery(
-    ["pluginplaylist", pluginId, apiId, page],
-    getPlaylistTracks,
-    { enabled: pluginsLoaded && !!plugin }
-  );
+  const query = useQuery({
+    queryKey: ["pluginplaylist", pluginId, apiId, page],
+    queryFn: getPlaylistTracks,
+    enabled: pluginsLoaded && !!plugin,
+  });
   const tracklist = query.data ?? [];
   const { onSelect, onSelectAll, isSelected, selected } =
     useSelected(tracklist);

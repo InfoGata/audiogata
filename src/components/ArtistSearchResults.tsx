@@ -1,5 +1,5 @@
 import React from "react";
-import { useQuery } from "react-query";
+import { useQuery } from "@tanstack/react-query";
 import usePagination from "../hooks/usePagination";
 import usePlugins from "../hooks/usePlugins";
 import { FilterInfo, PageInfo } from "../plugintypes";
@@ -57,13 +57,11 @@ const ArtistSearchResults: React.FC<ArtistSearchResultsProps> = (props) => {
     }
   };
 
-  const query = useQuery(
-    ["searchArtists", pluginId, searchQuery, page, filters],
-    search,
-    {
-      staleTime: 60 * 1000,
-    }
-  );
+  const query = useQuery({
+    queryKey: ["searchArtists", pluginId, searchQuery, page, filters],
+    queryFn: search,
+    staleTime: 60 * 1000,
+  });
 
   const applyFilters = (filters: FilterInfo) => {
     setFilters(filters);

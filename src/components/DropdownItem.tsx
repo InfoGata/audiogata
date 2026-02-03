@@ -5,7 +5,7 @@ import { Link } from "@tanstack/react-router";
 
 export interface DropdownItemProps {
   title: string;
-  icon: JSX.Element;
+  icon: React.JSX.Element;
   action?: (item?: ItemMenuType) => void;
   item?: ItemMenuType;
   url?: string;

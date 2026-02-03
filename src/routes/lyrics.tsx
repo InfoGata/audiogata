@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import DOMPurify from "dompurify";
 import React from "react";
-import { useQuery } from "react-query";
+import { useQuery } from "@tanstack/react-query";
 import Spinner from "../components/Spinner";
 import usePlugins from "../hooks/usePlugins";
 import { useAppSelector } from "../store/hooks";
@@ -26,13 +26,11 @@ const Lyrics: React.FC = () => {
     }
   };
 
-  const query = useQuery(
-    ["lyrics", lyricsPluginId, trackName, artistName],
-    getLyrics,
-    {
-      enabled: pluginsLoaded,
-    }
-  );
+  const query = useQuery({
+    queryKey: ["lyrics", lyricsPluginId, trackName, artistName],
+    queryFn: getLyrics,
+    enabled: pluginsLoaded,
+  });
 
   return (
     <div>

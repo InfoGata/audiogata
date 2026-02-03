@@ -17,12 +17,7 @@ export default defineConfig({
   test: {
     environment: "jsdom",
     setupFiles: ["fake-indexeddb/auto", "src/test/before.ts"],
-    testTimeout: 10000,
-    server: {
-      deps: {
-        inline: ["react-chatbotify"]
-      },
-    }
+    teardownTimeout: 5000,
   },
   plugins: [
     tailwindcss(),

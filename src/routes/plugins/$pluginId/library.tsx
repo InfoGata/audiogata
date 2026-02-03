@@ -7,7 +7,7 @@ import { playQueue, setTrack, setTracks } from "@/store/reducers/trackReducer";
 import { createFileRoute } from "@tanstack/react-router";
 import React from "react";
 import { useTranslation } from "react-i18next";
-import { useQuery } from "react-query";
+import { useQuery } from "@tanstack/react-query";
 import { Track } from "@/plugintypes";
 import usePlugins from "@/hooks/usePlugins";
 

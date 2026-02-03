@@ -2,7 +2,7 @@ import { createFileRoute, useRouterState } from "@tanstack/react-router";
 import AlbumCard from "@/components/AlbumCard";
 import ItemMenu from "@/components/ItemMenu";
 import React from "react";
-import { useQuery } from "react-query";
+import { useQuery } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import ConfirmPluginDialog from "@/components/ConfirmPluginDialog";
 import Pager from "@/components/Pager";
@@ -60,7 +60,9 @@ const ArtistPage: React.FC = () => {
     return [];
   };
 
-  const query = useQuery(["artistpage", pluginId, apiId, page, currentSort], onGetArtist, {
+  const query = useQuery({
+    queryKey: ["artistpage", pluginId, apiId, page, currentSort],
+    queryFn: onGetArtist,
     enabled: pluginsLoaded && !!plugin,
   });
 

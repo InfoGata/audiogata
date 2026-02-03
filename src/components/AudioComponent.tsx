@@ -454,7 +454,7 @@ const mapDispatchToProps = (dispatch: Dispatch) =>
     dispatch
   );
 type DispatchProps = ReturnType<typeof mapDispatchToProps>;
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(withPlugins(withTranslation()(AudioComponent)));
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export default connect(mapStateToProps, mapDispatchToProps)(
+  withPlugins(withTranslation()(AudioComponent) as any)
+);

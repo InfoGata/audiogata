@@ -1,6 +1,6 @@
 import { cn } from "@/lib/utils";
 import React from "react";
-import { useQuery } from "react-query";
+import { useQuery } from "@tanstack/react-query";
 import usePlugins from "../hooks/usePlugins";
 import SelectPlugin from "./SelectPlugin";
 import TrackCard from "./TrackCard";
@@ -22,7 +22,9 @@ const TopItemCards: React.FC = () => {
     }
   };
 
-  const query = useQuery(["topitems", pluginId], getTopItems, {
+  const query = useQuery({
+    queryKey: ["topitems", pluginId],
+    queryFn: getTopItems,
     // Keep query for 5 minutes
     staleTime: 1000 * 60 * 5,
   });

@@ -15,7 +15,7 @@ import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { playQueue, setTrack, setTracks } from "@/store/reducers/trackReducer";
 import { createFileRoute, useRouterState } from "@tanstack/react-router";
 import React from "react";
-import { useQuery } from "react-query";
+import { useQuery } from "@tanstack/react-query";
 
 const AlbumPage: React.FC = () => {
   const { pluginId, apiId } = Route.useParams();
@@ -69,7 +69,9 @@ const AlbumPage: React.FC = () => {
     return [];
   };
 
-  const query = useQuery(["albumpage", pluginId, apiId, page], onGetAlbum, {
+  const query = useQuery({
+    queryKey: ["albumpage", pluginId, apiId, page],
+    queryFn: onGetAlbum,
     enabled: pluginsLoaded && !!plugin,
   });
   const tracklist = query.data || [];
