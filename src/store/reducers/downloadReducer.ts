@@ -85,7 +85,7 @@ export const downloadTrack =
           );
         }
 
-        blob = new Blob(chunks);
+        blob = new Blob(chunks as BlobPart[]);
       } else {
         blob = await response.blob();
       }

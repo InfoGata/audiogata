@@ -8,9 +8,9 @@
   "dependencies": {
     "@ai-sdk/openai": "^0.0.62",
     "@awesome-cordova-plugins/in-app-browser": "^6.3.0",
-    "@capacitor/android": "^7.0.0",
-    "@capacitor/app": "^7.0.0",
-    "@capacitor/core": "^7.0.0",
+    "@capacitor/android": "^8.0.0",
+    "@capacitor/app": "^8.0.0",
+    "@capacitor/core": "^8.0.0",
     "@dnd-kit/core": "^5.0.1",
     "@dnd-kit/sortable": "^6.0.0",
     "@dnd-kit/utilities": "^3.1.0",
@@ -106,7 +106,7 @@
     ]
   },
   "devDependencies": {
-    "@capacitor/cli": "^7.0.0",
+    "@capacitor/cli": "^8.0.0",
     "@tanstack/router-devtools": "^1.114.17",
     "@tanstack/router-plugin": "^1.114.17",
     "@testing-library/jest-dom": "^6.4.2",
