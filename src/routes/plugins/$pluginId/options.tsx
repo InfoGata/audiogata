@@ -3,8 +3,8 @@ import { Capacitor } from "@capacitor/core";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import Spinner from "@/components/Spinner";
-import { db } from "@/database";
 import usePlugins from "@/hooks/usePlugins";
+import { loadPluginField } from "@/storage/pluginStorage";
 import { getPluginUrl } from "@/utils";
 import Title from "@/components/Title";
 
@@ -18,8 +18,8 @@ const PluginOptions: React.FC = () => {
 
   React.useEffect(() => {
     const getOptionsHtml = async () => {
-      const pluginData = await db.plugins.get(plugin?.id || "");
-      setOptionsHtml(pluginData?.optionsHtml);
+      const html = await loadPluginField(plugin?.id || "", "optionsHtml");
+      setOptionsHtml(html);
     };
 
     getOptionsHtml();
@@ -48,12 +48,12 @@ const PluginOptions: React.FC = () => {
   }, [pluginMessage, plugin?.id]);
 
   const iframeOnload = async () => {
-    const pluginData = await db.plugins.get(plugin?.id || "");
-    if (pluginData) {
+    const html = await loadPluginField(plugin?.id || "", "optionsHtml");
+    if (html) {
       ref.current?.contentWindow?.postMessage(
         {
           type: "init",
-          srcdoc: pluginData?.optionsHtml,
+          srcdoc: html,
         },
         "*"
       );

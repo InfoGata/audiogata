@@ -4,6 +4,11 @@ import Title from "@/components/Title";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { db } from "@/database";
 import usePlugins from "@/hooks/usePlugins";
+import {
+  usePluginInfo,
+  usePluginScriptSize,
+  usePluginOptionsSize,
+} from "@/hooks/usePluginInfo";
 import { cn } from "@/lib/utils";
 import { Manifest } from "@/plugintypes";
 import { FileType, NotifyLoginMessage } from "@/types";
@@ -67,16 +72,9 @@ const PluginDetails: React.FC = () => {
     setLoading(false);
   };
 
-  const pluginInfo = useLiveQuery(() => db.plugins.get(pluginId || ""));
-  const scriptSize = React.useMemo(() => {
-    const scriptBlob = new Blob([pluginInfo?.script || ""]);
-    return scriptBlob.size;
-  }, [pluginInfo]);
-  const optionSize = React.useMemo(() => {
-    return pluginInfo?.optionsHtml
-      ? new Blob([pluginInfo?.optionsHtml || ""]).size
-      : 0;
-  }, [pluginInfo]);
+  const pluginInfo = usePluginInfo(pluginId || "");
+  const scriptSize = usePluginScriptSize(pluginId || "");
+  const optionSize = usePluginOptionsSize(pluginId || "");
 
   React.useEffect(() => {
     const getHasAuth = async () => {
@@ -313,7 +311,7 @@ const PluginDetails: React.FC = () => {
         <Title title={t("plugins:pluginDetailsTitle")} />
         <h2 className="text-2xl font-semibold">{pluginInfo.name}</h2>
         <div className="flex gap-2 flex-wrap">
-          {pluginInfo.optionsHtml && (
+          {(pluginInfo.optionsHtml || optionSize > 0) && (
             <Link
               className={cn(buttonVariants({ variant: "outline" }))}
               to="/plugins/$pluginId/options"
