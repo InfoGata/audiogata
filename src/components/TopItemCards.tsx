@@ -25,6 +25,7 @@ const TopItemCards: React.FC = () => {
   const query = useQuery({
     queryKey: ["topitems", pluginId],
     queryFn: getTopItems,
+    enabled: !!pluginId,
     // Keep query for 5 minutes
     staleTime: 1000 * 60 * 5,
   });
