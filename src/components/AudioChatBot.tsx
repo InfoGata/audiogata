@@ -1,5 +1,5 @@
 import React from "react";
-import { CoreMessage, streamText, tool } from "ai";
+import { ModelMessage, stepCountIs, streamText, tool } from "ai";
 import ChatBot, { Button, Flow, Params, Settings, useFlow } from "react-chatbotify";
 import { createOpenAI } from "@ai-sdk/openai";
 import { useTranslation } from "react-i18next";
@@ -13,7 +13,7 @@ import { addPlaylist, addPlaylistTracks } from "@/store/reducers/playlistReducer
 import usePluginWithMethod from "@/hooks/useSearchPlugin";
 import { Track } from "@/plugintypes";
 import { PluginFrameContainer } from "@/contexts/PluginsContext";
-let messages: CoreMessage[]= [];
+let messages: ModelMessage[]= [];
 let hasError = false;
 const markdownConverter = new Converter();
 
@@ -69,7 +69,7 @@ const AudioChatBot: React.FC = () => {
       const tools = {
         createPlaylist: tool({
           description: "Create a playlist",
-          parameters: z.object({
+          inputSchema: z.object({
             name: z.string().describe("The name of the playlist"),
           }),
           async execute(params) {
@@ -83,7 +83,7 @@ const AudioChatBot: React.FC = () => {
         }),
         play: tool({
           description: "Play current track",
-          parameters: z.object({}),
+          inputSchema: z.object({}),
           async execute() {
             dispatch(play());
             return "Playing current track";
@@ -91,7 +91,7 @@ const AudioChatBot: React.FC = () => {
         }),
         pause: tool({
           description: "Pause current track",
-          parameters: z.object({}),
+          inputSchema: z.object({}),
           async execute() {
             dispatch(pause());
             return "Pausing current track";
@@ -99,7 +99,7 @@ const AudioChatBot: React.FC = () => {
         }),
         addTrackToPlaylist: tool({
           description: "Add track to playlist",
-          parameters: z.object({
+          inputSchema: z.object({
             playlistName: z.string().describe("The name of the playlist"),
             trackName: z.string().describe("The name of the track"),
             artistName: z.string().describe("The name of the artist"),
@@ -118,7 +118,7 @@ const AudioChatBot: React.FC = () => {
         }),
         addTrackToQueue: tool({
           description: "Add track to queue",
-          parameters: z.object({
+          inputSchema: z.object({
             trackName: z.string().describe("The name of the track"),
             artistName: z.string().describe("The name of the artist"),
           }),
@@ -133,10 +133,10 @@ const AudioChatBot: React.FC = () => {
         }),
       };
 
-      const { textStream } = await streamText({
+      const { textStream } = streamText({
         model: openai(model),
         messages,
-        maxSteps: 5,
+        stopWhen: stepCountIs(5),
         tools,
         onFinish: ({ text }) => {
           messages.push({
