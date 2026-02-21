@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-empty-function */
 import ResizeObserver from "resize-observer-polyfill";
 import { vi } from "vitest";
 

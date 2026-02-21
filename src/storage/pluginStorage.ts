@@ -43,7 +43,7 @@ async function ensurePluginDir(pluginId: string): Promise<void> {
       directory: Directory.Data,
       recursive: true,
     });
-  } catch (e) {
+  } catch (_e) {
     // Directory may already exist
   }
 }

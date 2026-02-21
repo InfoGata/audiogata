@@ -66,7 +66,6 @@ export const downloadTrack =
         const contentLength = +contentLenghStr;
         let receivedLength = 0;
         const chunks: Uint8Array[] = [];
-        // eslint-disable-next-line no-constant-condition
         while (true) {
           const { done, value } = await reader.read();
 

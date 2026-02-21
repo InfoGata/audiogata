@@ -154,7 +154,6 @@ export interface PluginContextInterface {
   reloadPlugins: () => Promise<void>;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 const PluginsContext = React.createContext<PluginContextInterface>(undefined!);
 export default PluginsContext;
 

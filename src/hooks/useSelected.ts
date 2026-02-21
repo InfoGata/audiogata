@@ -24,7 +24,11 @@ const useSelected = (tracks: Track[]) => {
     } else {
       setSelected((prev) => {
         const next = new Set(prev);
-        isChecked ? next.add(id) : next.delete(id);
+        if (isChecked) {
+          next.add(id);
+        } else {
+          next.delete(id);
+        }
         return next;
       });
     }
