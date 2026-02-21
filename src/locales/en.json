@@ -144,7 +144,9 @@
     "openMenu": "Open Menu",
     "updateFound": "Update Found",
     "noUpdateFound": "No Update Found",
-    "confirmPluginInstallation": "Confirm plugin installation"
+    "confirmPluginInstallation": "Confirm plugin installation",
+    "confirmUpdatePlugin": "This plugin is already installed. Would you like to update it?",
+    "updatePluginTitle": "Update Plugin"
   },
   "settings": {
     "enableChatBot": "Enable Chat Bot",

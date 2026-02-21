@@ -49,6 +49,7 @@ import { Theme } from "@infogata/shadcn-vite-theme-provider";
 import { NetworkRequest, PlayerComponent } from "../types";
 import { mapAsync } from "@infogata/utils";
 import ConfirmPluginDialog from "../components/ConfirmPluginDialog";
+import ConfirmUpdatePluginDialog from "../components/ConfirmUpdatePluginDialog";
 import { db } from "../database";
 import { defaultPlugins } from "../default-plugins";
 import i18n from "../i18n";
@@ -227,6 +228,9 @@ export const PluginsProvider: React.FC<React.PropsWithChildren> = (props) => {
   const [pendingPlugins, setPendingPlugins] = React.useState<
     PluginInfo[] | null
   >(null);
+
+  const [pendingUpdatePlugin, setPendingUpdatePlugin] =
+    React.useState<PluginInfo | null>(null);
 
   const { migrationComplete } = usePluginMigration();
 
@@ -562,11 +566,18 @@ export const PluginsProvider: React.FC<React.PropsWithChildren> = (props) => {
 
   const addPlugin = async (plugin: PluginInfo) => {
     if (pluginFrames.some((p) => p.id === plugin.id)) {
-      toast(t("pluginAlreadyInstalled", { id: plugin.id }));
+      setPendingUpdatePlugin(plugin);
       return;
     }
 
     await loadAndAddPlugin(plugin);
+  };
+
+  const handleConfirmUpdate = async () => {
+    if (pendingUpdatePlugin?.id) {
+      await updatePlugin(pendingUpdatePlugin, pendingUpdatePlugin.id);
+    }
+    setPendingUpdatePlugin(null);
   };
 
   const loadAndAddPlugin = React.useCallback(
@@ -710,6 +721,12 @@ export const PluginsProvider: React.FC<React.PropsWithChildren> = (props) => {
         open={Boolean(pendingPlugins)}
         plugins={pendingPlugins || []}
         handleClose={handleClose}
+      />
+      <ConfirmUpdatePluginDialog
+        open={Boolean(pendingUpdatePlugin)}
+        plugin={pendingUpdatePlugin}
+        onConfirm={handleConfirmUpdate}
+        onClose={() => setPendingUpdatePlugin(null)}
       />
     </PluginsContext.Provider>
   );
