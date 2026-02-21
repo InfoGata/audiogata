@@ -2,7 +2,7 @@ import js from "@eslint/js";
 import tseslint from "typescript-eslint";
 import react from "eslint-plugin-react";
 import reactHooks from "eslint-plugin-react-hooks";
-// import reactRefresh from "eslint-plugin-react-refresh";
+import reactRefresh from "eslint-plugin-react-refresh";
 import jsxA11y from "eslint-plugin-jsx-a11y";
 import i18next from "eslint-plugin-i18next";
 
@@ -25,7 +25,18 @@ export default tseslint.config(
   react.configs.flat.recommended,
   react.configs.flat["jsx-runtime"],
   reactHooks.configs["recommended-latest"],
-  // reactRefresh.configs.vite,
+  {
+    ...reactRefresh.configs.vite,
+    rules: {
+      "react-refresh/only-export-components": [
+        "error",
+        {
+          allowConstantExport: true,
+          extraHOCs: ["createFileRoute", "createRootRoute", "createLazyFileRoute"],
+        },
+      ],
+    },
+  },
   {
     plugins: {
       "jsx-a11y": jsxA11y,

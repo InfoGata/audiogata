@@ -128,6 +128,7 @@ export interface PluginMessage {
   message: any;
 }
 
+// eslint-disable-next-line react-refresh/only-export-components
 export class PluginFrameContainer extends PluginFrame<PluginMethodInterface> {
   name?: string;
   id?: string;
