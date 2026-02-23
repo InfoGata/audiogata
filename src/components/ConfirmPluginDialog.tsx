@@ -35,6 +35,7 @@ const ConfirmPluginDialog: React.FC<ConfirmPluginDialogProps> = (props) => {
     setOpen,
   } = props;
   const [checked, setChecked] = React.useState<Set<string>>(new Set());
+  const [confirming, setConfirming] = React.useState(false);
   const { addPlugin } = usePlugins();
   const { t } = useTranslation(["plugins", "common"]);
 
@@ -43,17 +44,22 @@ const ConfirmPluginDialog: React.FC<ConfirmPluginDialogProps> = (props) => {
   }, [plugins]);
 
   const onConfirm = async () => {
-    const savedPlugins = plugins.filter((p) => checked.has(p.id || ""));
-    for (const plugin of savedPlugins) {
-      if (plugin) {
-        await addPlugin(plugin);
+    setConfirming(true);
+    try {
+      const savedPlugins = plugins.filter((p) => checked.has(p.id || ""));
+      for (const plugin of savedPlugins) {
+        if (plugin) {
+          await addPlugin(plugin);
+        }
       }
-    }
 
-    if (afterConfirm) {
-      afterConfirm();
+      if (afterConfirm) {
+        afterConfirm();
+      }
+      handleClose();
+    } finally {
+      setConfirming(false);
     }
-    handleClose();
   };
 
   const onChange = (pluginId: string) => (checked: boolean) => {
@@ -130,7 +136,7 @@ const ConfirmPluginDialog: React.FC<ConfirmPluginDialogProps> = (props) => {
           <Button variant="outline" onClick={onCancel}>
             {t("common:cancel")}
           </Button>
-          <Button variant="outline" onClick={onConfirm}>
+          <Button variant="outline" onClick={onConfirm} disabled={confirming}>
             {t("common:confirm")}
           </Button>
         </DialogFooter>
