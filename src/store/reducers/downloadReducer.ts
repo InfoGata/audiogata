@@ -51,15 +51,7 @@ export const downloadTrack =
     let response: Response | undefined = undefined;
     let blob: Blob;
     try {
-      try {
-        response = await fetch(url);
-      } catch {
-        /* empty */
-      }
-      // Error maybe because of cors so try a the proxy
-      if (!response) {
-        response = await fetch(`http://localhost:8085/${url}`);
-      }
+      response = await fetch(url);
       const reader = response.body?.getReader();
       if (response.headers.has("Content-Length") && reader) {
         const contentLenghStr = response.headers.get("Content-Length") || "";
