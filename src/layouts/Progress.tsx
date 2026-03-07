@@ -24,7 +24,7 @@ const Progress: React.FC = () => {
   };
 
   const displayElapsed = isDragging ? newElapsed : seekTime || elapsed || 0;
-  const totalDuration = currentTrack?.duration || 0;
+  const totalDuration = currentTrack?.duration || 1;
 
   return (
     <div className="flex flex-row w-full items-center gap-x-2 px-2 py-1">
