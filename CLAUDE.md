@@ -14,14 +14,8 @@ AudioGata is a plugin-based web music player application that allows users to pl
 # Install dependencies
 npm install
 
-# Start development server with CORS server (recommended)
+# Start development server
 npm run dev
-
-# Start just the development server
-npm start
-
-# Run CORS server separately (needed for cross-origin requests)
-npm run cors-server
 ```
 
 ### Building
