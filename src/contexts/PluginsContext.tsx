@@ -699,6 +699,54 @@ export const PluginsProvider: React.FC<React.PropsWithChildren> = (props) => {
     updatePlugin,
   ]);
 
+  // Auto-poll localhost plugins for changes during development
+  const updatePluginRef = React.useRef(updatePlugin);
+  updatePluginRef.current = updatePlugin;
+  React.useEffect(() => {
+    if (!pluginsLoaded) return;
+
+    const DEV_POLL_INTERVAL = 3000;
+    const scriptCache = new Map<string, string>();
+
+    const checkForUpdates = async () => {
+      const dbPlugins = await db.plugins.toArray();
+      const localhostPlugins = dbPlugins.filter(
+        (p) => p.manifestUrl && new URL(p.manifestUrl).hostname === "localhost"
+      );
+
+      for (const dbPlugin of localhostPlugins) {
+        try {
+          const fileType = getFileTypeFromPluginUrl(dbPlugin.manifestUrl!);
+          const newPlugin = await getPlugin(fileType, true);
+          if (!newPlugin || !dbPlugin.id) continue;
+
+          const cached = scriptCache.get(dbPlugin.id);
+          if (cached === undefined) {
+            // First check — seed cache, don't update
+            scriptCache.set(dbPlugin.id, newPlugin.script);
+            continue;
+          }
+
+          if (newPlugin.script !== cached) {
+            scriptCache.set(dbPlugin.id, newPlugin.script);
+            newPlugin.id = dbPlugin.id;
+            newPlugin.manifestUrl = dbPlugin.manifestUrl;
+            console.log(`[dev] Auto-updating plugin: ${newPlugin.name}`);
+            await updatePluginRef.current(newPlugin, dbPlugin.id);
+          }
+        } catch {
+          // Server might be down, ignore
+        }
+      }
+    };
+
+    const interval = setInterval(checkForUpdates, DEV_POLL_INTERVAL);
+    // Run immediately to seed cache
+    checkForUpdates();
+
+    return () => clearInterval(interval);
+  }, [pluginsLoaded]);
+
   const defaultContext: PluginContextInterface = {
     addPlugin: addPlugin,
     deletePlugin: deletePlugin,

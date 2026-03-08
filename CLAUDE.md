@@ -64,6 +64,11 @@ The core of AudioGata is its plugin architecture:
 - Plugins provide consistent interfaces for different audio sources (YouTube, SoundCloud, Spotify, etc.)
 - Communication between app and plugins uses a message-based API
 
+**Dev Plugin Auto-Reload**:
+- Plugins installed from `localhost` URLs are auto-polled every 3 seconds for changes
+- To develop a plugin locally: serve its folder (`npx serve . -p 8080 --cors`), install via URL (`http://localhost:8080/manifest.json`), then run the plugin build in watch mode
+- Changes are detected by comparing script content and auto-applied (logged to console as `[dev] Auto-updating plugin: ...`)
+
 ### State Management
 
 - Redux with Redux Toolkit for global state
