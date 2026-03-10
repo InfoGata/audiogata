@@ -26,6 +26,7 @@ export const defaultPlugins: PluginDescription[] = [
     name: "Plugin for Napster",
     description: "Play music from napster. Requires napster login.",
     url: "https://cdn.jsdelivr.net/gh/InfoGata/napster-audiogata@latest/manifest.json",
+    hidden: true,
   },
   {
     id: "05KGl-ijn6XN-NMCaqy-x",

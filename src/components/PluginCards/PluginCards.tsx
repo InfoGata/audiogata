@@ -41,6 +41,7 @@ const PluginCards: React.FC = () => {
   const pluginCards = defaultPlugins
     .filter(
       (dp) =>
+        !dp.hidden &&
         !plugins.some((p) => dp.id === p.id) &&
         (preinstallComplete || !dp.preinstall) &&
         (!dp.requiresCorsDisabled || isCorsDisabled())

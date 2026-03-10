@@ -18,6 +18,7 @@ export interface PluginDescription {
   description: string;
   preinstall?: boolean;
   requiresCorsDisabled?: boolean;
+  hidden?: boolean;
 }
 
 export interface NetworkRequest {
