@@ -1,11 +1,4 @@
-export interface PluginDescription {
-  id: string;
-  name: string;
-  url: string;
-  description: string;
-  preinstall?: boolean;
-  requiresCorsDisabled?: boolean;
-}
+import { PluginDescription } from "./types";
 
 export const defaultPlugins: PluginDescription[] = [
   {
@@ -13,6 +6,7 @@ export const defaultPlugins: PluginDescription[] = [
     name: "Plugin for Youtube",
     description: "Plugin for playing music from youtube.com",
     url: "https://cdn.jsdelivr.net/gh/InfoGata/youtube-audiogata@latest/manifest.json",
+    requiresCorsDisabled: true,
   },
   {
     id: "B9-GwavJJOQpQXotpLZH",

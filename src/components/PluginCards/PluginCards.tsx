@@ -1,6 +1,7 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
-import { PluginDescription, defaultPlugins } from "../../default-plugins";
+import { defaultPlugins } from "../../default-plugins";
+import { PluginDescription } from "../../types";
 import usePlugins from "../../hooks/usePlugins";
 import {
   generatePluginId,

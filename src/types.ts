@@ -11,6 +11,15 @@ import {
   Track,
 } from "./plugintypes";
 import { RouterType } from "./router";
+export interface PluginDescription {
+  id: string;
+  name: string;
+  url: string;
+  description: string;
+  preinstall?: boolean;
+  requiresCorsDisabled?: boolean;
+}
+
 export interface NetworkRequest {
   body: Blob | ArrayBuffer | null;
   headers: { [k: string]: string };

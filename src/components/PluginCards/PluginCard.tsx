@@ -1,4 +1,4 @@
-import { PluginDescription } from "@/default-plugins";
+import { PluginDescription } from "@/types";
 import {
   Card,
   CardDescription,
