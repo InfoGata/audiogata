@@ -28,7 +28,7 @@ const Search: React.FC = () => {
   const { t } = useTranslation();
   const queryClient = useQueryClient();
 
-  const onSearch = async () => {
+  const onSearch = async (): Promise<SearchAllResult | null> => {
     let searchAll: SearchAllResult | undefined;
     const plugin = plugins.find((p) => p.id === pluginId);
     if (plugin && (await plugin.hasDefined.onSearchAll())) {
@@ -62,7 +62,7 @@ const Search: React.FC = () => {
       searchAll?.playlists?.items
     );
 
-    return searchAll;
+    return searchAll ?? null;
   };
 
   const query = useQuery({
