@@ -3,7 +3,6 @@ import React from "react";
 import { useTranslation } from "react-i18next";
 import {
   FaCircleInfo,
-  FaComments,
   FaGear,
   FaHouse,
   FaPuzzlePiece,
@@ -12,20 +11,16 @@ import {
 import AddPlaylistDialog from "../components/AddPlaylistDialog";
 import { NavigationLinkItem } from "../types";
 import NavigationLink from "./NavigationLink";
-import { useChatWindow } from "react-chatbotify";
-import { useAppSelector } from "@/store/hooks";
 
 const Navigation: React.FC = () => {
   const [dialogOpen, setDialogOpen] = React.useState(false);
-  const enableChatBot = useAppSelector((state) => state.settings.enableChatBot);
   const { t } = useTranslation();
-  const { toggleChatWindow } = useChatWindow();
 
   const openDialog = () => {
     setDialogOpen(true);
   };
 
-  const listItems: (NavigationLinkItem | undefined)[] = [
+  const listItems: NavigationLinkItem[] = [
     { title: t("home"), link: { to: "/" }, icon: <FaHouse /> },
     {
       title: t("playQueue"),
@@ -46,20 +41,12 @@ const Navigation: React.FC = () => {
       icon: <ListPlusIcon />,
       action: openDialog,
     },
-    enableChatBot ? {
-      title: t("chatbot"),
-      icon: <FaComments />,
-      action: toggleChatWindow,
-    } : undefined,
   ];
-  const definedListItems = listItems.filter(
-    (li): li is NavigationLinkItem => !!li
-  );
 
   return (
     <>
       <div className="flex flex-col gap-1">
-        {definedListItems.map((l) => (
+        {listItems.map((l) => (
           <NavigationLink key={l.title} item={l} />
         ))}
       </div>

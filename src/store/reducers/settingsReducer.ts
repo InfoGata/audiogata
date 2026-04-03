@@ -9,8 +9,6 @@ interface SettingsState {
   disableAutoUpdatePlugins?: boolean;
   lyricsPluginId?: string;
   pluginsPreinstalled?: boolean;
-  llmKey?: string;
-  enableChatBot?: boolean;
 }
 
 const initialState: SettingsState = {
@@ -64,12 +62,6 @@ const settingsSlice = createSlice({
     setPluginsPreInstalled: (state) => {
       return { ...state, pluginsPreinstalled: true };
     },
-    setLlmKey: (state, action: PayloadAction<string | undefined>) => {
-      return { ...state, llmKey: action.payload };
-    },
-    setEnableChatBot: (state, action: PayloadAction<boolean>) => {
-      return { ...state, enableChatBot: action.payload };
-    },
   },
 });
 
@@ -82,7 +74,5 @@ export const {
   toggleDisableAutoUpdatePlugins,
   setLyricsPluginId,
   setPluginsPreInstalled,
-  setLlmKey,
-  setEnableChatBot,
 } = settingsSlice.actions;
 export default settingsSlice.reducer;

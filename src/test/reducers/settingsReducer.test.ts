@@ -8,8 +8,6 @@ import settingsReducer, {
   toggleDisableAutoUpdatePlugins,
   setLyricsPluginId,
   setPluginsPreInstalled,
-  setLlmKey,
-  setEnableChatBot
 } from "../../store/reducers/settingsReducer";
 
 describe("settingsReducer", () => {
@@ -116,31 +114,4 @@ describe("settingsReducer", () => {
     });
   });
 
-  test("should handle setLlmKey", () => {
-    const llmKey = "test-llm-key";
-    expect(settingsReducer(initialState, setLlmKey(llmKey))).toEqual({
-      ...initialState,
-      llmKey,
-    });
-
-    // Test clearing the key
-    const stateWithKey = { ...initialState, llmKey };
-    expect(settingsReducer(stateWithKey, setLlmKey(undefined))).toEqual({
-      ...stateWithKey,
-      llmKey: undefined,
-    });
-  });
-
-  test("should handle setEnableChatBot", () => {
-    expect(settingsReducer(initialState, setEnableChatBot(true))).toEqual({
-      ...initialState,
-      enableChatBot: true,
-    });
-
-    const enabledState = { ...initialState, enableChatBot: true };
-    expect(settingsReducer(enabledState, setEnableChatBot(false))).toEqual({
-      ...enabledState,
-      enableChatBot: false,
-    });
-  });
 });

@@ -13,7 +13,6 @@ import { PluginsProvider } from "./contexts/PluginsContext";
 import { ThemeProvider } from "@infogata/shadcn-vite-theme-provider";
 import Router from "./router";
 import store, { persistor } from "./store/store";
-import { ChatBotProvider } from "react-chatbotify";
 import { ExtensionProvider } from "./contexts/ExtensionContext";
 
 const queryClient = new QueryClient({
@@ -43,9 +42,7 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
                 <QueryClientProvider client={queryClient}>
                   <PluginsProvider>
                     <OutsideCallConsumer config={callConfig}>
-                      <ChatBotProvider>
-                        <Router />
-                      </ChatBotProvider>
+                      <Router />
                     </OutsideCallConsumer>
                   </PluginsProvider>
                 </QueryClientProvider>
