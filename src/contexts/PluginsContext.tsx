@@ -46,7 +46,7 @@ import {
   UserPlaylistRequest,
 } from "../plugintypes";
 import { Theme } from "@infogata/shadcn-vite-theme-provider";
-import { NetworkRequest, PlayerComponent } from "../types";
+import { NetworkRequest, PlayerComponent, SiteRedirectRule } from "../types";
 import { mapAsync } from "@infogata/utils";
 import ConfirmPluginDialog from "../components/ConfirmPluginDialog";
 import ConfirmUpdatePluginDialog from "../components/ConfirmUpdatePluginDialog";
@@ -746,6 +746,37 @@ export const PluginsProvider: React.FC<React.PropsWithChildren> = (props) => {
 
     return () => clearInterval(interval);
   }, [pluginsLoaded]);
+
+  // Register site redirect rules with the extension
+  React.useEffect(() => {
+    if (!pluginsLoaded || pluginFrames.length === 0) return;
+    if (!hasExtension() || !window.InfoGata?.registerRedirects) return;
+
+    const registerRedirects = async () => {
+      const dbPlugins = await db.plugins.toArray();
+      const rules: SiteRedirectRule[] = [];
+
+      for (const plugin of dbPlugins) {
+        const siteMatch = plugin.manifest?.siteMatch;
+        if (siteMatch && siteMatch.length > 0 && plugin.id) {
+          rules.push({
+            pluginId: plugin.id,
+            pluginName: plugin.name,
+            appName: "AudioGata",
+            appOrigin: window.location.origin,
+            siteMatchPatterns: siteMatch,
+            redirectPath: `/plugins/${plugin.id}`,
+          });
+        }
+      }
+
+      if (rules.length > 0) {
+        window.InfoGata?.registerRedirects?.(rules);
+      }
+    };
+
+    registerRedirects();
+  }, [pluginsLoaded, pluginFrames]);
 
   const defaultContext: PluginContextInterface = {
     addPlugin: addPlugin,

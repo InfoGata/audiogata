@@ -235,6 +235,7 @@ export interface Manifest {
   homepage?: string;
   updateUrl?: string;
   authentication?: ManifestAuthentication;
+  siteMatch?: string[];
 }
 
 export interface ManifestAuthentication {

@@ -33,6 +33,15 @@ export interface NetworkRequestOptions {
   auth?: ManifestAuthentication;
 }
 
+export interface SiteRedirectRule {
+  pluginId: string;
+  pluginName: string;
+  appName: string;
+  appOrigin: string;
+  siteMatchPatterns: string[];
+  redirectPath: string;
+}
+
 export interface InfoGataExtension {
   networkRequest: (
     input: string,
@@ -44,6 +53,7 @@ export interface InfoGataExtension {
     pluginId: string
   ) => Promise<void>;
   getVersion?: () => Promise<string>;
+  registerRedirects?: (rules: SiteRedirectRule[]) => void;
 }
 
 declare global {
