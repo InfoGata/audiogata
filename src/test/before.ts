@@ -1,5 +1,4 @@
 import ResizeObserver from "resize-observer-polyfill";
-import { vi } from "vitest";
 
 Object.defineProperty(window, "matchMedia", {
   writable: true,
@@ -15,7 +14,7 @@ Object.defineProperty(window, "matchMedia", {
   }),
 });
 
-global.ResizeObserver = ResizeObserver;
+globalThis.ResizeObserver = ResizeObserver;
 
 // Mock window.alert to prevent jsdom "Not implemented" errors
 Object.defineProperty(window, "alert", {
