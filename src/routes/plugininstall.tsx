@@ -7,6 +7,7 @@ import { generatePluginId, getPlugin } from "../utils";
 import ConfirmPluginDialog from "../components/ConfirmPluginDialog";
 import Spinner from "../components/Spinner";
 import { z } from "zod";
+import { toast } from "sonner";
 
 const PluginInstall: React.FC = () => {
   const [isInstalling, setIsInstalling] = React.useState(true);
@@ -24,7 +25,7 @@ const PluginInstall: React.FC = () => {
         return;
       }
       if (!manifestUrl.includes("manifest.json")) {
-        alert(t("manifestMissingFromUrl"));
+        toast.error(t("manifestMissingFromUrl"));
         setIsInstalling(false);
         return;
       }

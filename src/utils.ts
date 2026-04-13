@@ -5,6 +5,7 @@ import i18next from "./i18n";
 import { Manifest, PluginInfo } from "./plugintypes";
 import { DirectoryFile, FileType } from "./types";
 import semverGte from "semver/functions/gte";
+import { toast } from "sonner";
 
 export const directoryProps = {
   directory: "",
@@ -47,7 +48,7 @@ export async function getFileText(
     if (!file) {
       if (!suppressErrors) {
         const errorText = i18next.t("common:fileNotFound", { name });
-        alert(errorText);
+        toast.error(errorText);
       }
       return null;
     }
@@ -62,7 +63,7 @@ export async function getFileText(
     } catch {
       if (!suppressErrors) {
         const errorText = i18next.t("common:cantGetFile", { name });
-        alert(errorText);
+        toast.error(errorText);
       }
       return null;
     }
@@ -81,7 +82,7 @@ export async function getPlugin(
   if (!manifest.script) {
     if (!suppressErrors) {
       const errorText = i18next.t("common:manifestNoScript");
-      alert(errorText);
+      toast.error(errorText);
     }
     return null;
   }

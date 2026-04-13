@@ -19,6 +19,7 @@ import {
 } from "../ui/dialog";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
+import { toast } from "sonner";
 
 interface AddPluginUrlDialogProps {
   open: boolean;
@@ -45,7 +46,7 @@ const AddPluginUrlDialog: React.FC<AddPluginUrlDialogProps> = (props) => {
 
   const onConfirm = async () => {
     if (!pluginUrl.includes("manifest.json")) {
-      alert("The filename 'manifest.json' must be in the url");
+      toast.error("The filename 'manifest.json' must be in the url");
       return;
     }
     const headers = new Headers();
