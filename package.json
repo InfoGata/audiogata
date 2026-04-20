@@ -118,7 +118,7 @@
     "@types/wicg-mediasession": "^1.1.0",
     "@vitejs/plugin-react": "^4.5.0",
     "concurrently": "^6.0.0",
-    "electron": "github:castlabs/electron-releases#v40.1.0+wvcus",
+    "electron": "github:castlabs/electron-releases#v40.8.6+wvcus",
     "electron-vite": "^5.0.0",
     "eslint": "^9.0.0",
     "eslint-plugin-i18next": "^6.0.0-2",
@@ -136,5 +136,8 @@
     "vite-plugin-node-polyfills": "^0.2.0",
     "vite-plugin-pwa": "^1.2.0",
     "vitest": "^3.2.4"
+  },
+  "overrides": {
+    "serialize-javascript": "^7.0.5"
   }
 }
