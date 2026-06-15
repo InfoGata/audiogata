@@ -39,6 +39,12 @@ export default defineConfig({
         },
       },
     },
-    plugins: [react(), VitePWA(), nodePolyfills({ include: ["assert"]})],
+    plugins: [
+      react(),
+      VitePWA({
+        workbox: { maximumFileSizeToCacheInBytes: 5 * 1024 * 1024 },
+      }),
+      nodePolyfills({ include: ["assert"] }),
+    ],
   },
 });
