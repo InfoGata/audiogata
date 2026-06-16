@@ -8,6 +8,13 @@ import tailwindcss from "@tailwindcss/vite";
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  // Vite 8 switched to Rolldown and made CJS default-import interop "consistent"
+  // (default = full module.exports), which breaks CJS deps that use the
+  // `exports.default` + `__esModule` pattern without an ESM build (e.g.
+  // redux-persist, react-outside-call). Restore the pre-Vite-8 behavior.
+  legacy: {
+    inconsistentCjsInterop: true,
+  },
   resolve: {
     alias: {
       "hls.js": "hls.js/dist/hls.min.js",

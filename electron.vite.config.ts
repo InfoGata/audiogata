@@ -25,6 +25,10 @@ export default defineConfig({
     },
   },
   renderer: {
+    // Restore pre-Vite-8 CJS default-import interop (see vite.config.ts).
+    legacy: {
+      inconsistentCjsInterop: true,
+    },
     resolve: {
       alias: {
         "hls.js": "hls.js/dist/hls.min.js",
