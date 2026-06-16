@@ -12,6 +12,12 @@ export default defineConfig({
         input: {
           index: resolve(__dirname, "electron/main/index.ts"),
         },
+        // electron-vite 6 defaults to ESM output; this project's package.json
+        // "main" and preload reference expect CommonJS (.cjs), so force it.
+        output: {
+          format: "cjs",
+          entryFileNames: "[name].cjs",
+        },
       },
     },
   },
@@ -20,6 +26,10 @@ export default defineConfig({
       rollupOptions: {
         input: {
           index: resolve(__dirname, "electron/preload/index.ts"),
+        },
+        output: {
+          format: "cjs",
+          entryFileNames: "[name].cjs",
         },
       },
     },
