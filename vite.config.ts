@@ -16,6 +16,11 @@ export default defineConfig({
     inconsistentCjsInterop: true,
   },
   resolve: {
+    // react-outside-call declares react/react-dom as regular deps (not peers),
+    // so a nested React 18 gets installed. Vite 8's Rolldown optimizer would
+    // otherwise bundle that duplicate, producing "A React Element from an older
+    // version of React" at runtime. Force a single React across all deps.
+    dedupe: ["react", "react-dom"],
     alias: {
       "hls.js": "hls.js/dist/hls.min.js",
       "@": path.resolve(__dirname, "./src"),
