@@ -30,6 +30,8 @@ export default defineConfig({
       inconsistentCjsInterop: true,
     },
     resolve: {
+      // Share the app's single React 19; see vite.config.ts.
+      dedupe: ["react", "react-dom"],
       alias: {
         "hls.js": "hls.js/dist/hls.min.js",
         "@": path.resolve(__dirname, "./src"),
