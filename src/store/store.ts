@@ -1,7 +1,15 @@
 import { ThunkAction, UnknownAction, configureStore } from "@reduxjs/toolkit";
 import { persistReducer, persistStore } from "redux-persist";
-import storage from "redux-persist/lib/storage";
+import storageImport from "redux-persist/lib/storage";
 import rootReducer from "./rootReducer";
+
+// redux-persist ships CJS that sets `exports.__esModule = true` via assignment,
+// which Vite 8's Rolldown dep optimizer doesn't detect, so the default import
+// resolves to `{ default: WebStorage }` instead of the WebStorage object.
+// Unwrap defensively so it works under both the old (esbuild) and new optimizer.
+const storage =
+  (storageImport as unknown as { default?: typeof storageImport }).default ??
+  storageImport;
 
 const persistConfig = {
   key: "root",
