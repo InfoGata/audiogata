@@ -1,5 +1,5 @@
 import React from "react";
-import { createCaller } from "react-outside-call";
+import { createCaller } from "./lib/create-caller";
 import PluginsContext from "./contexts/PluginsContext";
 
 const callConfig = createCaller({
