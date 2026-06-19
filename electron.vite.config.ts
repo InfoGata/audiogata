@@ -3,7 +3,6 @@ import path from "path";
 import { defineConfig } from "electron-vite";
 import { resolve } from "path";
 import { VitePWA } from "vite-plugin-pwa";
-import { nodePolyfills } from "vite-plugin-node-polyfills";
 import tailwindcss from "@tailwindcss/vite";
 
 export default defineConfig({
@@ -62,7 +61,6 @@ export default defineConfig({
       VitePWA({
         workbox: { maximumFileSizeToCacheInBytes: 5 * 1024 * 1024 },
       }),
-      nodePolyfills({ include: ["assert"] }),
     ],
   },
 });
