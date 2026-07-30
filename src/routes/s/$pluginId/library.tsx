@@ -10,6 +10,10 @@ import { useTranslation } from "react-i18next";
 import { useQuery } from "@tanstack/react-query";
 import { Track } from "@/plugintypes";
 import usePlugins from "@/hooks/usePlugins";
+import {
+  canonicalizePluginUrl,
+  pluginIdParams,
+} from "@/lib/plugin-route";
 
 const PluginLibraryTracks: React.FC = () => {
   const { pluginId } = Route.useParams();
@@ -63,6 +67,8 @@ const PluginLibraryTracks: React.FC = () => {
   );
 };
 
-export const Route = createFileRoute("/plugins/$pluginId/library")({
+export const Route = createFileRoute("/s/$pluginId/library")({
+  params: pluginIdParams(),
+  beforeLoad: canonicalizePluginUrl,
   component: PluginLibraryTracks,
 });

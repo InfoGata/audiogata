@@ -24,6 +24,7 @@ import { toast } from "sonner";
 import PlaylistSubMenu from "./PlaylistSubMenu";
 import { MdLyrics } from "react-icons/md";
 import { addTrack } from "@/store/reducers/trackReducer";
+import { pluginContentPath } from "@/lib/plugin-route";
 
 interface Props {
   noQueueItem?: boolean;
@@ -83,14 +84,22 @@ const TrackMenu: React.FC<Props> = (props) => {
       ? {
           title: t("goToAlbum"),
           icon: <MdAlbum />,
-          internalPath: `/plugins/${track.pluginId}/albums/${track.albumApiId}`,
+          internalPath: pluginContentPath(
+            track.pluginId || "",
+            "albums",
+            track.albumApiId
+          ),
         }
       : undefined,
     track.artistApiId
       ? {
           title: t("goToArtist"),
           icon: <MdPerson />,
-          internalPath: `/plugins/${track.pluginId}/artists/${track.artistApiId}`,
+          internalPath: pluginContentPath(
+            track.pluginId || "",
+            "artists",
+            track.artistApiId
+          ),
         }
       : undefined,
     track.originalUrl

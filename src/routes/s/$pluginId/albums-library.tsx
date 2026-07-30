@@ -7,6 +7,10 @@ import { useTranslation } from "react-i18next";
 import { useQuery } from "@tanstack/react-query";
 import { Album } from "@/plugintypes";
 import usePlugins from "@/hooks/usePlugins";
+import {
+  canonicalizePluginUrl,
+  pluginIdParams,
+} from "@/lib/plugin-route";
 
 const PluginLibraryAlbums: React.FC = () => {
   const { pluginId } = Route.useParams();
@@ -45,6 +49,8 @@ const PluginLibraryAlbums: React.FC = () => {
   );
 };
 
-export const Route = createFileRoute("/plugins/$pluginId/albums-library")({
+export const Route = createFileRoute("/s/$pluginId/albums-library")({
+  params: pluginIdParams(),
+  beforeLoad: canonicalizePluginUrl,
   component: PluginLibraryAlbums,
 });

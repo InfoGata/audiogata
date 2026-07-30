@@ -94,7 +94,7 @@ const FavoriteTracks: React.FC = () => {
           <div className="flex gap-2 flex-wrap">
             {libraryPlugins.map((plugin) => (
               <Button key={plugin.id} variant="outline" asChild>
-                <Link to="/plugins/$pluginId/library" params={{ pluginId: plugin.id }}>
+                <Link to="/s/$pluginId/library" params={{ pluginId: plugin.id }}>
                   {plugin.name} {t("library")}
                 </Link>
               </Button>

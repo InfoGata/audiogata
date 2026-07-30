@@ -7,6 +7,7 @@ import usePlugins from "@/hooks/usePlugins";
 import { loadPluginField } from "@/storage/pluginStorage";
 import { getPluginUrl } from "@/utils";
 import Title from "@/components/Title";
+import { canonicalizePluginUrl, pluginIdParams } from "@/lib/plugin-route";
 
 const PluginOptions: React.FC = () => {
   const { pluginId } = Route.useParams();
@@ -99,5 +100,7 @@ const PluginOptions: React.FC = () => {
 };
 
 export const Route = createFileRoute("/plugins/$pluginId/options")({
+  params: pluginIdParams(),
+  beforeLoad: canonicalizePluginUrl,
   component: PluginOptions,
 });

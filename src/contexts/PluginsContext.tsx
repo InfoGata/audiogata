@@ -47,6 +47,14 @@ import {
 } from "../plugintypes";
 import { Theme } from "@infogata/shadcn-vite-theme-provider";
 import { NetworkRequest, PlayerComponent, SiteRedirectRule } from "../types";
+import {
+  AliasError,
+  aliasForId,
+  aliasFromName,
+  assignAlias,
+  setPluginAliases,
+  validateAlias,
+} from "@/lib/plugin-alias";
 import { mapAsync } from "@infogata/utils";
 import ConfirmPluginDialog from "../components/ConfirmPluginDialog";
 import ConfirmUpdatePluginDialog from "../components/ConfirmUpdatePluginDialog";
@@ -132,6 +140,7 @@ export interface PluginMessage {
 export class PluginFrameContainer extends PluginFrame<PluginMethodInterface> {
   name?: string;
   id?: string;
+  alias?: string;
   hasOptions?: boolean;
   fileList?: FileList;
   optionsSameOrigin?: boolean;
@@ -147,9 +156,19 @@ export interface PluginContextInterface {
     pluginFiles?: FileList
   ) => Promise<void>;
   deletePlugin: (plugin: PluginFrameContainer) => Promise<void>;
+  setPluginAlias: (
+    pluginId: string,
+    alias: string
+  ) => Promise<AliasError | null>;
   plugins: PluginFrameContainer[];
   pluginMessage?: PluginMessage;
   pluginsLoaded: boolean;
+  /**
+   * Set once aliases have been read out of IndexedDB. The router waits on this
+   * rather than on `pluginsLoaded`, which additionally waits for every plugin
+   * iframe to boot.
+   */
+  aliasesLoaded: boolean;
   pluginsFailed: boolean;
   preinstallComplete: boolean;
   reloadPlugins: () => Promise<void>;
@@ -188,6 +207,8 @@ export const PluginsProvider: React.FC<React.PropsWithChildren> = (props) => {
   const [pluginFrames, setPluginFrames] = React.useState<
     PluginFrameContainer[]
   >([]);
+  const pluginFramesRef = React.useRef<PluginFrameContainer[]>([]);
+  const [aliasesLoaded, setAliasesLoaded] = React.useState(false);
   const [pluginMessage, setPluginMessage] = React.useState<PluginMessage>();
   const [pluginsFailed, setPluginsFailed] = React.useState(false);
   const dispatch = useAppDispatch();
@@ -495,6 +516,7 @@ export const PluginsProvider: React.FC<React.PropsWithChildren> = (props) => {
         allow: "encrypted-media; autoplay;",
       });
       host.id = plugin.id;
+      host.alias = plugin.alias;
       host.optionsSameOrigin = plugin.optionsSameOrigin;
       host.name = plugin.name;
       host.version = plugin.version;
@@ -512,16 +534,63 @@ export const PluginsProvider: React.FC<React.PropsWithChildren> = (props) => {
     [dispatch]
   );
 
+  const publishFrames = React.useCallback((frames: PluginFrameContainer[]) => {
+    pluginFramesRef.current = frames;
+    // Router params.parse/stringify read the alias registry outside of React,
+    // so refresh it here rather than from an effect: `stringify` runs while
+    // Links render, and an effect would leave every url one render stale
+    // immediately after an install or a delete.
+    setPluginAliases(frames);
+    setPluginFrames(frames);
+  }, []);
+
+  /**
+   * Gives plugins installed before aliases existed one now, deduped the same
+   * way a fresh install would be. Runs in the app layer rather than a Dexie
+   * `.upgrade()` because reading every plugin row is what throws "Failed to
+   * read large IndexedDB value" on Android, and `loadAllPlugins` already
+   * handles that defensively.
+   */
+  const backfillAliases = async (plugs: PluginInfo[]) => {
+    const assigned: PluginInfo[] = [];
+    for (const plugin of plugs) {
+      if (plugin.alias) {
+        assigned.push(plugin);
+        continue;
+      }
+      plugin.alias = assignAlias(
+        plugin.manifest?.alias || aliasFromName(plugin.name),
+        assigned,
+        plugin.id
+      );
+      assigned.push(plugin);
+      // Only touches metadata, unlike savePlugin, which would rewrite the
+      // plugin's script to the filesystem on native for no reason.
+      if (plugin.id && plugin.alias) {
+        await db.plugins.update(plugin.id, { alias: plugin.alias });
+      }
+    }
+  };
+
   const loadPlugins = React.useCallback(async () => {
     if (!isMountedRef.current) return;
     setPluginsFailed(false);
     try {
       const plugs = await loadAllPlugins();
 
+      // Prime the alias registry before the plugin iframes boot: the router is
+      // gated on this and nothing else, so a cold `/s/<alias>/...` load can
+      // resolve without waiting on however many 10s frame timeouts.
+      await backfillAliases(plugs);
+      setPluginAliases(plugs);
+      if (isMountedRef.current) {
+        setAliasesLoaded(true);
+      }
+
       const framePromises = plugs.map((p) => loadPlugin(p));
       const frames = await Promise.all(framePromises);
       if (isMountedRef.current) {
-        setPluginFrames(frames);
+        publishFrames(frames);
       }
     } catch {
       if (isMountedRef.current) {
@@ -531,9 +600,11 @@ export const PluginsProvider: React.FC<React.PropsWithChildren> = (props) => {
     } finally {
       if (isMountedRef.current) {
         setPluginsLoaded(true);
+        // Never leave the router behind a spinner because plugins failed.
+        setAliasesLoaded(true);
       }
     }
-  }, [loadPlugin, t]);
+  }, [loadPlugin, publishFrames, t]);
 
   React.useEffect(() => {
     if (!migrationComplete || loadingPlugin.current) return;
@@ -583,27 +654,69 @@ export const PluginsProvider: React.FC<React.PropsWithChildren> = (props) => {
   const loadAndAddPlugin = React.useCallback(
     async (plugin: PluginInfo) => {
       if (!isMountedRef.current) return;
+      // The manifest's alias is a request: fall back to the name, and take a
+      // `-N` variant when another plugin already holds it. Done here rather
+      // than at the four install entry points, which all funnel through this.
+      plugin.alias = assignAlias(
+        plugin.alias || aliasFromName(plugin.name),
+        await db.plugins.toArray(),
+        plugin.id
+      );
       const pluginFrame = await loadPlugin(plugin);
       if (isMountedRef.current) {
-        setPluginFrames((prev) => [...prev, pluginFrame]);
+        publishFrames([...pluginFramesRef.current, pluginFrame]);
         await savePlugin(plugin);
         if (!lyricsPluginId && (await pluginFrame.hasDefined.onGetLyrics())) {
           dispatch(setLyricsPluginId(pluginFrame.id));
         }
       }
     },
-    [dispatch, loadPlugin, lyricsPluginId]
+    [dispatch, loadPlugin, lyricsPluginId, publishFrames]
   );
 
   const updatePlugin = React.useCallback(
     async (plugin: PluginInfo, id: string, pluginFiles?: FileList) => {
+      // Urls have to survive plugin updates, so keep whatever alias the plugin
+      // already has here — including one the user picked — rather than letting
+      // a changed manifest move them. Every update path (dev auto-reload,
+      // auto-update, the details page) goes through here.
+      const existing = await db.plugins.get(id);
+      plugin.alias =
+        existing?.alias ??
+        assignAlias(
+          plugin.alias || aliasFromName(plugin.name),
+          await db.plugins.toArray(),
+          id
+        );
+
       const oldPlugin = pluginFrames.find((p) => p.id === id);
       oldPlugin?.destroy();
       const pluginFrame = await loadPlugin(plugin, pluginFiles);
-      setPluginFrames(pluginFrames.map((p) => (p.id === id ? pluginFrame : p)));
+      publishFrames(pluginFrames.map((p) => (p.id === id ? pluginFrame : p)));
       await savePlugin(plugin);
     },
-    [loadPlugin, pluginFrames]
+    [loadPlugin, pluginFrames, publishFrames]
+  );
+
+  /** Rename a plugin's url alias. Returns why it was rejected, or null. */
+  const setPluginAlias = React.useCallback(
+    async (pluginId: string, alias: string): Promise<AliasError | null> => {
+      const plugin = await db.plugins.get(pluginId);
+      if (!plugin) return "invalid";
+
+      const error = validateAlias(alias, await db.plugins.toArray(), pluginId);
+      if (error) return error;
+
+      await db.plugins.update(pluginId, { alias });
+      publishFrames(
+        pluginFramesRef.current.map((p) => {
+          if (p.id === pluginId) p.alias = alias;
+          return p;
+        })
+      );
+      return null;
+    },
+    [publishFrames]
   );
 
   const deletePlugin = async (pluginFrame: PluginFrameContainer) => {
@@ -611,7 +724,7 @@ export const PluginsProvider: React.FC<React.PropsWithChildren> = (props) => {
     if (pluginFrame.id === lyricsPluginId) {
       dispatch(setLyricsPluginId(undefined));
     }
-    setPluginFrames(newPlugins);
+    publishFrames(newPlugins);
     await deletePluginStorage(pluginFrame.id || "");
     await db.pluginAuths.delete(pluginFrame.id || "");
   };
@@ -765,7 +878,7 @@ export const PluginsProvider: React.FC<React.PropsWithChildren> = (props) => {
             appName: "AudioGata",
             appOrigin: window.location.origin,
             siteMatchPatterns: siteMatch,
-            redirectPath: `/plugins/${plugin.id}`,
+            redirectPath: `/plugins/${aliasForId(plugin.id)}`,
           });
         }
       }
@@ -782,9 +895,11 @@ export const PluginsProvider: React.FC<React.PropsWithChildren> = (props) => {
     addPlugin: addPlugin,
     deletePlugin: deletePlugin,
     updatePlugin: updatePlugin,
+    setPluginAlias: setPluginAlias,
     plugins: pluginFrames,
     pluginMessage: pluginMessage,
     pluginsLoaded,
+    aliasesLoaded,
     pluginsFailed,
     preinstallComplete: preinstallComplete ?? false,
     reloadPlugins: loadPlugins,

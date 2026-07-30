@@ -1,6 +1,6 @@
 import React from "react";
 import { PluginFrameContainer } from "../contexts/PluginsContext";
-import { defaultPluginMap } from "../default-plugins";
+import { defaultPluginAliasMap, defaultPluginMap } from "../default-plugins";
 import { PluginInfo } from "../plugintypes";
 import { getFileTypeFromPluginUrl, getPlugin } from "../utils";
 
@@ -20,7 +20,11 @@ const useFindPlugin = (args: FindPluginArgs) => {
   React.useEffect(() => {
     const findPlugin = async () => {
       if (pluginsLoaded && !plugin && pluginId) {
-        const newPlugin = defaultPluginMap.get(pluginId);
+        // For a plugin that isn't installed there's no alias to resolve
+        // against, so the url segment arrives here unchanged — which means it
+        // may be either an id (old links) or an alias (current ones).
+        const newPlugin =
+          defaultPluginMap.get(pluginId) ?? defaultPluginAliasMap.get(pluginId);
         if (newPlugin) {
           setIsloading(true);
           const fileType = getFileTypeFromPluginUrl(newPlugin.url);

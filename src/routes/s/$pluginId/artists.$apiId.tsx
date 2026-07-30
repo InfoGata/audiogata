@@ -16,6 +16,10 @@ import useFindPlugin from "@/hooks/useFindPlugin";
 import usePagination from "@/hooks/usePagination";
 import usePlugins from "@/hooks/usePlugins";
 import { Artist, PageInfo, SortOption, Track } from "@/plugintypes";
+import {
+  canonicalizePluginUrl,
+  pluginIdParams,
+} from "@/lib/plugin-route";
 
 const ArtistPage: React.FC = () => {
   const { pluginId, apiId } = Route.useParams();
@@ -260,6 +264,8 @@ const ArtistPage: React.FC = () => {
   );
 };
 
-export const Route = createFileRoute("/plugins/$pluginId/artists/$apiId")({
+export const Route = createFileRoute("/s/$pluginId/artists/$apiId")({
+  params: pluginIdParams<{ apiId: string }>(),
+  beforeLoad: canonicalizePluginUrl,
   component: ArtistPage,
 });

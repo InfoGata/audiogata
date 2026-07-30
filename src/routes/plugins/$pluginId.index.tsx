@@ -9,6 +9,8 @@ import {
   usePluginScriptSize,
   usePluginOptionsSize,
 } from "@/hooks/usePluginInfo";
+import PluginAliasField from "@/components/Plugins/PluginAliasField";
+import { canonicalizePluginUrl, pluginIdParams } from "@/lib/plugin-route";
 import { cn } from "@/lib/utils";
 import { Manifest } from "@/plugintypes";
 import { FileType, NotifyLoginMessage } from "@/types";
@@ -365,11 +367,16 @@ const PluginDetails: React.FC = () => {
           )}
         </div>
         {aboutLinks.map((a) => a && <AboutLink {...a} key={a.title} />)}
+        {pluginInfo.id && (
+          <PluginAliasField pluginId={pluginInfo.id} alias={pluginInfo.alias} />
+        )}
       </div>
     </>
   );
 };
 
 export const Route = createFileRoute("/plugins/$pluginId/")({
+  params: pluginIdParams(),
+  beforeLoad: canonicalizePluginUrl,
   component: PluginDetails,
 });

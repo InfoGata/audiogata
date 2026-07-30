@@ -9,6 +9,10 @@ import usePagination from "@/hooks/usePagination";
 import usePlugins from "@/hooks/usePlugins";
 import { PageInfo, UserPlaylistRequest } from "@/plugintypes";
 import Title from "@/components/Title";
+import {
+  canonicalizePluginUrl,
+  pluginIdParams,
+} from "@/lib/plugin-route";
 
 const PluginPlaylists: React.FC = () => {
   const { plugins, pluginsLoaded } = usePlugins();
@@ -59,6 +63,8 @@ const PluginPlaylists: React.FC = () => {
   );
 };
 
-export const Route = createFileRoute("/plugins/$pluginId/playlists/")({
+export const Route = createFileRoute("/s/$pluginId/playlists/")({
+  params: pluginIdParams(),
+  beforeLoad: canonicalizePluginUrl,
   component: PluginPlaylists,
 });

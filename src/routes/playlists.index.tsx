@@ -30,7 +30,7 @@ const Playlists: React.FC = () => {
     <Link
       className={buttonVariants({ variant: "outline" })}
       key={p.id}
-      to="/plugins/$pluginId/playlists"
+      to="/s/$pluginId/playlists"
       params={{ pluginId: p.id || "" }}
       search={{ isUserPlaylist: true }}
     >

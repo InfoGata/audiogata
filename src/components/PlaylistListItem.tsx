@@ -7,6 +7,7 @@ import { ItemMenuType } from "@/types";
 import { PlaylistInfo } from "@/plugintypes";
 import { DropdownItemProps } from "./DropdownItem";
 import { Link } from "@tanstack/react-router";
+import { pluginContentPath } from "@/lib/plugin-route";
 
 type Props = {
   playlist: PlaylistInfo;
@@ -21,7 +22,7 @@ const PlaylistListItem: React.FC<Props> = (props) => {
   const image = getThumbnailImage(playlist.images, searchThumbnailSize);
   const itemType: ItemMenuType = { type: "playlist", item: playlist };
   let playlistPath = playlist.pluginId
-    ? `/plugins/${playlist.pluginId}/playlists/${playlist.apiId}`
+    ? pluginContentPath(playlist.pluginId, "playlists", playlist.apiId || "")
     : `/playlists/${playlist.id}`;
 
   if (isUserPlaylist) {

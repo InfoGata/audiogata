@@ -16,6 +16,11 @@ import { playQueue, setTrack, setTracks } from "@/store/reducers/trackReducer";
 import { createFileRoute, useRouterState } from "@tanstack/react-router";
 import React from "react";
 import { useQuery } from "@tanstack/react-query";
+import {
+  canonicalizePluginUrl,
+  pluginContentPath,
+  pluginIdParams,
+} from "@/lib/plugin-route";
 
 const AlbumPage: React.FC = () => {
   const { pluginId, apiId } = Route.useParams();
@@ -100,11 +105,12 @@ const AlbumPage: React.FC = () => {
               name: albumInfo.artistName,
               link:
                 albumInfo.artistApiId &&
-                `/plugins/${pluginId}/artists/${albumInfo.artistApiId}`,
+                pluginContentPath(pluginId, "artists", albumInfo.artistApiId),
             },
             ...(albumInfo.addtionalArtists?.map((a) => ({
               name: a.name,
-              link: a.apiId && `/plugins/${pluginId}/artists/${a.apiId}`,
+              link:
+                a.apiId && pluginContentPath(pluginId, "artists", a.apiId),
             })) ?? []),
           ]}
           images={albumInfo.images}
@@ -142,6 +148,8 @@ const AlbumPage: React.FC = () => {
   );
 };
 
-export const Route = createFileRoute("/plugins/$pluginId/albums/$apiId")({
+export const Route = createFileRoute("/s/$pluginId/albums/$apiId")({
+  params: pluginIdParams<{ apiId: string }>(),
+  beforeLoad: canonicalizePluginUrl,
   component: AlbumPage,
 });

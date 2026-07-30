@@ -18,7 +18,7 @@ const ArtistCard: React.FC<Props> = (props) => {
   return (
     <div className="min-w-64">
       <Link
-        to="/plugins/$pluginId/artists/$apiId"
+        to="/s/$pluginId/artists/$apiId"
         params={{ pluginId: artist.pluginId || "", apiId: artist.apiId || "" }}
       >
         <img
@@ -30,7 +30,7 @@ const ArtistCard: React.FC<Props> = (props) => {
         <div>
           <div className="flex justify-between">
             <Link
-              to="/plugins/$pluginId/artists/$apiId"
+              to="/s/$pluginId/artists/$apiId"
               params={{
                 pluginId: artist.pluginId || "",
                 apiId: artist.apiId || "",

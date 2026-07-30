@@ -35,6 +35,15 @@ class AudioDatabase extends Dexie {
     this.version(3).stores({
       pluginAuths: "pluginId",
     });
+    // Aliases are indexed but not unique: they're optional, and uniqueness is
+    // enforced when one is assigned (see lib/plugin-alias). Deliberately no
+    // .upgrade() handler — reading every plugin row here is exactly the read
+    // that throws "Failed to read large IndexedDB value" on Android, and a
+    // throwing upgrade breaks the database open. Existing plugins are
+    // backfilled from PluginsContext instead.
+    this.version(4).stores({
+      plugins: "id, alias",
+    });
     this.audioBlobs = this.table("audioBlobs");
     this.plugins = this.table("plugins");
     this.playlists = this.table("playlists");

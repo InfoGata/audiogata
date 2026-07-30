@@ -13,7 +13,7 @@ const ArtistLink: React.FC<ArtistLinkProps> = (props) => {
   };
   return (
     <Link
-      to="/plugins/$pluginId/artists/$apiId"
+      to="/s/$pluginId/artists/$apiId"
       params={{ pluginId: pluginId || "", apiId: apiId || "" }}
       onClick={stopPropagation}
     >

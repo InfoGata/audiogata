@@ -145,7 +145,14 @@
     "noUpdateFound": "No Update Found",
     "confirmPluginInstallation": "Confirm plugin installation",
     "confirmUpdatePlugin": "This plugin is already installed. Would you like to update it?",
-    "updatePluginTitle": "Update Plugin"
+    "updatePluginTitle": "Update Plugin",
+    "urlAlias": "URL Alias",
+    "urlAliasDescription": "Used in this plugin's urls, e.g. /s/{{alias}}/library",
+    "renameAlias": "Rename",
+    "aliasErrorInvalid": "Use lowercase letters, numbers and dashes only",
+    "aliasErrorTooShort": "Must be at least 2 characters",
+    "aliasErrorIsPluginId": "Already used as a plugin id",
+    "aliasErrorTaken": "Already used by another plugin"
   },
   "settings": {
     "playCurrentTrack": "Autoplay current track on start up",

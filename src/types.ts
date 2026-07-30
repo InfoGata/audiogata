@@ -13,6 +13,12 @@ import {
 import { RouterType } from "./router";
 export interface PluginDescription {
   id: string;
+  /**
+   * Url alias this plugin gets when installed from here. Also what a
+   * `/s/<alias>/...` link resolves against when the plugin isn't installed yet,
+   * so the install prompt still knows what was asked for.
+   */
+  alias: string;
   name: string;
   url: string;
   description: string;

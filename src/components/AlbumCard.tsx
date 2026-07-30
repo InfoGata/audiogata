@@ -20,7 +20,7 @@ const AlbumCard: React.FC<Props> = (props) => {
   return (
     <div className="min-w-64">
       <Link
-        to="/plugins/$pluginId/albums/$apiId"
+        to="/s/$pluginId/albums/$apiId"
         params={{ pluginId: album.pluginId || "", apiId: album.apiId || "" }}
       >
         <img
@@ -32,7 +32,7 @@ const AlbumCard: React.FC<Props> = (props) => {
         <div>
           <div className="flex justify-between">
             <Link
-              to="/plugins/$pluginId/albums/$apiId"
+              to="/s/$pluginId/albums/$apiId"
               params={{
                 pluginId: album.pluginId || "",
                 apiId: album.apiId || "",

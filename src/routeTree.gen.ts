@@ -26,15 +26,17 @@ import { Route as FavoritesTracksRouteImport } from './routes/favorites/tracks'
 import { Route as FavoritesPlaylistsRouteImport } from './routes/favorites/playlists'
 import { Route as FavoritesArtistsRouteImport } from './routes/favorites/artists'
 import { Route as FavoritesAlbumsRouteImport } from './routes/favorites/albums'
+import { Route as SPluginIdIndexRouteImport } from './routes/s/$pluginId/index'
 import { Route as PluginsPluginIdIndexRouteImport } from './routes/plugins/$pluginId.index'
 import { Route as PlaylistsPlaylistIdIndexRouteImport } from './routes/playlists/$playlistId.index'
+import { Route as SPluginIdLibraryRouteImport } from './routes/s/$pluginId/library'
+import { Route as SPluginIdAlbumsLibraryRouteImport } from './routes/s/$pluginId/albums-library'
 import { Route as PluginsPluginIdOptionsRouteImport } from './routes/plugins/$pluginId/options'
-import { Route as PluginsPluginIdLibraryRouteImport } from './routes/plugins/$pluginId/library'
-import { Route as PluginsPluginIdAlbumsLibraryRouteImport } from './routes/plugins/$pluginId/albums-library'
-import { Route as PluginsPluginIdPlaylistsIndexRouteImport } from './routes/plugins/$pluginId/playlists.index'
-import { Route as PluginsPluginIdPlaylistsApiIdRouteImport } from './routes/plugins/$pluginId/playlists.$apiId'
-import { Route as PluginsPluginIdArtistsApiIdRouteImport } from './routes/plugins/$pluginId/artists.$apiId'
-import { Route as PluginsPluginIdAlbumsApiIdRouteImport } from './routes/plugins/$pluginId/albums.$apiId'
+import { Route as PluginsPluginIdSplatRouteImport } from './routes/plugins/$pluginId/$'
+import { Route as SPluginIdPlaylistsIndexRouteImport } from './routes/s/$pluginId/playlists.index'
+import { Route as SPluginIdPlaylistsApiIdRouteImport } from './routes/s/$pluginId/playlists.$apiId'
+import { Route as SPluginIdArtistsApiIdRouteImport } from './routes/s/$pluginId/artists.$apiId'
+import { Route as SPluginIdAlbumsApiIdRouteImport } from './routes/s/$pluginId/albums.$apiId'
 import { Route as PlaylistsPlaylistIdTracksTrackIdRouteImport } from './routes/playlists/$playlistId.tracks.$trackId'
 
 const SettingsRoute = SettingsRouteImport.update({
@@ -122,6 +124,11 @@ const FavoritesAlbumsRoute = FavoritesAlbumsRouteImport.update({
   path: '/albums',
   getParentRoute: () => FavoritesRouteRoute,
 } as any)
+const SPluginIdIndexRoute = SPluginIdIndexRouteImport.update({
+  id: '/s/$pluginId/',
+  path: '/s/$pluginId/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PluginsPluginIdIndexRoute = PluginsPluginIdIndexRouteImport.update({
   id: '/plugins/$pluginId/',
   path: '/plugins/$pluginId/',
@@ -133,46 +140,46 @@ const PlaylistsPlaylistIdIndexRoute =
     path: '/playlists/$playlistId/',
     getParentRoute: () => rootRouteImport,
   } as any)
+const SPluginIdLibraryRoute = SPluginIdLibraryRouteImport.update({
+  id: '/s/$pluginId/library',
+  path: '/s/$pluginId/library',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SPluginIdAlbumsLibraryRoute = SPluginIdAlbumsLibraryRouteImport.update({
+  id: '/s/$pluginId/albums-library',
+  path: '/s/$pluginId/albums-library',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PluginsPluginIdOptionsRoute = PluginsPluginIdOptionsRouteImport.update({
   id: '/plugins/$pluginId/options',
   path: '/plugins/$pluginId/options',
   getParentRoute: () => rootRouteImport,
 } as any)
-const PluginsPluginIdLibraryRoute = PluginsPluginIdLibraryRouteImport.update({
-  id: '/plugins/$pluginId/library',
-  path: '/plugins/$pluginId/library',
+const PluginsPluginIdSplatRoute = PluginsPluginIdSplatRouteImport.update({
+  id: '/plugins/$pluginId/$',
+  path: '/plugins/$pluginId/$',
   getParentRoute: () => rootRouteImport,
 } as any)
-const PluginsPluginIdAlbumsLibraryRoute =
-  PluginsPluginIdAlbumsLibraryRouteImport.update({
-    id: '/plugins/$pluginId/albums-library',
-    path: '/plugins/$pluginId/albums-library',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const PluginsPluginIdPlaylistsIndexRoute =
-  PluginsPluginIdPlaylistsIndexRouteImport.update({
-    id: '/plugins/$pluginId/playlists/',
-    path: '/plugins/$pluginId/playlists/',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const PluginsPluginIdPlaylistsApiIdRoute =
-  PluginsPluginIdPlaylistsApiIdRouteImport.update({
-    id: '/plugins/$pluginId/playlists/$apiId',
-    path: '/plugins/$pluginId/playlists/$apiId',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const PluginsPluginIdArtistsApiIdRoute =
-  PluginsPluginIdArtistsApiIdRouteImport.update({
-    id: '/plugins/$pluginId/artists/$apiId',
-    path: '/plugins/$pluginId/artists/$apiId',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const PluginsPluginIdAlbumsApiIdRoute =
-  PluginsPluginIdAlbumsApiIdRouteImport.update({
-    id: '/plugins/$pluginId/albums/$apiId',
-    path: '/plugins/$pluginId/albums/$apiId',
-    getParentRoute: () => rootRouteImport,
-  } as any)
+const SPluginIdPlaylistsIndexRoute = SPluginIdPlaylistsIndexRouteImport.update({
+  id: '/s/$pluginId/playlists/',
+  path: '/s/$pluginId/playlists/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SPluginIdPlaylistsApiIdRoute = SPluginIdPlaylistsApiIdRouteImport.update({
+  id: '/s/$pluginId/playlists/$apiId',
+  path: '/s/$pluginId/playlists/$apiId',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SPluginIdArtistsApiIdRoute = SPluginIdArtistsApiIdRouteImport.update({
+  id: '/s/$pluginId/artists/$apiId',
+  path: '/s/$pluginId/artists/$apiId',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SPluginIdAlbumsApiIdRoute = SPluginIdAlbumsApiIdRouteImport.update({
+  id: '/s/$pluginId/albums/$apiId',
+  path: '/s/$pluginId/albums/$apiId',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PlaylistsPlaylistIdTracksTrackIdRoute =
   PlaylistsPlaylistIdTracksTrackIdRouteImport.update({
     id: '/playlists/$playlistId/tracks/$trackId',
@@ -198,16 +205,18 @@ export interface FileRoutesByFullPath {
   '/tracks/$trackId': typeof TracksTrackIdRoute
   '/playlists/': typeof PlaylistsIndexRoute
   '/plugins/': typeof PluginsIndexRoute
-  '/plugins/$pluginId/albums-library': typeof PluginsPluginIdAlbumsLibraryRoute
-  '/plugins/$pluginId/library': typeof PluginsPluginIdLibraryRoute
+  '/plugins/$pluginId/$': typeof PluginsPluginIdSplatRoute
   '/plugins/$pluginId/options': typeof PluginsPluginIdOptionsRoute
+  '/s/$pluginId/albums-library': typeof SPluginIdAlbumsLibraryRoute
+  '/s/$pluginId/library': typeof SPluginIdLibraryRoute
   '/playlists/$playlistId/': typeof PlaylistsPlaylistIdIndexRoute
   '/plugins/$pluginId/': typeof PluginsPluginIdIndexRoute
+  '/s/$pluginId/': typeof SPluginIdIndexRoute
   '/playlists/$playlistId/tracks/$trackId': typeof PlaylistsPlaylistIdTracksTrackIdRoute
-  '/plugins/$pluginId/albums/$apiId': typeof PluginsPluginIdAlbumsApiIdRoute
-  '/plugins/$pluginId/artists/$apiId': typeof PluginsPluginIdArtistsApiIdRoute
-  '/plugins/$pluginId/playlists/$apiId': typeof PluginsPluginIdPlaylistsApiIdRoute
-  '/plugins/$pluginId/playlists/': typeof PluginsPluginIdPlaylistsIndexRoute
+  '/s/$pluginId/albums/$apiId': typeof SPluginIdAlbumsApiIdRoute
+  '/s/$pluginId/artists/$apiId': typeof SPluginIdArtistsApiIdRoute
+  '/s/$pluginId/playlists/$apiId': typeof SPluginIdPlaylistsApiIdRoute
+  '/s/$pluginId/playlists/': typeof SPluginIdPlaylistsIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -227,16 +236,18 @@ export interface FileRoutesByTo {
   '/tracks/$trackId': typeof TracksTrackIdRoute
   '/playlists': typeof PlaylistsIndexRoute
   '/plugins': typeof PluginsIndexRoute
-  '/plugins/$pluginId/albums-library': typeof PluginsPluginIdAlbumsLibraryRoute
-  '/plugins/$pluginId/library': typeof PluginsPluginIdLibraryRoute
+  '/plugins/$pluginId/$': typeof PluginsPluginIdSplatRoute
   '/plugins/$pluginId/options': typeof PluginsPluginIdOptionsRoute
+  '/s/$pluginId/albums-library': typeof SPluginIdAlbumsLibraryRoute
+  '/s/$pluginId/library': typeof SPluginIdLibraryRoute
   '/playlists/$playlistId': typeof PlaylistsPlaylistIdIndexRoute
   '/plugins/$pluginId': typeof PluginsPluginIdIndexRoute
+  '/s/$pluginId': typeof SPluginIdIndexRoute
   '/playlists/$playlistId/tracks/$trackId': typeof PlaylistsPlaylistIdTracksTrackIdRoute
-  '/plugins/$pluginId/albums/$apiId': typeof PluginsPluginIdAlbumsApiIdRoute
-  '/plugins/$pluginId/artists/$apiId': typeof PluginsPluginIdArtistsApiIdRoute
-  '/plugins/$pluginId/playlists/$apiId': typeof PluginsPluginIdPlaylistsApiIdRoute
-  '/plugins/$pluginId/playlists': typeof PluginsPluginIdPlaylistsIndexRoute
+  '/s/$pluginId/albums/$apiId': typeof SPluginIdAlbumsApiIdRoute
+  '/s/$pluginId/artists/$apiId': typeof SPluginIdArtistsApiIdRoute
+  '/s/$pluginId/playlists/$apiId': typeof SPluginIdPlaylistsApiIdRoute
+  '/s/$pluginId/playlists': typeof SPluginIdPlaylistsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -257,16 +268,18 @@ export interface FileRoutesById {
   '/tracks/$trackId': typeof TracksTrackIdRoute
   '/playlists/': typeof PlaylistsIndexRoute
   '/plugins/': typeof PluginsIndexRoute
-  '/plugins/$pluginId/albums-library': typeof PluginsPluginIdAlbumsLibraryRoute
-  '/plugins/$pluginId/library': typeof PluginsPluginIdLibraryRoute
+  '/plugins/$pluginId/$': typeof PluginsPluginIdSplatRoute
   '/plugins/$pluginId/options': typeof PluginsPluginIdOptionsRoute
+  '/s/$pluginId/albums-library': typeof SPluginIdAlbumsLibraryRoute
+  '/s/$pluginId/library': typeof SPluginIdLibraryRoute
   '/playlists/$playlistId/': typeof PlaylistsPlaylistIdIndexRoute
   '/plugins/$pluginId/': typeof PluginsPluginIdIndexRoute
+  '/s/$pluginId/': typeof SPluginIdIndexRoute
   '/playlists/$playlistId/tracks/$trackId': typeof PlaylistsPlaylistIdTracksTrackIdRoute
-  '/plugins/$pluginId/albums/$apiId': typeof PluginsPluginIdAlbumsApiIdRoute
-  '/plugins/$pluginId/artists/$apiId': typeof PluginsPluginIdArtistsApiIdRoute
-  '/plugins/$pluginId/playlists/$apiId': typeof PluginsPluginIdPlaylistsApiIdRoute
-  '/plugins/$pluginId/playlists/': typeof PluginsPluginIdPlaylistsIndexRoute
+  '/s/$pluginId/albums/$apiId': typeof SPluginIdAlbumsApiIdRoute
+  '/s/$pluginId/artists/$apiId': typeof SPluginIdArtistsApiIdRoute
+  '/s/$pluginId/playlists/$apiId': typeof SPluginIdPlaylistsApiIdRoute
+  '/s/$pluginId/playlists/': typeof SPluginIdPlaylistsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -288,16 +301,18 @@ export interface FileRouteTypes {
     | '/tracks/$trackId'
     | '/playlists/'
     | '/plugins/'
-    | '/plugins/$pluginId/albums-library'
-    | '/plugins/$pluginId/library'
+    | '/plugins/$pluginId/$'
     | '/plugins/$pluginId/options'
+    | '/s/$pluginId/albums-library'
+    | '/s/$pluginId/library'
     | '/playlists/$playlistId/'
     | '/plugins/$pluginId/'
+    | '/s/$pluginId/'
     | '/playlists/$playlistId/tracks/$trackId'
-    | '/plugins/$pluginId/albums/$apiId'
-    | '/plugins/$pluginId/artists/$apiId'
-    | '/plugins/$pluginId/playlists/$apiId'
-    | '/plugins/$pluginId/playlists/'
+    | '/s/$pluginId/albums/$apiId'
+    | '/s/$pluginId/artists/$apiId'
+    | '/s/$pluginId/playlists/$apiId'
+    | '/s/$pluginId/playlists/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -317,16 +332,18 @@ export interface FileRouteTypes {
     | '/tracks/$trackId'
     | '/playlists'
     | '/plugins'
-    | '/plugins/$pluginId/albums-library'
-    | '/plugins/$pluginId/library'
+    | '/plugins/$pluginId/$'
     | '/plugins/$pluginId/options'
+    | '/s/$pluginId/albums-library'
+    | '/s/$pluginId/library'
     | '/playlists/$playlistId'
     | '/plugins/$pluginId'
+    | '/s/$pluginId'
     | '/playlists/$playlistId/tracks/$trackId'
-    | '/plugins/$pluginId/albums/$apiId'
-    | '/plugins/$pluginId/artists/$apiId'
-    | '/plugins/$pluginId/playlists/$apiId'
-    | '/plugins/$pluginId/playlists'
+    | '/s/$pluginId/albums/$apiId'
+    | '/s/$pluginId/artists/$apiId'
+    | '/s/$pluginId/playlists/$apiId'
+    | '/s/$pluginId/playlists'
   id:
     | '__root__'
     | '/'
@@ -346,16 +363,18 @@ export interface FileRouteTypes {
     | '/tracks/$trackId'
     | '/playlists/'
     | '/plugins/'
-    | '/plugins/$pluginId/albums-library'
-    | '/plugins/$pluginId/library'
+    | '/plugins/$pluginId/$'
     | '/plugins/$pluginId/options'
+    | '/s/$pluginId/albums-library'
+    | '/s/$pluginId/library'
     | '/playlists/$playlistId/'
     | '/plugins/$pluginId/'
+    | '/s/$pluginId/'
     | '/playlists/$playlistId/tracks/$trackId'
-    | '/plugins/$pluginId/albums/$apiId'
-    | '/plugins/$pluginId/artists/$apiId'
-    | '/plugins/$pluginId/playlists/$apiId'
-    | '/plugins/$pluginId/playlists/'
+    | '/s/$pluginId/albums/$apiId'
+    | '/s/$pluginId/artists/$apiId'
+    | '/s/$pluginId/playlists/$apiId'
+    | '/s/$pluginId/playlists/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -372,16 +391,18 @@ export interface RootRouteChildren {
   TracksTrackIdRoute: typeof TracksTrackIdRoute
   PlaylistsIndexRoute: typeof PlaylistsIndexRoute
   PluginsIndexRoute: typeof PluginsIndexRoute
-  PluginsPluginIdAlbumsLibraryRoute: typeof PluginsPluginIdAlbumsLibraryRoute
-  PluginsPluginIdLibraryRoute: typeof PluginsPluginIdLibraryRoute
+  PluginsPluginIdSplatRoute: typeof PluginsPluginIdSplatRoute
   PluginsPluginIdOptionsRoute: typeof PluginsPluginIdOptionsRoute
+  SPluginIdAlbumsLibraryRoute: typeof SPluginIdAlbumsLibraryRoute
+  SPluginIdLibraryRoute: typeof SPluginIdLibraryRoute
   PlaylistsPlaylistIdIndexRoute: typeof PlaylistsPlaylistIdIndexRoute
   PluginsPluginIdIndexRoute: typeof PluginsPluginIdIndexRoute
+  SPluginIdIndexRoute: typeof SPluginIdIndexRoute
   PlaylistsPlaylistIdTracksTrackIdRoute: typeof PlaylistsPlaylistIdTracksTrackIdRoute
-  PluginsPluginIdAlbumsApiIdRoute: typeof PluginsPluginIdAlbumsApiIdRoute
-  PluginsPluginIdArtistsApiIdRoute: typeof PluginsPluginIdArtistsApiIdRoute
-  PluginsPluginIdPlaylistsApiIdRoute: typeof PluginsPluginIdPlaylistsApiIdRoute
-  PluginsPluginIdPlaylistsIndexRoute: typeof PluginsPluginIdPlaylistsIndexRoute
+  SPluginIdAlbumsApiIdRoute: typeof SPluginIdAlbumsApiIdRoute
+  SPluginIdArtistsApiIdRoute: typeof SPluginIdArtistsApiIdRoute
+  SPluginIdPlaylistsApiIdRoute: typeof SPluginIdPlaylistsApiIdRoute
+  SPluginIdPlaylistsIndexRoute: typeof SPluginIdPlaylistsIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -505,6 +526,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof FavoritesAlbumsRouteImport
       parentRoute: typeof FavoritesRouteRoute
     }
+    '/s/$pluginId/': {
+      id: '/s/$pluginId/'
+      path: '/s/$pluginId'
+      fullPath: '/s/$pluginId/'
+      preLoaderRoute: typeof SPluginIdIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/plugins/$pluginId/': {
       id: '/plugins/$pluginId/'
       path: '/plugins/$pluginId'
@@ -519,6 +547,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PlaylistsPlaylistIdIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/s/$pluginId/library': {
+      id: '/s/$pluginId/library'
+      path: '/s/$pluginId/library'
+      fullPath: '/s/$pluginId/library'
+      preLoaderRoute: typeof SPluginIdLibraryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/s/$pluginId/albums-library': {
+      id: '/s/$pluginId/albums-library'
+      path: '/s/$pluginId/albums-library'
+      fullPath: '/s/$pluginId/albums-library'
+      preLoaderRoute: typeof SPluginIdAlbumsLibraryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/plugins/$pluginId/options': {
       id: '/plugins/$pluginId/options'
       path: '/plugins/$pluginId/options'
@@ -526,46 +568,39 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PluginsPluginIdOptionsRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/plugins/$pluginId/library': {
-      id: '/plugins/$pluginId/library'
-      path: '/plugins/$pluginId/library'
-      fullPath: '/plugins/$pluginId/library'
-      preLoaderRoute: typeof PluginsPluginIdLibraryRouteImport
+    '/plugins/$pluginId/$': {
+      id: '/plugins/$pluginId/$'
+      path: '/plugins/$pluginId/$'
+      fullPath: '/plugins/$pluginId/$'
+      preLoaderRoute: typeof PluginsPluginIdSplatRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/plugins/$pluginId/albums-library': {
-      id: '/plugins/$pluginId/albums-library'
-      path: '/plugins/$pluginId/albums-library'
-      fullPath: '/plugins/$pluginId/albums-library'
-      preLoaderRoute: typeof PluginsPluginIdAlbumsLibraryRouteImport
+    '/s/$pluginId/playlists/': {
+      id: '/s/$pluginId/playlists/'
+      path: '/s/$pluginId/playlists'
+      fullPath: '/s/$pluginId/playlists/'
+      preLoaderRoute: typeof SPluginIdPlaylistsIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/plugins/$pluginId/playlists/': {
-      id: '/plugins/$pluginId/playlists/'
-      path: '/plugins/$pluginId/playlists'
-      fullPath: '/plugins/$pluginId/playlists/'
-      preLoaderRoute: typeof PluginsPluginIdPlaylistsIndexRouteImport
+    '/s/$pluginId/playlists/$apiId': {
+      id: '/s/$pluginId/playlists/$apiId'
+      path: '/s/$pluginId/playlists/$apiId'
+      fullPath: '/s/$pluginId/playlists/$apiId'
+      preLoaderRoute: typeof SPluginIdPlaylistsApiIdRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/plugins/$pluginId/playlists/$apiId': {
-      id: '/plugins/$pluginId/playlists/$apiId'
-      path: '/plugins/$pluginId/playlists/$apiId'
-      fullPath: '/plugins/$pluginId/playlists/$apiId'
-      preLoaderRoute: typeof PluginsPluginIdPlaylistsApiIdRouteImport
+    '/s/$pluginId/artists/$apiId': {
+      id: '/s/$pluginId/artists/$apiId'
+      path: '/s/$pluginId/artists/$apiId'
+      fullPath: '/s/$pluginId/artists/$apiId'
+      preLoaderRoute: typeof SPluginIdArtistsApiIdRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/plugins/$pluginId/artists/$apiId': {
-      id: '/plugins/$pluginId/artists/$apiId'
-      path: '/plugins/$pluginId/artists/$apiId'
-      fullPath: '/plugins/$pluginId/artists/$apiId'
-      preLoaderRoute: typeof PluginsPluginIdArtistsApiIdRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/plugins/$pluginId/albums/$apiId': {
-      id: '/plugins/$pluginId/albums/$apiId'
-      path: '/plugins/$pluginId/albums/$apiId'
-      fullPath: '/plugins/$pluginId/albums/$apiId'
-      preLoaderRoute: typeof PluginsPluginIdAlbumsApiIdRouteImport
+    '/s/$pluginId/albums/$apiId': {
+      id: '/s/$pluginId/albums/$apiId'
+      path: '/s/$pluginId/albums/$apiId'
+      fullPath: '/s/$pluginId/albums/$apiId'
+      preLoaderRoute: typeof SPluginIdAlbumsApiIdRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/playlists/$playlistId/tracks/$trackId': {
@@ -610,16 +645,18 @@ const rootRouteChildren: RootRouteChildren = {
   TracksTrackIdRoute: TracksTrackIdRoute,
   PlaylistsIndexRoute: PlaylistsIndexRoute,
   PluginsIndexRoute: PluginsIndexRoute,
-  PluginsPluginIdAlbumsLibraryRoute: PluginsPluginIdAlbumsLibraryRoute,
-  PluginsPluginIdLibraryRoute: PluginsPluginIdLibraryRoute,
+  PluginsPluginIdSplatRoute: PluginsPluginIdSplatRoute,
   PluginsPluginIdOptionsRoute: PluginsPluginIdOptionsRoute,
+  SPluginIdAlbumsLibraryRoute: SPluginIdAlbumsLibraryRoute,
+  SPluginIdLibraryRoute: SPluginIdLibraryRoute,
   PlaylistsPlaylistIdIndexRoute: PlaylistsPlaylistIdIndexRoute,
   PluginsPluginIdIndexRoute: PluginsPluginIdIndexRoute,
+  SPluginIdIndexRoute: SPluginIdIndexRoute,
   PlaylistsPlaylistIdTracksTrackIdRoute: PlaylistsPlaylistIdTracksTrackIdRoute,
-  PluginsPluginIdAlbumsApiIdRoute: PluginsPluginIdAlbumsApiIdRoute,
-  PluginsPluginIdArtistsApiIdRoute: PluginsPluginIdArtistsApiIdRoute,
-  PluginsPluginIdPlaylistsApiIdRoute: PluginsPluginIdPlaylistsApiIdRoute,
-  PluginsPluginIdPlaylistsIndexRoute: PluginsPluginIdPlaylistsIndexRoute,
+  SPluginIdAlbumsApiIdRoute: SPluginIdAlbumsApiIdRoute,
+  SPluginIdArtistsApiIdRoute: SPluginIdArtistsApiIdRoute,
+  SPluginIdPlaylistsApiIdRoute: SPluginIdPlaylistsApiIdRoute,
+  SPluginIdPlaylistsIndexRoute: SPluginIdPlaylistsIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

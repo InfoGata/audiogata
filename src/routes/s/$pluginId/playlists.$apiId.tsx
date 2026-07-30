@@ -16,6 +16,10 @@ import { createFileRoute, useRouterState } from "@tanstack/react-router";
 import React from "react";
 import { useQuery } from "@tanstack/react-query";
 import { z } from "zod";
+import {
+  canonicalizePluginUrl,
+  pluginIdParams,
+} from "@/lib/plugin-route";
 
 const PluginPlaylist: React.FC = () => {
   const { pluginId, apiId } = Route.useParams();
@@ -117,7 +121,9 @@ const pluginPlaylistSearchSchema = z.object({
   isUserPlaylist: z.boolean().catch(false),
 });
 
-export const Route = createFileRoute("/plugins/$pluginId/playlists/$apiId")({
+export const Route = createFileRoute("/s/$pluginId/playlists/$apiId")({
+  params: pluginIdParams<{ apiId: string }>(),
+  beforeLoad: canonicalizePluginUrl,
   component: PluginPlaylist,
   validateSearch: pluginPlaylistSearchSchema,
 });

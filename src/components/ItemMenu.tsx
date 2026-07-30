@@ -18,6 +18,7 @@ import {
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
 import { MdPerson } from "react-icons/md";
+import { pluginContentPath } from "@/lib/plugin-route";
 
 interface Props {
   itemType: ItemMenuType;
@@ -71,7 +72,11 @@ const ItemMenu: React.FC<Props> = (props) => {
       ? {
           title: t("goToArtist"),
           icon: <MdPerson />,
-          internalPath: `/plugins/${itemType.item.pluginId}/artists/${itemType.item.artistApiId}`,
+          internalPath: pluginContentPath(
+            itemType.item.pluginId || "",
+            "artists",
+            itemType.item.artistApiId || ""
+          ),
         }
       : undefined,
     itemType.item.originalUrl

@@ -38,6 +38,11 @@ const PluginContainer: React.FC<PluginContainerProps> = (props) => {
         <h3 className="text-lg font-semibold">
           {plugin.name} {plugin.version}
         </h3>
+        {plugin.alias && (
+          <span className="font-mono text-xs text-muted-foreground truncate">
+            {`/s/${plugin.alias}`}
+          </span>
+        )}
         <div className="flex gap-2 items-center">
           <Link
             className={cn(buttonVariants({ variant: "outline" }))}
