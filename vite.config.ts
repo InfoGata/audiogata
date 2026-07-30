@@ -72,8 +72,16 @@ export default defineConfig({
       },
     }),
   ],
+  // Each app in ~/projects/webapps owns a unique port so they can all run at
+  // once; strictPort makes a collision fail loudly instead of silently drifting
+  // to the next free port (which would break the pinned OAuth/CSP origins).
   server: {
-    port: 3000,
+    port: 3001,
+    strictPort: true,
     open: true,
+  },
+  preview: {
+    port: 4001,
+    strictPort: true,
   },
 });

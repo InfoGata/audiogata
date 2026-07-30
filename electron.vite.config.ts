@@ -39,6 +39,11 @@ export default defineConfig({
     legacy: {
       inconsistentCjsInterop: true,
     },
+    // Unique renderer port so electron:dev can run alongside the other apps.
+    server: {
+      port: 5001,
+      strictPort: true,
+    },
     resolve: {
       // Share the app's single React 19; see vite.config.ts.
       dedupe: ["react", "react-dom"],

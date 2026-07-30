@@ -18,6 +18,9 @@ npm install
 npm run dev
 ```
 
+Ports are unique per app in `~/projects/webapps` and `strictPort` is on, so a
+collision fails instead of drifting: dev 3001, preview 4001, electron renderer 5001.
+
 ### Building
 
 ```bash
