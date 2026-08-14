@@ -74,8 +74,8 @@ const PlayerBar: React.FC = () => {
       {/* Main player controls */}
       <div className="flex flex-col sm:grid sm:grid-cols-12 items-center px-4 py-2 sm:h-20 gap-y-2 sm:gap-y-0">
         {/* Left section - Now playing */}
-        <div className="w-full sm:w-auto sm:col-span-3 flex items-center gap-x-3 min-w-0 order-1 sm:order-none">
-          <div className="flex-shrink-0">
+        <div className="w-full sm:w-auto sm:col-span-3 flex items-center gap-x-3 min-w-0 order-1 sm:order-0">
+          <div className="shrink-0">
             <PlayerThumbnail />
           </div>
           <div className="min-w-0 flex-1">
@@ -97,14 +97,14 @@ const PlayerBar: React.FC = () => {
             )}
           </div>
           {currentTrack && (
-            <div className="flex-shrink-0">
+            <div className="shrink-0">
               <TrackMenu track={currentTrack} noQueueItem={true} />
             </div>
           )}
         </div>
 
         {/* Center section - Controls */}
-        <div className="w-full sm:w-auto sm:col-span-6 flex flex-col items-center justify-center order-2 sm:order-none">
+        <div className="w-full sm:w-auto sm:col-span-6 flex flex-col items-center justify-center order-2 sm:order-0">
           <div className="flex items-center gap-x-2">
             <Controls />
             <div className="sm:hidden">

@@ -44,7 +44,7 @@ const AboutLink: React.FC<AboutLinkProps> = (props) => {
         )}
         <div className="space-y-1 w-full">
           <p className="text-sm font-medium leading-none">{title}</p>
-          <p className="text-sm text-muted-foreground break-words">
+          <p className="text-sm text-muted-foreground wrap-break-word">
             {description}
           </p>
         </div>

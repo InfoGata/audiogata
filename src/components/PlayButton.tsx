@@ -9,7 +9,7 @@ const PlayButton: React.FC<PlayButtonProps> = (props) => {
   const { onClick } = props;
   return (
     <Button variant="ghost" size="icon" className="size-16" onClick={onClick}>
-      <MdPlayCircle className="!size-14" />
+      <MdPlayCircle className="size-14!" />
     </Button>
   );
 };

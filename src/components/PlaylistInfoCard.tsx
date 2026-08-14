@@ -40,16 +40,16 @@ const PlaylistInfoCard: React.FC<PlaylistInfoCardProps> = (props) => {
   return (
     <div className="w-full">
       {/* Hero Section with Gradient Background */}
-      <div className="relative bg-gradient-to-br from-primary/20 to-secondary/20 rounded-lg overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
+      <div className="relative bg-linear-to-br from-primary/20 to-secondary/20 rounded-lg overflow-hidden">
+        <div className="absolute inset-0 bg-linear-to-t from-black/50 to-transparent" />
         
         <Card className="bg-transparent border-none shadow-none">
           <CardContent className="p-8">
             <div className="flex flex-col md:flex-row gap-8 items-start md:items-end relative z-10">
               {/* Album/Artist Image */}
-              <div className="flex-shrink-0">
+              <div className="shrink-0">
                 <div className="relative group">
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent rounded-lg" />
+                  <div className="absolute inset-0 bg-linear-to-t from-black/20 to-transparent rounded-lg" />
                   <PlaylistImage images={images} />
                   <div className="absolute inset-0 ring-2 ring-white/10 rounded-lg" />
                 </div>

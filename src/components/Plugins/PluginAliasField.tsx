@@ -106,7 +106,7 @@ const PluginAliasField: React.FC<Props> = ({ pluginId, alias }) => {
           </>
         ) : (
           <div className="flex items-center gap-1">
-            <p className="text-sm text-muted-foreground font-mono break-words">
+            <p className="text-sm text-muted-foreground font-mono wrap-break-word">
               {alias}
             </p>
             <Button
