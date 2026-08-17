@@ -6,6 +6,7 @@ import { useTranslation } from "react-i18next";
 import semverGt from "semver/functions/gt";
 import semverValid from "semver/functions/parse";
 import { toast } from "sonner";
+import { useExtension } from "../hooks/useExtension";
 import { usePluginMigration } from "../hooks/usePluginMigration";
 import {
   deletePlugin as deletePluginStorage,
@@ -213,6 +214,7 @@ export const PluginsProvider: React.FC<React.PropsWithChildren> = (props) => {
   const [pluginsFailed, setPluginsFailed] = React.useState(false);
   const dispatch = useAppDispatch();
   const { t } = useTranslation("plugins");
+  const { extensionDetected } = useExtension();
 
   const lyricsPluginId = useAppSelector(
     (state) => state.settings.lyricsPluginId
@@ -889,7 +891,9 @@ export const PluginsProvider: React.FC<React.PropsWithChildren> = (props) => {
     };
 
     registerRedirects();
-  }, [pluginsLoaded, pluginFrames]);
+    // extensionDetected is a dependency so this retries once the extension
+    // injects window.InfoGata, which can happen after the app has rendered.
+  }, [pluginsLoaded, pluginFrames, extensionDetected]);
 
   const defaultContext: PluginContextInterface = {
     addPlugin: addPlugin,
