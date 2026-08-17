@@ -117,7 +117,7 @@
     "@types/wicg-mediasession": "^1.1.0",
     "@vitejs/plugin-react": "^6.0.2",
     "concurrently": "^6.0.0",
-    "electron": "github:castlabs/electron-releases#v40.8.6+wvcus",
+    "electron": "github:castlabs/electron-releases#v43.2.0+wvcus",
     "electron-vite": "6.0.0-beta.1",
     "eslint": "^9.0.0",
     "eslint-plugin-i18next": "^6.0.0-2",
