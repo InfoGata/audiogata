@@ -72,6 +72,16 @@ The core of AudioGata is its plugin architecture:
 - To develop a plugin locally: serve its folder (`npx serve . -p 8080 --cors`), install via URL (`http://localhost:8080/manifest.json`), then run the plugin build in watch mode
 - Changes are detected by comparing script content and auto-applied (logged to console as `[dev] Auto-updating plugin: ...`)
 
+### Versioning
+
+`package.json` is the single source of truth, changed only by `npm version
+<major|minor|patch>`. `build-info.ts` injects `__APP_VERSION__` and
+`__APP_COMMIT__` (from `git describe --always --dirty`) into both vite configs,
+`src/lib/app-version.ts` is what the app reads, and `android/app/build.gradle`
+derives `versionName` and `versionCode` from the same file (`0.1.0` -> `100`,
+`1.2.3` -> `10203`). Never hardcode a version anywhere else. The About page
+shows the build, and tapping it copies the build, platform and user agent.
+
 ### State Management
 
 - Redux with Redux Toolkit for global state

@@ -1,8 +1,11 @@
 import { createFileRoute } from "@tanstack/react-router";
 import AboutLink, { AboutLinkProps } from "@/components/AboutLink";
+import { appBuild, buildReport } from "@/lib/app-version";
 import React from "react";
 import { useTranslation } from "react-i18next";
+import { toast } from "sonner";
 import {
+  FaCircleInfo,
   FaEnvelope,
   FaGitAlt,
   FaGlobe,
@@ -21,6 +24,20 @@ const About: React.FC = () => {
   const mastodonUrl = "https://mastodon.online/@InfoGata";
   const mastodonAt = "@InfoGata@mastodon.online";
   const gitUrl = "https://github.com/InfoGata/audiogata";
+
+  // Tapping the version copies the build plus the platform behind it: the
+  // things a bug report is useless without and that nobody can be expected to
+  // find on their own.
+  const copyBuildReport = async () => {
+    try {
+      await navigator.clipboard.writeText(buildReport());
+      toast.success(t("buildDetailsCopied"));
+    } catch {
+      // No clipboard on an insecure origin, or the user denied it. The version
+      // is on screen either way, which is the part that matters.
+      toast.error(t("buildDetailsCopyFailed"));
+    }
+  };
 
   const links: AboutLinkProps[] = [
     {
@@ -61,6 +78,12 @@ const About: React.FC = () => {
       title: t("privacyPolicy"),
       icon: <FaLock />,
       link: { to: "/privacy" },
+    },
+    {
+      title: t("version"),
+      description: appBuild,
+      icon: <FaCircleInfo />,
+      action: copyBuildReport,
     },
   ];
 

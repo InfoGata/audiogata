@@ -4,6 +4,7 @@ import { defineConfig } from "electron-vite";
 import { resolve } from "path";
 import { VitePWA } from "vite-plugin-pwa";
 import tailwindcss from "@tailwindcss/vite";
+import { buildInfoDefine } from "./build-info";
 
 export default defineConfig({
   main: {
@@ -35,6 +36,8 @@ export default defineConfig({
     },
   },
   renderer: {
+    // Same build identity as the web build; see vite.config.ts.
+    define: buildInfoDefine(),
     // Restore pre-Vite-8 CJS default-import interop (see vite.config.ts).
     legacy: {
       inconsistentCjsInterop: true,

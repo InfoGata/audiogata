@@ -26,7 +26,9 @@ const AboutLink: React.FC<AboutLinkProps> = (props) => {
     }
     if (action) {
       return (
-        <button className="w-full" onClick={action}>
+        // text-left because a button centers its text by default, which would
+        // otherwise make an action row sit differently from every link row.
+        <button className="w-full text-left" onClick={action}>
           {props.children}
         </button>
       );

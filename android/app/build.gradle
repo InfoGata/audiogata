@@ -1,4 +1,17 @@
+import groovy.json.JsonSlurper
+
 apply plugin: 'com.android.application'
+
+// package.json is the single source of truth for the version (see
+// build-info.ts). Read here so a release can't ship an APK whose version
+// disagrees with the web and desktop builds.
+def appVersionName = new JsonSlurper().parse(file("../../package.json")).version
+// Play requires an integer that only ever increases, so it's derived rather
+// than tracked: 0.1.0 -> 100, 1.2.3 -> 10203. Holds while minor and patch stay
+// below 100. Any prerelease suffix is dropped -- Play has its own tracks for
+// that, and it can't be expressed in the code.
+def (appMajor, appMinor, appPatch) = appVersionName.split('-')[0].tokenize('.').collect { it.toInteger() }
+def appVersionCode = appMajor * 10000 + appMinor * 100 + appPatch
 
 android {
     namespace = "com.audiogata.app"
@@ -7,8 +20,8 @@ android {
         applicationId "com.audiogata.app"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 1
-        versionName "1.0"
+        versionCode appVersionCode
+        versionName appVersionName
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         aaptOptions {
              // Files and dirs to omit from the packaged assets dir, modified to accommodate modern web apps.

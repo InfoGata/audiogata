@@ -4,6 +4,7 @@ import { defineConfig } from "vitest/config";
 import { VitePWA } from "vite-plugin-pwa";
 import { tanstackRouter } from "@tanstack/router-plugin/vite";
 import tailwindcss from "@tailwindcss/vite";
+import { buildInfoDefine } from "./build-info";
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -14,6 +15,8 @@ export default defineConfig({
   legacy: {
     inconsistentCjsInterop: true,
   },
+  // Version and commit, so a bug report can name the build it came from.
+  define: buildInfoDefine(),
   resolve: {
     // react-outside-call declares react/react-dom as regular deps (not peers),
     // so a nested React 18 gets installed. Vite 8's Rolldown optimizer would
