@@ -1,6 +1,5 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import { PostHogProvider } from "posthog-js/react";
 import { IconContext } from "react-icons";
 import OutsideCallConsumer from "./lib/outside-call";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -14,6 +13,7 @@ import { ThemeProvider } from "@infogata/shadcn-vite-theme-provider";
 import Router from "./router";
 import store, { persistor } from "./store/store";
 import { ExtensionProvider } from "./contexts/ExtensionContext";
+import Analytics from "./components/Analytics";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -25,32 +25,25 @@ const queryClient = new QueryClient({
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>
-    <PostHogProvider
-      apiKey={import.meta.env.VITE_PUBLIC_POSTHOG_KEY}
-      options={{
-        api_host: import.meta.env.VITE_PUBLIC_POSTHOG_HOST,
-        defaults: '2025-05-24',
-        capture_exceptions: true,
-        cookieless_mode: 'always',
-      }}
-    >
-      <Provider store={store}>
-        <PersistGate loading={null} persistor={persistor}>
-          <ThemeProvider defaultTheme="dark">
-            <ExtensionProvider>
-              <IconContext.Provider value={{ className: "size-5" }}>
-                <QueryClientProvider client={queryClient}>
-                  <PluginsProvider>
-                    <OutsideCallConsumer config={callConfig}>
-                      <Router />
-                    </OutsideCallConsumer>
-                  </PluginsProvider>
-                </QueryClientProvider>
-              </IconContext.Provider>
-            </ExtensionProvider>
-          </ThemeProvider>
-        </PersistGate>
-      </Provider>
-    </PostHogProvider>
+    <Provider store={store}>
+      <PersistGate loading={null} persistor={persistor}>
+        {/* Inside PersistGate so it acts on the remembered preference
+            rather than the default. */}
+        <Analytics />
+        <ThemeProvider defaultTheme="dark">
+          <ExtensionProvider>
+            <IconContext.Provider value={{ className: "size-5" }}>
+              <QueryClientProvider client={queryClient}>
+                <PluginsProvider>
+                  <OutsideCallConsumer config={callConfig}>
+                    <Router />
+                  </OutsideCallConsumer>
+                </PluginsProvider>
+              </QueryClientProvider>
+            </IconContext.Provider>
+          </ExtensionProvider>
+        </ThemeProvider>
+      </PersistGate>
+    </Provider>
   </React.StrictMode>
 );

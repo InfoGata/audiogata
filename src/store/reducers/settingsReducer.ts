@@ -9,6 +9,9 @@ interface SettingsState {
   disableAutoUpdatePlugins?: boolean;
   lyricsPluginId?: string;
   pluginsPreinstalled?: boolean;
+  // Optional, like the settings above, so state persisted before it existed
+  // reads as "not disabled". See lib/analytics.
+  disableAnalytics?: boolean;
 }
 
 const initialState: SettingsState = {
@@ -62,6 +65,9 @@ const settingsSlice = createSlice({
     setPluginsPreInstalled: (state) => {
       return { ...state, pluginsPreinstalled: true };
     },
+    setDisableAnalytics: (state, action: PayloadAction<boolean>) => {
+      return { ...state, disableAnalytics: action.payload };
+    },
   },
 });
 
@@ -74,5 +80,6 @@ export const {
   toggleDisableAutoUpdatePlugins,
   setLyricsPluginId,
   setPluginsPreInstalled,
+  setDisableAnalytics,
 } = settingsSlice.actions;
 export default settingsSlice.reducer;

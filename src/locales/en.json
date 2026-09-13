@@ -166,6 +166,10 @@
     "corsProxy": "Cors Proxy Url",
     "light": "Light",
     "dark": "Dark",
-    "system": "System"
+    "system": "System",
+    "shareAnalytics": "Share anonymous usage data",
+    "shareAnalyticsDescription": "Cookieless usage and error data that shows which parts of the app get used and what breaks. No account, no profile, nothing that identifies you.",
+    "doNotTrackActive": "Your browser sends Do Not Track, so nothing is collected regardless of this setting.",
+    "whatIsCollected": "What's collected"
   }
 }

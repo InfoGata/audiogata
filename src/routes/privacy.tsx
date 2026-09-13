@@ -1,5 +1,5 @@
 /* eslint-disable i18next/no-literal-string */
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import React from "react";
 
 const Privacy: React.FC = () => {
@@ -37,6 +37,21 @@ const Privacy: React.FC = () => {
           We use analytics to monitor and analyze web traffic and user behavior
           to improve the application experience.
         </p>
+
+        <div className="rounded-lg border bg-muted/50 p-4 space-y-2">
+          <p className="text-sm font-medium">You can turn this off</p>
+          <p className="text-sm text-muted-foreground">
+            Analytics is on by default and can be switched off in{" "}
+            <Link to="/settings" className="text-primary hover:underline">
+              Settings
+            </Link>
+            . Once it is off, the analytics library is not started at all on
+            later visits. If your browser sends Do Not Track, nothing is
+            collected either way, whatever that setting says. A build with no
+            analytics key configured, such as a self-hosted one, loads no
+            analytics at all.
+          </p>
+        </div>
 
         <div className="rounded-lg border bg-card p-5 space-y-3">
           <div className="flex items-start justify-between">

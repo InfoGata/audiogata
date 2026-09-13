@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import AnalyticsSetting from "@/components/Settings/AnalyticsSetting";
 import DisableAutoUpdateSetting from "@/components/Settings/DisableAutoUpdateSettings";
 import PlayCurrentTrackStartup from "@/components/Settings/PlayCurrentTrackStartup";
 import SelectLyricsPlugin from "@/components/Settings/SelectLyricsPlugin";
@@ -16,6 +17,7 @@ const Settings: React.FC = () => {
       <UpdateCorsSetting />
       <SelectLyricsPlugin />
       <ThemeChangeSetting />
+      <AnalyticsSetting />
     </div>
   );
 };
