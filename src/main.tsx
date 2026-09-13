@@ -1,49 +1,14 @@
-import React from "react";
-import ReactDOM from "react-dom/client";
-import { IconContext } from "react-icons";
-import OutsideCallConsumer from "./lib/outside-call";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { Provider } from "react-redux";
-import { PersistGate } from "redux-persist/integration/react";
-import callConfig from "./call-config";
-import "./i18n";
-import "./index.css";
-import { PluginsProvider } from "./contexts/PluginsContext";
-import { ThemeProvider } from "@infogata/shadcn-vite-theme-provider";
-import Router from "./router";
-import store, { persistor } from "./store/store";
-import { ExtensionProvider } from "./contexts/ExtensionContext";
-import Analytics from "./components/Analytics";
+import { runPendingAppDataReset } from "./lib/reset-app-data";
 
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      refetchOnWindowFocus: false,
-    },
-  },
-});
-
-ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
-  <React.StrictMode>
-    <Provider store={store}>
-      <PersistGate loading={null} persistor={persistor}>
-        {/* Inside PersistGate so it acts on the remembered preference
-            rather than the default. */}
-        <Analytics />
-        <ThemeProvider defaultTheme="dark">
-          <ExtensionProvider>
-            <IconContext.Provider value={{ className: "size-5" }}>
-              <QueryClientProvider client={queryClient}>
-                <PluginsProvider>
-                  <OutsideCallConsumer config={callConfig}>
-                    <Router />
-                  </OutsideCallConsumer>
-                </PluginsProvider>
-              </QueryClientProvider>
-            </IconContext.Provider>
-          </ExtensionProvider>
-        </ThemeProvider>
-      </PersistGate>
-    </Provider>
-  </React.StrictMode>
-);
+// The entry does nothing but this, and the app is imported only afterwards.
+// A reset has to happen before the store module is evaluated: persistStore
+// reads the persisted state out of localStorage as soon as store.ts is
+// imported, and would write it straight back after the reset removed it. The
+// same goes for the database, which can only be deleted while nothing holds a
+// connection to it. A static import would be evaluated before any code here
+// runs, so the app is loaded dynamically.
+//
+// The app loads whatever happens: a reset must never be what stops it booting.
+runPendingAppDataReset()
+  .catch(() => {})
+  .finally(() => import("./app"));

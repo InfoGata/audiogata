@@ -6,6 +6,7 @@ import {
 } from "@tanstack/react-router";
 import isElectron from "is-electron";
 import React from "react";
+import RouteError from "./components/RouteError";
 import Spinner from "./components/Spinner";
 import usePlugins from "./hooks/usePlugins";
 import { Album, Artist, PlaylistInfo } from "./plugintypes";
@@ -16,6 +17,7 @@ const router = createRouter({
   routeTree,
   history,
   defaultPendingComponent: Spinner,
+  defaultErrorComponent: RouteError,
   scrollRestoration: true,
 });
 export type RouterType = typeof router;
