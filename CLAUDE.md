@@ -92,6 +92,16 @@ shows the build, and tapping it copies the build, platform and user agent.
   - `ui`: Interface state
   - `download`: Download management
 
+### Bundle
+
+`autoCodeSplitting` on the tanstackRouter plugin gives each route its own chunk.
+The plugin must be listed **before** `react()` in `vite.config.ts`: it rewrites
+route files and has to see them before JSX is transformed, and the build fails
+with a plugin-order error if swapped. The service worker precaches every chunk,
+so this moves code off the first-load path without changing what is eventually
+downloaded. The electron renderer config doesn't use the router plugin and
+still bundles routes statically.
+
 ### Data Persistence
 
 - Dexie.js (IndexedDB wrapper) for local data storage
