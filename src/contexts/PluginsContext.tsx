@@ -691,13 +691,19 @@ export const PluginsProvider: React.FC<React.PropsWithChildren> = (props) => {
           id
         );
 
-      const oldPlugin = pluginFrames.find((p) => p.id === id);
+      // Read from the ref, not the render's pluginFrames, and again after the
+      // await. The automatic update runs plugins in parallel, so each call
+      // would otherwise map over the list from before any of them landed, and
+      // the last to publish would put back the frames the others destroyed.
+      const oldPlugin = pluginFramesRef.current.find((p) => p.id === id);
       oldPlugin?.destroy();
       const pluginFrame = await loadPlugin(plugin, pluginFiles);
-      publishFrames(pluginFrames.map((p) => (p.id === id ? pluginFrame : p)));
+      publishFrames(
+        pluginFramesRef.current.map((p) => (p.id === id ? pluginFrame : p))
+      );
       await savePlugin(plugin);
     },
-    [loadPlugin, pluginFrames, publishFrames]
+    [loadPlugin, publishFrames]
   );
 
   /** Rename a plugin's url alias. Returns why it was rejected, or null. */
