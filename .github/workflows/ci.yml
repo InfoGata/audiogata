@@ -1,0 +1,45 @@
+name: CI
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+
+# Nothing here writes to the repo; a fork's pull request gets a read-only token.
+permissions:
+  contents: read
+
+# A branch only needs its newest commit verified. Pushes to master are exempt so
+# every commit on the default branch keeps a result of its own.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/master' }}
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v7
+        with:
+          # Matches the Node the app is developed against. Bump both together.
+          node-version: 22
+          cache: npm
+
+      # `ci` rather than `install`: the lockfile is the contract, and a PR that
+      # needs it changed should have to say so in the diff.
+      - run: npm ci
+
+      # Ordered cheapest-first, so the common failures report in seconds.
+      - run: npm run lint
+
+      - run: npm test -- --run
+
+      # Also the typecheck: `build` is `tsc && vite build`.
+      - run: npm run build
+
+      # The renderer is shared with the web build, but the main and preload
+      # entries are only compiled here — without this they break unnoticed
+      # until someone runs the desktop app.
+      - run: npm run electron:build
