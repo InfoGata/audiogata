@@ -29,7 +29,7 @@ const settingsSlice = createSlice({
     toggleDisableAutoUpdatePlugins: (state) => {
       return {
         ...state,
-        autoUpdatePlugins: !state.disableAutoUpdatePlugins,
+        disableAutoUpdatePlugins: !state.disableAutoUpdatePlugins,
       };
     },
     saveCorsProxyUrl: (state, action: PayloadAction<string | undefined>) => {

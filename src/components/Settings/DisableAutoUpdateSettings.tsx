@@ -19,7 +19,7 @@ const DisableAutoUpdateSetting: React.FC = () => {
       <Switch
         id="auto-update"
         checked={disableAutoUpdatePlugins}
-        onChange={onChangeDisableAutoUpdatePlugins}
+        onCheckedChange={onChangeDisableAutoUpdatePlugins}
       />
       <Label htmlFor="auto-update">{t("disableAutoUpdatePlugins")}</Label>
     </div>

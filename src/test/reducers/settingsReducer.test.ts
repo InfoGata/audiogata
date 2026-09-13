@@ -81,14 +81,14 @@ describe("settingsReducer", () => {
     // Test enabling the setting
     expect(settingsReducer(initialState, toggleDisableAutoUpdatePlugins())).toEqual({
       ...initialState,
-      autoUpdatePlugins: true,
+      disableAutoUpdatePlugins: true,
     });
 
     // Test toggling with existing value
     const stateWithSetting = { ...initialState, disableAutoUpdatePlugins: true };
     expect(settingsReducer(stateWithSetting, toggleDisableAutoUpdatePlugins())).toEqual({
       ...stateWithSetting,
-      autoUpdatePlugins: false,
+      disableAutoUpdatePlugins: false,
     });
   });
 

@@ -16,7 +16,7 @@ const PlayCurrentTrackStartup: React.FC = () => {
       <Switch
         id="play-current-track"
         checked={playOnStartup}
-        onChange={onChangePlayOnStartup}
+        onCheckedChange={onChangePlayOnStartup}
       />
       <Label htmlFor="play-current-track">
         {t("settings:playCurrentTrack")}
