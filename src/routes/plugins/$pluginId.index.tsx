@@ -239,8 +239,16 @@ const PluginDetails: React.FC = () => {
       const newPlugin = await getPlugin(fileType);
       if (newPlugin && pluginInfo.id) {
         newPlugin.id = pluginInfo.id;
-        newPlugin.manifestUrl = pluginInfo.manifestUrl;
+        // Same as the automatic path: the new manifest decides where the next
+        // update is fetched from.
         await updatePlugin(newPlugin, pluginInfo.id);
+        setHasUpdate(false);
+        toast(
+          t("plugins:pluginUpdated", {
+            name: newPlugin.name,
+            version: newPlugin.version,
+          })
+        );
       }
     }
   };

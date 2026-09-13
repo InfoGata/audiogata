@@ -58,7 +58,18 @@ export async function getFileText(
     const encodedName = encodeURIComponent(name);
     const newUrl = fileType.url.url.replace("manifest.json", encodedName);
     try {
-      const result = await fetch(newUrl, { headers: fileType.url.headers });
+      // Revalidate rather than trust the browser's copy. jsdelivr serves the
+      // mutable @latest refs with `max-age=604800`, so without this an update
+      // check can be answered from a week-old cache, and purging the CDN can't
+      // help: the stale copy is in the user's own browser. "no-cache" costs a
+      // conditional request answered 304 when nothing changed. Applied to every
+      // plugin file, since the manifest and the script it names are separate
+      // cache entries and letting either go stale pairs a version with code
+      // that isn't it.
+      const result = await fetch(newUrl, {
+        headers: fileType.url.headers,
+        cache: "no-cache",
+      });
       return await result.text();
     } catch {
       if (!suppressErrors) {
