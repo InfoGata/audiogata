@@ -4,6 +4,9 @@ on:
   push:
     branches: [master]
   pull_request:
+  # Lets a run be started by hand, e.g. for a commit pushed while Actions was
+  # disabled, without having to push anything.
+  workflow_dispatch:
 
 # Nothing here writes to the repo; a fork's pull request gets a read-only token.
 permissions:
