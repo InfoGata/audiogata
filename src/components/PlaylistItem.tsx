@@ -8,10 +8,11 @@ import { searchThumbnailSize } from "../utils";
 import ArtistLinks from "./ArtistLinks";
 import { DropdownItemProps } from "./DropdownItem";
 import TrackMenu from "./TrackMenu";
-import { Avatar, AvatarImage } from "./ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { Checkbox } from "./ui/checkbox";
 import { Progress } from "./ui/progress";
 import { TableCell } from "./ui/table";
+import { AudioLinesIcon, MusicIcon, PlayIcon } from "lucide-react";
 
 interface PlaylistItemsProps {
   track: Track;
@@ -20,14 +21,24 @@ interface PlaylistItemsProps {
   index?: number;
   menuItems?: DropdownItemProps[];
   noQueueItem?: boolean;
+  isCurrent?: boolean;
+  isPlaying?: boolean;
 }
 
 const PlaylistItem: React.FC<PlaylistItemsProps> = (props) => {
-  const { track, onSelectClick, isSelected, index, noQueueItem, menuItems } =
-    props;
+  const {
+    track,
+    onSelectClick,
+    isSelected,
+    index,
+    noQueueItem,
+    menuItems,
+    isCurrent,
+    isPlaying,
+  } = props;
   const sanitizer = DOMPurify.sanitize;
   const progress = useAppSelector(
-    (state) => state.download.progress[track.id || ""]
+    (state) => state.download.progress[track.id || ""],
   );
 
   const onCheckboxClick = (e: React.MouseEvent) => {
@@ -41,7 +52,7 @@ const PlaylistItem: React.FC<PlaylistItemsProps> = (props) => {
   return (
     <>
       {isSelected && (
-        <TableCell>
+        <TableCell className="w-8">
           {
             <Checkbox
               checked={isSelected(track.id || "")}
@@ -50,38 +61,62 @@ const PlaylistItem: React.FC<PlaylistItemsProps> = (props) => {
           }
         </TableCell>
       )}
-      <TableCell>
-        <div className="flex">
-          <Avatar className="rounded-none">
-            <AvatarImage src={image} />
+      <TableCell className="w-10 pr-0 text-center text-muted-foreground tabular-nums">
+        {isCurrent ? (
+          <AudioLinesIcon
+            className={cn(
+              "mx-auto size-4 text-primary",
+              isPlaying && "animate-pulse",
+            )}
+          />
+        ) : (
+          <>
+            <span className="group-hover:hidden">
+              {index !== undefined ? index + 1 : ""}
+            </span>
+            <PlayIcon className="mx-auto hidden size-4 fill-current text-foreground group-hover:block" />
+          </>
+        )}
+      </TableCell>
+      <TableCell className="w-full max-w-0">
+        <div className="flex items-center gap-3">
+          <Avatar className="rounded-md">
+            <AvatarImage src={image} className="object-cover" />
+            <AvatarFallback className="rounded-md">
+              <MusicIcon className="size-4 text-muted-foreground" />
+            </AvatarFallback>
           </Avatar>
-          <div className="min-w-0">
+          <div className="min-w-0 flex-1">
             <p
               dangerouslySetInnerHTML={{ __html: sanitizer(track.name) }}
               title={track.name}
-              className="truncate"
+              className={cn(
+                "truncate font-medium",
+                isCurrent && "text-primary",
+              )}
             />
-            {track.artistApiId ? (
-              <ArtistLinks item={track} />
-            ) : (
-              <p
-                dangerouslySetInnerHTML={{
-                  __html: sanitizer(track.artistName || ""),
-                }}
-                className="truncate"
-              />
-            )}
+            <p className="truncate text-muted-foreground [&_a:hover]:text-foreground [&_a:hover]:underline">
+              {track.artistApiId ? (
+                <ArtistLinks item={track} />
+              ) : (
+                <span
+                  dangerouslySetInnerHTML={{
+                    __html: sanitizer(track.artistName || ""),
+                  }}
+                />
+              )}
+            </p>
             <Progress
-              className={cn(!progress && "hidden")}
+              className={cn("mt-1 h-1", !progress && "hidden")}
               value={progress?.progress || 0}
             />
           </div>
         </div>
       </TableCell>
-      <TableCell className="hidden md:table-cell">
-        {formatSeconds(track.duration)}
+      <TableCell className="hidden w-20 text-right text-muted-foreground tabular-nums md:table-cell">
+        {track.duration ? formatSeconds(track.duration) : ""}
       </TableCell>
-      <TableCell align="right">
+      <TableCell className="w-12 text-right">
         <TrackMenu
           noQueueItem={noQueueItem}
           track={track}

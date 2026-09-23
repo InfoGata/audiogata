@@ -11,7 +11,7 @@ interface SortableItemProps {
   currentItem?: boolean;
 }
 const SortableRow: React.FC<React.PropsWithChildren<SortableItemProps>> = (
-  props
+  props,
 ) => {
   const { id, onClick, disabled, currentItem } = props;
   const {
@@ -34,7 +34,10 @@ const SortableRow: React.FC<React.PropsWithChildren<SortableItemProps>> = (
         touchAction: "none",
         opacity: isDragging ? 0.3 : 1,
       }}
-      className={cn(currentItem && "bg-muted")}
+      className={cn(
+        "group cursor-pointer border-b-0 [&>td:first-child]:rounded-l-md [&>td:last-child]:rounded-r-md",
+        currentItem && "bg-muted/60",
+      )}
       ref={setNodeRef}
       {...listeners}
       {...attributes}

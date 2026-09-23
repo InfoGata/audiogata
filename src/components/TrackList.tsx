@@ -11,6 +11,7 @@ import { Checkbox } from "./ui/checkbox";
 import { CheckedState } from "@radix-ui/react-checkbox";
 import { DropdownItemProps } from "./DropdownItem";
 import { useAppSelector } from "@/store/hooks";
+import { ClockIcon } from "lucide-react";
 
 interface TrackListProps {
   tracks: Track[];
@@ -41,6 +42,7 @@ const TrackList: React.FC<TrackListProps> = (props) => {
   const [activeId, setActiveId] = React.useState<string | null>(null);
   const { t } = useTranslation();
   const currentTrack = useAppSelector((state) => state.track.currentTrack);
+  const isPlaying = useAppSelector((state) => state.track.isPlaying);
 
   const handleDragStart = (event: DragStartEvent) => {
     setActiveId(event.active.id);
@@ -65,11 +67,11 @@ const TrackList: React.FC<TrackListProps> = (props) => {
       onDragStart={handleDragStart}
       onDragEnd={handleDragEnd}
     >
-      <Table>
+      <Table className="[&_td]:px-2 [&_td]:py-2 [&_th]:h-9 [&_th]:px-2">
         <TableHeader>
-          <TableRow>
+          <TableRow className="hover:bg-transparent">
             {selected && (
-              <TableHead>
+              <TableHead className="w-8">
                 <Checkbox
                   onCheckedChange={onSelectAll}
                   checked={
@@ -82,32 +84,41 @@ const TrackList: React.FC<TrackListProps> = (props) => {
                 />
               </TableHead>
             )}
+            <TableHead className="w-10 pr-0 text-center">#</TableHead>
             <TableHead>{t("title")}</TableHead>
-            <TableHead className="hidden md:table-cell">
-              {t("trackDuration")}
+            <TableHead className="hidden w-20 text-right md:table-cell">
+              <ClockIcon
+                className="ml-auto size-4"
+                aria-label={t("trackDuration")}
+              />
             </TableHead>
-            <TableHead></TableHead>
+            <TableHead className="w-12"></TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
-          {tracks.map((track, i) => (
-            <SortableRow
-              id={track.id || ""}
-              key={track.id || track.apiId}
-              onClick={() => onTrackClick(track)}
-              disabled={dragDisabled}
-              currentItem={currentTrack?.id === track.id}
-            >
-              <PlaylistItem
-                track={track}
-                isSelected={isSelected}
-                onSelectClick={onSelect}
-                index={i}
-                menuItems={menuItems}
-                noQueueItem={noQueueItem}
-              />
-            </SortableRow>
-          ))}
+          {tracks.map((track, i) => {
+            const isCurrent = !!track.id && currentTrack?.id === track.id;
+            return (
+              <SortableRow
+                id={track.id || ""}
+                key={track.id || track.apiId}
+                onClick={() => onTrackClick(track)}
+                disabled={dragDisabled}
+                currentItem={isCurrent}
+              >
+                <PlaylistItem
+                  track={track}
+                  isSelected={isSelected}
+                  onSelectClick={onSelect}
+                  index={i}
+                  menuItems={menuItems}
+                  noQueueItem={noQueueItem}
+                  isCurrent={isCurrent}
+                  isPlaying={isCurrent && isPlaying}
+                />
+              </SortableRow>
+            );
+          })}
           <DragOverlay wrapperElement="tr">
             {activeId ? (
               <PlaylistItem
