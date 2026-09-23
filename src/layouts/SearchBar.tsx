@@ -116,26 +116,24 @@ const SearchBar: React.FC = () => {
         onFocus={handleFocus}
       />
       <div className="relative">
-        {open && (
+        {open && options.length > 0 && (
           <div className="absolute top-1 z-50 w-full rounded-xl bg-popover outline-none animate-in fade-in-0 zoom-in-95">
             <CommandList className="ring-1 ring-border rounded-lg">
-              {options.length > 0 && (
-                <CommandGroup>
-                  {options.map((result) => (
-                    <CommandItem
-                      key={result}
-                      value={result}
-                      onSelect={handleSelect}
-                      onMouseDown={(event) => {
-                        event.stopPropagation();
-                        event.preventDefault();
-                      }}
-                    >
-                      {result}
-                    </CommandItem>
-                  ))}
-                </CommandGroup>
-              )}
+              <CommandGroup>
+                {options.map((result) => (
+                  <CommandItem
+                    key={result}
+                    value={result}
+                    onSelect={handleSelect}
+                    onMouseDown={(event) => {
+                      event.stopPropagation();
+                      event.preventDefault();
+                    }}
+                  >
+                    {result}
+                  </CommandItem>
+                ))}
+              </CommandGroup>
             </CommandList>
           </div>
         )}
