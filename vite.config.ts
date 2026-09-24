@@ -92,7 +92,13 @@ export default defineConfig({
   server: {
     port: 3001,
     strictPort: true,
-    open: true,
+    // Listen on IPv4 loopback so OAuth providers that reject "localhost"
+    // redirect URIs (Spotify) can use http://127.0.0.1:3001 instead. Browsers
+    // still reach localhost and *.localhost by falling back to IPv4.
+    host: "127.0.0.1",
+    // The app itself must stay on localhost: plugin iframes live on
+    // <pluginId>.localhost, and an IP address can't have subdomains.
+    open: "http://localhost:3001/",
   },
   preview: {
     port: 4001,
