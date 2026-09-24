@@ -17,6 +17,9 @@ const SearchBar: React.FC = () => {
   const searchPlugin = usePluginWithMethod("onGetSearchSuggestions");
   const [options, setOptions] = React.useState<string[]>([]);
   const [selected, setSelected] = React.useState("");
+  // cmdk highlights the first suggestion on its own, so Enter only takes a
+  // suggestion once the user has moved to one with the keyboard.
+  const navigated = React.useRef(false);
 
   const onGetSuggestions = React.useCallback(
     async (query: string) => {
@@ -70,6 +73,7 @@ const SearchBar: React.FC = () => {
   }, [search, selected, getSuggestionDebounce]);
 
   const onValueChange = (value: string) => {
+    navigated.current = false;
     setSearch(value);
   };
 
@@ -86,8 +90,16 @@ const SearchBar: React.FC = () => {
       setOpen(true);
     }
 
-    if (event.key === "Enter") {
+    const vimKey = event.ctrlKey && ["n", "j", "p", "k"].includes(event.key);
+    if (["ArrowDown", "ArrowUp", "Home", "End"].includes(event.key) || vimKey) {
+      navigated.current = true;
+    }
+
+    if (event.key === "Enter" && !navigated.current) {
+      // Keep cmdk from also selecting the highlighted suggestion.
+      event.preventDefault();
       searchQuery(search);
+      setOpen(false);
     }
   };
 
