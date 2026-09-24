@@ -84,7 +84,9 @@ const TrackList: React.FC<TrackListProps> = (props) => {
                 />
               </TableHead>
             )}
-            <TableHead className="w-10 pr-0 text-center">#</TableHead>
+            <TableHead className="w-10 pr-0 text-center">
+              <div className="min-w-8">#</div>
+            </TableHead>
             <TableHead>{t("title")}</TableHead>
             <TableHead className="hidden w-20 text-right md:table-cell">
               <ClockIcon

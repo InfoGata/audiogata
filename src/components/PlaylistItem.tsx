@@ -62,21 +62,23 @@ const PlaylistItem: React.FC<PlaylistItemsProps> = (props) => {
         </TableCell>
       )}
       <TableCell className="w-10 pr-0 text-center text-muted-foreground tabular-nums">
-        {isCurrent ? (
-          <AudioLinesIcon
-            className={cn(
-              "mx-auto size-4 text-primary",
-              isPlaying && "animate-pulse",
-            )}
-          />
-        ) : (
-          <>
-            <span className="group-hover:hidden">
-              {index !== undefined ? index + 1 : ""}
-            </span>
-            <PlayIcon className="mx-auto hidden size-4 fill-current text-foreground group-hover:block" />
-          </>
-        )}
+        <div className="flex min-w-8 justify-center">
+          {isCurrent ? (
+            <AudioLinesIcon
+              className={cn(
+                "size-4 text-primary",
+                isPlaying && "animate-pulse",
+              )}
+            />
+          ) : (
+            <>
+              <span className="group-hover:hidden">
+                {index !== undefined ? index + 1 : ""}
+              </span>
+              <PlayIcon className="hidden size-4 fill-current text-foreground group-hover:block" />
+            </>
+          )}
+        </div>
       </TableCell>
       <TableCell className="w-full max-w-0">
         <div className="flex items-center gap-3">
