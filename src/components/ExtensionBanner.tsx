@@ -3,6 +3,8 @@ import { Button } from "@/components/ui/button";
 import { useTranslation } from "react-i18next";
 import { X } from "lucide-react";
 import { useExtension } from "@/hooks/useExtension";
+import { Capacitor } from "@capacitor/core";
+import isElectron from "is-electron";
 
 export const ExtensionBanner: React.FC = () => {
   const { t } = useTranslation();
@@ -16,7 +18,14 @@ export const ExtensionBanner: React.FC = () => {
     localStorage.setItem("extensionBannerDismissed", "true");
   };
   
-  if (extensionDetected !== false || bannerDismissed) {
+  // The desktop and Android apps make requests natively, so the extension
+  // would add nothing there.
+  if (
+    extensionDetected !== false ||
+    bannerDismissed ||
+    isElectron() ||
+    Capacitor.isNativePlatform()
+  ) {
     return null;
   }
   
