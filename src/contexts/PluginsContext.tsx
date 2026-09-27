@@ -749,15 +749,19 @@ export const PluginsProvider: React.FC<React.PropsWithChildren> = (props) => {
           const newPlugins = presinstallPlugins.filter(
             (preinstall) => !plugs.some((pf) => pf.id === preinstall.id)
           );
-          await mapAsync(newPlugins, async (newPlugin) => {
-            if (!isMountedRef.current) return;
+          const installed = await mapAsync(newPlugins, async (newPlugin) => {
+            if (!isMountedRef.current) return false;
             const fileType = getFileTypeFromPluginUrl(newPlugin.url);
             const plugin = await getPlugin(fileType, true);
-            if (!plugin) return;
+            if (!plugin) return false;
 
             await loadAndAddPlugin(plugin);
+            return true;
           });
-          if (isMountedRef.current) {
+          // A plugin that couldn't be fetched, say on a first launch with no
+          // network, is retried next launch. Setting the flag regardless would
+          // mean it is never installed, with nothing telling the user why.
+          if (isMountedRef.current && installed.every(Boolean)) {
             dispatch(setPluginsPreInstalled());
           }
         } finally {
