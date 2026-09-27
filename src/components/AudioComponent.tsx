@@ -141,6 +141,12 @@ class AudioComponent extends React.Component<
       newProps.currentTrack?.pluginId || ""
     );
     if (prevProps.isPlaying !== newProps.isPlaying) {
+      if (Capacitor.isNativePlatform()) {
+        // Resolves without doing anything if no track has created the controls.
+        CapacitorMusicControls.updateIsPlaying({
+          isPlaying: newProps.isPlaying,
+        });
+      }
       if (newProps.isPlaying) {
         if (!this.trackLoaded && newProps.currentTrack) {
           await this.playTrack(newProps.currentTrack, newProps.elapsed);
@@ -309,13 +315,20 @@ class AudioComponent extends React.Component<
     }
 
     if (Capacitor.isNativePlatform()) {
+      // The typings mark every option optional, but on Android the booleans
+      // are read with a throwing getBoolean, and notificationIcon and cover are
+      // dereferenced unchecked, so all of them have to be sent.
       CapacitorMusicControls.create({
         track: this.props.currentTrack.name,
         artist: this.props.currentTrack.artistName,
-        cover:
-          this.props.currentTrack.images &&
-          this.props.currentTrack.images[0].url,
-      });
+        cover: this.props.currentTrack.images?.[0]?.url || "",
+        notificationIcon: "",
+        isPlaying: this.props.isPlaying,
+        hasPrev: true,
+        hasNext: true,
+        hasClose: false,
+        dismissable: !this.props.isPlaying,
+      }).catch((e) => console.warn("Unable to show media controls", e));
     }
   }
 
