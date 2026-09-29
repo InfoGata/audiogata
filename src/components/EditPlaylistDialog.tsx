@@ -1,8 +1,7 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { PlaylistInfo } from "../plugintypes";
-import { useAppDispatch } from "../store/hooks";
-import { updatePlaylist } from "../store/reducers/playlistReducer";
+import { updatePlaylist } from "@/sync/library";
 import {
   Dialog,
   DialogContent,
@@ -22,7 +21,6 @@ interface EditPlaylistDialogProps {
 const EditPlaylistDialog: React.FC<EditPlaylistDialogProps> = (props) => {
   const { open, playlist, setOpen } = props;
   const [name, setName] = React.useState(playlist.name);
-  const dispatch = useAppDispatch();
   const { t } = useTranslation();
   const formId = React.useId();
 
@@ -34,7 +32,7 @@ const EditPlaylistDialog: React.FC<EditPlaylistDialogProps> = (props) => {
   const onSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     const editedPlaylist = { ...playlist, name: name };
-    dispatch(updatePlaylist(editedPlaylist));
+    updatePlaylist(editedPlaylist);
     setOpen(false);
   };
 

@@ -39,6 +39,19 @@
                 document.location = deepLink;
             }
         });
+        // Sign-ins started by the app itself (usePluginLogin) also listen on
+        // this channel. It reaches the app even when the popup lost its opener
+        // on the way through the provider, and being same-origin it only ever
+        // reaches the app.
+        try {
+            const channel = new BroadcastChannel("audiogata-oauth");
+            channel.postMessage({ url: window.location.href });
+            channel.close();
+        } catch (e) {
+            // No BroadcastChannel: the opener message below still works.
+        }
+        // Plugins that sign in from their own options page opened this popup
+        // from their subdomain, which is why the target stays "*".
         if (window.opener) {
             const data = {
                 url: window.location.href,

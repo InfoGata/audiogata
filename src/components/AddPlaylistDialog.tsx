@@ -1,8 +1,7 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { Playlist, Track } from "../plugintypes";
-import { useAppDispatch } from "../store/hooks";
-import { addPlaylist } from "../store/reducers/playlistReducer";
+import { addPlaylist } from "@/sync/library";
 import {
   Dialog,
   DialogContent,
@@ -25,7 +24,6 @@ const AddPlaylistDialog: React.FC<AddPlaylistDialogProps> = (props) => {
   const { open, setOpen } = props;
   const [name, setName] = React.useState("");
   const formId = React.useId();
-  const dispatch = useAppDispatch();
   const { t } = useTranslation();
 
   const onSubmit = (e: React.FormEvent) => {
@@ -35,7 +33,7 @@ const AddPlaylistDialog: React.FC<AddPlaylistDialogProps> = (props) => {
       name,
       tracks: tracks,
     };
-    dispatch(addPlaylist(playlist));
+    addPlaylist(playlist);
     toast(t("playlistCreated"));
     setOpen(false);
   };

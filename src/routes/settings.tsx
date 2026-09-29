@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import AnalyticsSetting from "@/components/Settings/AnalyticsSetting";
+import CloudSyncSettings from "@/components/Settings/CloudSyncSettings";
 import DisableAutoUpdateSetting from "@/components/Settings/DisableAutoUpdateSettings";
 import PlayCurrentTrackStartup from "@/components/Settings/PlayCurrentTrackStartup";
 import SelectLyricsPlugin from "@/components/Settings/SelectLyricsPlugin";
@@ -11,6 +12,7 @@ import React from "react";
 const Settings: React.FC = () => {
   return (
     <div className="flex flex-col gap-4">
+      <CloudSyncSettings />
       <DisableAutoUpdateSetting />
       <PlayCurrentTrackStartup />
       <ShowForwardAndRewind />

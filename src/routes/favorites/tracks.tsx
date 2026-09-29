@@ -1,15 +1,14 @@
+import { useFavorites, usePlaylists } from "@/sync/useLibrary";
 import { DropdownItemProps } from "@/components/DropdownItem";
 import ImportDialog from "@/components/ImportDialog";
 import PlayButton from "@/components/PlayButton";
 import PlaylistMenu from "@/components/PlaylistMenu";
-import Spinner from "@/components/Spinner";
 import TrackList from "@/components/TrackList";
-import { db } from "@/database";
+import { addFavorites } from "@/sync/library";
 import { Playlist, Track } from "@/plugintypes";
-import { useAppDispatch, useAppSelector } from "@/store/hooks";
+import { useAppDispatch } from "@/store/hooks";
 import { playQueue, setTrack, setTracks } from "@/store/reducers/trackReducer";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useLiveQuery } from "dexie-react-hooks";
 import { FileUpIcon, LibraryIcon } from "lucide-react";
 import React from "react";
 import { useTranslation } from "react-i18next";
@@ -18,7 +17,7 @@ import { Button } from "@/components/ui/button";
 
 const FavoriteTracks: React.FC = () => {
   const dispatch = useAppDispatch();
-  const playlists = useAppSelector((state) => state.playlist.playlists);
+  const playlists = usePlaylists();
   const { t } = useTranslation();
   const [importDialogOpen, setImportDialogOpen] = React.useState(false);
   const { plugins } = usePlugins();
@@ -37,11 +36,11 @@ const FavoriteTracks: React.FC = () => {
     checkPlugins();
   }, [plugins]);
 
-  const tracks = useLiveQuery(() => db.favoriteTracks.toArray());
+  const tracks = useFavorites("tracks");
 
   const onTrackClick = (track: Track) => {
     dispatch(setTrack(track));
-    dispatch(setTracks(tracks || []));
+    dispatch(setTracks(tracks));
   };
 
   const openImportDialog = () => {
@@ -53,13 +52,12 @@ const FavoriteTracks: React.FC = () => {
 
   const onImport = async (item: Track[] | Playlist) => {
     if (Array.isArray(item)) {
-      await db.favoriteTracks.bulkAdd(item);
+      await addFavorites("tracks", item);
       closeImportDialog();
     }
   };
 
   const onPlay = () => {
-    if (!tracks) return;
     dispatch(setTracks(tracks));
     dispatch(playQueue());
   };
@@ -72,16 +70,12 @@ const FavoriteTracks: React.FC = () => {
     },
   ];
 
-  if (!tracks) {
-    return <Spinner />;
-  }
-
   return (
     <div>
       <PlayButton onClick={onPlay} />
       <PlaylistMenu
         playlists={playlists}
-        tracklist={tracks ?? []}
+        tracklist={tracks}
         dropdownItems={dropdownItems}
       />
       
@@ -103,7 +97,7 @@ const FavoriteTracks: React.FC = () => {
         </div>
       )}
       
-      <TrackList tracks={tracks || []} onTrackClick={onTrackClick} />
+      <TrackList tracks={tracks} onTrackClick={onTrackClick} />
       <ImportDialog
         open={importDialogOpen}
         parseType="track"

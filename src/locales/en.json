@@ -183,6 +183,23 @@
     "shareAnalytics": "Share anonymous usage data",
     "shareAnalyticsDescription": "Cookieless usage and error data that shows which parts of the app get used and what breaks. No account, no profile, nothing that identifies you.",
     "doNotTrackActive": "Your browser sends Do Not Track, so nothing is collected regardless of this setting.",
-    "whatIsCollected": "What's collected"
+    "whatIsCollected": "What's collected",
+    "cloudSync": "Cloud Sync",
+    "cloudSyncDescription": "Keeps your playlists and favorites the same on every device, stored in your own cloud storage through a sync plugin.",
+    "noSyncPlugins": "Install a sync plugin, such as Dropbox or Google Drive, to sync between devices:",
+    "syncPlugin": "Sync with",
+    "syncOff": "Off",
+    "loginToSync": "Log in to start syncing.",
+    "autoSync": "Sync automatically",
+    "syncInterval": "Also check for changes every",
+    "seconds_one": "{{count}} second",
+    "seconds_other": "{{count}} seconds",
+    "minutes_one": "{{count}} minute",
+    "minutes_other": "{{count}} minutes",
+    "syncNow": "Sync now",
+    "syncing": "Syncing…",
+    "lastSynced": "Last synced at {{time}}",
+    "syncFailed": "Sync failed: {{error}}",
+    "notSynced": "Not synced yet"
   }
 }

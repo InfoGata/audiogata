@@ -13,6 +13,7 @@ import callConfig from "./call-config";
 import "./i18n";
 import "./index.css";
 import { PluginsProvider } from "./contexts/PluginsContext";
+import { LibraryProvider } from "./sync/LibraryContext";
 import { ThemeProvider } from "@infogata/shadcn-vite-theme-provider";
 import Router from "./router";
 import store, { persistor } from "./store/store";
@@ -43,9 +44,12 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
               <IconContext.Provider value={{ className: "size-5" }}>
                 <QueryClientProvider client={queryClient}>
                   <PluginsProvider>
-                    <OutsideCallConsumer config={callConfig}>
-                      <Router />
-                    </OutsideCallConsumer>
+                    {/* Inside PluginsProvider: syncing goes through a plugin. */}
+                    <LibraryProvider>
+                      <OutsideCallConsumer config={callConfig}>
+                        <Router />
+                      </OutsideCallConsumer>
+                    </LibraryProvider>
                   </PluginsProvider>
                 </QueryClientProvider>
               </IconContext.Provider>

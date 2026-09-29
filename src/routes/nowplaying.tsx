@@ -1,3 +1,4 @@
+import { usePlaylists } from "@/sync/useLibrary";
 import { DropdownItemProps } from "@/components/DropdownItem";
 import Title from "@/components/Title";
 import { ItemMenuType } from "@/types";
@@ -59,7 +60,7 @@ const NowPlaying: React.FC = () => {
     dispatch(deleteTracks(selected));
   };
 
-  const playlists = useAppSelector((state) => state.playlist.playlists);
+  const playlists = usePlaylists();
 
   const onTrackClick = (track: Track) => {
     dispatch(setTrack(track));

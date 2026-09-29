@@ -2,8 +2,7 @@ import React from "react";
 import { useTranslation } from "react-i18next";
 import usePlugins from "../hooks/usePlugins";
 import { PlaylistInfo, Track } from "../plugintypes";
-import { useAppDispatch } from "../store/hooks";
-import { addPlaylistTracks } from "../store/reducers/playlistReducer";
+import { addPlaylistTracks } from "@/sync/library";
 import SelectPlugin from "./SelectPlugin";
 import { Button } from "./ui/button";
 import {
@@ -23,7 +22,6 @@ interface ConvertTracksProps {
 
 const ConvertTracksDialog: React.FC<ConvertTracksProps> = (props) => {
   const { tracks, playlist, open, setOpen } = props;
-  const dispatch = useAppDispatch();
   const [inProgess, setInProgress] = React.useState(false);
   const [completed, setCompleted] = React.useState(false);
   const [numOfTracks, setNumOfTracks] = React.useState(0);
@@ -66,7 +64,7 @@ const ConvertTracksDialog: React.FC<ConvertTracksProps> = (props) => {
 
   const onConfirm = () => {
     if (playlist) {
-      dispatch(addPlaylistTracks(playlist, successfulTracks));
+      addPlaylistTracks(playlist, successfulTracks);
       setOpen(false);
     }
   };

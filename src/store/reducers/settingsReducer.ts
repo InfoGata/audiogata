@@ -12,7 +12,20 @@ interface SettingsState {
   // Optional, like the settings above, so state persisted before it existed
   // reads as "not disabled". See lib/analytics.
   disableAnalytics?: boolean;
+  cloudSync?: CloudSyncSettings;
 }
+
+export interface CloudSyncSettings {
+  /** The sync plugin chosen in Settings; sync is off without one. */
+  pluginId?: string;
+  autoSync: boolean;
+  syncIntervalSeconds: number;
+}
+
+export const defaultCloudSync: CloudSyncSettings = {
+  autoSync: true,
+  syncIntervalSeconds: 60,
+};
 
 const initialState: SettingsState = {
   playOnStartup: false,
@@ -68,6 +81,19 @@ const settingsSlice = createSlice({
     setDisableAnalytics: (state, action: PayloadAction<boolean>) => {
       return { ...state, disableAnalytics: action.payload };
     },
+    updateCloudSync: (
+      state,
+      action: PayloadAction<Partial<CloudSyncSettings>>
+    ) => {
+      return {
+        ...state,
+        cloudSync: {
+          ...defaultCloudSync,
+          ...state.cloudSync,
+          ...action.payload,
+        },
+      };
+    },
   },
 });
 
@@ -81,5 +107,6 @@ export const {
   setLyricsPluginId,
   setPluginsPreInstalled,
   setDisableAnalytics,
+  updateCloudSync,
 } = settingsSlice.actions;
 export default settingsSlice.reducer;

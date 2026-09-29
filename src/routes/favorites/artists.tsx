@@ -1,21 +1,15 @@
 import { createFileRoute } from "@tanstack/react-router";
 import ArtistCard from "@/components/ArtistCard";
 import CardContainer from "@/components/CardContainer";
-import { useLiveQuery } from "dexie-react-hooks";
 import React from "react";
-import Spinner from "@/components/Spinner";
-import { db } from "@/database";
+import { useFavorites } from "@/sync/useLibrary";
 
 const FavoriteArtists: React.FC = () => {
-  const artists = useLiveQuery(() => db.favoriteArtists.toArray());
-
-  if (!artists) {
-    return <Spinner />;
-  }
+  const artists = useFavorites("artists");
 
   return (
     <CardContainer>
-      {artists?.map((a) => <ArtistCard key={a.id} artist={a} />)}
+      {artists.map((a) => <ArtistCard key={a.id} artist={a} />)}
     </CardContainer>
   );
 };

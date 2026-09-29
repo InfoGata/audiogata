@@ -6,24 +6,18 @@ import ImportDialog from "@/components/ImportDialog";
 import PlayButton from "@/components/PlayButton";
 import PlaylistMenu from "@/components/PlaylistMenu";
 import SelectTrackListPlugin from "@/components/SelectTrackListPlugin";
-import Spinner from "@/components/Spinner";
 import Title from "@/components/Title";
 import TrackList from "@/components/TrackList";
 import { Button } from "@/components/ui/button";
 import { db } from "@/database";
 import useSelected from "@/hooks/useSelected";
 import { Playlist, Track } from "@/plugintypes";
-import { useAppDispatch, useAppSelector } from "@/store/hooks";
-import {
-  addPlaylistTracks,
-  setPlaylistTracks,
-} from "@/store/reducers/playlistReducer";
+import { useAppDispatch } from "@/store/hooks";
+import { addPlaylistTracks, setPlaylistTracks } from "@/sync/library";
+import { usePlaylist, usePlaylists } from "@/sync/useLibrary";
 import { playQueue, setTrack, setTracks } from "@/store/reducers/trackReducer";
-import { AppState } from "@/store/store";
 import { ItemMenuType } from "@/types";
-import { createSelector } from "@reduxjs/toolkit";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useLiveQuery } from "dexie-react-hooks";
 import { InfoIcon, PencilIcon, Trash, TrashIcon } from "lucide-react";
 import React from "react";
 import { useTranslation } from "react-i18next";
@@ -38,17 +32,13 @@ const PlaylistTracks: React.FC = () => {
   const [importDialogOpen, setImportDialogOpen] = React.useState(false);
 
   const { t } = useTranslation();
-  const playlist = useLiveQuery(
-    () => db.playlists.get(playlistId || ""),
-    [playlistId],
-    false
-  );
-  const tracks = (playlist && playlist?.tracks) || [];
+  const playlist = usePlaylist(playlistId);
+  const tracks = React.useMemo(() => playlist?.tracks ?? [], [playlist]);
 
   const onDelete = async (item?: ItemMenuType) => {
     if (playlist && item?.type === "track") {
       const newTracklist = tracks.filter((t) => t.id !== item.item.id);
-      dispatch(setPlaylistTracks(playlist, newTracklist));
+      setPlaylistTracks(playlist, newTracklist);
     }
   };
 
@@ -69,7 +59,7 @@ const PlaylistTracks: React.FC = () => {
     await db.audioBlobs.bulkDelete(Array.from(selected));
     if (playlist) {
       const newTracklist = tracks.filter((t) => !selected.has(t.id ?? ""));
-      dispatch(setPlaylistTracks(playlist, newTracklist));
+      setPlaylistTracks(playlist, newTracklist);
     }
   };
 
@@ -86,21 +76,18 @@ const PlaylistTracks: React.FC = () => {
 
   const onImport = (item: Track[] | Playlist) => {
     if (playlist && Array.isArray(item)) {
-      dispatch(addPlaylistTracks(playlist, item));
+      addPlaylistTracks(playlist, item);
       closeImportDialog();
     }
   };
-  const playlistsSelector = createSelector(
-    [(state: AppState) => state.playlist.playlists],
-    (playlists) => playlists.filter((p) => p.id !== playlistId)
+  const allPlaylists = usePlaylists();
+  const playlists = React.useMemo(
+    () => allPlaylists.filter((p) => p.id !== playlistId),
+    [allPlaylists, playlistId]
   );
-  const playlists = useAppSelector(playlistsSelector);
 
   const { onSelect, onSelectAll, isSelected, selected, setSelected } =
     useSelected(tracks || []);
-  const playlistInfo = useAppSelector((state) =>
-    state.playlist.playlists.find((p) => p.id === playlistId)
-  );
 
   const [playlistDialogOpen, setPlaylistDialogOpen] = React.useState(false);
 
@@ -126,7 +113,7 @@ const PlaylistTracks: React.FC = () => {
 
   const onDragOver = (trackList: Track[]) => {
     if (playlist) {
-      dispatch(setPlaylistTracks(playlist, trackList));
+      setPlaylistTracks(playlist, trackList);
     }
   };
 
@@ -153,11 +140,10 @@ const PlaylistTracks: React.FC = () => {
 
   return (
     <>
-      <Spinner open={playlist === false} />
       {playlist ? (
         <>
           <div className="flex">
-            <Title title={playlistInfo?.name} />
+            <Title title={playlist.name} />
             <Button variant="ghost" size="icon" onClick={onEditMenuOpen}>
               <PencilIcon />
             </Button>
@@ -207,7 +193,7 @@ const PlaylistTracks: React.FC = () => {
           )}
         </>
       ) : (
-        <>{playlist !== false && <h3>{t("notFound")}</h3>}</>
+        <h3>{t("notFound")}</h3>
       )}
     </>
   );

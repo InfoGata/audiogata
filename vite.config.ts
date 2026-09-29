@@ -4,6 +4,7 @@ import { defineConfig } from "vitest/config";
 import { VitePWA } from "vite-plugin-pwa";
 import { tanstackRouter } from "@tanstack/router-plugin/vite";
 import tailwindcss from "@tailwindcss/vite";
+import wasm from "vite-plugin-wasm";
 import { buildInfoDefine } from "./build-info";
 
 // https://vitejs.dev/config/
@@ -33,7 +34,13 @@ export default defineConfig({
     setupFiles: ["fake-indexeddb/auto", "src/test/before.ts"],
     teardownTimeout: 5000,
   },
+  // automerge ships wasm and uses top-level await, which needs es2022.
+  build: {
+    target: "es2022",
+  },
   plugins: [
+    // automerge (the synced library document) is a wasm module.
+    wasm(),
     tailwindcss(),
     // Each route becomes its own chunk, so opening the app parses the shell and
     // the route being visited rather than every route. The service worker still
@@ -51,7 +58,8 @@ export default defineConfig({
       // SKIP_WAITING — impossible when the stale build is what failed to boot.
       registerType: "autoUpdate",
       workbox: {
-        maximumFileSizeToCacheInBytes: 3 * 1024 * 1024, // 3MB
+        // Must stay above the ~2.7MB automerge wasm, or the app won't open offline.
+        maximumFileSizeToCacheInBytes: 4 * 1024 * 1024, // 4MB
         navigateFallback: "/index.html",
         navigateFallbackDenylist: [
           /\.html$/,

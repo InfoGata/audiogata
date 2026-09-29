@@ -1,8 +1,9 @@
+import { usePlaylists } from "@/sync/useLibrary";
 import PlayButton from "@/components/PlayButton";
 import PlaylistMenu from "@/components/PlaylistMenu";
 import Spinner from "@/components/Spinner";
 import TrackList from "@/components/TrackList";
-import { useAppDispatch, useAppSelector } from "@/store/hooks";
+import { useAppDispatch } from "@/store/hooks";
 import { playQueue, setTrack, setTracks } from "@/store/reducers/trackReducer";
 import { createFileRoute } from "@tanstack/react-router";
 import React from "react";
@@ -18,7 +19,7 @@ import {
 const PluginLibraryTracks: React.FC = () => {
   const { pluginId } = Route.useParams();
   const dispatch = useAppDispatch();
-  const playlists = useAppSelector((state) => state.playlist.playlists);
+  const playlists = usePlaylists();
   const { plugins } = usePlugins();
   const { t } = useTranslation();
 

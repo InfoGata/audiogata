@@ -1,17 +1,15 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import AlbumCard from "@/components/AlbumCard";
 import CardContainer from "@/components/CardContainer";
-import { useLiveQuery } from "dexie-react-hooks";
 import React from "react";
-import Spinner from "@/components/Spinner";
-import { db } from "@/database";
+import { useFavorites } from "@/sync/useLibrary";
 import usePlugins from "@/hooks/usePlugins";
 import { Button } from "@/components/ui/button";
 import { LibraryIcon } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
 const FavoriteAlbums: React.FC = () => {
-  const albums = useLiveQuery(() => db.favoriteAlbums.toArray());
+  const albums = useFavorites("albums");
   const { plugins } = usePlugins();
   const { t } = useTranslation();
   const [libraryPlugins, setLibraryPlugins] = React.useState<Array<{id: string, name: string}>>([]);
@@ -28,10 +26,6 @@ const FavoriteAlbums: React.FC = () => {
     };
     checkPlugins();
   }, [plugins]);
-
-  if (!albums) {
-    return <Spinner />;
-  }
 
   return (
     <div>

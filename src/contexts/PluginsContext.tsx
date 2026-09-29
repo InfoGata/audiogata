@@ -26,6 +26,9 @@ import {
   GetTrackRequest,
   GetTrackUrlRequest,
   LibraryAlbumsRequest,
+  LoginCallbackRequest,
+  LoginRequest,
+  LoginResponse,
   LibraryTracksRequest,
   LookupTrackRequest,
   Manifest,
@@ -43,6 +46,10 @@ import {
   SearchPlaylistResult,
   SearchRequest,
   SearchTrackResult,
+  SyncDownloadRequest,
+  SyncDownloadResponse,
+  SyncUploadRequest,
+  SyncUploadResponse,
   Track,
   UserPlaylistRequest,
 } from "../plugintypes";
@@ -63,10 +70,8 @@ import { db } from "../database";
 import { defaultPlugins } from "../default-plugins";
 import i18n from "../i18n";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
-import {
-  addPlaylistTracks,
-  addPlaylists,
-} from "../store/reducers/playlistReducer";
+import * as library from "../sync/library";
+import { resolvePendingLogin } from "../lib/pending-logins";
 import {
   setLyricsPluginId,
   setPluginsPreInstalled,
@@ -130,6 +135,12 @@ export interface PluginMethodInterface extends PlayerComponent {
   onChangeTheme(theme: Theme): Promise<void>;
   onPostLogin(): Promise<void>;
   onPostLogout(): Promise<void>;
+  onLogin(request: LoginRequest): Promise<LoginResponse | void>;
+  onLoginCallback(request: LoginCallbackRequest): Promise<void>;
+  onLogout(): Promise<void>;
+  onIsLoggedIn(): Promise<boolean>;
+  onSyncUpload(request: SyncUploadRequest): Promise<SyncUploadResponse>;
+  onSyncDownload(request: SyncDownloadRequest): Promise<SyncDownloadResponse>;
 }
 
 export interface PluginMessage {
@@ -238,9 +249,6 @@ export const PluginsProvider: React.FC<React.PropsWithChildren> = (props) => {
   const corsProxyUrl = useAppSelector((state) => state.settings.corsProxyUrl);
   const corsProxyUrlRef = React.useRef(corsProxyUrl);
   corsProxyUrlRef.current = corsProxyUrl;
-  const playlists = useAppSelector((state) => state.playlist.playlists);
-  const playlistsRef = React.useRef(playlists);
-  playlistsRef.current = playlists;
   const disableAutoUpdatePlugins = useAppSelector(
     (state) => state.settings.disableAutoUpdatePlugins
   );
@@ -348,13 +356,13 @@ export const PluginsProvider: React.FC<React.PropsWithChildren> = (props) => {
           return plugin.id || "";
         },
         getPlaylists: async () => {
-          return await db.playlists.toArray();
+          return await library.getPlaylists();
         },
         getPlaylistsInfo: async () => {
-          return playlistsRef.current;
+          return await library.getPlaylistsInfo();
         },
         addPlaylists: async (playlists: Playlist[]) => {
-          dispatch(addPlaylists(playlists));
+          await library.addPlaylists(playlists);
         },
         addTracksToPlaylist: async (playlistId: string, tracks: Track[]) => {
           tracks.forEach((t) => {
@@ -362,12 +370,7 @@ export const PluginsProvider: React.FC<React.PropsWithChildren> = (props) => {
               t.pluginId = plugin.id;
             }
           });
-          const playlist = playlistsRef.current.find(
-            (p) => p.id === playlistId
-          );
-          if (playlist) {
-            dispatch(addPlaylistTracks(playlist, tracks));
-          }
+          await library.addPlaylistTracks({ id: playlistId }, tracks);
         },
         getLocale: async () => {
           return i18n.language;
@@ -622,19 +625,27 @@ export const PluginsProvider: React.FC<React.PropsWithChildren> = (props) => {
   }, []);
 
   React.useEffect(() => {
-    App.addListener("appUrlOpen", async (event: URLOpenListenerEvent) => {
-      if (event.url.startsWith("com.audiogata.app://message")) {
-        const url = new URL(event.url);
-        const pluginId = url.searchParams.get("pluginId");
-        const plugin = pluginFrames.find((p) => p.id === pluginId);
-        if (plugin) {
-          const message = url.searchParams.get("message");
-          if (await plugin.hasDefined.onDeepLinkMessage()) {
-            await plugin.remote.onDeepLinkMessage(message || "");
+    const listener = App.addListener(
+      "appUrlOpen",
+      async (event: URLOpenListenerEvent) => {
+        if (event.url.startsWith("com.audiogata.app://message")) {
+          const url = new URL(event.url);
+          const pluginId = url.searchParams.get("pluginId");
+          const message = url.searchParams.get("message") || "";
+          // A sign-in started from the app's own login button (usePluginLogin)
+          // is finished by the app, not handed to the plugin as a message.
+          if (pluginId && resolvePendingLogin(pluginId, message)) return;
+          const plugin = pluginFrames.find((p) => p.id === pluginId);
+          if (plugin && (await plugin.hasDefined.onDeepLinkMessage())) {
+            await plugin.remote.onDeepLinkMessage(message);
           }
         }
       }
-    });
+    );
+    // One listener at a time: this re-runs whenever the plugins change.
+    return () => {
+      listener.then((l) => l.remove());
+    };
   }, [pluginFrames]);
 
   const addPlugin = async (plugin: PluginInfo) => {

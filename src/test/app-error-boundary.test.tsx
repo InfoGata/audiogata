@@ -143,23 +143,31 @@ describe("app data reset", () => {
     expect(reload).toHaveBeenCalled();
   });
 
-  it("clears the queue and settings but keeps the database", async () => {
-    // Playlists, favorites and downloads live in the database and can't be
-    // fetched again, so the lighter reset must not touch it.
+  it("clears the queue and settings but keeps the databases", async () => {
+    // Playlists, favorites and downloads live in the databases and can't be
+    // fetched again, so the lighter reset must not touch them.
     await openDatabase("AudioDatabase");
+    await openDatabase("audiogata-library");
     window.localStorage.setItem("persist:root", "{}");
+    window.localStorage.setItem("audiogata-library-doc-url", "automerge:x");
 
     requestAppDataReset("state");
     await runPendingAppDataReset();
 
     expect(window.localStorage.getItem("persist:root")).toBeNull();
     expect(await databaseNames()).toContain("AudioDatabase");
+    expect(await databaseNames()).toContain("audiogata-library");
+    expect(window.localStorage.getItem("audiogata-library-doc-url")).toBe(
+      "automerge:x"
+    );
   });
 
   it("clears persisted state and the database on a full reset", async () => {
     await openDatabase("AudioDatabase");
+    await openDatabase("audiogata-library");
     window.localStorage.setItem("persist:root", "{}");
     window.localStorage.setItem("vite-ui-theme", "dark");
+    window.localStorage.setItem("audiogata-library-doc-url", "automerge:x");
 
     requestAppDataReset("all");
     await runPendingAppDataReset();
@@ -170,5 +178,8 @@ describe("app data reset", () => {
     // Untouched: a theme preference can't be what's stopping the app booting.
     expect(window.localStorage.getItem("vite-ui-theme")).toBe("dark");
     expect(await databaseNames()).not.toContain("AudioDatabase");
+    // The library document goes too, along with the pointer to it.
+    expect(await databaseNames()).not.toContain("audiogata-library");
+    expect(window.localStorage.getItem("audiogata-library-doc-url")).toBeNull();
   });
 });

@@ -1,3 +1,4 @@
+import { usePlaylists } from "@/sync/useLibrary";
 import ConfirmPluginDialog from "@/components/ConfirmPluginDialog";
 import Pager from "@/components/Pager";
 import PlayButton from "@/components/PlayButton";
@@ -5,13 +6,13 @@ import PlaylistInfoCard from "@/components/PlaylistInfoCard";
 import PlaylistMenu from "@/components/PlaylistMenu";
 import Spinner from "@/components/Spinner";
 import TrackList from "@/components/TrackList";
-import { db } from "@/database";
+import { addFavorite, removeFavorite } from "@/sync/library";
 import useFindPlugin from "@/hooks/useFindPlugin";
 import usePagination from "@/hooks/usePagination";
 import usePlugins from "@/hooks/usePlugins";
 import useSelected from "@/hooks/useSelected";
 import { Album, PageInfo, Track } from "@/plugintypes";
-import { useAppDispatch, useAppSelector } from "@/store/hooks";
+import { useAppDispatch } from "@/store/hooks";
 import { playQueue, setTrack, setTracks } from "@/store/reducers/trackReducer";
 import { createFileRoute, useRouterState } from "@tanstack/react-router";
 import React from "react";
@@ -35,17 +36,12 @@ const AlbumPage: React.FC = () => {
 
   const onFavorite = async () => {
     if (albumInfo) {
-      await db.favoriteAlbums.add(albumInfo);
+      await addFavorite("albums", { ...albumInfo, pluginId, apiId });
     }
   };
 
   const onRemoveFavorite = async () => {
-    if (albumInfo) {
-      const record = await db.favoriteAlbums.get({ pluginId, apiId });
-      if (record?.id) {
-        await db.favoriteAlbums.delete(record.id);
-      }
-    }
+    await removeFavorite("albums", { pluginId, apiId });
   };
 
   const { isLoading, pendingPlugin, removePendingPlugin } = useFindPlugin({
@@ -54,7 +50,7 @@ const AlbumPage: React.FC = () => {
     plugin,
   });
 
-  const playlists = useAppSelector((state) => state.playlist.playlists);
+  const playlists = usePlaylists();
 
   const [currentPage, setCurrentPage] = React.useState<PageInfo>();
   const { page, hasNextPage, hasPreviousPage, onPreviousPage, onNextPage } =

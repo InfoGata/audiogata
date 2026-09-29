@@ -5,7 +5,8 @@
  * to rehydrate, a half-applied Dexie upgrade, a plugin that now throws on load.
  *
  * Two scopes, because AudioDatabase holds things that can't be downloaded
- * again -- playlists, favorites, tracks saved for offline -- and the likeliest
+ * again -- tracks saved for offline, and playlists and favorites unless cloud
+ * sync is on (those live in "audiogata-library") -- and the likeliest
  * culprit, persisted Redux state, can be cleared without touching any of them:
  *
  * - "state": the queue, current track and settings (everything redux-persist
@@ -28,7 +29,16 @@ const RESET_FLAG = "audiogata:reset-app-data";
  * Deleted even when `indexedDB.databases()` isn't available to enumerate them
  * (Firefox only shipped it in 126). Keep in sync with src/database.ts.
  */
-const KNOWN_DATABASES = ["AudioDatabase"];
+const KNOWN_DATABASES = ["AudioDatabase", "audiogata-library"];
+
+/**
+ * Point at the library document in "audiogata-library"; see src/sync/library.ts.
+ * Not imported from there, since that would load automerge before the reset.
+ */
+const LIBRARY_KEYS = [
+  "audiogata-library-doc-url",
+  "audiogata-library-legacy-imported",
+];
 
 /** Everything redux-persist owns; see the persist config in store/store.ts. */
 const LOCAL_STORAGE_PREFIX = "persist:";
@@ -89,6 +99,11 @@ export const runPendingAppDataReset = async (): Promise<void> => {
   }
 
   if (scope === "all") {
+    try {
+      LIBRARY_KEYS.forEach((key) => window.localStorage.removeItem(key));
+    } catch {
+      // See readFlag.
+    }
     await Promise.all(KNOWN_DATABASES.map(deleteDatabase));
   }
 };

@@ -1,3 +1,4 @@
+import { usePlaylists } from "@/sync/useLibrary";
 import AddPlaylistDialog from "@/components/AddPlaylistDialog";
 import DropdownItem, { DropdownItemProps } from "@/components/DropdownItem";
 import { Button } from "@/components/ui/button";
@@ -6,7 +7,8 @@ import {
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { db } from "@/database";
+import { addFavorite, removeFavorite } from "@/sync/library";
+import { useIsFavorite } from "@/sync/useLibrary";
 import { Track } from "@/plugintypes";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import {
@@ -36,7 +38,7 @@ const TrackMenu: React.FC<Props> = (props) => {
   const { track, dropdownItems, noQueueItem } = props;
   const dispatch = useAppDispatch();
   const { t } = useTranslation();
-  const [isFavorited, setIsFavorited] = React.useState(false);
+  const isFavorited = useIsFavorite("tracks", track);
   const [playlistDialogOpen, setPlaylistDialogOpen] = React.useState(false);
   const [open, setOpen] = React.useState(false);
   const addVideoToNewPlaylist = () => {
@@ -46,20 +48,16 @@ const TrackMenu: React.FC<Props> = (props) => {
   const lyricsPluginId = useAppSelector(
     (state) => state.settings.lyricsPluginId
   );
-  const playlists = useAppSelector((state) => state.playlist.playlists);
+  const playlists = usePlaylists();
 
   const favoriteTrack = async () => {
-    if (track) {
-      await db.favoriteTracks.add(track);
-      toast(t("addedToFavorites"));
-    }
+    await addFavorite("tracks", track);
+    toast(t("addedToFavorites"));
   };
 
-  const removeFavorite = async () => {
-    if (track.id) {
-      await db.favoriteTracks.delete(track.id);
-      toast(t("removedFromFavorites"));
-    }
+  const unfavoriteTrack = async () => {
+    await removeFavorite("tracks", track);
+    toast(t("removedFromFavorites"));
   };
 
   const addTrackToQueue = () => {
@@ -78,7 +76,7 @@ const TrackMenu: React.FC<Props> = (props) => {
     {
       title: isFavorited ? t("removeFromFavorites") : t("addToFavorites"),
       icon: isFavorited ? <StarOffIcon /> : <StarIcon />,
-      action: isFavorited ? removeFavorite : favoriteTrack,
+      action: isFavorited ? unfavoriteTrack : favoriteTrack,
     },
     track.albumApiId
       ? {
@@ -125,26 +123,6 @@ const TrackMenu: React.FC<Props> = (props) => {
       action: addVideoToNewPlaylist,
     },
   ];
-
-  React.useEffect(() => {
-    const checkFavorite = async () => {
-      if (open) {
-        if (track.pluginId && track.apiId) {
-          const hasFavorite = await db.favoriteTracks.get({
-            pluginId: track.pluginId,
-            apiId: track.apiId,
-          });
-          setIsFavorited(!!hasFavorite);
-        } else if (track.id) {
-          const hasFavorite = await db.favoriteTracks.get(track.id);
-          setIsFavorited(!!hasFavorite);
-        } else {
-          setIsFavorited(false);
-        }
-      }
-    };
-    checkFavorite();
-  }, [open, track]);
 
   const definedItems = items.filter((i): i is DropdownItemProps => !!i);
   return (

@@ -1,5 +1,6 @@
 import { ExtensionProvider } from "@/contexts/ExtensionContext";
 import { PluginsProvider } from "@/contexts/PluginsContext";
+import { LibraryProvider } from "@/sync/LibraryContext";
 import { ThemeProvider } from "@infogata/shadcn-vite-theme-provider";
 import { Root } from "@/routes/__root";
 import {
@@ -45,7 +46,9 @@ export function renderWithProviders(ui: React.ReactElement) {
           <ExtensionProvider>
             <QueryClientProvider client={queryClient}>
               <PluginsProvider>
-                <RouterProvider router={router as any} />
+                <LibraryProvider>
+                  <RouterProvider router={router as any} />
+                </LibraryProvider>
               </PluginsProvider>
             </QueryClientProvider>
           </ExtensionProvider>

@@ -265,3 +265,41 @@ export interface GetSearchSuggestionRequest {
   query: string;
 }
 
+
+export interface LoginRequest {
+  apiKey: string;
+  apiSecret: string;
+  /** Name of the blank popup the host opened for the plugin's OAuth page. */
+  popupName?: string;
+}
+
+export interface LoginResponse {
+  /** Url the host navigates the popup to. */
+  url?: string;
+}
+
+export interface LoginCallbackRequest {
+  /** The full OAuth callback url, query string included. */
+  url: string;
+}
+
+export interface SyncUploadRequest {
+  docUrl: string;
+  /** Base64-encoded automerge document. */
+  data: string;
+}
+
+export interface SyncUploadResponse {
+  success: boolean;
+  error?: string;
+}
+
+export interface SyncDownloadRequest {
+  docUrl: string;
+}
+
+export interface SyncDownloadResponse {
+  /** Base64-encoded automerge document, or null when there is none yet. */
+  data: string | null;
+  error?: string;
+}

@@ -1,3 +1,4 @@
+import { usePlaylists } from "@/sync/useLibrary";
 import ConfirmPluginDialog from "@/components/ConfirmPluginDialog";
 import Pager from "@/components/Pager";
 import PlayButton from "@/components/PlayButton";
@@ -10,7 +11,7 @@ import usePagination from "@/hooks/usePagination";
 import usePlugins from "@/hooks/usePlugins";
 import useSelected from "@/hooks/useSelected";
 import { PageInfo, PlaylistInfo, Track } from "@/plugintypes";
-import { useAppDispatch, useAppSelector } from "@/store/hooks";
+import { useAppDispatch } from "@/store/hooks";
 import { playQueue, setTrack, setTracks } from "@/store/reducers/trackReducer";
 import { createFileRoute, useRouterState } from "@tanstack/react-router";
 import React from "react";
@@ -33,7 +34,7 @@ const PluginPlaylist: React.FC = () => {
   >(state.playlistInfo);
   const dispatch = useAppDispatch();
 
-  const playlists = useAppSelector((state) => state.playlist.playlists);
+  const playlists = usePlaylists();
   const { page, hasNextPage, hasPreviousPage, onPreviousPage, onNextPage } =
     usePagination(currentPage);
   const { isLoading, pendingPlugin, removePendingPlugin } = useFindPlugin({

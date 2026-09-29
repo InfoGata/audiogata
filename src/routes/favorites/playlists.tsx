@@ -1,17 +1,12 @@
 import { createFileRoute } from "@tanstack/react-router";
 import PlaylistListItem from "@/components/PlaylistListItem";
-import { useLiveQuery } from "dexie-react-hooks";
 import React from "react";
 import { useTranslation } from "react-i18next";
-import { db } from "@/database";
+import { useFavorites } from "@/sync/useLibrary";
 
 const FavoriteChannels: React.FC = () => {
-  const playlists = useLiveQuery(() => db.favoritePlaylists.toArray());
+  const playlists = useFavorites("playlists");
   const { t } = useTranslation();
-
-  if (!playlists) {
-    return null;
-  }
 
   if (playlists.length === 0) {
     return <h3>{t("noFavoritePlaylists")}</h3>;
