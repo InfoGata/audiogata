@@ -54,7 +54,12 @@ import {
   UserPlaylistRequest,
 } from "../plugintypes";
 import { Theme } from "@infogata/shadcn-vite-theme-provider";
-import { NetworkRequest, PlayerComponent, SiteRedirectRule } from "../types";
+import {
+  NetworkRequest,
+  PlayerComponent,
+  PoTokenOverrides,
+  SiteRedirectRule,
+} from "../types";
 import {
   AliasError,
   aliasForId,
@@ -191,6 +196,11 @@ export default PluginsContext;
 
 interface ApplicationPluginInterface extends PluginInterface {
   networkRequest(input: string, init?: RequestInit): Promise<NetworkRequest>;
+  mintPoToken(
+    origin: string,
+    contentBinding: string,
+    overrides?: PoTokenOverrides
+  ): Promise<string>;
   postUiMessage(message: any): Promise<void>;
   isNetworkRequestCorsDisabled(): Promise<boolean>;
   endTrack(): Promise<void>;
@@ -289,6 +299,18 @@ export const PluginsProvider: React.FC<React.PropsWithChildren> = (props) => {
             url: response.url,
           };
           return result;
+        },
+        // Only the extension can mint; the desktop and Android apps have no
+        // implementation yet. Plugins treat a rejection as "not available".
+        mintPoToken: async (origin, contentBinding, overrides) => {
+          if (hasExtension() && window.InfoGata?.mintPoToken) {
+            return await window.InfoGata.mintPoToken(
+              origin,
+              contentBinding,
+              overrides
+            );
+          }
+          throw new Error("Proof-of-origin tokens are not available here");
         },
         isNetworkRequestCorsDisabled: async () => {
           return isCorsDisabled();

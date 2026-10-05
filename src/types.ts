@@ -60,6 +60,17 @@ export interface InfoGataExtension {
   ) => Promise<void>;
   getVersion?: () => Promise<string>;
   registerRedirects?: (rules: SiteRedirectRule[]) => void;
+  /** Absent in extension versions without minting; rejects for origins it cannot mint on. */
+  mintPoToken?: (
+    origin: string,
+    contentBinding: string,
+    overrides?: PoTokenOverrides
+  ) => Promise<string>;
+}
+
+export interface PoTokenOverrides {
+  requestKey?: string;
+  integrityTokenPath?: string;
 }
 
 declare global {
