@@ -4,7 +4,7 @@ import React from "react";
 import TopItemCards from "../components/TopItemCards";
 import { ExtensionBanner } from "@/components/ExtensionBanner";
 
-export const Index: React.FC = () => {
+const Index: React.FC = () => {
   return (
     <>
       <ExtensionBanner />

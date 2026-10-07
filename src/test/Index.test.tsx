@@ -3,7 +3,9 @@ import { cleanup, screen, waitFor } from "@testing-library/react";
 import { afterEach, describe, expect, test } from "vitest";
 import i18next from "../i18n";
 import { renderWithProviders } from "./renderWithProviders";
-import { Index } from "@/routes";
+import { Route } from "@/routes";
+
+const Index = Route.options.component!;
 
 describe("App", () => {
   afterEach(() => {
