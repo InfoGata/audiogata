@@ -2,6 +2,12 @@ import { is, optimizer } from "@electron-toolkit/utils";
 import { app, BrowserWindow, components, ipcMain } from "electron";
 import { join } from "path";
 import { ManifestAuthentication } from "../../src/plugintypes";
+import { checkPoTokenRequest } from "../../src/po-minter/providers";
+import {
+  closePoTokenMinter,
+  isMinterWindow,
+  mintPoToken,
+} from "./po-token-minter";
 
 function UpsertKeyValue(obj: any, keyToChange: string, value: string[]) {
   const keyToChangeLower = keyToChange.toLowerCase();
@@ -117,6 +123,9 @@ function createWindow() {
     });
   });
 
+  // The hidden minter window would otherwise keep the app from quitting.
+  mainWindow.on("closed", closePoTokenMinter);
+
   mainWindow.on("ready-to-show", () => {
     mainWindow.show();
   });
@@ -171,6 +180,25 @@ app.whenReady().then(async () => {
   app.on("browser-window-created", (_, window) => {
     optimizer.watchWindowShortcuts(window);
   });
+
+  // Plugins ask for proof-of-origin tokens through the renderer; see
+  // po-token-minter.ts. Only an app window's own page may ask, and everything
+  // it sends is checked before a page loads.
+  ipcMain.handle(
+    "mint-po-token",
+    async (event, origin: unknown, contentBinding: unknown, overrides: unknown) => {
+      if (
+        isMinterWindow(event.sender) ||
+        !BrowserWindow.fromWebContents(event.sender) ||
+        event.senderFrame !== event.sender.mainFrame
+      ) {
+        throw new Error("Not allowed to mint tokens from here");
+      }
+      const check = checkPoTokenRequest(origin, contentBinding, overrides);
+      if (!check.ok) throw new Error(check.error);
+      return await mintPoToken(check.provider, check.config, contentBinding as string);
+    }
+  );
 
   createWindow();
 

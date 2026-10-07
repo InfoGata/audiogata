@@ -45,6 +45,7 @@
     "@tanstack/react-router": "^1.114.17",
     "@testing-library/user-event": "^13.5.0",
     "autoprefixer": "^10.4.21",
+    "bgutils-js": "4.0.3",
     "can-autoplay": "^3.0.2",
     "capacitor-music-controls-plugin": "^6.0.1",
     "class-variance-authority": "^0.7.0",
@@ -81,15 +82,16 @@
   },
   "scripts": {
     "start": "vite",
-    "build": "tsc && vite build",
+    "build": "npm run build:po-minter && tsc && vite build",
+    "build:po-minter": "vite build -c vite.po-minter.config.ts",
     "preview": "vite preview",
     "lint": "eslint .",
     "dev": "vite",
     "cap:build": "npm run build && cap sync",
     "android": "npm run build && cap run android",
     "electron:start": "electron-vite preview",
-    "electron:dev": "electron-vite dev",
-    "electron:build": "electron-vite build",
+    "electron:dev": "npm run build:po-minter && electron-vite dev",
+    "electron:build": "npm run build:po-minter && electron-vite build",
     "test": "vitest"
   },
   "browserslist": {

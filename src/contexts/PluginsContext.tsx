@@ -95,6 +95,7 @@ import {
   hasExtension,
   isCorsDisabled,
 } from "../utils";
+import { mintPoTokenNatively } from "../po-minter/native";
 import { useTheme } from "@infogata/shadcn-vite-theme-provider";
 
 export interface PluginMethodInterface extends PlayerComponent {
@@ -300,8 +301,8 @@ export const PluginsProvider: React.FC<React.PropsWithChildren> = (props) => {
           };
           return result;
         },
-        // Only the extension can mint; the desktop and Android apps have no
-        // implementation yet. Plugins treat a rejection as "not available".
+        // The extension mints for the web app; the desktop and Android apps
+        // do it themselves. Plugins treat a rejection as "not available".
         mintPoToken: async (origin, contentBinding, overrides) => {
           if (hasExtension() && window.InfoGata?.mintPoToken) {
             return await window.InfoGata.mintPoToken(
@@ -310,7 +311,7 @@ export const PluginsProvider: React.FC<React.PropsWithChildren> = (props) => {
               overrides
             );
           }
-          throw new Error("Proof-of-origin tokens are not available here");
+          return await mintPoTokenNatively(origin, contentBinding, overrides);
         },
         isNetworkRequestCorsDisabled: async () => {
           return isCorsDisabled();

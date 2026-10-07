@@ -68,10 +68,8 @@ export interface InfoGataExtension {
   ) => Promise<string>;
 }
 
-export interface PoTokenOverrides {
-  requestKey?: string;
-  integrityTokenPath?: string;
-}
+import type { PoTokenOverrides } from "./po-minter/providers";
+export type { PoTokenOverrides };
 
 declare global {
   interface Window {

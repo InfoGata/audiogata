@@ -2,6 +2,7 @@ import { electronAPI } from "@electron-toolkit/preload";
 import { contextBridge, ipcRenderer } from "electron";
 import { ManifestAuthentication } from "../../src/plugintypes";
 import { Api } from "./types";
+import type { PoTokenOverrides } from "../../src/po-minter/providers";
 
 // Custom APIs for renderer
 const api: Api = {
@@ -11,6 +12,8 @@ const api: Api = {
       window.postMessage({ type: "infogata-extension-notify-login", pluginId, headers, domainHeaders }, "*");
     });
   },
+  mintPoToken: (origin: string, contentBinding: string, overrides?: PoTokenOverrides) =>
+    ipcRenderer.invoke("mint-po-token", origin, contentBinding, overrides),
 };
 
 // Use `contextBridge` APIs to expose Electron APIs to
