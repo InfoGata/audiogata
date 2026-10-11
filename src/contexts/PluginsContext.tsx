@@ -301,7 +301,7 @@ export const PluginsProvider: React.FC<React.PropsWithChildren> = (props) => {
           };
           return result;
         },
-        // The extension mints for the web app; the desktop and Android apps
+        // The extension mints for the web app; the desktop and mobile apps
         // do it themselves. Plugins treat a rejection as "not available".
         mintPoToken: async (origin, contentBinding, overrides) => {
           if (hasExtension() && window.InfoGata?.mintPoToken) {

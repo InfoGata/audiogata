@@ -1,5 +1,5 @@
 /**
- * Sites the desktop and Android apps can mint proof-of-origin tokens for.
+ * Sites the desktop and mobile apps can mint proof-of-origin tokens for.
  *
  * The same table lives in the InfoGata extension (src/po-token-providers.ts);
  * keep the two in step. The plugin API only names an origin and a content

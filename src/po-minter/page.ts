@@ -9,9 +9,9 @@ import {
 } from "./providers";
 
 /**
- * Runs as the provider's own page in the desktop and Android apps' hidden
+ * Runs as the provider's own page in the desktop and mobile apps' hidden
  * minter page, and is built on its own into public/po-minter.js
- * (vite.po-minter.config.ts) so both can inject it as plain source. A port of
+ * (vite.po-minter.config.ts) so each can inject it as plain source. A port of
  * the InfoGata extension's entrypoints/po-minter.ts; keep the two in step.
  *
  * It uses the BotGuard VM the site's own page loaded rather than loading one,

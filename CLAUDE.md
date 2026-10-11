@@ -102,21 +102,23 @@ The core of AudioGata is its plugin architecture:
   table is in the InfoGata extension (`src/po-token-providers.ts`); keep them
   in step.
 - Web: forwarded to the extension's `window.InfoGata.mintPoToken`, which mints
-  in a hidden frame. Desktop and Android mint themselves
+  in a hidden frame. Desktop, Android and iOS mint themselves
   (`src/po-minter/native.ts`): Electron's main process in a hidden window
   (`electron/main/po-token-minter.ts`, IPC `mint-po-token`), Android in a hidden
-  WebView (`PoTokenMinterPlugin.java`, registered in `MainActivity`). Each
-  loads `https://www.youtube.com/` top-level with a plain desktop-Chrome UA, in
-  a cookie jar of its own (an in-memory session / a WebView profile), and
-  closes it after ten idle minutes.
-- Both inject `public/po-minter.js`, built from `src/po-minter/page.ts` by
+  WebView (`PoTokenMinterPlugin.java`, registered in `MainActivity`), iOS in a
+  hidden WKWebView (`PoTokenMinterPlugin.swift`, registered in
+  `MainViewController`). Each loads `https://www.youtube.com/` top-level with a
+  plain desktop UA (Chrome; desktop Safari on iOS, since the engine is WebKit),
+  in a cookie jar of its own (an in-memory session / a WebView profile / a
+  non-persistent data store), and closes it after ten idle minutes.
+- All inject `public/po-minter.js`, built from `src/po-minter/page.ts` by
   `npm run build:po-minter` (part of `build`, `electron:dev` and
   `electron:build`) and git-ignored. It is a port of the extension's
   `entrypoints/po-minter.ts`: it reads the challenge from the page's inline
   `window.ytAtN(...)` and uses the BotGuard VM the page itself loaded.
 - Minting rejects wherever it is not available; plugins carry on without it.
 - Verified: the web app through the extension, and minting in a hidden
-  Electron window. Not yet verified on an Android device.
+  Electron window. Not yet verified on an Android or iOS device.
 
 ### Versioning
 
