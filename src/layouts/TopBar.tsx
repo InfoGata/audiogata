@@ -19,8 +19,10 @@ const TopBar: React.FC = () => {
   const dispatch = useAppDispatch();
   const onToggleNavbar = () => dispatch(toggleNavbar());
 
+  // viewport-fit=cover lets the page run under an iPhone's status bar; the
+  // padding keeps the bar's contents below it. The inset is 0 elsewhere.
   return (
-    <div className="fixed top-0 left-0 right-0 w-full shadow-lg z-40 bg-background border-b">
+    <div className="fixed top-0 left-0 right-0 w-full shadow-lg z-40 bg-background border-b pt-[env(safe-area-inset-top)]">
       <div className="flex items-center min-h-16 gap-3 lg:gap-16">
         <div className="flex items-center">
           <Button variant="ghost" size="icon" onClick={onToggleNavbar}>

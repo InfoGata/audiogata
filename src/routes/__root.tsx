@@ -17,7 +17,7 @@ export const Root: React.FC = () => {
       <Toaster closeButton />
       <TopBar />
       <SideBar />
-      <main className="px-2 flex-1 overflow-auto pb-32 pt-20">
+      <main className="px-2 flex-1 overflow-auto pb-[calc(8rem+env(safe-area-inset-bottom))] pt-[calc(5rem+env(safe-area-inset-top))]">
         <Outlet />
       </main>
       <PlayerBar />

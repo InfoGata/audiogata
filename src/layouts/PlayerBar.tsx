@@ -43,7 +43,7 @@ const PlayerBar: React.FC = () => {
           <MdMoreVert className="size-5" />
         </Button>
       </SheetTrigger>
-      <SheetContent side="bottom" className="h-auto pb-safe">
+      <SheetContent side="bottom" className="h-auto pb-[calc(1.5rem+env(safe-area-inset-bottom))]">
         <SheetHeader>
           <SheetTitle>{t("controls")}</SheetTitle>
           <VisuallyHidden>
@@ -65,7 +65,7 @@ const PlayerBar: React.FC = () => {
   );
 
   return (
-    <div className="fixed bottom-0 left-0 w-full bg-background border-t z-40 flex flex-col">
+    <div className="fixed bottom-0 left-0 w-full bg-background border-t z-40 flex flex-col pb-[env(safe-area-inset-bottom)]">
       {/* Progress bar at the very top */}
       <div className="w-full px-2">
         <Progress />

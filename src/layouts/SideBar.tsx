@@ -12,7 +12,7 @@ const SideBar: React.FC = () => {
   return (
     <div
       className={cn(
-        "pt-16 hidden h-screen shrink-0 md:block duration-500 bg-background",
+        "pt-[calc(4rem+env(safe-area-inset-top))] hidden h-screen shrink-0 md:block duration-500 bg-background",
         navbarOpen ? "w-52" : "w-20"
       )}
     >
