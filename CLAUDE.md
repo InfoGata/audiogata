@@ -30,11 +30,14 @@ npm run build
 # Preview built application
 npm run preview
 
-# Android - Build and sync with Capacitor
+# Android and iOS - Build and sync with Capacitor
 npm run cap:build
 
 # Android - Build and run on Android device/emulator
 npm run android
+
+# iOS - Build and run on a simulator/device (macOS only)
+npm run ios
 
 # Electron - Run in development mode
 npm run electron:dev
@@ -45,6 +48,17 @@ npm run electron:start
 # Electron - Build electron application
 npm run electron:build
 ```
+
+iOS needs Xcode, so it is built on the Mac mini (`ssh mac`, i.e.
+`elijahs-mac-mini.local`; its node comes from nvm, so use a login shell:
+`zsh -lc`). Its checkout is `~/projects/webapps/audiogata`. The project uses
+Swift Package Manager, not CocoaPods: `cap sync` writes
+`ios/App/CapApp-SPM/Package.swift`, and leaves out
+`capacitor-music-controls-plugin`, which has no Swift package, so iOS gets its
+lock-screen controls from `navigator.mediaSession` instead. The iOS WebView's
+origin is `capacitor://localhost`, which `vercel.json`'s `frame-ancestors` has
+to allow or every plugin frame is refused. The build number comes from
+`package.json` through a build phase, with the same formula as Android.
 
 ### Testing and Linting
 
@@ -111,7 +125,9 @@ The core of AudioGata is its plugin architecture:
 `__APP_COMMIT__` (from `git describe --always --dirty`) into both vite configs,
 `src/lib/app-version.ts` is what the app reads, and `android/app/build.gradle`
 derives `versionName` and `versionCode` from the same file (`0.1.0` -> `100`,
-`1.2.3` -> `10203`). Never hardcode a version anywhere else. The About page
+`1.2.3` -> `10203`); the iOS target's "Version from package.json" build phase
+sets `CFBundleShortVersionString` and `CFBundleVersion` the same way. Never
+hardcode a version anywhere else. The About page
 shows the build, and tapping it copies the build, platform and user agent.
 
 ### State Management

@@ -14,6 +14,7 @@ export default tseslint.config(
       "out/**",
       "node_modules/**",
       "android/**",
+      "ios/**",
       "public/**",
       "cors-server.js",
       "electron.vite.config.ts",

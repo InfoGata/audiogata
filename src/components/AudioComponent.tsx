@@ -26,6 +26,10 @@ import { withPlugins } from "../withPlugins";
 import { toast } from "sonner";
 import { CapacitorMusicControls } from "capacitor-music-controls-plugin";
 
+// capacitor-music-controls-plugin has no Swift package, so cap sync leaves it
+// out on iOS; navigator.mediaSession gives iOS its lock-screen controls.
+const hasMusicControls = Capacitor.getPlatform() === "android";
+
 export interface AudioComponentProps
   extends StateProps,
     DispatchProps,
@@ -141,7 +145,7 @@ class AudioComponent extends React.Component<
       newProps.currentTrack?.pluginId || ""
     );
     if (prevProps.isPlaying !== newProps.isPlaying) {
-      if (Capacitor.isNativePlatform()) {
+      if (hasMusicControls) {
         // Resolves without doing anything if no track has created the controls.
         CapacitorMusicControls.updateIsPlaying({
           isPlaying: newProps.isPlaying,
@@ -314,7 +318,7 @@ class AudioComponent extends React.Component<
       });
     }
 
-    if (Capacitor.isNativePlatform()) {
+    if (hasMusicControls) {
       // The typings mark every option optional, but on Android the booleans
       // are read with a throwing getBoolean, and notificationIcon and cover are
       // dereferenced unchecked, so all of them have to be sent.
@@ -413,7 +417,7 @@ class AudioComponent extends React.Component<
       }
     }
 
-    if (Capacitor.isNativePlatform()) {
+    if (hasMusicControls) {
       const handleControlsEvent = (action: { message: string; position: number }) => {
         const message = action.message;
         switch (message) {
