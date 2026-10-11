@@ -55,7 +55,20 @@ export const nativeNetworkRequest = async (
     return undefined;
   }
 
-  const response = await CapacitorHttp.request(options);
+  // Native can't be stopped once started; an abort only drops its answer.
+  const signal = init?.signal;
+  signal?.throwIfAborted();
+  const request = CapacitorHttp.request(options);
+  const response = signal
+    ? await Promise.race([
+        request,
+        new Promise<never>((_, reject) =>
+          signal.addEventListener("abort", () => reject(signal.reason), {
+            once: true,
+          })
+        ),
+      ])
+    : await request;
   return {
     body: responseDataToBlob(response),
     headers: response.headers,
