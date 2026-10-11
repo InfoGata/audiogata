@@ -1,4 +1,5 @@
 import { App, URLOpenListenerEvent } from "@capacitor/app";
+import { Capacitor } from "@capacitor/core";
 import { nanoid } from "@reduxjs/toolkit";
 import { PluginFrame, PluginInterface } from "plugin-frame";
 import React from "react";
@@ -95,6 +96,7 @@ import {
   hasExtension,
   isCorsDisabled,
 } from "../utils";
+import { nativeNetworkRequest } from "../lib/native-http";
 import { mintPoTokenNatively } from "../po-minter/native";
 import { useTheme } from "@infogata/shadcn-vite-theme-provider";
 
@@ -282,6 +284,10 @@ export const PluginsProvider: React.FC<React.PropsWithChildren> = (props) => {
         networkRequest: async (input: string, init?: RequestInit) => {
           if (hasExtension() && window.InfoGata?.networkRequest) {
             return await window.InfoGata.networkRequest(input, init);
+          }
+          if (Capacitor.isNativePlatform()) {
+            const result = await nativeNetworkRequest(input, init);
+            if (result) return result;
           }
 
           const response = await fetch(input, init);
