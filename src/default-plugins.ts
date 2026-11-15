@@ -25,14 +25,6 @@ export const defaultPlugins: PluginDescription[] = [
     url: "https://cdn.jsdelivr.net/gh/InfoGata/spotify-audiogata@latest/manifest.json",
   },
   {
-    id: "4tbwYICEMHms82I7omxPz",
-    alias: "napster",
-    name: "Plugin for Napster",
-    description: "Play music from napster. Requires napster login.",
-    url: "https://cdn.jsdelivr.net/gh/InfoGata/napster-audiogata@latest/manifest.json",
-    hidden: true,
-  },
-  {
     id: "05KGl-ijn6XN-NMCaqy-x",
     alias: "google-drive",
     name: "Google Drive Sync",

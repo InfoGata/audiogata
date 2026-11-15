@@ -19,8 +19,6 @@ The plugin scripts are run in sandboxed iframes using [plugin-frame](https://git
 
 [soundcloud-audiogata](https://github.com/InfoGata/soundcloud-audiogata)
 
-[napster-audiogata](https://github.com/InfoGata/napster-audiogata)
-
 [spotify-audiogata](https://github.com/InfoGata/spotify-audiogata)
 
 [dropbox-audiogata](https://github.com/InfoGata/dropbox-audiogata)
