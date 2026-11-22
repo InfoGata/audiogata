@@ -2,6 +2,7 @@ import { Capacitor } from "@capacitor/core";
 import isElectron from "is-electron";
 import { customAlphabet } from "nanoid";
 import i18next from "./i18n";
+import semverValid from "semver/functions/parse";
 import { Manifest, PluginInfo } from "./plugintypes";
 import { DirectoryFile, FileType } from "./types";
 import semverGte from "semver/functions/gte";
@@ -83,6 +84,66 @@ export async function getFileText(
   return null;
 }
 
+// cdn.jsdelivr.net/gh/<owner>/<repo>[@<ref>]/<path>
+const JSDELIVR_GH_URL =
+  /^(https:\/\/cdn\.jsdelivr\.net\/gh\/[^/@]+\/[^/@]+)(?:@([^/]+))?(\/.*)$/;
+// Refs that already name one fixed build: a version or a commit.
+const FIXED_REF = /^(v?\d+(\.\d+){0,2}([-+].*)?|[0-9a-f]{7,40})$/;
+
+/**
+ * The same manifest url pinned to the release `version`, when it is a jsdelivr
+ * GitHub url on a moving ref (`@latest`, a branch, or no ref at all).
+ *
+ * The manifest has to come from the moving ref, since that is how a new version
+ * is found. The files it names don't: jsdelivr caches each url separately, so
+ * for a while after a release one edge can serve the new manifest beside the
+ * old script. The update is then recorded as done and never retried. A tag's
+ * url can only ever be that tag's build -- jsdelivr resolves `@1.8.1` to the
+ * tag `1.8.1` or `v1.8.1` -- so the version and its code can't come apart.
+ * Same as SocialGata's `getPinnedFileType`; keep them in step.
+ */
+export function getPinnedFileType(
+  fileType: FileType,
+  version: string | undefined
+): FileType | undefined {
+  if (!fileType.url || !version || !semverValid(version)) return undefined;
+  const match = JSDELIVR_GH_URL.exec(fileType.url.url);
+  if (!match) return undefined;
+  const [, repo, ref, path] = match;
+  if (ref && FIXED_REF.test(ref)) return undefined;
+  return {
+    url: { ...fileType.url, url: `${repo}@${version}${path}` },
+  };
+}
+
+/**
+ * A file of the release, from the pinned url when there is one.
+ *
+ * Only a 404 -- the repo doesn't tag its releases -- falls back to the moving
+ * ref, which is how every plugin was fetched before. Anything else gives up:
+ * falling back then would risk the very mismatch pinning prevents, and a
+ * missed update is simply tried again on the next check.
+ */
+async function getReleaseFileText(
+  fileType: FileType,
+  pinned: FileType | undefined,
+  name: string
+): Promise<string | null> {
+  if (!pinned?.url) return getFileText(fileType, name);
+  const url = pinned.url.url.replace("manifest.json", encodeURIComponent(name));
+  try {
+    // No "no-cache" here: a tagged url never changes, so the browser's copy
+    // is always the right one.
+    const result = await fetch(url, { headers: pinned.url.headers });
+    if (result.ok) return await result.text();
+    if (result.status === 404) return getFileText(fileType, name);
+  } catch {
+    // Fall through to the error below.
+  }
+  toast.error(i18next.t("common:cantGetFile", { name }));
+  return null;
+}
+
 export async function getPlugin(
   fileType: FileType,
   suppressErrors = false
@@ -99,7 +160,8 @@ export async function getPlugin(
     return null;
   }
 
-  const script = await getFileText(fileType, manifest.script);
+  const pinned = getPinnedFileType(fileType, manifest.version);
+  const script = await getReleaseFileText(fileType, pinned, manifest.script);
   if (!script) return null;
 
   const plugin: PluginInfo = {
@@ -121,7 +183,7 @@ export async function getPlugin(
       typeof manifest.options === "string"
         ? manifest.options
         : manifest.options.page;
-    const optionsText = await getFileText(fileType, optionsFile);
+    const optionsText = await getReleaseFileText(fileType, pinned, optionsFile);
     if (!optionsText) return null;
 
     if (typeof manifest.options !== "string") {
