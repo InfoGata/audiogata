@@ -1,5 +1,6 @@
 import { execSync } from "node:child_process";
 import { readFileSync } from "node:fs";
+import { nativeFingerprint } from "./native-fingerprint";
 
 /**
  * The identity a build carries, injected by both vite.config.ts and the
@@ -34,4 +35,7 @@ const commit = (): string => {
 export const buildInfoDefine = () => ({
   __APP_VERSION__: JSON.stringify(packageJson.version),
   __APP_COMMIT__: JSON.stringify(commit()),
+  // Which native build this bundle was made for. An OTA update is only
+  // installed on a binary with the same fingerprint (native-fingerprint.ts).
+  __NATIVE_FINGERPRINT__: JSON.stringify(nativeFingerprint()),
 });

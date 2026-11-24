@@ -16,6 +16,7 @@
     "@capacitor/core": "^8.0.0",
     "@capacitor/filesystem": "^8.1.0",
     "@capacitor/ios": "^8.5.3",
+    "@capgo/capacitor-updater": "^8.54.2",
     "@dnd-kit/core": "^5.0.1",
     "@dnd-kit/sortable": "^6.0.0",
     "@dnd-kit/utilities": "^3.1.0",
@@ -94,7 +95,9 @@
     "electron:start": "electron-vite preview",
     "electron:dev": "npm run build:po-minter && electron-vite dev",
     "electron:build": "npm run build:po-minter && electron-vite build",
-    "test": "vitest"
+    "test": "vitest",
+    "ota:publish": "node scripts/ota-publish.ts",
+    "ota:keygen": "node scripts/ota-keygen.ts"
   },
   "browserslist": {
     "production": [

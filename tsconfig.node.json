@@ -8,6 +8,8 @@
   "include": [
     "vite.config.ts",
     "build-info.ts",
+    "native-fingerprint.ts",
+    "capacitor.config.ts",
     "electron/*"
   ]
 }

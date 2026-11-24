@@ -1,9 +1,10 @@
+import { Capacitor } from "@capacitor/core";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 import { useRegisterSW } from "virtual:pwa-register/react";
 
-const useUpdateServiceWorker = () => {
+const useWebServiceWorker = () => {
   const { t } = useTranslation();
 
   // onNeedReload is registered once, so read t() through a ref to keep the toast
@@ -28,5 +29,15 @@ const useUpdateServiceWorker = () => {
     },
   });
 };
+
+// The native app has no service worker: it would keep serving the old bundle
+// after an over-the-air update (see lib/service-worker.ts, which removes one
+// left by an older install). Chosen once, since the platform can't change
+// while the app runs, so the hook calls stay the same on every render.
+const useNoServiceWorker = () => {};
+
+const useUpdateServiceWorker = Capacitor.isNativePlatform()
+  ? useNoServiceWorker
+  : useWebServiceWorker;
 
 export default useUpdateServiceWorker;

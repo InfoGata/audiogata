@@ -57,6 +57,13 @@ export default defineConfig({
       // "prompt" the only way to activate a waiting worker was for the page to post
       // SKIP_WAITING — impossible when the stale build is what failed to boot.
       registerType: "autoUpdate",
+      // Registered by hooks/useUpdateServiceWorker (virtual:pwa-register), which
+      // does nothing in the native app: there a worker would answer requests
+      // from its precache and keep serving the old bundle after an
+      // over-the-air update swaps the files underneath it. The plugin already
+      // skips its own registerSW script when the virtual module is imported;
+      // false makes sure it never comes back.
+      injectRegister: false,
       workbox: {
         // Must stay above the ~2.7MB automerge wasm, or the app won't open offline.
         maximumFileSizeToCacheInBytes: 4 * 1024 * 1024, // 4MB

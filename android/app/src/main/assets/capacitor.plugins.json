@@ -8,6 +8,10 @@
 		"classpath": "com.capacitorjs.plugins.filesystem.FilesystemPlugin"
 	},
 	{
+		"pkg": "@capgo/capacitor-updater",
+		"classpath": "ee.forgr.capacitor_updater.CapacitorUpdaterPlugin"
+	},
+	{
 		"pkg": "capacitor-music-controls-plugin",
 		"classpath": "com.ingageco.capacitormusiccontrols.CapacitorMusicControls"
 	}

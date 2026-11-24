@@ -20,6 +20,10 @@ import store, { persistor } from "./store/store";
 import { ExtensionProvider } from "./contexts/ExtensionContext";
 import Analytics from "./components/Analytics";
 import AppErrorBoundary from "./components/AppErrorBoundary";
+import OtaUpdates from "./components/OtaUpdates";
+import { removeNativeServiceWorker } from "./lib/service-worker";
+
+removeNativeServiceWorker();
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -34,6 +38,7 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
     {/* Outermost on purpose: everything below can throw during first render,
         and the router's error component only covers routes. */}
     <AppErrorBoundary>
+      <OtaUpdates />
       <Provider store={store}>
         <PersistGate loading={null} persistor={persistor}>
           {/* Inside PersistGate so it acts on the remembered preference

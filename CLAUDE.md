@@ -132,6 +132,54 @@ sets `CFBundleShortVersionString` and `CFBundleVersion` the same way. Never
 hardcode a version anywhere else. The About page
 shows the build, and tapping it copies the build, platform and user agent.
 
+### OTA Updates (native app)
+
+`@capgo/capacitor-updater`, self-hosted, with `autoUpdate: false` and stats
+off, so nothing goes to Capgo. `npm run ota:publish` (`scripts/ota-publish.ts`)
+runs the full `npm run build` (po-minter included), zips `dist`, and attaches
+the zip plus `ota.json` to GitHub release `v<version>`. `src/lib/ota-update.ts`
+reads `releases/latest/download/ota.json`.
+- A bundle is only installed on a binary with the same **native fingerprint**
+  (`native-fingerprint.ts`): a hash of the Java/Swift, the gradle files,
+  `capacitor.config.ts`, `ota-public-key.pem`, installed native plugin
+  versions (Cordova plugins included, with the commit for a git dependency),
+  and `src/po-minter/` plus `vite.po-minter.config.ts` and `bgutils-js`.
+  po-minter is there because `PoTokenMinterPlugin` (Java and Swift) reads
+  `public/po-minter.js` from the binary's own assets, not from the bundle
+  Capgo is running, so an OTA can't change it. The binary gets the hash
+  through the CapacitorUpdater `version` (`<version>+native.<hash>`), and the
+  bundle through `__NATIVE_FINGERPRINT__`. Changing any hashed file means the
+  next release needs a store build. Don't add `cap sync`-generated files
+  (`capacitor.settings.gradle`, `capacitor.build.gradle`, `Package.swift`,
+  `capacitor-cordova-*-plugins`, copied web assets) to the hash: sync writes
+  them after it reads the config, so the binary would get a stale fingerprint.
+- capacitor.config.ts is transpiled to CommonJS by the Capacitor CLI, so it and
+  `native-fingerprint.ts` can't use `import.meta`; paths come from
+  `process.cwd()`.
+- `notifyAppReady` runs from `components/OtaUpdates.tsx` after the first
+  commit. A bundle that doesn't reach it within 10s is rolled back and kept
+  as `error` (`autoDeleteFailed: false`), so it is never downloaded again.
+- One OTA per version: the app only installs versions newer than the one it
+  is running.
+- **Signed**: `capacitor.config.ts` embeds `ota-public-key.pem` as Capgo's
+  `publicKey`, and Capgo refuses any bundle without a session key and checksum
+  made by the private key (`scripts/ota-crypto.ts`, the "encryption v2"
+  format). The private key is outside the repo (`scripts/ota-paths.ts`,
+  `OTA_PRIVATE_KEY_PATH`). The signature doesn't cover the version label in
+  `ota.json`, so downloads are labelled `<version>+native.<fingerprint>` and a
+  running bundle whose label doesn't match its own `__APP_VERSION__` and
+  fingerprint marks itself failed and resets.
+- **Service worker**: web and Electron only. `useUpdateServiceWorker` is a
+  no-op in the native app, and `lib/service-worker.ts` unregisters any worker
+  an older install left there and deletes its `workbox-*` caches; otherwise it
+  would keep serving the old precached bundle after Capgo swaps the files at
+  the same origin. `injectRegister: false` in `vite.config.ts` keeps the
+  plugin from injecting a registerSW script of its own.
+- No `server.androidScheme` in `capacitor.config.ts`, so Android uses
+  Capacitor's default `https://localhost` (iOS `capacitor://localhost`).
+  Don't change it: a new scheme is a new origin, and users lose their
+  IndexedDB and localStorage.
+
 ### State Management
 
 - Redux with Redux Toolkit for global state

@@ -5,6 +5,14 @@
 	"plugins": {
 		"CapacitorHttp": {
 			"enabled": true
+		},
+		"CapacitorUpdater": {
+			"autoUpdate": false,
+			"statsUrl": "",
+			"version": "0.1.0+native.1d56eb1c5442",
+			"autoDeleteFailed": false,
+			"publicKey": "-----BEGIN RSA PUBLIC KEY-----\nMIIBCgKCAQEA8ABSQu4kLza2Re31RGUBFo33j+pLpsCarv1gpWOiyNGZkr+pFKBX\ng/zr/DCg4fbV+90vmeQlPFuzPGe2l7eOglGwxAdXgL/9k8f6Xs76rKNV5nET5K+H\n4AESskzE7NTSdGy1PG9tv76lWbDuIbwg2QnfOvRHMnvELeaqOo4VTWxbAc3N/a2W\nAcIYIAZACEMD46t5z34SnmL54E5F8ebPaq0PD1+RMfG0FBJrjJWAgvxBMZyB2p/l\nQYJYLtf55XlvCYw60RtsQ8eTQoSpWtJmAGfrGDWLUavIGJeitOiekohIMBp7EN7a\n4CS7LTEn4FLPffJl9k+s8rZrAeyMz7HF2wIDAQAB\n-----END RSA PUBLIC KEY-----",
+			"allowManualBundleError": true
 		}
 	}
 }
