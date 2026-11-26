@@ -1,6 +1,6 @@
 import { execSync } from "node:child_process";
 import { readFileSync } from "node:fs";
-import { nativeFingerprint } from "./native-fingerprint";
+import { nativeFingerprint } from "./native-fingerprint.ts";
 
 /**
  * The identity a build carries, injected by both vite.config.ts and the

@@ -5,7 +5,7 @@ import { VitePWA } from "vite-plugin-pwa";
 import { tanstackRouter } from "@tanstack/router-plugin/vite";
 import tailwindcss from "@tailwindcss/vite";
 import wasm from "vite-plugin-wasm";
-import { buildInfoDefine } from "./build-info";
+import { buildInfoDefine } from "./build-info.ts";
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -26,7 +26,7 @@ export default defineConfig({
     dedupe: ["react", "react-dom"],
     alias: {
       "hls.js": "hls.js/dist/hls.min.js",
-      "@": path.resolve(__dirname, "./src"),
+      "@": path.resolve(import.meta.dirname, "./src"),
     },
   },
   test: {

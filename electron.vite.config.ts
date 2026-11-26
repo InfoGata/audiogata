@@ -5,7 +5,7 @@ import { resolve } from "path";
 import { VitePWA } from "vite-plugin-pwa";
 import tailwindcss from "@tailwindcss/vite";
 import wasm from "vite-plugin-wasm";
-import { buildInfoDefine } from "./build-info";
+import { buildInfoDefine } from "./build-info.ts";
 
 export default defineConfig({
   main: {
